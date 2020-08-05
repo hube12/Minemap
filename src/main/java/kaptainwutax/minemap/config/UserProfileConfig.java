@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ public class UserProfileConfig extends Config {
 
     @Expose protected int THREAD_COUNT;
     @Expose protected MCVersion MC_VERSION;
+    @Expose protected String STYLE;
 
     @Override
     public String getName() {
@@ -24,6 +26,10 @@ public class UserProfileConfig extends Config {
         return this.MC_VERSION;
     }
 
+    public String getStyle() {
+        return this.STYLE;
+    }
+
     public void setThreadCount(int threadCount) {
         this.THREAD_COUNT = threadCount;
         this.flush();
@@ -31,6 +37,15 @@ public class UserProfileConfig extends Config {
 
     public void setVersion(MCVersion version) {
         this.MC_VERSION = version;
+        this.flush();
+    }
+
+    public void setStyle(String style) {
+        if(!this.STYLE.equals(style)) {
+            MineMap.INSTANCE.seedTabs.invalidateAll();
+            this.STYLE = style;
+        }
+
         this.flush();
     }
 
@@ -46,6 +61,7 @@ public class UserProfileConfig extends Config {
     protected void resetConfig() {
         this.THREAD_COUNT = 1;
         this.MC_VERSION = MCVersion.values()[0];
+        this.STYLE = "Default";
     }
 
 }

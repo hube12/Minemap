@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui;
 
+import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -68,6 +69,14 @@ public class SeedTabs extends TabPane {
                 WorldInfo.QUARTER_RES_ID, EndBiomeSource::new), threadCount));
 
         this.getTabs().addAll(overworld, nether, end);
+    }
+
+    public synchronized void invalidateAll() {
+        for(Tab tab: this.getTabs()) {
+            Node content = tab.getContent();
+            if(!(content instanceof MapPanel))continue;
+            ((MapPanel)content).invalidate();
+        }
     }
 
 }

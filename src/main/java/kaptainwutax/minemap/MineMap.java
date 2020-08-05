@@ -2,13 +2,10 @@ package kaptainwutax.minemap;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.ui.EnterSeedDialog;
+import kaptainwutax.minemap.ui.MainMenuBar;
 import kaptainwutax.minemap.ui.SeedTabs;
 
 import java.awt.*;
@@ -17,6 +14,7 @@ public class MineMap extends Application {
 
     public static MineMap INSTANCE;
     public SeedTabs seedTabs;
+    private MainMenuBar menuBar;
 
     /**
      * Don't launch this!
@@ -44,18 +42,7 @@ public class MineMap extends Application {
     }
 
     private void initComponents(BorderPane pane) {
-        MenuBar menuBar = new MenuBar();
-        Menu fileItem = new Menu("File");
-        MenuItem newFromSeed = new MenuItem("New From Seed...");
-
-        newFromSeed.setOnAction(e -> {
-            EnterSeedDialog dialog = new EnterSeedDialog();
-            dialog.show();
-        });
-
-        fileItem.getItems().add(newFromSeed);
-        menuBar.getMenus().add(fileItem);
-
+        this.menuBar = new MainMenuBar();
         this.seedTabs = new SeedTabs(pane);
 
         pane.setTop(menuBar);

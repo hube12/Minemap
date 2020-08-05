@@ -25,25 +25,20 @@ public class MapPanel extends Pane {
 	public String tooltip = null;
 
 	public final WorldInfo info;
-	public final RegionScheduler scheduler;
+	public RegionScheduler scheduler;
+	private final int threadCount;
 
 	public Canvas canvas;
 
 	public MapPanel(Pane parent, WorldInfo info, int threadCount) {
 		this.info = info;
-		this.scheduler = new RegionScheduler(this, threadCount);
-
+		this.threadCount = threadCount;
 		this.canvas = new Canvas(parent.getWidth(), parent.getHeight());
-		this.repaint();
-		this.getChildren().add(this.canvas);
 
-		parent.widthProperty().addListener((observable, oldValue, newValue) -> {
-			this.canvas.setWidth(newValue.doubleValue());
-		});
+		this.invalidate();
 
-		parent.heightProperty().addListener((observable, oldValue, newValue) -> {
-			this.canvas.setHeight(newValue.doubleValue());
-		});
+		parent.widthProperty().addListener((observable, oldValue, newValue) -> this.canvas.setWidth(newValue.doubleValue()));
+		parent.heightProperty().addListener((observable, oldValue, newValue) -> this.canvas.setHeight(newValue.doubleValue()));
 
 		this.setOnScroll(e -> {
 			double newPixelsPerFragment = this.pixelsPerFragment;
@@ -95,6 +90,8 @@ public class MapPanel extends Pane {
 			this.tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, info.getBiome(x, z).getName().toUpperCase());
 			this.repaint();
 		});
+
+		this.getChildren().add(this.canvas);
 	}
 
 	public BPos getPos(double mouseX, double mouseY) {
@@ -150,6 +147,11 @@ public class MapPanel extends Pane {
 			g.setFill(Color.WHITE);
 			g.fillText(this.tooltip, 20, 30);
 		}
+	}
+
+	public void invalidate() {
+		this.scheduler = new RegionScheduler(this, threadCount);
+		this.repaint();
 	}
 
 	public static class DrawInfo {

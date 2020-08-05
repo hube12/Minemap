@@ -51,7 +51,7 @@ public class WorldInfo {
 				int rz = (z + pz) >> (isEnd ? 2 : 0);
 				int id = layer.get(rx, 0, rz);
 
-				Color color = Configs.BIOME_COLORS.get(id);
+				Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), id);
 
 				if(color != null) {
 					image.getPixelWriter().setColor(x, z, color);
