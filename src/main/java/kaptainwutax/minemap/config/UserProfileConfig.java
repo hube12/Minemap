@@ -42,8 +42,8 @@ public class UserProfileConfig extends Config {
 
     public void setStyle(String style) {
         if(!this.STYLE.equals(style)) {
-            MineMap.INSTANCE.seedTabs.invalidateAll();
             this.STYLE = style;
+            MineMap.INSTANCE.worldTabs.invalidateAll();
         }
 
         this.flush();
@@ -61,7 +61,7 @@ public class UserProfileConfig extends Config {
     protected void resetConfig() {
         this.THREAD_COUNT = 1;
         this.MC_VERSION = MCVersion.values()[0];
-        this.STYLE = "Default";
+        this.STYLE = BiomeColorsConfig.DEFAULT_STYLE_NAME;
     }
 
 }

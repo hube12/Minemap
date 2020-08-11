@@ -1,73 +1,29 @@
 plugins {
-    id 'application'
     id 'java'
-    id 'maven-publish'
-    id 'org.openjfx.javafxplugin' version '0.0.8'
-    id 'edu.sc.seis.launch4j' version '2.4.6'
+}
+
+sourceCompatibility = 1.8
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
-    implementation('com.github.KaptainWutax:BiomeUtils:94098e9d2bd8bc4f1134d4b79dfa82d70ef90979') {
+    implementation('com.github.KaptainWutax:BiomeUtils:b547ea791d39e00c1a35c941d3c067bf6004e62b') {
         transitive = false
     }
 
-    implementation('com.github.KaptainWutax:FeatureUtils:67098281211343ed9a0c5216e021c63db54f3ba2') {
+    implementation('com.github.KaptainWutax:FeatureUtils:d3ac1eddbdc575a656be6803ceb7c4bca8b7a062') {
         transitive = false
     }
 
     implementation 'com.github.KaptainWutax:SeedUtils:9135a229eed6174f9b65e8b1fd0b0a8d1aefdef0'
     implementation 'com.github.ice1k:darcula:fdacd0fe89dcdb0bcf852a128f64d8ecf30133e7'
     compile 'com.google.code.gson:gson:2.8.6'
-}
-
-group = 'minemap'
-version = 'v0.0.1'
-sourceCompatibility = '1.8'
-String stringVersion = version
-
-javafx {
-    version = "14.0.2"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
-}
-
-application {
-    mainClassName = 'kaptainwutax.minemap.Main'
-}
-jar {
-    manifest {
-        attributes 'Main-Class': 'kaptainwutax.minemap.Main'
-    }
-    from {
-        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
-launch4j {
-    mainClassName = "kaptainwutax.minemap.Main"
-    outfile = group + "-" + stringVersion + ".exe"
-    icon = "${projectDir}/src/main/resources/minemap.ico"
-}
-
-repositories {
-    mavenLocal()
-    maven {
-        url = uri('https://jitpack.io')
-    }
-
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2')
-    }
-}
-
-task buildAll(type: GradleBuild) {
-    tasks = ['jar', 'createExe', 'assemble']
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
 }

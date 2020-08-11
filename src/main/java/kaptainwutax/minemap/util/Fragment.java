@@ -1,23 +1,24 @@
-package kaptainwutax.minemap.world;
+package kaptainwutax.minemap.util;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.*;
-import kaptainwutax.minemap.util.FeatureSupplier;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Fragment {
 
-	public static final int STRUCTURE_ICON_SIZE = 32;
-	public static final boolean DRAW_GRID = false;
+	public static final int STRUCTURE_ICON_SIZE = 22;
+	public static boolean DRAW_GRID = false;
+	public static boolean DRAW_STRUCTURES = true;
+
 	public static final Map<FeatureSupplier, Image> STRUCTURE_ICONS = new HashMap<>();
 
 	private final int posX;
@@ -44,10 +45,12 @@ public class Fragment {
 		STRUCTURE_ICONS.put(PillagerOutpost::new, getIcon(Structure.getName(PillagerOutpost.class)));
 		STRUCTURE_ICONS.put(RuinedPortal::new, getIcon(Structure.getName(RuinedPortal.class)));
 		STRUCTURE_ICONS.put(Shipwreck::new, getIcon(Structure.getName(Shipwreck.class)));
-		STRUCTURE_ICONS.put(Stronghold::new, getIcon(Structure.getName(Stronghold.class)));
 		STRUCTURE_ICONS.put(SwampHut::new, getIcon(Structure.getName(SwampHut.class)));
 		STRUCTURE_ICONS.put(Village::new, getIcon(Structure.getName(Village.class)));
+		STRUCTURE_ICONS.put(Stronghold::new, getIcon(Structure.getName(Stronghold.class)));
 	}
+
+	public static final Image SPAWN = getIcon("spawn");
 
 	public Fragment(int posX, int posZ, int size, WorldInfo info) {
 		this.posX = posX;
@@ -61,23 +64,24 @@ public class Fragment {
 		}
 	}
 
-	public void drawBiomes(GraphicsContext g, double x, double y, double width, double height) {
-		g.drawImage(this.biomeMap, x, y, width, height);
-		g.setImageSmoothing(false);
+	public void drawBiomes(Graphics g, int x, int y, int width, int height) {
+		g.drawImage(this.biomeMap, x, y, width, height, null);
 
 		if(DRAW_GRID) {
-			g.setFill(Color.BLACK);
-			g.fillRect(x, y, width - 1, height - 1);
+			g.setColor(Color.BLACK);
+			g.drawRect(x, y, width - 1, height - 1);
 		}
 	}
 
-	public void drawStructures(GraphicsContext g, double x, double y, double width, double height) {
+	public void drawStructures(Graphics g, int x, int y, int width, int height) {
+		if(!DRAW_STRUCTURES)return;
+
 		for(Map.Entry<BPos, Image> e: this.structureMap.entrySet()) {
 			BPos pos = e.getKey();
 			Image image = e.getValue();
 			int sx = (int)((double)(pos.getX() - this.posX) / this.size * width) - STRUCTURE_ICON_SIZE / 2;
 			int sy = (int)((double)(pos.getZ() - this.posZ) / this.size * height) - STRUCTURE_ICON_SIZE / 2;
-			g.drawImage(image, x + sx, y + sy, STRUCTURE_ICON_SIZE, STRUCTURE_ICON_SIZE);
+			g.drawImage(image, x + sx, y + sy, STRUCTURE_ICON_SIZE, STRUCTURE_ICON_SIZE, null);
 		}
 	}
 
@@ -129,16 +133,27 @@ public class Fragment {
 					}
 				}
 			} else if(structure instanceof Stronghold) {
-				//TODO: strongholds
+				for(CPos stronghold: this.info.strongholds) {
+					BPos p = stronghold.toBlockPos().add(9, 0, 9);
+					if(p.getX() < this.posX || p.getX() >= this.posX + this.size)continue;
+					if(p.getZ()  < this.posZ || p.getZ() >= this.posZ + this.size)continue;
+					this.structureMap.put(p, e.getValue());
+				}
 			}
+		}
+
+		for(BPos p: this.info.spawns) {
+			if(p.getX() < this.posX || p.getX() >= this.posX + this.size)continue;
+			if(p.getZ()  < this.posZ || p.getZ() >= this.posZ + this.size)continue;
+			this.structureMap.put(p, SPAWN);
 		}
 	}
 
 	public static Image getIcon(String name) {
 		try {
-			Image image = new Image(Fragment.class.getResource("/icon/" + name + ".png").openStream());
+			URL url = Fragment.class.getResource("/icon/" + name + ".png");
 			System.out.println("Found structure icon " + name + ".");
-			return image;
+			return ImageIO.read(url);
 		} catch(Exception e) {
 			System.err.println("Didn't find structure icon " + name + ".");
 		}

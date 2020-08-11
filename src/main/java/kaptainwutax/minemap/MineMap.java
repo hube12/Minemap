@@ -1,52 +1,53 @@
 package kaptainwutax.minemap;
 
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
+import com.bulenkov.darcula.DarculaLaf;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.ui.MainMenuBar;
-import kaptainwutax.minemap.ui.SeedTabs;
+import kaptainwutax.minemap.ui.MenuBar;
+import kaptainwutax.minemap.ui.WorldTabs;
 
+import javax.swing.*;
 import java.awt.*;
 
-public class MineMap extends Application {
+public class MineMap extends JFrame {
 
-    public static MineMap INSTANCE;
-    public SeedTabs seedTabs;
-    private MainMenuBar menuBar;
+	public static MineMap INSTANCE;
+	public static boolean DARCULA = false;
 
-    /**
-     * Don't launch this!
-     * @see Main#main(String[])
-     * */
-    public static void main(String[] args) {
-        Configs.registerConfigs();
-        Application.launch(args);
-    }
+	private JMenuBar toolbarPane;
+	public WorldTabs worldTabs;
 
-    @Override
-    public void start(Stage stage) {
-        INSTANCE = this;
-        stage.setTitle("MineMap");
+	public static void main(String[] args) {
+		Configs.registerConfigs();
+		INSTANCE = new MineMap();
+		INSTANCE.setVisible(true);
+	}
 
-        BorderPane pane = new BorderPane();
-        this.initComponents(pane);
+	public MineMap() {
+		try {
+			UIManager.setLookAndFeel(new DarculaLaf());
+			DARCULA = true;
+		} catch(UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
 
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Scene scene = new Scene(pane, screenSize.width / 2.0D, screenSize.height / 2.0D);
-        stage.setMaximized(true);
+		BorderLayout layout = new BorderLayout();
+		this.setLayout(layout);
 
-        stage.setScene(scene);
-        stage.show();
-    }
+		this.initComponents();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.setSize(screenSize.width / 2, screenSize.height / 2);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		System.out.println("Finished initialized things bla bla bla... you get it.");
+	}
 
-    private void initComponents(BorderPane pane) {
-        this.menuBar = new MainMenuBar();
-        this.seedTabs = new SeedTabs(pane);
+	private void initComponents() {
+		this.toolbarPane = new MenuBar();
+		this.add(this.toolbarPane, BorderLayout.NORTH);
 
-        pane.setTop(menuBar);
-        pane.setCenter(this.seedTabs);
-    }
+		this.worldTabs = new WorldTabs();
+		this.add(this.worldTabs);
+	}
+
 
 }

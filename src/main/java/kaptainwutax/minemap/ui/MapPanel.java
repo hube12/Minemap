@@ -1,52 +1,47 @@
 package kaptainwutax.minemap.ui;
 
-import javafx.scene.Cursor;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.util.Fragment;
 import kaptainwutax.minemap.util.RegionScheduler;
-import kaptainwutax.minemap.world.Fragment;
-import kaptainwutax.minemap.world.WorldInfo;
+import kaptainwutax.minemap.util.WorldInfo;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapPanel extends Pane {
+public class MapPanel extends JPanel {
 
 	public final int blocksPerFragment = 512;
 	public double pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
 	public double centerX;
 	public double centerY;
-	public Vec3i mousePointer;
+	public Point mousePointer;
 
 	public String tooltip = null;
 
 	public final WorldInfo info;
+	public final int threadCount;
 	public RegionScheduler scheduler;
-	private final int threadCount;
 
-	public Canvas canvas;
-
-	public MapPanel(Pane parent, WorldInfo info, int threadCount) {
+	public MapPanel(WorldInfo info, int threadCount) {
 		this.info = info;
 		this.threadCount = threadCount;
-		this.canvas = new Canvas(parent.getWidth(), parent.getHeight());
+		this.restart();
 
-		this.invalidate();
-
-		parent.widthProperty().addListener((observable, oldValue, newValue) -> this.canvas.setWidth(newValue.doubleValue()));
-		parent.heightProperty().addListener((observable, oldValue, newValue) -> this.canvas.setHeight(newValue.doubleValue()));
-
-		this.setOnScroll(e -> {
+		this.setBackground(Color.BLACK);
+		
+		this.addMouseWheelListener(e -> {
 			double newPixelsPerFragment = this.pixelsPerFragment;
 
-			if(e.getDeltaY() > 0) {
-				newPixelsPerFragment /= e.getDeltaY() / 60.0D;
+			if(e.getUnitsToScroll() > 0) {
+				newPixelsPerFragment /= e.getUnitsToScroll() / 2.0D;
 			} else {
-				newPixelsPerFragment *= -e.getDeltaY() / 60.0D;
+				newPixelsPerFragment *= -e.getUnitsToScroll() / 2.0D;
 			}
 
 			if(newPixelsPerFragment < 40.0D * (this.blocksPerFragment / 512.0D)) {
@@ -59,65 +54,77 @@ public class MapPanel extends Pane {
 			this.centerX *= scaleFactor;
 			this.centerY *= scaleFactor;
 			this.pixelsPerFragment = newPixelsPerFragment;
-			this.repaint();
+			MapPanel.this.repaint();
 		});
 
+		this.addMouseListener(Events.Mouse.onPressed(e -> {
+			mousePointer = e.getPoint();
+			setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+			MapPanel.this.repaint();
 
-		this.setOnMousePressed(e -> {
-			this.mousePointer = new Vec3i((int)e.getX(), (int)e.getY(), 0);
-			this.getScene().setCursor(Cursor.MOVE);
-			this.repaint();
+			//TODO: move layers
+			//if(e.isControlDown()) {
+			//	MapPanel2.this.layer = MapPanel2.this.layer.getParent();
+			//	MapPanel2.this.regions.clear();
+			//	MapPanel2.this.repaint();
+			//}
+		}));
+
+		this.addMouseListener(Events.Mouse.onReleased(mouseEvent -> {
+			this.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		}));
+
+		this.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				int dx = e.getX() - mousePointer.x;
+				int dy = e.getY() - mousePointer.y;
+				mousePointer = e.getPoint();
+				centerX += dx;
+				centerY += dy;
+				MapPanel.this.repaint();
+			}
+
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				BPos pos = getPos(e.getX(), e.getY());
+				int x = pos.getX();
+				int z = pos.getZ();
+
+				tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, info.getBiome(x, z).getName().toUpperCase());
+				MapPanel.this.repaint();
+			}
 		});
-
-		this.setOnMouseReleased(e -> {
-			this.getScene().setCursor(Cursor.DEFAULT);
-		});
-
-		this.setOnMouseDragged(e -> {
-			int dx = (int)e.getX() - mousePointer.getX();
-			int dy = (int)e.getY() - mousePointer.getY();
-			mousePointer = new Vec3i((int)e.getX(), (int)e.getY(), 0);
-			centerX += dx;
-			centerY += dy;
-			this.repaint();
-		});
-
-		this.setOnMouseMoved(e -> {
-			BPos pos = this.getPos(e.getX(), e.getY());
-			int x = pos.getX();
-			int z = pos.getZ();
-
-			this.tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, info.getBiome(x, z).getName().toUpperCase());
-			this.repaint();
-		});
-
-		this.getChildren().add(this.canvas);
 	}
 
 	public BPos getPos(double mouseX, double mouseY) {
-		double x = (mouseX - this.getWidth() / 2.0D - centerX) / this.getWidth();
-		double y = (mouseY - this.getHeight() / 2.0D - centerY) / this.getHeight();
-		double blocksPerWidth = (this.getWidth() / pixelsPerFragment) * (double) blocksPerFragment;
-		double blocksPerHeight = (this.getHeight() / pixelsPerFragment) * (double) blocksPerFragment;
+		Vec3i screenSize = this.getScreenSize();
+		double x = (mouseX - screenSize.getX() / 2.0D - centerX) / screenSize.getX();
+		double y = (mouseY - screenSize.getZ() / 2.0D - centerY) / screenSize.getZ();
+		double blocksPerWidth = (screenSize.getX() / pixelsPerFragment) * (double) blocksPerFragment;
+		double blocksPerHeight = (screenSize.getZ() / pixelsPerFragment) * (double) blocksPerFragment;
 		x *= blocksPerWidth;
 		y *= blocksPerHeight;
 		return new BPos((int)Math.round(x), 0, (int)Math.round(y));
 	}
 
 	public BPos getCenterPos() {
-		return getPos(this.getWidth() / 2.0D, this.getHeight() / 2.0D);
+		Vec3i screenSize = this.getScreenSize();
+		return getPos(screenSize.getX() / 2.0D, screenSize.getZ() / 2.0D);
 	}
 
-	public void repaint() {
-		GraphicsContext g = this.canvas.getGraphicsContext2D();
+	public Vec3i getScreenSize() {
+		return new Vec3i(this.getWidth(), 0, this.getHeight());
+	}
 
-		g.setFill(Color.BLACK);
-		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
 
 		this.scheduler.purge();
 
-		double w = this.getWidth();
-		double h = this.getHeight();
+		int w = this.getWidth();
+		int h = this.getHeight();
 
 		Map<Fragment, DrawInfo> drawQueue = new HashMap<>();
 
@@ -140,28 +147,28 @@ public class MapPanel extends Pane {
 		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
 		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
 
-		g.setFill(Color.CYAN);
+		g.setColor(Color.CYAN);
 		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
 
 		if(this.tooltip != null) {
-			g.setFill(Color.WHITE);
-			g.fillText(this.tooltip, 20, 30);
+			g.setColor(Color.WHITE);
+			g.drawString(this.tooltip, 20, 30);
 		}
 	}
 
-	public void invalidate() {
-		this.scheduler = new RegionScheduler(this, threadCount);
+	public void restart() {
+		this.scheduler = new RegionScheduler(this, this.threadCount);
 		this.repaint();
 	}
 
 	public static class DrawInfo {
-		public final GraphicsContext g;
-		public final double x;
-		public final double y;
-		public final double width;
-		public final double height;
+		public final Graphics g;
+		public final int x;
+		public final int y;
+		public final int width;
+		public final int height;
 
-		public DrawInfo(GraphicsContext g, double x, double y, double width, double height) {
+		public DrawInfo(Graphics g, int x, int y, int width, int height) {
 			this.g = g;
 			this.x = x;
 			this.y = y;

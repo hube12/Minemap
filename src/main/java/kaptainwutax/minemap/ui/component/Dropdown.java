@@ -1,7 +1,6 @@
-package kaptainwutax.minemap.ui;
+package kaptainwutax.minemap.ui.component;
 
-import javafx.scene.control.ComboBox;
-
+import javax.swing.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -9,7 +8,7 @@ import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Dropdown<E> extends ComboBox<String> {
+public class Dropdown<E> extends JComboBox<String> {
 
     public final StringMapper<E> mapper;
     public final Object[] elements;
@@ -35,7 +34,7 @@ public class Dropdown<E> extends ComboBox<String> {
     }
 
     public Dropdown(StringMapper<E> mapper, Collection<E> elements) {
-        elements.stream().map(mapper::map).forEach(this.getItems()::add);
+        super(elements.stream().map(mapper::map).toArray(String[]::new));
 
         this.mapper = mapper;
         this.elements = new Object[elements.size()];
@@ -44,10 +43,6 @@ public class Dropdown<E> extends ComboBox<String> {
         for(Iterator<E> it = elements.iterator(); it.hasNext(); i++) {
             this.elements[i] = it.next();
         }
-
-        if(this.elements.length > 0) {
-            this.getSelectionModel().select(0);
-        }
     }
 
     public E getElement(int index) {
@@ -55,7 +50,7 @@ public class Dropdown<E> extends ComboBox<String> {
     }
 
     public E getSelected() {
-        return this.getElement(this.getSelectionModel().getSelectedIndex());
+        return this.getElement(this.getSelectedIndex());
     }
 
     public String getSelectedMapped() {
@@ -69,7 +64,7 @@ public class Dropdown<E> extends ComboBox<String> {
     public boolean selectIfPresent(E element, BiPredicate<E, E> equals) {
         for(int i = 0; i < this.elements.length; i++) {
             if(equals.test(this.getElement(i), element)) {
-                this.getSelectionModel().select(i);
+                this.setSelectedIndex(i);
                 return true;
             }
         }
@@ -80,5 +75,6 @@ public class Dropdown<E> extends ComboBox<String> {
     public interface StringMapper<E> {
         String map(E element);
     }
+
 
 }

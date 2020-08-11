@@ -1,13 +1,12 @@
 package kaptainwutax.minemap.util;
 
-import javafx.application.Platform;
-import javafx.scene.canvas.GraphicsContext;
 import kaptainwutax.minemap.ui.MapPanel;
-import kaptainwutax.minemap.world.Fragment;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
@@ -17,11 +16,11 @@ public class RegionScheduler {
 
 	public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
 		@Override
-		public void drawBiomes(GraphicsContext g, double x, double y, double width, double height) {
+		public void drawBiomes(Graphics g, int x, int y, int width, int height) {
 		}
 
 		@Override
-		public void drawStructures(GraphicsContext g, double x, double y, double width, double height) {
+		public void drawStructures(Graphics g, int x, int y, int width, int height) {
 		}
 	};
 
@@ -80,7 +79,7 @@ public class RegionScheduler {
 
 					Fragment fragment = new Fragment(regionX * regionSize, regionZ * regionSize, regionSize, this.listener.info);
 					this.fragments.put(regionPos, fragment);
-					Platform.runLater(() -> this.listener.repaint());
+					SwingUtilities.invokeLater(() -> this.listener.repaint());
 				} catch(Exception e) {
 					e.printStackTrace();
 				}

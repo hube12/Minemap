@@ -1,66 +1,121 @@
 package kaptainwutax.minemap.ui;
 
-import javafx.application.Platform;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.MCVersion;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class EnterSeedDialog extends Dialog<Boolean> {
+public class EnterSeedDialog extends JDialog {
 
-    public EnterSeedDialog() {
-        DialogPane dialogPane = new DialogPane();
-        BorderPane pane = new BorderPane();
+	public JTextField seedField;
+	public Dropdown<Integer> threadDropdown;
+	public Dropdown<MCVersion> versionDropdown;
+	public JButton continueButton;
 
-        Label enterSeed = new Label("Enter your seed here:");
-        TextField seedField = new TextField();
+	public EnterSeedDialog() {
+		this.setModal(true);
+		//this.initComponents();
+		this.initStuff();
+	}
 
-        int cores = Runtime.getRuntime().availableProcessors();
-        Dropdown<MCVersion> versionDropdown = new Dropdown<>(MCVersion::toString, Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_13)));
-        Dropdown<Integer> threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
-        versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
-        threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
-        SplitPane dropdowns = new SplitPane(versionDropdown, threadDropdown);
+	public void initStuff() {
+		int cores = Runtime.getRuntime().availableProcessors();
 
-        Button yesButton = new Button("Continue");
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new GridLayout(4, 1));
 
-        yesButton.setOnMouseClicked(e -> {
-            Platform.runLater(() -> {
-                MCVersion version = versionDropdown.getSelected();
-                int threadCount = threadDropdown.getSelected();
-                MineMap.INSTANCE.seedTabs.loadSeed(version, seedField.getText(), threadCount);
-                Configs.USER_PROFILE.setVersion(version);
-                Configs.USER_PROFILE.setThreadCount(threadCount);
-                this.yeet();
-            });
-        });
+		this.seedField = new JTextField();
+		this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
+		this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_13)));
+		this.continueButton = new JButton("Continue");
 
-        BorderPane top = new BorderPane();
-        top.setTop(enterSeed);
-        top.setCenter(seedField);
+		this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
+		this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
-        pane.setTop(top);
-        pane.setCenter(dropdowns);
-        pane.setBottom(yesButton);
+		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
 
-        dialogPane.getChildren().add(pane);
-        this.setDialogPane(dialogPane);
-        this.setResizable(true);
-        this.getDialogPane().getScene().getWindow().setOnCloseRequest(event -> this.yeet());
+		contentPane.add(new JLabel("Enter your seed here:"));
+		contentPane.add(this.seedField);
+		contentPane.add(splitPanel);
+		contentPane.add(this.continueButton);
 
-        //TODO: sigh...
-        versionDropdown.setMinWidth(120);
-        threadDropdown.setMinWidth(120);
-        this.getDialogPane().setMinHeight(200);
-    }
+		this.pack();
 
-    private void yeet() {
-        this.setResult(Boolean.TRUE);
-        this.close();
-    }
+		this.continueButton.addMouseListener(Events.Mouse.onClick(e -> {
+			MineMap.INSTANCE.worldTabs.loadSeed(versionDropdown.getSelected(), seedField.getText(), threadDropdown.getSelected());
+			Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
+			Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
+			continueButton.setEnabled(false);
+			setVisible(false);
+			dispose();
+		}));
+
+		this.setLocation(
+				MineMap.INSTANCE.getX() + MineMap.INSTANCE.getWidth() / 2 - this.getWidth() / 2,
+				MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
+		);
+	}
+
+	private void initComponents() {
+		//PYTHON-BEGIN:initComponents
+		wutaxlabel = new JLabel();
+		wutaxtextfield = new JTextField();
+		wutaxcomboBox2 = new JComboBox<>(Arrays.stream(MCVersion.values()).map(Object::toString).toArray(String[]::new));
+		wutaxcomboBox1 = new JComboBox<>(IntStream.rangeClosed(1, Runtime.getRuntime().availableProcessors()).boxed()
+				.map(i -> i + "                    ").toArray(String[]::new));
+
+		//======== this ========
+		Container contentPane = getContentPane();
+		contentPane.setLayout(new GridLayoutManager(3, 3, new Insets(0, 0, 0, 0), -1, -1));
+
+		//---- wutaxlabel ----
+		wutaxlabel.setText("label");
+		contentPane.add(wutaxlabel, new GridConstraints(0, 0, 1, 3,
+				GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				null, null, null));
+
+		//---- wutaxtextfield ----
+		wutaxtextfield.setText("field");
+		contentPane.add(wutaxtextfield, new GridConstraints(1, 0, 1, 3,
+				GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				null, null, null));
+
+		Dropdown<Integer> v1 = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, Runtime.getRuntime().availableProcessors()).boxed());
+		Dropdown<MCVersion> v2 = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_13)));
+
+
+		contentPane.add(wutaxcomboBox1, new GridConstraints(2, 0, 1, 1,
+				GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				null, null, null));
+		contentPane.add(wutaxcomboBox2, new GridConstraints(2, 2, 1, 1,
+				GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+				null, null, null));
+		pack();
+		setLocationRelativeTo(getOwner());
+		//PYTHON-END:initComponents
+	}
+
+	//PYTHON-BEGIN:variables
+	private JLabel wutaxlabel;
+	private JTextField wutaxtextfield;
+	private JComboBox<String> wutaxcomboBox1;
+	private JComboBox<String> wutaxcomboBox2;
+	//PYTHON-END:variables
 
 }

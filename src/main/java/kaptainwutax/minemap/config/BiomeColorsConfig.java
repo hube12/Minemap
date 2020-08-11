@@ -1,12 +1,15 @@
 package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
-import javafx.scene.paint.Color;
 import kaptainwutax.biomeutils.Biome;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 
 public class BiomeColorsConfig extends Config {
+
+	public static final String DEFAULT_STYLE_NAME = "Default";
 
 	@Expose protected Map<String, String> DEFAULT_BIOME_COLORS = new LinkedHashMap<>();
 	@Expose protected Map<String, Map<String, String>> OVERRIDES = new LinkedHashMap<>();
@@ -25,35 +28,37 @@ public class BiomeColorsConfig extends Config {
 
 	public synchronized Color get(String style, int biome) {
 		if(this.biomeColorCache == null) {
-			this.defaultBiomeColorCache = new HashMap<>();
-			this.biomeColorCache = new HashMap<>();
-
-			DEFAULT_BIOME_COLORS.forEach((biomeEntry, colorEntry) -> {
-				for(Biome b: Biome.REGISTRY.values()) {
-					if(!b.getName().equalsIgnoreCase(biomeEntry.trim()))continue;
-					java.awt.Color awtColor = java.awt.Color.decode(colorEntry);
-					this.defaultBiomeColorCache.put(b.getId(), new Color(awtColor.getRed() / 255.0D, awtColor.getGreen() / 255.0D, awtColor.getBlue() / 255.0D, 1.0D));
-					break;
-				}
-			});
-
-			OVERRIDES.forEach((styleEntry, mapEntry) -> {
-				Map<Integer, Color> map = new HashMap<>();
-				this.biomeColorCache.put(styleEntry, map);
-
-				mapEntry.forEach((biomeEntry, colorEntry) -> {
-					for(Biome b: Biome.REGISTRY.values()) {
-						if(!b.getName().equalsIgnoreCase(biomeEntry.trim()))continue;
-						java.awt.Color awtColor = java.awt.Color.decode(colorEntry);
-						map.put(b.getId(), new Color(awtColor.getRed() / 255.0D, awtColor.getGreen() / 255.0D, awtColor.getBlue() / 255.0D, 1.0D));
-						break;
-					}
-				});
-			});
+			this.generateCache();
 		}
 
 		return this.biomeColorCache.getOrDefault(style, this.defaultBiomeColorCache)
 									.getOrDefault(biome, this.defaultBiomeColorCache.get(biome));
+	}
+
+	private void generateCache() {
+		this.defaultBiomeColorCache = new HashMap<>();
+		this.biomeColorCache = new HashMap<>();
+
+		DEFAULT_BIOME_COLORS.forEach((biomeEntry, colorEntry) -> {
+			for(Biome b: Biome.REGISTRY.values()) {
+				if(!b.getName().equalsIgnoreCase(biomeEntry.trim()))continue;
+				this.defaultBiomeColorCache.put(b.getId(), Color.decode(colorEntry));
+				break;
+			}
+		});
+
+		OVERRIDES.forEach((styleEntry, mapEntry) -> {
+			Map<Integer, Color> map = new HashMap<>();
+			this.biomeColorCache.put(styleEntry, map);
+
+			mapEntry.forEach((biomeEntry, colorEntry) -> {
+				for(Biome b: Biome.REGISTRY.values()) {
+					if(!b.getName().equalsIgnoreCase(biomeEntry.trim()))continue;
+					map.put(b.getId(), Color.decode(colorEntry));
+					break;
+				}
+			});
+		});
 	}
 
 	public List<String> getStyles() {
