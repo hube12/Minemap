@@ -18,10 +18,18 @@ public class MapPanel extends JPanel {
 
 	public final int blocksPerFragment = 512;
 	public double pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
+
 	public double centerX;
 	public double centerY;
-	public Point mousePointer;
+	//Lara start
+	public void setcords(Double x, Double z) {
+		this.centerX = x;
+		this.centerY = z;
+		this.repaint();
+	}
+	//Lara end
 
+	public Point mousePointer;
 	public String tooltip = null;
 
 	public final WorldInfo info;

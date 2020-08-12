@@ -1,10 +1,30 @@
 plugins {
     id 'java'
+    id "application"
 }
 
 sourceCompatibility = 1.8
 
-
+application {
+    mainClassName = "kaptainwutax.minemap.MineMap"
+}
+task fatJar(type: Jar) {
+    manifest {
+        attributes(
+                "Implementation-Title": project.name,
+                "Implementation-Version": project.version,
+                "Main-Class": "kaptainwutax.minemap.MineMap"
+        )
+    }
+    outputs.upToDateWhen { false }
+    project.archivesBaseName = "MineMap"
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+}
 repositories {
     mavenCentral()
     mavenLocal()
@@ -26,4 +46,6 @@ dependencies {
     implementation 'com.github.KaptainWutax:SeedUtils:9135a229eed6174f9b65e8b1fd0b0a8d1aefdef0'
     implementation 'com.github.ice1k:darcula:fdacd0fe89dcdb0bcf852a128f64d8ecf30133e7'
     compile 'com.google.code.gson:gson:2.8.6'
+    compile group: "org.swinglabs.swingx", name: "swingx-core", version: "1.6.5-1"
+
 }

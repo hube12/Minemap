@@ -68,6 +68,16 @@ public class MenuBar extends JMenuBar {
 			if(!(c instanceof MapPanel))return;
 			c.repaint();
 		});
+		//Lara start
+		JMenuItem coordHopper = new JMenuItem();
+		coordHopper.setText("Go to Coordinates");
+		worldMenu.add(coordHopper);
+		coordHopper.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+			JDialog jumpDialogue = new CoordHopper().mainLogue;
+			jumpDialogue.setVisible(true);
+		}));
+		//Lara end
+
 
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
