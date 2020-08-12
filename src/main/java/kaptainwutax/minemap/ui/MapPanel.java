@@ -21,13 +21,6 @@ public class MapPanel extends JPanel {
 
 	public double centerX;
 	public double centerY;
-	//Lara start
-	public void setcords(Double x, Double z) {
-		this.centerX = x;
-		this.centerY = z;
-		this.repaint();
-	}
-	//Lara end
 
 	public Point mousePointer;
 	public String tooltip = null;
@@ -119,6 +112,13 @@ public class MapPanel extends JPanel {
 	public BPos getCenterPos() {
 		Vec3i screenSize = this.getScreenSize();
 		return getPos(screenSize.getX() / 2.0D, screenSize.getZ() / 2.0D);
+	}
+
+	public void setCenterPos(int posX, int posZ) {
+		double scaleFactor = this.pixelsPerFragment / this.blocksPerFragment;
+		this.centerX = -posX * scaleFactor;
+		this.centerY = -posZ * scaleFactor;
+		this.repaint();
 	}
 
 	public Vec3i getScreenSize() {

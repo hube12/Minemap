@@ -12,10 +12,11 @@ public class CoordHopper {
 
 
     private void cButtonPressed() {
-        double X,Z;
+        int X, Z;
+
         try {
-            X = Double.parseDouble(enterX.getText());
-            Z = Double.parseDouble(enterZ.getText());
+            X = Integer.parseInt(enterX.getText().trim());
+            Z = Integer.parseInt(enterZ.getText().trim());
         } catch (NumberFormatException e) {
             throw new RuntimeException();
         }
@@ -23,7 +24,7 @@ public class CoordHopper {
         Component c = tabs.getComponentAt(tabs.getSelectedIndex());
         if((c instanceof MapPanel)){
             MapPanel map = (MapPanel)c;
-            map.setcords(X,Z);
+            map.setCenterPos(X, Z);
         }
         mainLogue.dispose();
     }
