@@ -5,29 +5,8 @@ plugins {
 
 sourceCompatibility = 1.8
 
-application {
-    mainClassName = "kaptainwutax.minemap.MineMap"
-}
-task fatJar(type: Jar) {
-    manifest {
-        attributes(
-                "Implementation-Title": project.name,
-                "Implementation-Version": project.version,
-                "Main-Class": "kaptainwutax.minemap.MineMap"
-        )
-    }
-    outputs.upToDateWhen { false }
-    project.archivesBaseName = "MineMap"
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
-    }
-    with jar
-}
 repositories {
     mavenCentral()
-    mavenLocal()
 
     maven {
         url "https://jitpack.io"
@@ -35,17 +14,27 @@ repositories {
 }
 
 dependencies {
-    implementation('com.github.KaptainWutax:BiomeUtils:b547ea791d39e00c1a35c941d3c067bf6004e62b') {
-        transitive = false
-    }
-
-    implementation('com.github.KaptainWutax:FeatureUtils:d3ac1eddbdc575a656be6803ceb7c4bca8b7a062') {
-        transitive = false
-    }
-
-    implementation 'com.github.KaptainWutax:SeedUtils:9135a229eed6174f9b65e8b1fd0b0a8d1aefdef0'
+    implementation 'com.github.KaptainWutax:SEED:0e3601047cdbbe71dc3790085fba0cd87a762c66'
     implementation 'com.github.ice1k:darcula:fdacd0fe89dcdb0bcf852a128f64d8ecf30133e7'
     compile 'com.google.code.gson:gson:2.8.6'
     compile group: "org.swinglabs.swingx", name: "swingx-core", version: "1.6.5-1"
+}
 
+application {
+    mainClassName = "kaptainwutax.minemap.MineMap"
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes(
+            "Main-Class": "kaptainwutax.minemap.MineMap"
+        )
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
 }
