@@ -2,12 +2,10 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.minemap.ui.MapPanel;
-import kaptainwutax.minemap.ui.WorldTabs;
 import kaptainwutax.minemap.util.WorldInfo;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
-import java.awt.*;
 import java.util.*;
 
 public class TabGroup {
@@ -71,8 +69,8 @@ public class TabGroup {
         this.mapPanels.values().forEach(MapPanel::restart);
     }
 
-    public void onRemove(Component component) {
-        this.mapPanels.entrySet().removeIf(e -> e.getValue() == component);
+    public void removeIfPresent(MapPanel mapPanel) {
+        this.mapPanels.entrySet().removeIf(e -> e.getValue() == mapPanel);
     }
 
     public boolean contains(MapPanel mapPanel) {

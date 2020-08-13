@@ -3,7 +3,7 @@ package kaptainwutax.minemap;
 import com.bulenkov.darcula.DarculaLaf;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.MenuBar;
-import kaptainwutax.minemap.ui.WorldTabs;
+import kaptainwutax.minemap.ui.component.WorldTabs;
 
 import javax.swing.*;
 import java.awt.*;

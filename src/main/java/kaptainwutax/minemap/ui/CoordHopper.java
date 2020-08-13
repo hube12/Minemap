@@ -1,6 +1,8 @@
 package kaptainwutax.minemap.ui;
+
 import kaptainwutax.minemap.MineMap;
 import org.jdesktop.swingx.prompt.PromptSupport;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -20,12 +22,9 @@ public class CoordHopper {
         } catch (NumberFormatException e) {
             throw new RuntimeException();
         }
-        WorldTabs tabs = MineMap.INSTANCE.worldTabs;
-        Component c = tabs.getComponentAt(tabs.getSelectedIndex());
-        if((c instanceof MapPanel)){
-            MapPanel map = (MapPanel)c;
-            map.setCenterPos(X, Z);
-        }
+
+        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        if(map != null)map.setCenterPos(X, Z);
         mainLogue.dispose();
     }
 

@@ -1,8 +1,7 @@
-package kaptainwutax.minemap.ui;
+package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.ui.component.TabGroup;
-import kaptainwutax.minemap.ui.component.TabHeader;
+import kaptainwutax.minemap.ui.MapPanel;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
@@ -38,8 +37,11 @@ public class WorldTabs extends JTabbedPane {
 
 	@Override
 	public void remove(Component component) {
-		this.tabGroups.forEach(tabGroup -> tabGroup.onRemove(component));
-		this.tabGroups.removeIf(TabGroup::isEmpty);
+		if(component instanceof MapPanel) {
+			this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel)component));
+			this.tabGroups.removeIf(TabGroup::isEmpty);
+		}
+
 		super.remove(component);
 	}
 
