@@ -14,12 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation('com.github.KaptainWutax:MathUtils:6c2d50eacad0241ff76119e6e703b70bac4b4bce') {transitive = false}
-    implementation('com.github.KaptainWutax:SeedUtils:e6f363e89fa0830ec874402498809cb1ea9d9e55') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:96aa39bc552128251b01cbaa435084a5a73f1db0') {transitive = false}
-    implementation('com.github.KaptainWutax:BiomeUtils:2f133a0f42a0fc9acfb63e8f9bc7c710c8193640') {transitive = false}
-    implementation('com.github.KaptainWutax:ChunkRandomReversal:209eefb8ed2bd097e3c55d3934ba508b664443da') {transitive = false}
-    implementation('com.github.KaptainWutax:LattiCG:38f0b3d33e15ad2e6ce9ddb1f588e2b9a8c96174') {transitive = false}
+    implementation 'com.github.KaptainWutax:SEED:8bea1dfb03d697b1cd50aa0c467e9c234560a20c'
 
     implementation 'com.github.ice1k:darcula:fdacd0fe89dcdb0bcf852a128f64d8ecf30133e7'
     compile 'com.google.code.gson:gson:2.8.6'

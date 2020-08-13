@@ -6,6 +6,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.swing.*;
@@ -50,7 +51,7 @@ public class EnterSeedDialog extends JDialog {
 		this.pack();
 
 		this.continueButton.addMouseListener(Events.Mouse.onClick(e -> {
-			MineMap.INSTANCE.worldTabs.loadSeed(versionDropdown.getSelected(), seedField.getText(), threadDropdown.getSelected());
+			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(), threadDropdown.getSelected(), Arrays.asList(Dimension.values()));
 			Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
 			Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
 			continueButton.setEnabled(false);
