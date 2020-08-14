@@ -7,48 +7,29 @@ import kaptainwutax.minemap.util.Fragment;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.function.Consumer;
 
 public class MenuBar extends JMenuBar {
 
 	public MenuBar() {
+		this.addFileMenu();
+		this.addWorldMenu();
+		this.addStyleMenu();
+	}
+
+	private void addFileMenu() {
 		JMenu fileMenu = new JMenu("File");
 		JMenuItem loadSeed = new JMenuItem("New From Seed...");
 
-		loadSeed.addMouseListener(new MousePressListener(e -> {
-			SwingUtilities.invokeLater(() -> {
-				EnterSeedDialog dialog = new EnterSeedDialog();
-				dialog.setVisible(true);
-			});
-		}));
+		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			EnterSeedDialog dialog = new EnterSeedDialog();
+			dialog.setVisible(true);
+		})));
 
 		fileMenu.add(loadSeed);
 		this.add(fileMenu);
+	}
 
-		JMenu styleMenu = new JMenu("Style");
-		for(String style: Configs.BIOME_COLORS.getStyles()) {
-			JMenuItem styleItem = new JMenuItem(style);
-
-			styleItem.addMouseListener(Events.Mouse.onPressed(e -> {
-				for(Component c: styleMenu.getMenuComponents()) {
-					c.setEnabled(true);
-				}
-
-				styleItem.setEnabled(false);
-				Configs.USER_PROFILE.setStyle(style);
-			}));
-
-			if(Configs.USER_PROFILE.getStyle().equals(style)) {
-				styleItem.setEnabled(false);
-			}
-
-			styleMenu.add(styleItem);
-		}
-
-		this.add(styleMenu);
-
+	private void addWorldMenu() {
 		JMenu worldMenu = new JMenu("World");
 		JCheckBoxMenuItem showGrid = new JCheckBoxMenuItem("Show Grid");
 
@@ -71,50 +52,41 @@ public class MenuBar extends JMenuBar {
 		//Lara start
 		JMenuItem coordHopper = new JMenuItem();
 		coordHopper.setText("Go to Coordinates");
-		worldMenu.add(coordHopper);
+
 		coordHopper.addActionListener(e -> SwingUtilities.invokeLater(() -> {
 			JDialog jumpDialogue = new CoordHopper().mainLogue;
 			jumpDialogue.setVisible(true);
 		}));
 		//Lara end
 
-
+		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
 		this.add(worldMenu);
 	}
 
-	public static class MousePressListener implements MouseListener {
-		private final Consumer<MouseEvent> onEvent;
+	private void addStyleMenu() {
+		JMenu styleMenu = new JMenu("Style");
+		for(String style: Configs.BIOME_COLORS.getStyles()) {
+			JMenuItem styleItem = new JMenuItem(style);
 
-		public MousePressListener(Consumer<MouseEvent> onEvent) {
-			this.onEvent = onEvent;
+			styleItem.addMouseListener(Events.Mouse.onPressed(e -> {
+				for(Component c: styleMenu.getMenuComponents()) {
+					c.setEnabled(true);
+				}
+
+				styleItem.setEnabled(false);
+				Configs.USER_PROFILE.setStyle(style);
+			}));
+
+			if(Configs.USER_PROFILE.getStyle().equals(style)) {
+				styleItem.setEnabled(false);
+			}
+
+			styleMenu.add(styleItem);
 		}
 
-		@Override
-		public final void mousePressed(MouseEvent e) {
-			this.onEvent.accept(e);
-		}
-
-		@Override
-		public final void mouseClicked(MouseEvent e) {
-
-		}
-
-		@Override
-		public final void mouseReleased(MouseEvent e) {
-
-		}
-
-		@Override
-		public final void mouseEntered(MouseEvent e) {
-
-		}
-
-		@Override
-		public final void mouseExited(MouseEvent e) {
-
-		}
+		this.add(styleMenu);
 	}
 
 }

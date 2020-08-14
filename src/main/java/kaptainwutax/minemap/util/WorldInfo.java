@@ -22,12 +22,9 @@ public class WorldInfo {
 	public static final List<Biome> SPAWN_BIOMES = Arrays.asList(Biome.FOREST, Biome.PLAINS, Biome.TAIGA,
 			Biome.TAIGA_HILLS, Biome.WOODED_HILLS, Biome.JUNGLE, Biome.JUNGLE_HILLS);
 
-	public static final int VORONOI_ID = 0;
-	public static final int QUARTER_RES_ID = 1;
-
 	public final MCVersion version;
 	public final long worldSeed;
-	private final int layerId;
+	public int layerId;
 
 	private final ThreadLocal<BiomeSource> source;
 
@@ -35,12 +32,12 @@ public class WorldInfo {
 	public final List<CPos> strongholds = new ArrayList<>();
 	public final List<BPos> spawns = new ArrayList<>();
 
-	public WorldInfo(MCVersion version, long worldSeed, int layerId, BiomeSource.BiomeSourceSupplier gen) {
+	public WorldInfo(MCVersion version, long worldSeed, BiomeSource.BiomeSourceSupplier gen) {
 		this.version = version;
 		this.worldSeed = worldSeed;
-		this.layerId = layerId;
-
 		this.source = ThreadLocal.withInitial(() -> gen.create(this.version, this.worldSeed));
+
+		this.layerId = this.source.get().getLayerCount() - 2;
 
 		if(this.getBiomeSource() instanceof OverworldBiomeSource) {
 			Stronghold stronghold = new Stronghold(version);
@@ -60,8 +57,6 @@ public class WorldInfo {
 		int scale = layer.getScale();
 		int px = posX / scale;
 		int pz = posZ / scale;
-		if(posX < 0)px -= 1;
-		if(posZ < 0)pz -= 1;
 		regionSize /= scale;
 		regionSize = Math.max(regionSize, 1);
 
@@ -82,9 +77,7 @@ public class WorldInfo {
 		int scale = layer.getScale();
 		int px = posX / scale;
 		int pz = posZ / scale;
-		if(posX < 0)px -= 1;
-		if(posZ < 0)pz -= 1;
-
+		System.out.println(px + ", " + pz + ", " + layer.getScale());
 		return Biome.REGISTRY.get(layer.get(px, 0, pz));
 	}
 
@@ -94,7 +87,7 @@ public class WorldInfo {
 
 	public BiomeLayer getLayer() {
 		BiomeSource biomeSource = this.getBiomeSource();
-		return biomeSource.getLayers().get(biomeSource.getLayerCount() - this.layerId - 1);
+		return biomeSource.getLayers().get(this.layerId);
 	}
 
 }

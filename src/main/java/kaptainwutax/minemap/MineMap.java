@@ -1,6 +1,7 @@
 package kaptainwutax.minemap;
 
-import com.bulenkov.darcula.DarculaLaf;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
@@ -24,9 +25,10 @@ public class MineMap extends JFrame {
 
 	public MineMap() {
 		try {
-			UIManager.setLookAndFeel(new DarculaLaf());
+			FlatLightLaf.install();
+			UIManager.setLookAndFeel(new FlatDarculaLaf());
 			DARCULA = true;
-		} catch(UnsupportedLookAndFeelException e) {
+		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
 

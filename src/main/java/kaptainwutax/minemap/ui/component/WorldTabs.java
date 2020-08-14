@@ -54,6 +54,7 @@ public class WorldTabs extends JTabbedPane {
 	}
 
 	public Component getSelectedComponent() {
+		if(this.getSelectedIndex() < 0)return null;
 		return this.getComponentAt(this.getSelectedIndex());
 	}
 

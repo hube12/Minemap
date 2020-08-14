@@ -15,10 +15,10 @@ repositories {
 
 dependencies {
     implementation 'com.github.KaptainWutax:SEED:8bea1dfb03d697b1cd50aa0c467e9c234560a20c'
-
-    implementation 'com.github.ice1k:darcula:fdacd0fe89dcdb0bcf852a128f64d8ecf30133e7'
-    compile 'com.google.code.gson:gson:2.8.6'
-    compile group: "org.swinglabs.swingx", name: "swingx-core", version: "1.6.5-1"
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation "com.formdev:flatlaf:0.38"
+    implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
+    implementation "com.intellij:forms_rt:7.0.3"
 }
 
 application {

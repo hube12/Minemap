@@ -76,5 +76,4 @@ public class Dropdown<E> extends JComboBox<String> {
         String map(E element);
     }
 
-
 }

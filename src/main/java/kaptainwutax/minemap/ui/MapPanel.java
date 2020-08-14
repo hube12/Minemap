@@ -1,6 +1,10 @@
 package kaptainwutax.minemap.ui;
 
+import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.layer.BiomeLayer;
+import kaptainwutax.biomeutils.layer.LayerStack;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.util.Fragment;
 import kaptainwutax.minemap.util.RegionScheduler;
 import kaptainwutax.minemap.util.WorldInfo;
@@ -13,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class MapPanel extends JPanel {
 
@@ -92,10 +97,25 @@ public class MapPanel extends JPanel {
 				int x = pos.getX();
 				int z = pos.getZ();
 
-				tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, info.getBiome(x, z).getName().toUpperCase());
+				Biome biome = info.getBiome(x, z);
+				tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase());
 				MapPanel.this.repaint();
 			}
 		});
+
+		LayerStack<BiomeLayer> layers = this.info.getBiomeSource().getLayers();
+		Dropdown<Integer> layerDropdown = new Dropdown<>(
+				i -> "[" + i + "] " + layers.get(i).getClass().getSimpleName() + " " + layers.get(i).getScale() + ":1",
+				IntStream.range(0, layers.size()).boxed());
+
+		layerDropdown.selectIfPresent(this.info.layerId);
+
+		layerDropdown.addActionListener(e1 -> {
+			this.info.layerId = layerDropdown.getSelected();
+			this.restart();
+		});
+
+		this.add(layerDropdown);
 	}
 
 	public BPos getPos(double mouseX, double mouseY) {
@@ -106,7 +126,9 @@ public class MapPanel extends JPanel {
 		double blocksPerHeight = (screenSize.getZ() / pixelsPerFragment) * (double) blocksPerFragment;
 		x *= blocksPerWidth;
 		y *= blocksPerHeight;
-		return new BPos((int)Math.round(x), 0, (int)Math.round(y));
+		int xi = (int)Math.round(x);
+		int yi = (int)Math.round(y);
+		return new BPos(xi, 0, yi);
 	}
 
 	public BPos getCenterPos() {
@@ -138,10 +160,10 @@ public class MapPanel extends JPanel {
 
 		for(int x = -1; x < w / this.pixelsPerFragment + 1; x += Math.max(1, (int)(1.0D / this.pixelsPerFragment))) {
 			for(int y = -1; y < h / this.pixelsPerFragment + 1; y += Math.max(1, (int)(1.0D / this.pixelsPerFragment))) {
-				Fragment fragment = this.scheduler.getFragmentAt(
-						x - (int)((this.centerX + w / 2) / this.pixelsPerFragment),
-						y - (int)((this.centerY + h / 2) / this.pixelsPerFragment)
-				);
+				int rx = x - (int)((this.centerX + w / 2) / this.pixelsPerFragment);
+				int ry = y - (int)((this.centerY + h / 2) / this.pixelsPerFragment);
+
+				Fragment fragment = this.scheduler.getFragmentAt(rx, ry);
 
 				int x1 = (int)(x * this.pixelsPerFragment + (this.centerX + w / 2) % this.pixelsPerFragment);
 				int y1 = (int)(y * this.pixelsPerFragment + (this.centerY + h / 2) % this.pixelsPerFragment);

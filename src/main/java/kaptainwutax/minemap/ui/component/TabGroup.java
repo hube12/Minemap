@@ -50,7 +50,7 @@ public class TabGroup {
         this.worldSeed = worldSeed;
 
         for(Dimension dimension: dimensions) {
-            WorldInfo worldInfo = new WorldInfo(this.getVersion(), this.worldSeed, WorldInfo.QUARTER_RES_ID, BiomeSource.supplierOf(dimension));
+            WorldInfo worldInfo = new WorldInfo(this.getVersion(), this.worldSeed, BiomeSource.supplierOf(dimension));
             MapPanel mapPanel = new MapPanel(worldInfo, threadCount);
             this.mapPanels.put(dimension, mapPanel);
         }
