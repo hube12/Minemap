@@ -1,5 +1,7 @@
 package kaptainwutax.minemap.listener;
 
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import java.awt.event.*;
 import java.util.function.Consumer;
 
@@ -123,5 +125,45 @@ public class Events {
         }
     }
 
+    public static final class Menu implements MenuListener {
+        private final Type type;
+        private final Consumer<MenuEvent> event;
+
+        public Menu(Type type, Consumer<MenuEvent> event) {
+            this.type = type;
+            this.event = event;
+        }
+
+        public static Menu onSelected(Consumer<MenuEvent> event) {
+            return new Menu(Type.SELECTED, event);
+        }
+
+        public static Menu onDeselected(Consumer<MenuEvent> event) {
+            return new Menu(Type.DESELECTED, event);
+        }
+
+        public static Menu onCanceled(Consumer<MenuEvent> event) {
+            return new Menu(Type.CANCELED, event);
+        }
+
+        @Override
+        public void menuSelected(MenuEvent e) {
+            if(this.type == Type.SELECTED)this.event.accept(e);
+        }
+
+        @Override
+        public void menuDeselected(MenuEvent e) {
+            if(this.type == Type.DESELECTED)this.event.accept(e);
+        }
+
+        @Override
+        public void menuCanceled(MenuEvent e) {
+            if(this.type == Type.CANCELED)this.event.accept(e);
+        }
+
+        public enum Type {
+            SELECTED, DESELECTED, CANCELED
+        }
+    }
 
 }

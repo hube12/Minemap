@@ -35,9 +35,8 @@ public class MenuBar extends JMenuBar {
 
 		showGrid.addChangeListener(e -> {
 			Fragment.DRAW_GRID = showGrid.getState();
-			Component c = MineMap.INSTANCE.worldTabs.getComponentAt(MineMap.INSTANCE.worldTabs.getSelectedIndex());
-			if(!(c instanceof MapPanel))return;
-			c.repaint();
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map != null)map.repaint();
 		});
 
 		JCheckBoxMenuItem showStructures = new JCheckBoxMenuItem("Show Structures");
@@ -45,19 +44,21 @@ public class MenuBar extends JMenuBar {
 
 		showStructures.addChangeListener(e -> {
 			Fragment.DRAW_STRUCTURES = showStructures.getState();
-			Component c = MineMap.INSTANCE.worldTabs.getComponentAt(MineMap.INSTANCE.worldTabs.getSelectedIndex());
-			if(!(c instanceof MapPanel))return;
-			c.repaint();
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map != null)map.repaint();
 		});
-		//Lara start
+
 		JMenuItem coordHopper = new JMenuItem();
 		coordHopper.setText("Go to Coordinates");
 
-		coordHopper.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+		coordHopper.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
 			JDialog jumpDialogue = new CoordHopper().mainLogue;
 			jumpDialogue.setVisible(true);
+		})));
+
+		worldMenu.addMenuListener(Events.Menu.onSelected(e -> {
+			coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null);
 		}));
-		//Lara end
 
 		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
