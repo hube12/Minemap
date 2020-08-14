@@ -77,7 +77,6 @@ public class WorldInfo {
 		int scale = layer.getScale();
 		int px = posX / scale;
 		int pz = posZ / scale;
-		System.out.println(px + ", " + pz + ", " + layer.getScale());
 		return Biome.REGISTRY.get(layer.get(px, 0, pz));
 	}
 
