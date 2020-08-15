@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.KaptainWutax:SEED:8bea1dfb03d697b1cd50aa0c467e9c234560a20c'
+    implementation 'com.github.KaptainWutax:SEED:c1c2ae464f0e4bc6eac5005e12afbc40b482fbcb'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
@@ -37,5 +37,6 @@ task fatJar(type: Jar) {
             it.isDirectory() ? it : zipTree(it)
         }
     }
+
     with jar
 }

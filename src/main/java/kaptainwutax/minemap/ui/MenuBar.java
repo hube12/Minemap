@@ -60,25 +60,19 @@ public class MenuBar extends JMenuBar {
 
 		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
-
-		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
-		OWtick.setState(Configs.USER_PROFILE.getOWenabled());
-		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setOWenabled(OWtick.getState()));
-
-		JCheckBoxMenuItem Ntick = new JCheckBoxMenuItem("Render Nether");
-		Ntick.setState(Configs.USER_PROFILE.getNetherenabled());
-		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setNetherenabled(Ntick.getState()));
-
-		JCheckBoxMenuItem Etick = new JCheckBoxMenuItem("Render End");
-		Etick.setState(Configs.USER_PROFILE.getEndenabled());
-		Etick.addChangeListener(e -> Configs.USER_PROFILE.setEndenabled(Etick.getState()));
-
 		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
-		worldMenu.add(OWtick);
-		worldMenu.add(Ntick);
-		worldMenu.add(Etick);
+
+		for(Dimension dimension: Dimension.values()) {
+			//Capitalize the first letter.
+			String s = dimension.name.substring(0, 1).toUpperCase() + dimension.name.substring(1);
+			JCheckBoxMenuItem tickBox = new JCheckBoxMenuItem("Render " + s);
+			tickBox.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
+			tickBox.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, tickBox.getState()));
+			worldMenu.add(tickBox);
+		}
+
 		this.add(worldMenu);
 	}
 

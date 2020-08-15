@@ -32,7 +32,7 @@ public class WorldInfo {
 	public final List<CPos> strongholds = new ArrayList<>();
 	public final List<BPos> spawns = new ArrayList<>();
 
-	public WorldInfo(MCVersion version, long worldSeed, BiomeSource.BiomeSourceSupplier gen) {
+	public WorldInfo(MCVersion version, long worldSeed, BiomeSource.Factory gen) {
 		this.version = version;
 		this.worldSeed = worldSeed;
 		this.source = ThreadLocal.withInitial(() -> gen.create(this.version, this.worldSeed));
