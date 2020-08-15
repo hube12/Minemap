@@ -60,9 +60,13 @@ public class MenuBar extends JMenuBar {
 
 		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
+
+		;
+
 		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
+
 
 		for(Dimension dimension: Dimension.values()) {
 			//Capitalize the first letter.

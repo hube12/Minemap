@@ -43,8 +43,22 @@ public class EnterSeedDialog extends JDialog {
 		this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
 		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
+		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
+		OWtick.setState(Configs.USER_PROFILE.getOWenabled());
+		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setOWenabled(OWtick.getState()));
+
+		JCheckBoxMenuItem Ntick = new JCheckBoxMenuItem("Render Nether");
+		Ntick.setState(Configs.USER_PROFILE.getNetherenabled());
+		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setNetherenabled(Ntick.getState()));
+
+		JCheckBoxMenuItem Etick = new JCheckBoxMenuItem("Render End");
+		Etick.setState(Configs.USER_PROFILE.getEndenabled());
+		Etick.addChangeListener(e -> Configs.USER_PROFILE.setEndenabled(Etick.getState()));
 
 		contentPane.add(this.seedField);
+		contentPane.add(OWtick);
+		contentPane.add(Ntick);
+		contentPane.add(Etick);
 		contentPane.add(splitPanel);
 		contentPane.add(this.continueButton);
 
