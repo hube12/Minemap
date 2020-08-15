@@ -5,8 +5,14 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.util.Fragment;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class MenuBar extends JMenuBar {
 
@@ -18,6 +24,7 @@ public class MenuBar extends JMenuBar {
 
 	private void addFileMenu() {
 		JMenu fileMenu = new JMenu("File");
+
 		JMenuItem loadSeed = new JMenuItem("New From Seed...");
 
 		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
@@ -25,7 +32,28 @@ public class MenuBar extends JMenuBar {
 			dialog.setVisible(true);
 		})));
 
+		JMenuItem screenshot = new JMenuItem("Screenshot...");
+
+		screenshot.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map == null)return;
+			BufferedImage image = map.screenshot();
+
+			String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			File file = new File("screenshots/" + fileName + ".png");
+			if(!file.mkdirs())return;
+
+			try {
+				ImageIO.write(image, "png", file);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}));
+
+		fileMenu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+
 		fileMenu.add(loadSeed);
+		fileMenu.add(screenshot);
 		this.add(fileMenu);
 	}
 

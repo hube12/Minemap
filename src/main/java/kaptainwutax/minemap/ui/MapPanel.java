@@ -15,6 +15,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -153,10 +154,22 @@ public class MapPanel extends JPanel {
 
 		this.scheduler.purge();
 
-		int w = this.getWidth();
-		int h = this.getHeight();
+		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue(g);
+		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
+		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
 
+		g.setColor(Color.CYAN);
+		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
+
+		if(this.tooltip != null) {
+			g.setColor(Color.WHITE);
+			g.drawString(this.tooltip, 20, 30);
+		}
+	}
+
+	public Map<Fragment, DrawInfo> getDrawQueue(Graphics g) {
 		Map<Fragment, DrawInfo> drawQueue = new HashMap<>();
+		int w = this.getWidth(), h = this.getHeight();
 
 		for(int x = -1; x < w / this.pixelsPerFragment + 1; x += Math.max(1, (int)(1.0D / this.pixelsPerFragment))) {
 			for(int y = -1; y < h / this.pixelsPerFragment + 1; y += Math.max(1, (int)(1.0D / this.pixelsPerFragment))) {
@@ -174,21 +187,20 @@ public class MapPanel extends JPanel {
 			}
 		}
 
-		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
-		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
-
-		g.setColor(Color.CYAN);
-		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
-
-		if(this.tooltip != null) {
-			g.setColor(Color.WHITE);
-			g.drawString(this.tooltip, 20, 30);
-		}
+		return drawQueue;
 	}
 
 	public void restart() {
 		this.scheduler = new RegionScheduler(this, this.threadCount);
 		this.repaint();
+	}
+
+	public BufferedImage screenshot() {
+		BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
+		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue(image.getGraphics());
+		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
+		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
+		return image;
 	}
 
 	public static class DrawInfo {
