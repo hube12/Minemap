@@ -1,12 +1,14 @@
 package kaptainwutax.minemap.ui;
-
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.util.Fragment;
-
 import javax.swing.*;
 import java.awt.*;
+import kaptainwutax.seedutils.mc.Dimension;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MenuBar extends JMenuBar {
 
@@ -56,13 +58,27 @@ public class MenuBar extends JMenuBar {
 			jumpDialogue.setVisible(true);
 		})));
 
-		worldMenu.addMenuListener(Events.Menu.onSelected(e -> {
-			coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null);
-		}));
+		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+
+
+		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
+		OWtick.setState(Configs.USER_PROFILE.getOWenabled());
+		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setOWenabled(OWtick.getState()));
+
+		JCheckBoxMenuItem Ntick = new JCheckBoxMenuItem("Render Nether");
+		Ntick.setState(Configs.USER_PROFILE.getNetherenabled());
+		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setNetherenabled(Ntick.getState()));
+
+		JCheckBoxMenuItem Etick = new JCheckBoxMenuItem("Render End");
+		Etick.setState(Configs.USER_PROFILE.getEndenabled());
+		Etick.addChangeListener(e -> Configs.USER_PROFILE.setEndenabled(Etick.getState()));
 
 		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
+		worldMenu.add(OWtick);
+		worldMenu.add(Ntick);
+		worldMenu.add(Etick);
 		this.add(worldMenu);
 	}
 

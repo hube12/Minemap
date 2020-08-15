@@ -1,6 +1,8 @@
 package kaptainwutax.minemap.ui;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.config.Config;
+import kaptainwutax.minemap.config.UserProfileConfig;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
@@ -9,7 +11,9 @@ import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.IntStream;
 
 public class EnterSeedDialog extends JDialog {
@@ -48,7 +52,17 @@ public class EnterSeedDialog extends JDialog {
 		this.pack();
 
 		this.continueButton.addMouseListener(Events.Mouse.onClick(e -> {
-			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(), threadDropdown.getSelected(), Arrays.asList(Dimension.values()));
+			ArrayList<Dimension> activeDims = new ArrayList<>(3);
+			if (Configs.USER_PROFILE.getOWenabled()) {
+				activeDims.add(Dimension.OVERWORLD);
+			}
+			if (Configs.USER_PROFILE.getNetherenabled()) {
+				activeDims.add(Dimension.NETHER);
+			}
+			if (Configs.USER_PROFILE.getEndenabled()) {
+				activeDims.add(Dimension.END);
+			}
+			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(), threadDropdown.getSelected(), activeDims);
 			Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
 			Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
 			continueButton.setEnabled(false);
