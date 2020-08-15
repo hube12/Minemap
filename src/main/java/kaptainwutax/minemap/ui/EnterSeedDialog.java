@@ -24,6 +24,7 @@ public class EnterSeedDialog extends JDialog {
 	public EnterSeedDialog() {
 		this.setModal(true);
 		this.initComponents();
+		this.setTitle("Load new Seed");
 	}
 
 	public void initComponents() {
@@ -43,6 +44,7 @@ public class EnterSeedDialog extends JDialog {
 		this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
 		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
+
 		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
 		OWtick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.OVERWORLD));
 		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.OVERWORLD, OWtick.getState()));
@@ -79,5 +81,4 @@ public class EnterSeedDialog extends JDialog {
 				MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
 		);
 	}
-
 }

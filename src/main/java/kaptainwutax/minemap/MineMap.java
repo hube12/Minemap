@@ -40,6 +40,7 @@ public class MineMap extends JFrame {
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setSize(screenSize.width / 2, screenSize.height / 2);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setTitle("MineMap");
 		System.out.println("Hello, its me");
 	}
 

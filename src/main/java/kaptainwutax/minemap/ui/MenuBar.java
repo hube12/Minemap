@@ -1,14 +1,11 @@
 package kaptainwutax.minemap.ui;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.util.Fragment;
+import kaptainwutax.seedutils.mc.Dimension;
 import javax.swing.*;
 import java.awt.*;
-import kaptainwutax.seedutils.mc.Dimension;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MenuBar extends JMenuBar {
 
@@ -59,14 +56,9 @@ public class MenuBar extends JMenuBar {
 		})));
 
 		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
-
-
-		;
-
 		worldMenu.add(coordHopper);
 		worldMenu.add(showGrid);
 		worldMenu.add(showStructures);
-
 
 		for(Dimension dimension: Dimension.values()) {
 			//Capitalize the first letter.
@@ -76,7 +68,6 @@ public class MenuBar extends JMenuBar {
 			tickBox.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, tickBox.getState()));
 			worldMenu.add(tickBox);
 		}
-
 		this.add(worldMenu);
 	}
 
@@ -97,11 +88,8 @@ public class MenuBar extends JMenuBar {
 			if(Configs.USER_PROFILE.getStyle().equals(style)) {
 				styleItem.setEnabled(false);
 			}
-
 			styleMenu.add(styleItem);
 		}
-
 		this.add(styleMenu);
 	}
-
 }
