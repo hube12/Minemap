@@ -16,7 +16,7 @@ public class UserProfileConfig extends Config {
     @Expose protected int THREAD_COUNT;
     @Expose protected MCVersion MC_VERSION;
     @Expose protected String STYLE;
-    @Expose protected Map<String, Boolean> DIMENSIONS = new HashMap<>();
+    @Expose protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
 
     @Override
     public String getName() {
