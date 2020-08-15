@@ -44,16 +44,16 @@ public class EnterSeedDialog extends JDialog {
 
 		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
 		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
-		OWtick.setState(Configs.USER_PROFILE.getOWenabled());
-		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setOWenabled(OWtick.getState()));
+		OWtick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.OVERWORLD));
+		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.OVERWORLD, OWtick.getState()));
 
 		JCheckBoxMenuItem Ntick = new JCheckBoxMenuItem("Render Nether");
-		Ntick.setState(Configs.USER_PROFILE.getNetherenabled());
-		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setNetherenabled(Ntick.getState()));
+		Ntick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.NETHER));
+		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.NETHER, Ntick.getState()));
 
 		JCheckBoxMenuItem Etick = new JCheckBoxMenuItem("Render End");
-		Etick.setState(Configs.USER_PROFILE.getEndenabled());
-		Etick.addChangeListener(e -> Configs.USER_PROFILE.setEndenabled(Etick.getState()));
+		Etick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.END));
+		Etick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.END, Etick.getState()));
 
 		contentPane.add(this.seedField);
 		contentPane.add(OWtick);
