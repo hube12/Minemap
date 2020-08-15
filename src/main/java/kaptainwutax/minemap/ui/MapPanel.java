@@ -29,7 +29,6 @@ public class MapPanel extends JPanel {
 	public double centerY;
 
 	public Point mousePointer;
-	public String tooltip = null;
 
 	public final WorldInfo info;
 	public final int threadCount;
@@ -38,6 +37,8 @@ public class MapPanel extends JPanel {
 	public MapPanel(WorldInfo info, int threadCount) {
 		this.info = info;
 		this.threadCount = threadCount;
+		JLabel InfoBar = new InfoDisplay().DisplayContent;
+		this.add(InfoBar);
 		this.restart();
 
 		this.setBackground(Color.BLACK);
@@ -99,7 +100,7 @@ public class MapPanel extends JPanel {
 				int z = pos.getZ();
 
 				Biome biome = info.getBiome(x, z);
-				tooltip = String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase());
+				InfoBar.setText(String.format("Seed %d at (%d, %d): %s", info.worldSeed, x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase()));
 				MapPanel.this.repaint();
 			}
 		});
@@ -161,10 +162,8 @@ public class MapPanel extends JPanel {
 		g.setColor(Color.CYAN);
 		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
 
-		if(this.tooltip != null) {
-			g.setColor(Color.WHITE);
-			g.drawString(this.tooltip, 20, 30);
-		}
+
+
 	}
 
 	public Map<Fragment, DrawInfo> getDrawQueue(Graphics g) {
@@ -186,6 +185,12 @@ public class MapPanel extends JPanel {
 				}
 			}
 		}
+
+		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
+		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
+
+		g.setColor(Color.CYAN);
+		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
 
 		return drawQueue;
 	}
