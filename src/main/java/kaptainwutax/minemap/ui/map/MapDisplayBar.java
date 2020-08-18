@@ -7,14 +7,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.stream.IntStream;
 
-public class MapOptions extends JPanel {
+public class MapDisplayBar extends JPanel {
 
     private final MapPanel panel;
 
-    public JLabel biomeDisplay;
-    public Dropdown<Integer> layerDropdown;
+    private JLabel biomeDisplay;
+    private Dropdown<Integer> layerDropdown;
 
-    public MapOptions(MapPanel panel) {
+    public MapDisplayBar(MapPanel panel) {
         this.panel = panel;
         this.addBiomeDisplay();
         this.addLayerDropdown();
@@ -44,6 +44,10 @@ public class MapOptions extends JPanel {
         });
 
         this.add(this.layerDropdown);
+    }
+
+    public void setBiomeDisplay(int x, int z, String biomeName) {
+        this.biomeDisplay.setText(String.format("Seed %d at (%d, %d): %s", this.panel.info.worldSeed, x, z, biomeName));
     }
 
 }

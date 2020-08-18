@@ -16,7 +16,7 @@ public class MapPanel extends JPanel {
 
 	public final WorldInfo info;
 	public final MapManager manager;
-	public final MapOptions options;
+	public final MapDisplayBar displayBar;
 
 	public final int threadCount;
 	public RegionScheduler scheduler;
@@ -26,10 +26,10 @@ public class MapPanel extends JPanel {
 		this.threadCount = threadCount;
 
 		this.manager = new MapManager(this);
-		this.options = new MapOptions(this);
+		this.displayBar = new MapDisplayBar(this);
 
 		this.setBackground(Color.BLACK);
-		this.add(this.options);
+		this.add(this.displayBar);
 
 		this.restart();
 	}
@@ -40,20 +40,25 @@ public class MapPanel extends JPanel {
 	}
 
 	@Override
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-
+	public void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
 		this.scheduler.purge();
-
-		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue(g);
-		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
-		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
-
-		g.setColor(Color.CYAN);
-		g.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
+		this.drawMap(graphics);
+		this.drawCrossHair(graphics);
 	}
 
-	public Map<Fragment, DrawInfo> getDrawQueue(Graphics g) {
+	public void drawMap(Graphics graphics) {
+		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
+		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(graphics, d.x, d.y, d.width, d.height));
+		drawQueue.forEach((fragment, d) -> fragment.drawStructures(graphics, d.x, d.y, d.width, d.height));
+	}
+
+	public void drawCrossHair(Graphics graphics) {
+		graphics.setColor(Color.CYAN);
+		graphics.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
+	}
+
+	public Map<Fragment, DrawInfo> getDrawQueue() {
 		Map<Fragment, DrawInfo> drawQueue = new HashMap<>();
 		int w = this.getWidth(), h = this.getHeight();
 
@@ -73,7 +78,7 @@ public class MapPanel extends JPanel {
 				double x = (regionX - regionMin.getX()) * this.manager.pixelsPerFragment + pixelOffsetX;
 				double z = (regionZ - regionMin.getZ()) * this.manager.pixelsPerFragment + pixelOffsetZ;
 				int size = (int)(this.manager.pixelsPerFragment);
-				drawQueue.put(fragment, new DrawInfo(g, (int)x, (int)z, size + 1, size + 1));
+				drawQueue.put(fragment, new DrawInfo((int)x, (int)z, size + 1, size + 1));
 			}
 		}
 
@@ -82,9 +87,7 @@ public class MapPanel extends JPanel {
 
 	public BufferedImage getScreenshot() {
 		BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue(image.getGraphics());
-		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(d.g, d.x, d.y, d.width, d.height));
-		drawQueue.forEach((fragment, d) -> fragment.drawStructures(d.g, d.x, d.y, d.width, d.height));
+		this.drawMap(image.getGraphics());
 		return image;
 	}
 

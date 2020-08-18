@@ -36,7 +36,7 @@ public class MapManager {
             int z = pos.getZ();
 
             Biome biome = this.panel.info.getBiome(x, z);
-            this.panel.options.biomeDisplay.setText(String.format("Seed %d at (%d, %d): %s", this.panel.info.worldSeed, x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase()));
+            this.panel.displayBar.setBiomeDisplay(x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase());
             this.panel.repaint();
         }));
 
