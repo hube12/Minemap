@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.util;
 
-import kaptainwutax.minemap.ui.MapPanel;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
@@ -44,7 +44,7 @@ public class RegionScheduler {
 		RPos farthestFragment = null;
 		double farthestDistance = 0.0D;
 
-		BPos center = this.listener.getCenterPos();
+		BPos center = this.listener.manager.getCenterPos();
 
 		for(Map.Entry<RPos, Fragment> e: this.fragments.entrySet()) {
 			RPos fragment = e.getKey();
@@ -62,7 +62,7 @@ public class RegionScheduler {
 	}
 
 	public Fragment getFragmentAt(int regionX, int regionZ) {
-		int regionSize = this.listener.blocksPerFragment;
+		int regionSize = this.listener.manager.blocksPerFragment;
 		RPos regionPos = new RPos(regionX, regionZ, regionSize);
 
 		if(!this.fragments.containsKey(regionPos)) {
@@ -70,7 +70,7 @@ public class RegionScheduler {
 
 			executor.execute(() -> {
 				try {
-					BPos center = this.listener.getCenterPos();
+					BPos center = this.listener.manager.getCenterPos();
 
 					if(center.distanceTo(regionPos.toBlockPos(), DistanceMetric.CHEBYSHEV) > 14000.0D) {
 						this.fragments.remove(regionPos);

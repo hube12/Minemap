@@ -34,7 +34,7 @@ public class TabHeader extends JPanel {
 
     protected void createCloseButton(Consumer<MouseEvent> onClose) {
         this.closeButton = new JButton(MetalIconFactory.getInternalFrameCloseIcon(14));
-        this.closeButton.addMouseListener(Events.Mouse.onClick(onClose));
+        this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
         this.add(this.closeButton);
     }
 

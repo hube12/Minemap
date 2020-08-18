@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.ui;
+package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
@@ -65,7 +65,7 @@ public class EnterSeedDialog extends JDialog {
 
 		this.pack();
 
-		this.continueButton.addMouseListener(Events.Mouse.onClick(e -> {
+		this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
 			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
 					threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
 

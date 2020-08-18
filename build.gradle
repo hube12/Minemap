@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.KaptainWutax:SEED:c1c2ae464f0e4bc6eac5005e12afbc40b482fbcb'
+    implementation 'com.github.KaptainWutax:SEED:3ad21592db99b2122470265083c618dbd60d94fe'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"

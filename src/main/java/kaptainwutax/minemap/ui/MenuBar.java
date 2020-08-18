@@ -3,6 +3,9 @@ package kaptainwutax.minemap.ui;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
+import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.Fragment;
 
 import javax.imageio.ImageIO;
@@ -37,7 +40,7 @@ public class MenuBar extends JMenuBar {
 		screenshot.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
 			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 			if(map == null)return;
-			BufferedImage image = map.screenshot();
+			BufferedImage image = map.getScreenshot();
 
 			String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 			File file = new File("screenshots/" + fileName + ".png");
@@ -80,7 +83,7 @@ public class MenuBar extends JMenuBar {
 		coordHopper.setText("Go to Coordinates");
 
 		coordHopper.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-			JDialog jumpDialogue = new CoordHopper().mainLogue;
+			JDialog jumpDialogue = new CoordHopperDialog().mainLogue;
 			jumpDialogue.setVisible(true);
 		})));
 

@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.ui.MapPanel;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 

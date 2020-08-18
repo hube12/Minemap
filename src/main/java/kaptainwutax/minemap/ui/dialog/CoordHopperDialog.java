@@ -1,17 +1,18 @@
-package kaptainwutax.minemap.ui;
+package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CoordHopper {
-    public CoordHopper() {
+public class CoordHopperDialog {
+    
+    public CoordHopperDialog() {
         super();
         initComponents();
     }
-
 
     private void cButtonPressed() {
         int X, Z;
@@ -24,7 +25,7 @@ public class CoordHopper {
         }
 
         MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        if(map != null)map.setCenterPos(X, Z);
+        if(map != null)map.manager.setCenterPos(X, Z);
         mainLogue.dispose();
     }
 

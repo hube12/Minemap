@@ -7,9 +7,11 @@ import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.structure.Stronghold;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.seedutils.mc.pos.RPos;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,11 +21,10 @@ import java.util.List;
 
 public class WorldInfo {
 
-	public static final List<Biome> SPAWN_BIOMES = Arrays.asList(Biome.FOREST, Biome.PLAINS, Biome.TAIGA,
-			Biome.TAIGA_HILLS, Biome.WOODED_HILLS, Biome.JUNGLE, Biome.JUNGLE_HILLS);
-
 	public final MCVersion version;
+	public final Dimension dimension;
 	public final long worldSeed;
+
 	public int layerId;
 
 	private final ThreadLocal<BiomeSource> source;
@@ -32,39 +33,35 @@ public class WorldInfo {
 	public final List<CPos> strongholds = new ArrayList<>();
 	public final List<BPos> spawns = new ArrayList<>();
 
-	public WorldInfo(MCVersion version, long worldSeed, BiomeSource.Factory gen) {
+	public WorldInfo(MCVersion version, Dimension dimension, long worldSeed) {
 		this.version = version;
+		this.dimension = dimension;
 		this.worldSeed = worldSeed;
-		this.source = ThreadLocal.withInitial(() -> gen.create(this.version, this.worldSeed));
+		this.source = ThreadLocal.withInitial(() -> BiomeSource.of(dimension, version, worldSeed));
 
 		this.layerId = this.source.get().getLayerCount() - 2;
 
-		if(this.getBiomeSource() instanceof OverworldBiomeSource) {
+		if(dimension == Dimension.OVERWORLD) {
 			Stronghold stronghold = new Stronghold(version);
 			this.strongholds.addAll(Arrays.asList(stronghold.getAllStarts(this.getBiomeSource(), new JRand(0L))));
-			this.spawns.add(getSpawnPoint(this.getBiomeSource()));
+			this.spawns.add(((OverworldBiomeSource)this.getBiomeSource()).getSpawnPoint());
 		}
-	}
-
-	public static BPos getSpawnPoint(BiomeSource source) {
-		JRand rand = new JRand(source.getWorldSeed());
-		BPos spawnPos = source.locateBiome(0, 0, 0, 256, SPAWN_BIOMES, rand);
-		return spawnPos == null ? new BPos(0, 0, 0) : spawnPos;
 	}
 
 	public Image getRegionImage(int posX, int posZ, int regionSize) {
 		BiomeLayer layer = this.getLayer();
 		int scale = layer.getScale();
-		int px = posX / scale;
-		int pz = posZ / scale;
-		regionSize /= scale;
-		regionSize = Math.max(regionSize, 1);
+		int effectiveRegion = Math.max(regionSize / scale, 1);
 
-		BufferedImage image = new BufferedImage(regionSize, regionSize, BufferedImage.TYPE_INT_RGB);
+		RPos region = new BPos(posX, 0, posZ).toRegionPos(scale);
 
-		for(int x = 0; x < regionSize; x++) {
-			for(int z = 0; z < regionSize; z++) {
-				Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), layer.get(x + px, 0, z + pz));
+		BufferedImage image = new BufferedImage(effectiveRegion, effectiveRegion, BufferedImage.TYPE_INT_RGB);
+
+		for(int x = 0; x < effectiveRegion; x++) {
+			for(int z = 0; z < effectiveRegion; z++) {
+				Biome biome = Biome.REGISTRY.get(layer.get(region.getX() + x, 0, region.getZ() + z));
+				if(biome == null)continue;
+				Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), biome);
 				if(color != null)image.setRGB(x, z, color.getRGB());
 			}
 		}
@@ -72,12 +69,13 @@ public class WorldInfo {
 		return image;
 	}
 
-	public Biome getBiome(int posX, int posZ) {
-		BiomeLayer layer = this.getLayer();
-		int scale = layer.getScale();
-		int px = posX / scale;
-		int pz = posZ / scale;
-		return Biome.REGISTRY.get(layer.get(px, 0, pz));
+	public Biome getBiome(int blockX, int blockZ) {
+		return this.getBiome(this.getLayer(), blockX, blockZ);
+	}
+
+	public Biome getBiome(BiomeLayer layer, int blockX, int blockZ) {
+		RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
+		return Biome.REGISTRY.get(layer.get(pos.getX(), 0, pos.getZ()));
 	}
 
 	public BiomeSource getBiomeSource() {

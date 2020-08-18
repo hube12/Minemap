@@ -16,7 +16,7 @@ public class Events {
             this.event = event;
         }
 
-        public static Mouse onClick(Consumer<MouseEvent> event) {
+        public static Mouse onClicked(Consumer<MouseEvent> event) {
             return new Mouse(Type.CLICKED, event);
         }
 

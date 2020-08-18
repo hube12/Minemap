@@ -1,12 +1,12 @@
 package kaptainwutax.minemap.ui.component;
 
-import kaptainwutax.biomeutils.source.BiomeSource;
-import kaptainwutax.minemap.ui.MapPanel;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.WorldInfo;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TabGroup {
 
@@ -50,7 +50,7 @@ public class TabGroup {
         this.worldSeed = worldSeed;
 
         for(Dimension dimension: dimensions) {
-            WorldInfo worldInfo = new WorldInfo(this.getVersion(), this.worldSeed, BiomeSource.factory(dimension));
+            WorldInfo worldInfo = new WorldInfo(this.getVersion(), dimension, this.worldSeed);
             MapPanel mapPanel = new MapPanel(worldInfo, threadCount);
             this.mapPanels.put(dimension, mapPanel);
         }
@@ -58,10 +58,16 @@ public class TabGroup {
 
     public void add(WorldTabs tabs) {
         String prefix = "[" + this.version + "] ";
+        AtomicBoolean first = new AtomicBoolean(true);
 
         this.mapPanels.forEach((dimension, mapPanel) -> {
             String s = dimension.name.substring(0, 1).toUpperCase() + dimension.name.substring(1);
             tabs.addMapTab(prefix + s + " " + this.worldSeed, this, mapPanel);
+
+            if(first.get()) {
+                tabs.setSelectedIndex(tabs.getTabCount() - 1);
+                first.set(false);
+            }
         });
     }
 
