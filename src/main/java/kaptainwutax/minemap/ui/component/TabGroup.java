@@ -1,7 +1,6 @@
 package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.WorldInfo;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
@@ -50,8 +49,7 @@ public class TabGroup {
         this.worldSeed = worldSeed;
 
         for(Dimension dimension: dimensions) {
-            WorldInfo worldInfo = new WorldInfo(this.getVersion(), dimension, this.worldSeed);
-            MapPanel mapPanel = new MapPanel(worldInfo, threadCount);
+            MapPanel mapPanel = new MapPanel(this.getVersion(), dimension, this.worldSeed, threadCount);
             this.mapPanels.put(dimension, mapPanel);
         }
     }

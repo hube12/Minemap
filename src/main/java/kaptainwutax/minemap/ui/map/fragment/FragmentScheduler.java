@@ -1,5 +1,6 @@
-package kaptainwutax.minemap.util;
+package kaptainwutax.minemap.ui.map.fragment;
 
+import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
@@ -12,15 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public class RegionScheduler {
+public class FragmentScheduler {
 
 	public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
 		@Override
-		public void drawBiomes(Graphics g, int x, int y, int width, int height) {
+		public void drawBiomes(Graphics graphics, DrawInfo info) {
+
 		}
 
 		@Override
-		public void drawStructures(Graphics g, int x, int y, int width, int height) {
+		public void drawFeatures(Graphics graphics, DrawInfo info) {
+
 		}
 	};
 
@@ -29,7 +32,7 @@ public class RegionScheduler {
 
 	protected MapPanel listener;
 
-	public RegionScheduler(MapPanel listener, int threadCount) {
+	public FragmentScheduler(MapPanel listener, int threadCount) {
 		this.listener = listener;
 		this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadCount);
 	}
@@ -44,7 +47,7 @@ public class RegionScheduler {
 		RPos farthestFragment = null;
 		double farthestDistance = 0.0D;
 
-		BPos center = this.listener.manager.getCenterPos();
+		BPos center = this.listener.getManager().getCenterPos();
 
 		for(Map.Entry<RPos, Fragment> e: this.fragments.entrySet()) {
 			RPos fragment = e.getKey();
@@ -62,7 +65,7 @@ public class RegionScheduler {
 	}
 
 	public Fragment getFragmentAt(int regionX, int regionZ) {
-		int regionSize = this.listener.manager.blocksPerFragment;
+		int regionSize = this.listener.getManager().blocksPerFragment;
 		RPos regionPos = new RPos(regionX, regionZ, regionSize);
 
 		if(!this.fragments.containsKey(regionPos)) {
@@ -70,14 +73,14 @@ public class RegionScheduler {
 
 			executor.execute(() -> {
 				try {
-					BPos center = this.listener.manager.getCenterPos();
+					BPos center = this.listener.getManager().getCenterPos();
 
 					if(center.distanceTo(regionPos.toBlockPos(), DistanceMetric.CHEBYSHEV) > 14000.0D) {
 						this.fragments.remove(regionPos);
 						return;
 					}
 
-					Fragment fragment = new Fragment(regionX * regionSize, regionZ * regionSize, regionSize, this.listener.info);
+					Fragment fragment = new Fragment(new RPos(regionX, regionZ, regionSize), this.listener.getContext());
 					this.fragments.put(regionPos, fragment);
 					SwingUtilities.invokeLater(() -> this.listener.repaint());
 				} catch(Exception e) {

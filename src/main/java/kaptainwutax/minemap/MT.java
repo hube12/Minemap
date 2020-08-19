@@ -1,8 +1,11 @@
 package kaptainwutax.minemap;
 
+import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MT {
 
@@ -61,6 +64,14 @@ public class MT {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public <T> void yeeterate(Iterable<T> iterable, Consumer<T> task) {
+        this.flatYeeterate(iterable, Collections::singleton, task);
+    }
+
+    public <T> void flatYeeterate(Iterable<T> iterable, Function<T, Iterable<T>> mapper, Consumer<T> task) {
+        iterable.forEach(t -> yeet(() -> mapper.apply(t).forEach(task)));
     }
 
     @FunctionalInterface

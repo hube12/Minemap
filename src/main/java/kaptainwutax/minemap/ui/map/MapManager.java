@@ -1,6 +1,5 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
@@ -35,8 +34,7 @@ public class MapManager {
             int x = pos.getX();
             int z = pos.getZ();
 
-            Biome biome = this.panel.info.getBiome(x, z);
-            this.panel.displayBar.setBiomeDisplay(x, z, biome == null ? "UNKNOWN" : biome.getName().toUpperCase());
+            this.panel.displayBar.updateBiomeDisplay(x, z);
             this.panel.repaint();
         }));
 

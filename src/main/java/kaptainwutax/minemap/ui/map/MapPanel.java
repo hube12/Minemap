@@ -1,8 +1,10 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.minemap.util.Fragment;
-import kaptainwutax.minemap.util.RegionScheduler;
-import kaptainwutax.minemap.util.WorldInfo;
+import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.ui.map.fragment.Fragment;
+import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
+import kaptainwutax.seedutils.mc.Dimension;
+import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -14,17 +16,18 @@ import java.util.Map;
 
 public class MapPanel extends JPanel {
 
-	public final WorldInfo info;
-	public final MapManager manager;
+	private final MapContext context;
+	private final MapManager manager;
+
 	public final MapDisplayBar displayBar;
 
 	public final int threadCount;
-	public RegionScheduler scheduler;
+	public FragmentScheduler scheduler;
 
-	public MapPanel(WorldInfo info, int threadCount) {
-		this.info = info;
+	public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
 		this.threadCount = threadCount;
 
+		this.context = new MapContext(version, dimension, worldSeed);
 		this.manager = new MapManager(this);
 		this.displayBar = new MapDisplayBar(this);
 
@@ -34,8 +37,16 @@ public class MapPanel extends JPanel {
 		this.restart();
 	}
 
+	public MapContext getContext() {
+		return this.context;
+	}
+
+	public MapManager getManager() {
+		return this.manager;
+	}
+
 	public void restart() {
-		this.scheduler = new RegionScheduler(this, this.threadCount);
+		this.scheduler = new FragmentScheduler(this, this.threadCount);
 		this.repaint();
 	}
 
@@ -49,8 +60,8 @@ public class MapPanel extends JPanel {
 
 	public void drawMap(Graphics graphics) {
 		Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
-		drawQueue.forEach((fragment, d) -> fragment.drawBiomes(graphics, d.x, d.y, d.width, d.height));
-		drawQueue.forEach((fragment, d) -> fragment.drawStructures(graphics, d.x, d.y, d.width, d.height));
+		drawQueue.forEach((fragment, info) -> fragment.drawBiomes(graphics, info));
+		drawQueue.forEach((fragment, info) -> fragment.drawFeatures(graphics, info));
 	}
 
 	public void drawCrossHair(Graphics graphics) {
@@ -66,7 +77,6 @@ public class MapPanel extends JPanel {
 		BPos max = this.manager.getPos(w, h);
 		RPos regionMin = min.toRegionPos(this.manager.blocksPerFragment);
 		RPos regionMax = max.toRegionPos(this.manager.blocksPerFragment);
-		int scale = this.info.getLayer().getScale();
 
 		for(int regionX = regionMin.getX(); regionX <= regionMax.getX(); regionX++) {
 			for(int regionZ = regionMin.getZ(); regionZ <= regionMax.getZ(); regionZ++) {

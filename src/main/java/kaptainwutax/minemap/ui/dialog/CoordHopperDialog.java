@@ -25,7 +25,7 @@ public class CoordHopperDialog {
         }
 
         MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        if(map != null)map.manager.setCenterPos(X, Z);
+        if(map != null)map.getManager().setCenterPos(X, Z);
         mainLogue.dispose();
     }
 

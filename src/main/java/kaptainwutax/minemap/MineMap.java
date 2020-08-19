@@ -3,6 +3,8 @@ package kaptainwutax.minemap;
 import com.formdev.flatlaf.FlatDarculaLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Features;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 
@@ -19,6 +21,9 @@ public class MineMap extends JFrame {
 
 	public static void main(String[] args) {
 		Configs.registerConfigs();
+		Features.registerFeatures();
+		Icons.registerIcons();
+
 		INSTANCE = new MineMap();
 		INSTANCE.setVisible(true);
 	}

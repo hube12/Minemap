@@ -6,7 +6,6 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.Fragment;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -65,7 +64,7 @@ public class MenuBar extends JMenuBar {
 		JCheckBoxMenuItem showGrid = new JCheckBoxMenuItem("Show Grid");
 
 		showGrid.addChangeListener(e -> {
-			Fragment.DRAW_GRID = showGrid.getState();
+			//TODO: grid toggle
 			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 			if(map != null)map.repaint();
 		});
@@ -74,7 +73,7 @@ public class MenuBar extends JMenuBar {
 		showStructures.setState(true);
 
 		showStructures.addChangeListener(e -> {
-			Fragment.DRAW_STRUCTURES = showStructures.getState();
+			//TODO: structure toggle
 			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 			if(map != null)map.repaint();
 		});

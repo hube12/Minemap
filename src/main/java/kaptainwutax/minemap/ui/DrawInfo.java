@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.ui.map;
+package kaptainwutax.minemap.ui;
 
 public class DrawInfo {
 
