@@ -51,15 +51,19 @@ public class MapDisplayBar extends JPanel {
     }
 
     public void updateBiomeDisplay(int blockX, int blockZ) {
-        Biome biome = this.getBiome(blockX, blockZ);
+        int biomeId = this.getBiome(blockX, blockZ);
+        Biome biome = Biome.REGISTRY.get(biomeId);
         String name = biome == null ? "UNKNOWN" : biome.getName().toUpperCase();
-        this.biomeDisplay.setText(String.format("Seed %d at (%d, %d): %s", this.panel.getContext().worldSeed, blockX, blockZ, name));
+
+        String text = String.format("(%d, %d): %s with ID %d (0x%s)", blockX, blockZ, name,
+                biomeId, Integer.toHexString(biomeId).toUpperCase());
+        this.biomeDisplay.setText(text);
     }
 
-    private Biome getBiome(int blockX, int blockZ) {
+    private int getBiome(int blockX, int blockZ) {
         BiomeLayer layer = this.panel.getContext().getBiomeLayer();
         RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
-        return Biome.REGISTRY.get(layer.get(pos.getX(), 0, pos.getZ()));
+        return layer.get(pos.getX(), 0, pos.getZ());
     }
 
 }

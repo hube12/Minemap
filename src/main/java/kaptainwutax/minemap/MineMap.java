@@ -57,5 +57,4 @@ public class MineMap extends JFrame {
 		this.add(this.worldTabs);
 	}
 
-
 }

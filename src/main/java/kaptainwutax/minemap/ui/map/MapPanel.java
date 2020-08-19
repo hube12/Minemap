@@ -46,6 +46,7 @@ public class MapPanel extends JPanel {
 	}
 
 	public void restart() {
+		if(this.scheduler != null)this.scheduler.terminate();
 		this.scheduler = new FragmentScheduler(this, this.threadCount);
 		this.repaint();
 	}

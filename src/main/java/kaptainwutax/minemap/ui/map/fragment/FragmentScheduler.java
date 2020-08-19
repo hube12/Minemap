@@ -37,6 +37,12 @@ public class FragmentScheduler {
 		this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadCount);
 	}
 
+	public void terminate() {
+		this.executor.shutdown();
+		this.fragments.clear();
+		this.listener = null;
+	}
+
 	public void purge() {
 		while(this.fragments.size() > 2000) {
 			this.removeFarthestFragment();
