@@ -11,7 +11,7 @@ import java.awt.*;
 
 public abstract class StaticIcon extends IconRenderer {
 
-    public static final int ICON_SIZE = 22;
+    public static final int ICON_SIZE = 24;
 
     public StaticIcon(MapContext context) {
         super(context);

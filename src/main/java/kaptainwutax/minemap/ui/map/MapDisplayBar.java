@@ -3,6 +3,8 @@ package kaptainwutax.minemap.ui.map;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
+import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
@@ -17,11 +19,13 @@ public class MapDisplayBar extends JPanel {
 
     private JLabel biomeDisplay;
     private Dropdown<Integer> layerDropdown;
+    private JButton pinButton;
 
     public MapDisplayBar(MapPanel panel) {
         this.panel = panel;
         this.addBiomeDisplay();
         this.addLayerDropdown();
+        this.addUtilityButtons();
     }
 
     private void addBiomeDisplay() {
@@ -48,6 +52,18 @@ public class MapDisplayBar extends JPanel {
         });
 
         this.add(this.layerDropdown);
+    }
+
+    private void addUtilityButtons() {
+        this.pinButton = new JButton("Pin");
+
+        this.pinButton.addMouseListener(Events.Mouse.onPressed(e -> {
+            boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isPinned();
+            MineMap.INSTANCE.worldTabs.getSelectedHeader().setPinned(newState);
+            this.pinButton.setText(newState ? "Unpin" : "Pin");
+        }));
+
+        this.add(this.pinButton);
     }
 
     public void updateBiomeDisplay(int blockX, int blockZ) {

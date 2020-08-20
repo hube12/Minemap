@@ -65,6 +65,12 @@ public class WorldTabs extends JTabbedPane {
 		return component instanceof MapPanel ? (MapPanel)component : null;
 	}
 
+	public TabHeader getSelectedHeader() {
+		if(this.getSelectedIndex() < 0)return null;
+		Component c = this.getTabComponentAt(this.getSelectedIndex());
+		return c instanceof TabHeader ? (TabHeader)c : null;
+	}
+
 	@Override
 	public void paintComponent(Graphics g) {
 		if(MineMap.DARCULA) {

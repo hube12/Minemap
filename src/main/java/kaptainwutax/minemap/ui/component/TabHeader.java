@@ -20,6 +20,14 @@ public class TabHeader extends JPanel {
         this.setOpaque(false);
     }
 
+    public boolean isPinned() {
+        return !this.closeButton.isVisible();
+    }
+
+    public void setPinned(boolean state) {
+        this.closeButton.setVisible(!state);
+    }
+
     public JLabel getTabTitle() {
         return this.tabTitle;
     }
