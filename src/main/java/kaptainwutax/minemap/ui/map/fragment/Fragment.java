@@ -71,12 +71,19 @@ public class Fragment {
         this.refreshBiomeCache();
         this.refreshImageCache();
 
-        if(this.imageCache != null) {
+        if(this.imageCache != null && this.context.getSettings().showBiomes) {
             graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
+        }
+
+        if(this.context.getSettings().showGrid) {
+            graphics.setColor(Color.BLACK);
+            graphics.drawRect(info.x, info.y, info.width - 1, info.height - 1);
         }
     }
 
     public void drawFeatures(Graphics graphics, DrawInfo info) {
+        if(!this.context.getSettings().showFeatures)return;
+
         for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
             if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
 

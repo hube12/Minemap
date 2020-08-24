@@ -77,6 +77,8 @@ public class FragmentScheduler {
 
 			this.executor.execute(() -> {
 				try {
+					if(this.executor.isShutdown())return;
+
 					BPos center = this.listener.getManager().getCenterPos();
 
 					if(center.distanceTo(regionPos.toBlockPos(), DistanceMetric.CHEBYSHEV) > 14000.0D) {

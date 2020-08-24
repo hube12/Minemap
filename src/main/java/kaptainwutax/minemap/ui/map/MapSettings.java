@@ -38,7 +38,8 @@ public class MapSettings {
                 .filter(f -> f.isValidDimension(this.dimension))
                 .map(Feature::getName).collect(Collectors.toMap(e -> e, e -> true));
 
-        this.biomes = Biome.REGISTRY.values().stream().map(Biome::getName)
+        this.biomes = Biome.REGISTRY.values().stream()
+                .filter(b -> b.getDimension() == dimension).map(Biome::getName)
                 .collect(Collectors.toMap(e -> e, e -> Boolean.TRUE));
     }
 
@@ -54,7 +55,11 @@ public class MapSettings {
                 ));
 
         this.biomeStates = Biome.REGISTRY.values().stream()
-                .collect(Collectors.toMap(e -> e, e -> Boolean.TRUE));
+                .filter(b -> b.getDimension() == dimension)
+                .collect(Collectors.toMap(
+                        e -> e,
+                        e -> this.biomes.getOrDefault(e.getName(), true)
+                ));
 
         return this;
     }

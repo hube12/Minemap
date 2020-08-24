@@ -44,12 +44,37 @@ public class MapDisplayBar extends JPanel {
 
         MapSettings settings = this.panel.getContext().getSettings();
 
+        JCheckBox showBiomes = new JCheckBox("Show Biomes");
+        JCheckBox showFeatures = new JCheckBox("Show Features");
+        JCheckBox showGrid = new JCheckBox("Show Grid");
+        showBiomes.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showFeatures.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showGrid.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        showBiomes.addItemListener(e -> {
+            settings.showBiomes = showBiomes.isSelected();
+            this.panel.repaint();
+        });
+
+        showFeatures.addItemListener(e -> {
+            settings.showFeatures = showFeatures.isSelected();
+            this.panel.repaint();
+        });
+
+        showGrid.addItemListener(e -> {
+            settings.showGrid = showGrid.isSelected();
+            this.panel.repaint();
+        });
+
+        showBiomes.setSelected(true);
+        showFeatures.setSelected(true);
+
         for(Feature<?, ?> feature: settings.getAllFeatures()) {
-            Checkbox checkBox = new Checkbox(feature.getName());
-            checkBox.setState(settings.isActive(feature));
+            JCheckBox checkBox = new JCheckBox(feature.getName());
+            checkBox.setSelected(settings.isActive(feature));
 
             checkBox.addItemListener(e -> {
-                settings.setState(feature, checkBox.getState());
+                settings.setState(feature, checkBox.isSelected());
                 this.panel.repaint();
             });
 
@@ -57,11 +82,11 @@ public class MapDisplayBar extends JPanel {
         }
 
         for(Biome biome: settings.getAllBiomes()) {
-            Checkbox checkBox = new Checkbox(biome.getName());
-            checkBox.setState(settings.isActive(biome));
+            JCheckBox checkBox = new JCheckBox(biome.getName());
+            checkBox.setSelected(settings.isActive(biome));
 
             checkBox.addItemListener(e -> {
-                settings.setState(biome, checkBox.getState());
+                settings.setState(biome, checkBox.isSelected());
                 this.panel.repaint();
             });
 
@@ -74,20 +99,25 @@ public class MapDisplayBar extends JPanel {
         hideAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::hide);
             settings.getAllFeatures().forEach(f -> settings.setState(f, false));
-            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof Checkbox).map(c -> (Checkbox)c).forEach(c -> c.setState(false));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
+                    .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(false));
             this.panel.repaint();
         }));
 
         showAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::show);
             settings.getAllFeatures().forEach(f -> settings.setState(f, true));
-            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof Checkbox).map(c -> (Checkbox)c).forEach(c -> c.setState(true));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
+                    .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(true));
             this.panel.repaint();
         }));
 
         hideAll.setAlignmentX(Component.CENTER_ALIGNMENT);
         showAll.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        this.add(showBiomes);
+        this.add(showFeatures);
+        this.add(showGrid);
         this.add(this.scrollPane);
         this.add(hideAll);
         this.add(showAll);
