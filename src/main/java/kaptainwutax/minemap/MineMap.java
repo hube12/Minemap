@@ -20,9 +20,9 @@ public class MineMap extends JFrame {
 	public WorldTabs worldTabs;
 
 	public static void main(String[] args) {
-		Configs.registerConfigs();
 		Features.registerFeatures();
 		Icons.registerIcons();
+		Configs.registerConfigs();
 
 		INSTANCE = new MineMap();
 		INSTANCE.setVisible(true);

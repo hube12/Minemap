@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.map;
 
+import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
@@ -69,6 +70,10 @@ public class MapManager {
             this.pixelsPerFragment = newPixelsPerFragment;
             this.panel.repaint();
         });
+
+        this.panel.addMouseListener(Events.Mouse.onClicked(e -> {
+            this.panel.getContext().getSettings().hide(Biome.PLAINS, Biome.DESERT);
+        }));
     }
 
     public Vec3i getScreenSize() {

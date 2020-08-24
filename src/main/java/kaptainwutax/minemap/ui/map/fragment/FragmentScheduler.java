@@ -39,8 +39,6 @@ public class FragmentScheduler {
 
 	public void terminate() {
 		this.executor.shutdown();
-		this.fragments.clear();
-		this.listener = null;
 	}
 
 	public void purge() {
@@ -77,7 +75,7 @@ public class FragmentScheduler {
 		if(!this.fragments.containsKey(regionPos)) {
 			this.fragments.put(regionPos, LOADING_FRAGMENT);
 
-			executor.execute(() -> {
+			this.executor.execute(() -> {
 				try {
 					BPos center = this.listener.getManager().getCenterPos();
 

@@ -16,7 +16,7 @@ public class StrongholdIcon extends StaticIcon {
 
     public StrongholdIcon(MapContext context, int count) {
         super(context);
-        Stronghold stronghold = context.getFeatureOfType(Stronghold.class);
+        Stronghold stronghold = context.getSettings().getFeatureOfType(Stronghold.class);
 
         if(stronghold != null) {
             starts = stronghold.getStarts(this.getContext().getBiomeSource(), count, new JRand(0L));

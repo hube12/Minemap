@@ -2,6 +2,7 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
@@ -17,6 +18,7 @@ public class UserProfileConfig extends Config {
     @Expose protected MCVersion MC_VERSION;
     @Expose protected String STYLE;
     @Expose protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
+    @Expose protected Map<String, MapSettings> DEFAULT_MAP_SETTINGS = new LinkedHashMap<>();
 
     @Override
     public String getName() {
@@ -44,6 +46,10 @@ public class UserProfileConfig extends Config {
         return this.DIMENSIONS.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).map(Dimension::fromString).collect(Collectors.toList());
     }
 
+    public MapSettings getSettingsCopy(MCVersion version, Dimension dimension) {
+        return this.DEFAULT_MAP_SETTINGS.get(dimension.name).copyFor(version, dimension);
+    }
+
     public void setThreadCount(int threadCount) {
         this.THREAD_COUNT = threadCount;
         this.flush();
@@ -63,10 +69,16 @@ public class UserProfileConfig extends Config {
         this.flush();
     }
 
+    public void setDefaultSettings(Dimension dimension, MapSettings settings) {
+        this.DEFAULT_MAP_SETTINGS.put(dimension.name, settings.copy());
+        this.flush();
+    }
+
     public void setDimensionState(Dimension dimension, boolean state) {
         this.DIMENSIONS.put(dimension.name, state);
         this.flush();
     }
+
 
     public void flush() {
         try {
@@ -84,6 +96,8 @@ public class UserProfileConfig extends Config {
 
         for(Dimension dimension: Dimension.values()) {
             this.DIMENSIONS.put(dimension.name, true);
+            this.DEFAULT_MAP_SETTINGS.put(dimension.name, new MapSettings(dimension));
         }
     }
+
 }

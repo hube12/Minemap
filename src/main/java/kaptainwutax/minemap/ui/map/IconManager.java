@@ -20,7 +20,8 @@ public class IconManager {
 
     public IconManager(MapContext context) {
         this.context = context;
-        this.renderers = context.getFeatures().stream().collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
+        this.renderers = context.getSettings().getAllFeatures().stream()
+                .collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
 
         this.override(
                 SpawnIcon::new, RegionIcon::new, MineshaftIcon::new,

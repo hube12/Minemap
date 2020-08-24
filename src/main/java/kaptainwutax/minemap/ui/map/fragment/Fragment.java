@@ -78,7 +78,7 @@ public class Fragment {
 
     public void drawFeatures(Graphics graphics, DrawInfo info) {
         for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
-            if(!this.context.isActive(entry.getKey()) || entry.getValue() == null)continue;
+            if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
 
             for(BPos pos: entry.getValue()) {
                 this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos);
@@ -109,15 +109,22 @@ public class Fragment {
     }
 
     private void refreshImageCache() {
-        if(this.imageCache != null && this.context.getBiomes().equals(this.activeBiomesCache))return;
+        if(this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache))return;
 
         int scaledSize = this.biomeCache.length;
-        this.activeBiomesCache = this.context.getBiomes();
+        this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
         this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
 
         for(int x = 0; x < scaledSize; x++) {
             for(int z = 0; z < scaledSize; z++) {
-                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), this.biomeCache[x][z]);
+                Biome biome = Biome.REGISTRY.get(this.biomeCache[x][z]);
+                if(biome == null)continue;
+                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), biome);
+
+                if(!this.activeBiomesCache.contains(biome)) {
+                    color = color.darker().darker().darker().darker().darker().darker();
+                }
+
                 this.imageCache.setRGB(x, z, color == null ? Color.BLACK.getRGB() : color.getRGB());
             }
         }
@@ -126,7 +133,7 @@ public class Fragment {
     private void generateFeatures() {
         this.features = new HashMap<>();
 
-        for(Feature<?, ?> feature: this.context.getFeatures()) {
+        for(Feature<?, ?> feature: this.context.getSettings().getAllFeatures()) {
             List<BPos> positions = this.context.getIconManager().getPositions(feature, this);
 
             positions.removeIf(pos -> {

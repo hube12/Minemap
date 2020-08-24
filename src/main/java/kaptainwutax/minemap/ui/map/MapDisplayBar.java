@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.map;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
+import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
@@ -20,12 +21,55 @@ public class MapDisplayBar extends JPanel {
     private JLabel biomeDisplay;
     private Dropdown<Integer> layerDropdown;
     private JButton pinButton;
+    private ScrollPane scrollPane;
 
     public MapDisplayBar(MapPanel panel) {
         this.panel = panel;
+        this.addPinButton();
         this.addBiomeDisplay();
         this.addLayerDropdown();
-        this.addUtilityButtons();
+        this.addFeatureToggles();
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+    }
+
+    private void addFeatureToggles() {
+        this.scrollPane = new ScrollPane();
+        this.scrollPane.getVAdjustable().setUnitIncrement(40);
+
+        JPanel toggles = new JPanel();
+        this.scrollPane.add(toggles);
+
+        toggles.setLayout(new BoxLayout(toggles, BoxLayout.Y_AXIS));
+
+        MapSettings settings = this.panel.getContext().getSettings();
+
+        for(Feature<?, ?> feature: settings.getAllFeatures()) {
+            Checkbox checkBox = new Checkbox(feature.getName());
+            checkBox.setState(settings.isActive(feature));
+
+            checkBox.addItemListener(e -> {
+                settings.setState(feature, checkBox.getState());
+                this.panel.repaint();
+            });
+
+            toggles.add(checkBox, Component.CENTER_ALIGNMENT);
+        }
+
+        for(Biome biome: settings.getAllBiomes()) {
+            Checkbox checkBox = new Checkbox(biome.getName());
+            checkBox.setState(settings.isActive(biome));
+
+
+
+            checkBox.addItemListener(e -> {
+                settings.setState(biome, checkBox.getState());
+                this.panel.repaint();
+            });
+
+            toggles.add(checkBox, Component.CENTER_ALIGNMENT);
+        }
+
+        this.add(scrollPane);
     }
 
     private void addBiomeDisplay() {
@@ -38,6 +82,7 @@ public class MapDisplayBar extends JPanel {
         this.biomeDisplay.setForeground(Color.WHITE);
         this.biomeDisplay.setHorizontalTextPosition(SwingConstants.LEFT);
         //this.biomeDisplay.setFont(new Font(".SF NS Text", Font.BOLD, 14));
+        this.biomeDisplay.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.biomeDisplay);
     }
 
@@ -51,10 +96,11 @@ public class MapDisplayBar extends JPanel {
             this.panel.restart();
         });
 
+        this.layerDropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.layerDropdown);
     }
 
-    private void addUtilityButtons() {
+    private void addPinButton() {
         this.pinButton = new JButton("Pin");
 
         this.pinButton.addMouseListener(Events.Mouse.onPressed(e -> {
@@ -63,6 +109,7 @@ public class MapDisplayBar extends JPanel {
             this.pinButton.setText(newState ? "Unpin" : "Pin");
         }));
 
+        this.pinButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.pinButton);
     }
 

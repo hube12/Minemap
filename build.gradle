@@ -1,12 +1,14 @@
 plugins {
     id 'java'
     id "application"
+    id "com.github.johnrengelman.shadow" version "5.0.0"
 }
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
 
     maven {
         url "https://jitpack.io"
@@ -25,18 +27,10 @@ application {
     mainClassName = "kaptainwutax.minemap.MineMap"
 }
 
-task fatJar(type: Jar) {
-    manifest {
-        attributes(
-            "Main-Class": "kaptainwutax.minemap.MineMap"
-        )
-    }
+shadowJar {
+    archiveFileName = "MineMap.jar"
 
-    from {
-        configurations.runtimeClasspath.collect {
-            it.isDirectory() ? it : zipTree(it)
-        }
+    minimize() {
+        exclude(dependency("javax:swing:*"))
     }
-
-    with jar
 }

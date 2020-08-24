@@ -32,8 +32,9 @@ public class MapPanel extends JPanel {
 		this.displayBar = new MapDisplayBar(this);
 
 		this.setBackground(Color.BLACK);
-		this.add(this.displayBar);
 
+		this.setLayout(new BorderLayout());
+		this.add(this.displayBar, BorderLayout.WEST);
 		this.restart();
 	}
 
