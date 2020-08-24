@@ -129,7 +129,7 @@ public class Fragment {
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), biome);
 
                 if(!this.activeBiomesCache.contains(biome)) {
-                    color = color.darker().darker().darker().darker().darker().darker();
+                    color = color.darker().darker().darker().darker().darker();
                 }
 
                 this.imageCache.setRGB(x, z, color == null ? Color.BLACK.getRGB() : color.getRGB());
