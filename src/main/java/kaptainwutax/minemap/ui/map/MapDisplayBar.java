@@ -12,6 +12,7 @@ import kaptainwutax.seedutils.mc.pos.RPos;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class MapDisplayBar extends JPanel {
@@ -59,8 +60,6 @@ public class MapDisplayBar extends JPanel {
             Checkbox checkBox = new Checkbox(biome.getName());
             checkBox.setState(settings.isActive(biome));
 
-
-
             checkBox.addItemListener(e -> {
                 settings.setState(biome, checkBox.getState());
                 this.panel.repaint();
@@ -69,7 +68,29 @@ public class MapDisplayBar extends JPanel {
             toggles.add(checkBox, Component.CENTER_ALIGNMENT);
         }
 
-        this.add(scrollPane);
+        JButton hideAll = new JButton("Hide All");
+        JButton showAll = new JButton("Show All");
+
+        hideAll.addMouseListener(Events.Mouse.onPressed(e -> {
+            settings.getAllBiomes().forEach(settings::hide);
+            settings.getAllFeatures().forEach(f -> settings.setState(f, false));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof Checkbox).map(c -> (Checkbox)c).forEach(c -> c.setState(false));
+            this.panel.repaint();
+        }));
+
+        showAll.addMouseListener(Events.Mouse.onPressed(e -> {
+            settings.getAllBiomes().forEach(settings::show);
+            settings.getAllFeatures().forEach(f -> settings.setState(f, true));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof Checkbox).map(c -> (Checkbox)c).forEach(c -> c.setState(true));
+            this.panel.repaint();
+        }));
+
+        hideAll.setAlignmentX(Component.CENTER_ALIGNMENT);
+        showAll.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        this.add(this.scrollPane);
+        this.add(hideAll);
+        this.add(showAll);
     }
 
     private void addBiomeDisplay() {

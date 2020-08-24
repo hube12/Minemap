@@ -29,8 +29,4 @@ application {
 
 shadowJar {
     archiveFileName = "MineMap.jar"
-
-    minimize() {
-        exclude(dependency("javax:swing:*"))
-    }
 }
