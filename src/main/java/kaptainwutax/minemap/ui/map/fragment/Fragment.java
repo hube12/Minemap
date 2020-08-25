@@ -110,8 +110,8 @@ public class Fragment {
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(DrawInfo info) {
         if(this.mousePos == null)return Collections.emptyMap();
-        double distanceX = ((double)this.regionSize / info.width) * (StaticIcon.ICON_SIZE / 2.0D);
-        double distanceZ = ((double)this.regionSize / info.height) * (StaticIcon.ICON_SIZE / 2.0D);
+        double distanceX = (this.regionSize / (double)info.width) * (StaticIcon.ICON_SIZE / 2.0D);
+        double distanceZ = (this.regionSize / (double)info.height) * (StaticIcon.ICON_SIZE / 2.0D);
 
         Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
 

@@ -71,10 +71,6 @@ public class MapDisplayBar extends JPanel {
             }
         };
 
-        toggles.add(showBiomes);
-        toggles.add(showFeatures);
-        toggles.add(showGrid);
-
         showBiomes.addItemListener(e -> {
             settings.showBiomes = showBiomes.isSelected();
             this.panel.repaint();
@@ -89,6 +85,10 @@ public class MapDisplayBar extends JPanel {
             settings.showGrid = showGrid.isSelected();
             this.panel.repaint();
         });
+
+        toggles.add(showBiomes);
+        toggles.add(showFeatures);
+        toggles.add(showGrid);
 
         //=====================================================================================
 
@@ -138,21 +138,22 @@ public class MapDisplayBar extends JPanel {
         hideAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::hide);
             settings.getAllFeatures().forEach(settings::hide);
-            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
-                    .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(false));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
+                    .map(c -> (FeatureEntry)c).forEach(c -> c.getCheckBox().setSelected(false));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
+                    .map(c -> (BiomeEntry)c).forEach(c -> c.getCheckBox().setSelected(false));
             this.panel.repaint();
         }));
 
         showAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::show);
             settings.getAllFeatures().forEach(settings::show);
-            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
-                    .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(true));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
+                    .map(c -> (FeatureEntry)c).forEach(c -> c.getCheckBox().setSelected(true));
+            Arrays.stream(toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
+                    .map(c -> (BiomeEntry)c).forEach(c -> c.getCheckBox().setSelected(true));
             this.panel.repaint();
         }));
-
-        hideAll.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showAll.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //=====================================================================================
 
@@ -169,16 +170,21 @@ public class MapDisplayBar extends JPanel {
             toggles.repaint();
         }));
 
-        set.setAlignmentX(Component.CENTER_ALIGNMENT);
-        reset.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //=====================================================================================
+        JPanel duo = new JPanel();
+        duo.add(showAll);
+        duo.add(hideAll);
+        duo.setLayout(new BoxLayout(duo, BoxLayout.X_AXIS));
 
+        JPanel duo2 = new JPanel();
+        duo2.add(set);
+        duo2.add(reset);
+        duo2.setLayout(new BoxLayout(duo2, BoxLayout.X_AXIS));
         //=====================================================================================
 
         this.add(panelPane);
-        this.add(hideAll);
-        this.add(showAll);
-        this.add(set);
-        this.add(reset);
+        this.add(duo);
+        this.add(duo2);
     }
 
     private void addBiomeDisplay() {
