@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.BiomeEntry;
@@ -11,6 +12,9 @@ import kaptainwutax.minemap.ui.map.MapSettings;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.HierarchyBoundsAdapter;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.util.Arrays;
 
 public class SettingsSidebar extends JPanel {
@@ -39,7 +43,16 @@ public class SettingsSidebar extends JPanel {
         this.toggles.setLayout(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(this.toggles);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-        scrollPane.setPreferredSize(new Dimension(300, 600));
+
+        scrollPane.addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
+            @Override
+            public void ancestorResized(HierarchyEvent e) {
+                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 200));
+                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 200));
+                scrollPane.repaint();
+            }
+        });
+
         this.add(scrollPane);
     }
 

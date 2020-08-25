@@ -4,7 +4,6 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
-import javax.swing.*;
 import java.awt.*;
 
 public class MapManager {
