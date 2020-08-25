@@ -5,6 +5,7 @@ import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -44,6 +45,8 @@ public class MapDisplayBar extends JPanel {
 
         MapSettings settings = this.panel.getContext().getSettings();
 
+        //=====================================================================================
+
         JCheckBox showBiomes = new JCheckBox("Show Biomes");
         JCheckBox showFeatures = new JCheckBox("Show Features");
         JCheckBox showGrid = new JCheckBox("Show Grid");
@@ -69,8 +72,17 @@ public class MapDisplayBar extends JPanel {
         showBiomes.setSelected(true);
         showFeatures.setSelected(true);
 
+        //=====================================================================================
+
         for(Feature<?, ?> feature: settings.getAllFeatures()) {
-            JCheckBox checkBox = new JCheckBox(feature.getName());
+            JCheckBox checkBox = new JCheckBox(feature.getName()) {
+                @Override
+                public void paint(Graphics g) {
+                    this.setSelected(settings.isActive(feature));
+                    super.paint(g);
+                }
+            };
+
             checkBox.setSelected(settings.isActive(feature));
 
             checkBox.addItemListener(e -> {
@@ -82,7 +94,14 @@ public class MapDisplayBar extends JPanel {
         }
 
         for(Biome biome: settings.getAllBiomes()) {
-            JCheckBox checkBox = new JCheckBox(biome.getName());
+            JCheckBox checkBox = new JCheckBox(biome.getName()) {
+                @Override
+                public void paint(Graphics g) {
+                    this.setSelected(settings.isActive(biome));
+                    super.paint(g);
+                }
+            };
+
             checkBox.setSelected(settings.isActive(biome));
 
             checkBox.addItemListener(e -> {
@@ -92,6 +111,8 @@ public class MapDisplayBar extends JPanel {
 
             toggles.add(checkBox, Component.CENTER_ALIGNMENT);
         }
+
+        //=====================================================================================
 
         JButton hideAll = new JButton("Hide All");
         JButton showAll = new JButton("Show All");
@@ -115,12 +136,34 @@ public class MapDisplayBar extends JPanel {
         hideAll.setAlignmentX(Component.CENTER_ALIGNMENT);
         showAll.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        //=====================================================================================
+
+        JButton set = new JButton("Set as Default");
+        JButton reset = new JButton("Reset to Default");
+
+        set.addMouseListener(Events.Mouse.onPressed(e -> {
+            Configs.USER_PROFILE.setDefaultSettings(this.panel.getContext().dimension, settings);
+        }));
+
+        reset.addMouseListener(Events.Mouse.onPressed(e -> {
+            settings.set(Configs.USER_PROFILE.getSettingsCopy(this.panel.getContext().version, this.panel.getContext().dimension));
+            this.panel.repaint();
+            this.scrollPane.repaint();
+        }));
+
+        set.setAlignmentX(Component.CENTER_ALIGNMENT);
+        reset.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        //=====================================================================================
+
         this.add(showBiomes);
         this.add(showFeatures);
         this.add(showGrid);
         this.add(this.scrollPane);
         this.add(hideAll);
         this.add(showAll);
+        this.add(set);
+        this.add(reset);
     }
 
     private void addBiomeDisplay() {

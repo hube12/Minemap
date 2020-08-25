@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -31,7 +32,7 @@ public class MapPanel extends JPanel {
 		this.manager = new MapManager(this);
 		this.displayBar = new MapDisplayBar(this);
 
-		this.setBackground(Color.BLACK);
+		this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
 
 		this.setLayout(new BorderLayout());
 		this.add(this.displayBar, BorderLayout.WEST);

@@ -177,6 +177,17 @@ public class MapSettings {
         return this.biomeStates.getOrDefault(biome, false);
     }
 
+    public MapSettings set(MapSettings other) {
+        this.showBiomes = other.showBiomes;
+        this.showFeatures = other.showFeatures;
+        this.showGrid = other.showGrid;
+        this.getAllFeatures().forEach(this::hide);
+        this.getAllBiomes().forEach(this::hide);
+        other.getActiveBiomes().forEach(this::show);
+        other.getActiveFeatures().forEach(this::show);
+        return this;
+    }
+
     public MapSettings copy() {
         return this.copyFor(this.version, this.dimension);
     }
