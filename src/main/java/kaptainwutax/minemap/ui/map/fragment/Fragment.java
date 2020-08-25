@@ -109,13 +109,15 @@ public class Fragment {
     }
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(DrawInfo info) {
-        if(this.mousePos == null)return Collections.emptyMap();
+        if(this.mousePos == null || !this.context.getSettings().showFeatures)return Collections.emptyMap();
         double distanceX = (this.regionSize / (double)info.width) * (StaticIcon.ICON_SIZE / 2.0D);
         double distanceZ = (this.regionSize / (double)info.height) * (StaticIcon.ICON_SIZE / 2.0D);
 
         Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
 
         for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
+            if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
+
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
 
             newList.removeIf(pos -> {

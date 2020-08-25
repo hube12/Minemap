@@ -19,22 +19,20 @@ public class MapPanel extends JPanel {
 
 	private final MapContext context;
 	private final MapManager manager;
-
-	public final MapDisplayBar displayBar;
+	public final MapSideBar displayBar;
 
 	public final int threadCount;
 	public FragmentScheduler scheduler;
 
 	public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
 		this.threadCount = threadCount;
+		this.setLayout(new BorderLayout());
 
 		this.context = new MapContext(version, dimension, worldSeed);
 		this.manager = new MapManager(this);
-		this.displayBar = new MapDisplayBar(this);
+		this.displayBar = new MapSideBar(this);
 
 		this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
-
-		this.setLayout(new BorderLayout());
 		this.add(this.displayBar, BorderLayout.WEST);
 		this.restart();
 	}

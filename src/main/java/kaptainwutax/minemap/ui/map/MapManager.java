@@ -4,6 +4,7 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class MapManager {
@@ -40,7 +41,7 @@ public class MapManager {
             int x = pos.getX();
             int z = pos.getZ();
 
-            this.panel.displayBar.updateBiomeDisplay(x, z);
+            this.panel.displayBar.tooltip.updateBiomeDisplay(x, z);
 
             this.panel.scheduler.forEachFragment(fragment -> {
                 fragment.onHovered(pos.getX(), pos.getZ());
