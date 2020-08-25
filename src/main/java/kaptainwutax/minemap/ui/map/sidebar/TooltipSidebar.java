@@ -2,24 +2,20 @@ package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
-import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.stream.IntStream;
 
 public class TooltipSidebar extends JPanel {
 
     private final MapPanel map;
 
     private JLabel biomeDisplay;
-    private Dropdown<Integer> layerDropdown;
     private TooltipPanel tooltip;
     private JButton pinButton;
     public JButton settingsButton;
@@ -27,11 +23,10 @@ public class TooltipSidebar extends JPanel {
     public TooltipSidebar(MapPanel map) {
         this.map = map;
         this.addBiomeDisplay();
-        this.addLayerDropdown();
         this.addTooltip();
         this.addPinSettingsButton();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBackground(new Color(0, 0, 0, 0));
+        //this.setBackground(new Color(0, 0, 0, 0));
     }
 
     private void addBiomeDisplay() {
@@ -40,26 +35,12 @@ public class TooltipSidebar extends JPanel {
         this.biomeDisplay.setOpaque(true);
         this.biomeDisplay.setVerticalAlignment(SwingConstants.TOP);
         this.biomeDisplay.setHorizontalAlignment(SwingConstants.LEFT);
-        this.biomeDisplay.setBackground(new Color(0, 0, 0, 127));
+        //this.biomeDisplay.setBackground(new Color(0, 0, 0, 127));
         this.biomeDisplay.setForeground(Color.WHITE);
         this.biomeDisplay.setHorizontalTextPosition(SwingConstants.LEFT);
-        this.biomeDisplay.setFont(new Font(".SF NS Text", Font.BOLD, 14));
+        //this.biomeDisplay.setFont(new Font(".SF NS Text", Font.BOLD, 14));
         this.biomeDisplay.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.biomeDisplay);
-    }
-
-    private void addLayerDropdown() {
-        BiomeSource source = this.map.getContext().getBiomeSource();
-        this.layerDropdown = new Dropdown<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
-        this.layerDropdown.selectIfPresent(this.map.getContext().getLayerId());
-
-        this.layerDropdown.addActionListener(e1 -> {
-            this.map.getContext().setLayerId(this.layerDropdown.getSelected());
-            this.map.restart();
-        });
-
-        this.layerDropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(this.layerDropdown);
     }
 
     private void addTooltip() {

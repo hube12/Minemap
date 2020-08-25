@@ -1,11 +1,13 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.BiomeEntry;
+import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
@@ -13,15 +15,16 @@ import kaptainwutax.minemap.ui.map.MapSettings;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.HierarchyBoundsAdapter;
-import java.awt.event.HierarchyBoundsListener;
 import java.awt.event.HierarchyEvent;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class SettingsSidebar extends JPanel {
 
     private final MapPanel map;
     private final MapSettings settings;
 
+    private Dropdown<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
     public JButton closeButton;
 
@@ -29,7 +32,8 @@ public class SettingsSidebar extends JPanel {
         this.map = map;
         this.settings = this.map.getContext().getSettings();
 
-        this.initialize();
+        this.addLayerDropdown();
+        this.addScrollPane();
         this.addGlobalToggles();
         this.addFeatureToggles();
         this.addBiomeToggles();
@@ -39,7 +43,7 @@ public class SettingsSidebar extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     }
 
-    private void initialize() {
+    private void addScrollPane() {
         this.toggles.setLayout(new GridLayout(0, 1));
         JScrollPane scrollPane = new JScrollPane(this.toggles);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
@@ -47,13 +51,27 @@ public class SettingsSidebar extends JPanel {
         scrollPane.addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
             @Override
             public void ancestorResized(HierarchyEvent e) {
-                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 200));
-                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 200));
+                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
+                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
                 scrollPane.repaint();
             }
         });
 
         this.add(scrollPane);
+    }
+
+    private void addLayerDropdown() {
+        BiomeSource source = this.map.getContext().getBiomeSource();
+        this.layerDropdown = new Dropdown<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
+        this.layerDropdown.selectIfPresent(this.map.getContext().getLayerId());
+
+        this.layerDropdown.addActionListener(e1 -> {
+            this.map.getContext().setLayerId(this.layerDropdown.getSelected());
+            this.map.restart();
+        });
+
+        this.layerDropdown.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(this.layerDropdown);
     }
 
     private void addGlobalToggles() {
