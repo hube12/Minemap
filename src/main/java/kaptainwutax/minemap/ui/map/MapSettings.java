@@ -55,7 +55,8 @@ public class MapSettings {
                 ));
 
         this.biomeStates = Biome.REGISTRY.values().stream()
-                .filter(b -> b.getDimension() == dimension)
+                .filter(b -> b.getDimension() == this.dimension)
+                .filter(b -> b.getVersion().isOlderOrEqualTo(this.version))
                 .collect(Collectors.toMap(
                         e -> e,
                         e -> this.biomes.getOrDefault(e.getName(), true)

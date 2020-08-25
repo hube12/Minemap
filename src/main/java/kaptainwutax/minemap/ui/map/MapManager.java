@@ -27,11 +27,11 @@ public class MapManager {
         this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
-            int dx = e.getX() - mousePointer.x;
-            int dy = e.getY() - mousePointer.y;
-            mousePointer = e.getPoint();
-            centerX += dx;
-            centerY += dy;
+            int dx = e.getX() - this.mousePointer.x;
+            int dy = e.getY() - this.mousePointer.y;
+            this.mousePointer = e.getPoint();
+            this.centerX += dx;
+            this.centerY += dy;
             this.panel.repaint();
         }));
 
@@ -41,17 +41,17 @@ public class MapManager {
             int z = pos.getZ();
 
             this.panel.displayBar.updateBiomeDisplay(x, z);
-            this.panel.repaint();
 
             this.panel.scheduler.forEachFragment(fragment -> {
                 fragment.onHovered(pos.getX(), pos.getZ());
             });
+
+            this.panel.repaint();
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
-            mousePointer = e.getPoint();
+            this.mousePointer = e.getPoint();
             this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-            this.panel.repaint();
         }));
 
         this.panel.addMouseListener(Events.Mouse.onReleased(mouseEvent -> {
