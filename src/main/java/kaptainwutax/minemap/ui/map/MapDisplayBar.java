@@ -98,7 +98,7 @@ public class MapDisplayBar extends JPanel {
 
         hideAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::hide);
-            settings.getAllFeatures().forEach(f -> settings.setState(f, false));
+            settings.getAllFeatures().forEach(settings::hide);
             Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
                     .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(false));
             this.panel.repaint();
@@ -106,7 +106,7 @@ public class MapDisplayBar extends JPanel {
 
         showAll.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.getAllBiomes().forEach(settings::show);
-            settings.getAllFeatures().forEach(f -> settings.setState(f, true));
+            settings.getAllFeatures().forEach(settings::show);
             Arrays.stream(toggles.getComponents()).filter(c -> c instanceof JCheckBox)
                     .map(c -> (JCheckBox)c).forEach(c -> c.setSelected(true));
             this.panel.repaint();

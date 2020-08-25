@@ -24,7 +24,7 @@ public class IconManager {
                 .collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
 
         this.override(
-                SpawnIcon::new, RegionIcon::new, MineshaftIcon::new,
+                SpawnIcon::new, RegionIcon::new, MineshaftIcon::new, SlimeIcon::new,
                 EndGatewayIcon::new, c -> new StrongholdIcon(c, 128)
         );
     }

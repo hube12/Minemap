@@ -81,6 +81,22 @@ public class MapSettings {
         return this;
     }
 
+    public final MapSettings hide(Feature<?, ?>... features) {
+        for(Feature<?, ?> feature: features) {
+            this.setState(feature, false);
+        }
+
+        return this;
+    }
+
+    public final MapSettings show(Feature<?, ?>... features) {
+        for(Feature<?, ?> feature: features) {
+            this.setState(feature, true);
+        }
+
+        return this;
+    }
+
     @SafeVarargs
     public final MapSettings hide(Class<? extends Feature<?, ?>>... features) {
         for(Class<? extends Feature<?, ?>> feature: features) {

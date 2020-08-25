@@ -61,22 +61,6 @@ public class MenuBar extends JMenuBar {
 
 	private void addWorldMenu() {
 		JMenu worldMenu = new JMenu("World");
-		JCheckBoxMenuItem showGrid = new JCheckBoxMenuItem("Show Grid");
-
-		showGrid.addChangeListener(e -> {
-			//TODO: grid toggle
-			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map != null)map.repaint();
-		});
-
-		JCheckBoxMenuItem showStructures = new JCheckBoxMenuItem("Show Structures");
-		showStructures.setState(true);
-
-		showStructures.addChangeListener(e -> {
-			//TODO: structure toggle
-			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map != null)map.repaint();
-		});
 
 		JMenuItem coordHopper = new JMenuItem();
 		coordHopper.setText("Go to Coordinates");
@@ -88,8 +72,6 @@ public class MenuBar extends JMenuBar {
 
 		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 		worldMenu.add(coordHopper);
-		worldMenu.add(showGrid);
-		worldMenu.add(showStructures);
 		this.add(worldMenu);
 	}
 

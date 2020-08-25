@@ -1,6 +1,5 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
@@ -10,16 +9,22 @@ import java.awt.*;
 public class MapManager {
 
     private final MapPanel panel;
+    public final int blocksPerFragment;
+    public double pixelsPerFragment;
 
-    public final int blocksPerFragment = 512;
-    public double pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
-    public double centerX = 0.0D;
-    public double centerY = 0.0D;
+    public double centerX;
+    public double centerY;
 
     public Point mousePointer;
 
     public MapManager(MapPanel panel) {
+        this(panel, 512);
+    }
+
+    public MapManager(MapPanel panel, int blocksPerFragment) {
         this.panel = panel;
+        this.blocksPerFragment = blocksPerFragment;
+        this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
             int dx = e.getX() - mousePointer.x;
@@ -70,10 +75,6 @@ public class MapManager {
             this.pixelsPerFragment = newPixelsPerFragment;
             this.panel.repaint();
         });
-
-        this.panel.addMouseListener(Events.Mouse.onClicked(e -> {
-            this.panel.getContext().getSettings().hide(Biome.PLAINS, Biome.DESERT);
-        }));
     }
 
     public Vec3i getScreenSize() {
@@ -96,8 +97,8 @@ public class MapManager {
         Vec3i screenSize = this.getScreenSize();
         double x = (mouseX - screenSize.getX() / 2.0D - centerX) / screenSize.getX();
         double y = (mouseY - screenSize.getZ() / 2.0D - centerY) / screenSize.getZ();
-        double blocksPerWidth = (screenSize.getX() / pixelsPerFragment) * (double) blocksPerFragment;
-        double blocksPerHeight = (screenSize.getZ() / pixelsPerFragment) * (double) blocksPerFragment;
+        double blocksPerWidth = (screenSize.getX() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
+        double blocksPerHeight = (screenSize.getZ() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
         x *= blocksPerWidth;
         y *= blocksPerHeight;
         int xi = (int)Math.round(x);

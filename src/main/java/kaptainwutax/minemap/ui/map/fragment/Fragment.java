@@ -132,7 +132,7 @@ public class Fragment {
                     color = color.darker().darker().darker().darker().darker();
                 }
 
-                this.imageCache.setRGB(x, z, color == null ? Color.BLACK.getRGB() : color.getRGB());
+                this.imageCache.setRGB(x, z, color.getRGB());
             }
         }
     }
