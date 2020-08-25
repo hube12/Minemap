@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 public class MapSettings {
 
-    @Expose public boolean showBiomes;
-    @Expose public boolean showFeatures;
-    @Expose public boolean showGrid;
+    @Expose public boolean showBiomes = true;
+    @Expose public boolean showFeatures = true;
+    @Expose public boolean showGrid = false;
     @Expose private Map<String, Boolean> features;
     @Expose private Map<String, Boolean> biomes;
 
@@ -40,7 +40,7 @@ public class MapSettings {
 
         this.biomes = Biome.REGISTRY.values().stream()
                 .filter(b -> b.getDimension() == dimension).map(Biome::getName)
-                .collect(Collectors.toMap(e -> e, e -> Boolean.TRUE));
+                .collect(Collectors.toMap(e -> e, e -> true));
     }
 
     public MapSettings refresh() {
