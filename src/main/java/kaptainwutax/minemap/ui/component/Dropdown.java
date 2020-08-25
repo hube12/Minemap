@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.component;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -43,6 +44,11 @@ public class Dropdown<E> extends JComboBox<String> {
         for(Iterator<E> it = elements.iterator(); it.hasNext(); i++) {
             this.elements[i] = it.next();
         }
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+        return new Dimension(2000, 40);
     }
 
     public E getElement(int index) {

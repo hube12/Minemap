@@ -2,6 +2,7 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -44,7 +45,8 @@ public class UserProfileConfig extends Config {
     }
 
     public List<Dimension> getEnabledDimensions() {
-        return this.DIMENSIONS.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey).map(Dimension::fromString).collect(Collectors.toList());
+        return this.DIMENSIONS.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey)
+                .map(Dimension::fromString).collect(Collectors.toList());
     }
 
     public MapSettings getSettingsCopy(MCVersion version, Dimension dimension) {
@@ -98,7 +100,7 @@ public class UserProfileConfig extends Config {
         for(Dimension dimension: Dimension.values()) {
             this.DIMENSIONS.put(dimension.name, true);
             MapSettings settings = new MapSettings(dimension).refresh();
-            settings.hide(SlimeChunk.class);
+            settings.hide(SlimeChunk.class, Mineshaft.class);
             this.DEFAULT_MAP_SETTINGS.put(dimension.name, settings);
         }
     }

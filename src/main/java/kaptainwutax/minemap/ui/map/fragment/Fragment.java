@@ -6,15 +6,14 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapContext;
+import kaptainwutax.minemap.ui.map.icon.StaticIcon;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Fragment {
 
@@ -29,6 +28,7 @@ public class Fragment {
     private BufferedImage imageCache;
 
     private Map<Feature<?, ?>, List<BPos>> features;
+    private BPos mousePos;
 
     public Fragment(int blockX, int blockZ, int regionSize, MapContext context) {
         this.blockX = blockX;
@@ -91,6 +91,43 @@ public class Fragment {
                 this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos);
             }
         }
+
+        this.getHoveredFeatures(info).forEach((feature, positions) -> {
+            if(!this.context.getSettings().isActive(feature) || positions == null)return;
+            StaticIcon.ICON_SIZE = 38;
+
+            for(BPos pos: positions) {
+                this.context.getIconManager().render(graphics, info, feature, this, pos);
+            }
+        });
+
+        StaticIcon.ICON_SIZE = 24;
+    }
+
+    public void onHovered(int blockX, int blockZ) {
+        this.mousePos = this.isPosInFragment(blockX, blockZ) ? new BPos(blockX, 0, blockZ) : null;
+    }
+
+    public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(DrawInfo info) {
+        if(this.mousePos == null)return Collections.emptyMap();
+        double distanceX = ((double)this.regionSize / info.width) * (StaticIcon.ICON_SIZE / 2.0D);
+        double distanceZ = ((double)this.regionSize / info.height) * (StaticIcon.ICON_SIZE / 2.0D);
+
+        Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
+
+        for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
+            ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
+
+            newList.removeIf(pos -> {
+                int dx = Math.abs(this.mousePos.getX() - pos.getX());
+                int dz = Math.abs(this.mousePos.getZ() - pos.getZ());
+                return dx >= distanceX || dz >= distanceZ;
+            });
+
+            map.put(entry.getKey(), newList);
+        }
+
+        return map;
     }
 
     private void refreshBiomeCache() {
@@ -142,15 +179,19 @@ public class Fragment {
 
         for(Feature<?, ?> feature: this.context.getSettings().getAllFeatures()) {
             List<BPos> positions = this.context.getIconManager().getPositions(feature, this);
-
-            positions.removeIf(pos -> {
-                if(pos.getX() < this.getX() || pos.getX() >= this.getX() + this.getSize())return true;
-                if(pos.getZ() < this.getZ() || pos.getZ() >= this.getZ() + this.getSize())return true;
-                return false;
-            });
-
+            positions.removeIf(pos -> !this.isPosInFragment(pos));
             this.features.put(feature, positions);
         }
+    }
+
+    public boolean isPosInFragment(BPos pos) {
+        return this.isPosInFragment(pos.getX(), pos.getZ());
+    }
+
+    public boolean isPosInFragment(int blockX, int blockZ) {
+        if(blockX < this.getX() || blockX >= this.getX() + this.getSize())return false;
+        if(blockZ < this.getZ() || blockZ >= this.getZ() + this.getSize())return false;
+        return true;
     }
 
 }

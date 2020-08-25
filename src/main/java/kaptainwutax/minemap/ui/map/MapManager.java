@@ -36,12 +36,16 @@ public class MapManager {
         }));
 
         this.panel.addMouseMotionListener(Events.Mouse.onMoved(e -> {
-            BPos pos = getPos(e.getX(), e.getY());
+            BPos pos = this.getPos(e.getX(), e.getY());
             int x = pos.getX();
             int z = pos.getZ();
 
             this.panel.displayBar.updateBiomeDisplay(x, z);
             this.panel.repaint();
+
+            this.panel.scheduler.forEachFragment(fragment -> {
+                fragment.onHovered(pos.getX(), pos.getZ());
+            });
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {

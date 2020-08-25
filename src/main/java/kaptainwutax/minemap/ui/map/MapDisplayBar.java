@@ -7,7 +7,9 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.BiomeEntry;
 import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -23,11 +25,10 @@ public class MapDisplayBar extends JPanel {
     private JLabel biomeDisplay;
     private Dropdown<Integer> layerDropdown;
     private JButton pinButton;
-    private ScrollPane scrollPane;
 
     public MapDisplayBar(MapPanel panel) {
         this.panel = panel;
-        this.addPinButton();
+        //this.addPinButton();
         this.addBiomeDisplay();
         this.addLayerDropdown();
         this.addFeatureToggles();
@@ -35,24 +36,44 @@ public class MapDisplayBar extends JPanel {
     }
 
     private void addFeatureToggles() {
-        this.scrollPane = new ScrollPane();
-        this.scrollPane.getVAdjustable().setUnitIncrement(40);
-
         JPanel toggles = new JPanel();
-        this.scrollPane.add(toggles);
+        toggles.setLayout(new GridLayout(0, 1));
 
-        toggles.setLayout(new BoxLayout(toggles, BoxLayout.Y_AXIS));
+        JScrollPane panelPane = new JScrollPane(toggles);
+        panelPane.getVerticalScrollBar().setUnitIncrement(20);
+        panelPane.setPreferredSize(new Dimension(300, 300));
 
         MapSettings settings = this.panel.getContext().getSettings();
 
         //=====================================================================================
 
-        JCheckBox showBiomes = new JCheckBox("Show Biomes");
-        JCheckBox showFeatures = new JCheckBox("Show Features");
-        JCheckBox showGrid = new JCheckBox("Show Grid");
-        showBiomes.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showFeatures.setAlignmentX(Component.CENTER_ALIGNMENT);
-        showGrid.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JCheckBox showBiomes = new JCheckBox("Show Biomes") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                this.setSelected(settings.showBiomes);
+                super.paintComponent(g);
+            }
+        };
+
+        JCheckBox showFeatures = new JCheckBox("Show Features") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                this.setSelected(settings.showFeatures);
+                super.paintComponent(g);
+            }
+        };
+
+        JCheckBox showGrid = new JCheckBox("Show Grid") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                this.setSelected(settings.showGrid);
+                super.paintComponent(g);
+            }
+        };
+
+        toggles.add(showBiomes);
+        toggles.add(showFeatures);
+        toggles.add(showGrid);
 
         showBiomes.addItemListener(e -> {
             settings.showBiomes = showBiomes.isSelected();
@@ -69,47 +90,44 @@ public class MapDisplayBar extends JPanel {
             this.panel.repaint();
         });
 
-        showBiomes.setSelected(true);
-        showFeatures.setSelected(true);
-
         //=====================================================================================
 
         for(Feature<?, ?> feature: settings.getAllFeatures()) {
-            JCheckBox checkBox = new JCheckBox(feature.getName()) {
+            FeatureEntry entry = new FeatureEntry(feature) {
                 @Override
-                public void paint(Graphics g) {
-                    this.setSelected(settings.isActive(feature));
-                    super.paint(g);
+                public void paintComponent(Graphics g) {
+                    this.getCheckBox().setSelected(settings.isActive(feature));
+                    super.paintComponent(g);
                 }
             };
 
-            checkBox.setSelected(settings.isActive(feature));
+            entry.getCheckBox().setSelected(settings.isActive(feature));
 
-            checkBox.addItemListener(e -> {
-                settings.setState(feature, checkBox.isSelected());
+            entry.getCheckBox().addItemListener(e -> {
+                settings.setState(feature, entry.getCheckBox().isSelected());
                 this.panel.repaint();
             });
 
-            toggles.add(checkBox, Component.CENTER_ALIGNMENT);
+            toggles.add(entry);
         }
 
         for(Biome biome: settings.getAllBiomes()) {
-            JCheckBox checkBox = new JCheckBox(biome.getName()) {
+            BiomeEntry entry = new BiomeEntry(biome) {
                 @Override
-                public void paint(Graphics g) {
-                    this.setSelected(settings.isActive(biome));
-                    super.paint(g);
+                public void paintComponent(Graphics g) {
+                    this.getCheckBox().setSelected(settings.isActive(biome));
+                    super.paintComponent(g);
                 }
             };
 
-            checkBox.setSelected(settings.isActive(biome));
+            entry.getCheckBox().setSelected(settings.isActive(biome));
 
-            checkBox.addItemListener(e -> {
-                settings.setState(biome, checkBox.isSelected());
+            entry.getCheckBox().addItemListener(e -> {
+                settings.setState(biome, entry.getCheckBox().isSelected());
                 this.panel.repaint();
             });
 
-            toggles.add(checkBox, Component.CENTER_ALIGNMENT);
+            toggles.add(entry);
         }
 
         //=====================================================================================
@@ -148,7 +166,7 @@ public class MapDisplayBar extends JPanel {
         reset.addMouseListener(Events.Mouse.onPressed(e -> {
             settings.set(Configs.USER_PROFILE.getSettingsCopy(this.panel.getContext().version, this.panel.getContext().dimension));
             this.panel.repaint();
-            this.scrollPane.repaint();
+            toggles.repaint();
         }));
 
         set.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -156,10 +174,7 @@ public class MapDisplayBar extends JPanel {
 
         //=====================================================================================
 
-        this.add(showBiomes);
-        this.add(showFeatures);
-        this.add(showGrid);
-        this.add(this.scrollPane);
+        this.add(panelPane);
         this.add(hideAll);
         this.add(showAll);
         this.add(set);

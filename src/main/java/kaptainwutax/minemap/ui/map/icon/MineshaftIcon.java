@@ -27,7 +27,7 @@ public class MineshaftIcon extends StaticIcon {
                 Feature.Data<Mineshaft> data = ((Mineshaft)feature).at(x >> 4, z >> 4);
                 if(!data.testStart(this.getContext().worldSeed, new ChunkRand()))continue;
                 if(!data.testBiome(this.getContext().getBiomeSource()))continue;
-                positions.add(new BPos((data.chunkX) << 4 + 9, 0, (data.chunkZ << 4) + 9));
+                positions.add(new BPos((data.chunkX << 4) + 9, 0, (data.chunkZ << 4) + 9));
             }
         }
     }

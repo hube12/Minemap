@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.function.Consumer;
 
 public class FragmentScheduler {
 
@@ -35,6 +36,10 @@ public class FragmentScheduler {
 	public FragmentScheduler(MapPanel listener, int threadCount) {
 		this.listener = listener;
 		this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadCount);
+	}
+
+	public void forEachFragment(Consumer<Fragment> consumer) {
+		this.fragments.values().forEach(consumer);
 	}
 
 	public void terminate() {
