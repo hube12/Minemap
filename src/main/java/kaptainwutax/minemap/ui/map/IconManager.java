@@ -37,6 +37,14 @@ public class IconManager {
         return this.override(c -> NullIcon.INSTANCE);
     }
 
+    public IconRenderer getFor(Feature<?, ?> feature) {
+        return this.renderers.get(feature);
+    }
+
+    public IconRenderer getFor(Class<? extends Feature<?, ?>> feature) {
+        return this.getFor(this.context.getSettings().getFeatureOfType(feature));
+    }
+
     @SafeVarargs
     public final IconManager override(Function<MapContext, IconRenderer>... renderers) {
         for(Function<MapContext, IconRenderer> factory: renderers) {

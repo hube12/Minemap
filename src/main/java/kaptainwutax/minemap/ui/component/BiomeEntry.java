@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.util.Str;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ public class BiomeEntry extends JPanel {
     private final JComponent colorView;
 
     public BiomeEntry(Biome biome) {
-        this.checkBox = new JCheckBox(biome.getName());
+        this.checkBox = new JCheckBox(Str.formatName(biome.getName()));
 
         this.colorView = new JComponent() {
             @Override

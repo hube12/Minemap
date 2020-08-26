@@ -4,6 +4,7 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import javax.swing.*;
@@ -56,7 +57,7 @@ public class TooltipPanel extends JPanel {
                 }
             };
 
-            this.positionText = new JLabel(feature.getName() + " at (" + pos.getX() + ", " + pos.getZ() + ")");
+            this.positionText = new JLabel(" [" + pos.getX() + ", " + pos.getZ() + "] " + Str.formatName(feature.getName()));
 
             this.add(this.iconView);
             this.add(this.positionText);

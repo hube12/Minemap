@@ -3,6 +3,7 @@ package kaptainwutax.minemap.config;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
+import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -100,7 +101,7 @@ public class UserProfileConfig extends Config {
         for(Dimension dimension: Dimension.values()) {
             this.DIMENSIONS.put(dimension.name, true);
             MapSettings settings = new MapSettings(dimension).refresh();
-            settings.hide(SlimeChunk.class, Mineshaft.class);
+            settings.hide(SlimeChunk.class, Mineshaft.class, NetherFossil.class);
             this.DEFAULT_MAP_SETTINGS.put(dimension.name, settings);
         }
     }

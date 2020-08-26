@@ -5,6 +5,7 @@ import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -38,7 +39,7 @@ public class TooltipSidebar extends JPanel {
         //this.biomeDisplay.setBackground(new Color(0, 0, 0, 127));
         this.biomeDisplay.setForeground(Color.WHITE);
         this.biomeDisplay.setHorizontalTextPosition(SwingConstants.LEFT);
-        //this.biomeDisplay.setFont(new Font(".SF NS Text", Font.BOLD, 14));
+        this.biomeDisplay.setFont(new Font(this.biomeDisplay.getFont().getName(), Font.PLAIN, 20));
         this.biomeDisplay.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.biomeDisplay);
     }
@@ -51,9 +52,9 @@ public class TooltipSidebar extends JPanel {
     public void updateBiomeDisplay(int blockX, int blockZ) {
         int biomeId = this.getBiome(blockX, blockZ);
         Biome biome = Biome.REGISTRY.get(biomeId);
-        String name = biome == null ? "UNKNOWN" : biome.getName().toUpperCase();
+        String name = biome == null ? "Unknown" : Str.formatName(biome.getName());
 
-        String text = String.format("(%d, %d): %s with ID %d (0x%s)", blockX, blockZ, name,
+        String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
                 biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
         this.tooltip.repaint();

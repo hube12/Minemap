@@ -1,11 +1,15 @@
 package kaptainwutax.minemap.ui;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.ui.map.icon.IconRenderer;
+import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
+import kaptainwutax.seedutils.mc.pos.BPos;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -42,8 +46,9 @@ public class MenuBar extends JMenuBar {
 			BufferedImage image = map.getScreenshot();
 
 			String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			File dir = new File("screenshots/");
 			File file = new File("screenshots/" + fileName + ".png");
-			if(!file.mkdirs())return;
+			if(!dir.exists() && !dir.mkdirs())return;
 
 			try {
 				ImageIO.write(image, "png", file);
@@ -70,9 +75,31 @@ public class MenuBar extends JMenuBar {
 			jumpDialogue.setVisible(true);
 		})));
 
-		worldMenu.addMenuListener(Events.Menu.onSelected(e -> coordHopper.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+		JMenuItem goToSpawn = new JMenuItem("Go to Spawn");
+
+		goToSpawn.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			BPos pos = this.getActiveSpawn();
+
+			if(pos != null) {
+				MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager().setCenterPos(pos.getX(), pos.getZ());
+			}
+		})));
+
+		worldMenu.addMenuListener(Events.Menu.onSelected(e -> {
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			coordHopper.setEnabled(map != null);
+			goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
+		}));
+
 		worldMenu.add(coordHopper);
+		worldMenu.add(goToSpawn);
 		this.add(worldMenu);
+	}
+
+	private BPos getActiveSpawn() {
+		MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+		IconRenderer icon = map.getContext().getIconManager().getFor(SpawnPoint.class);
+		return icon instanceof SpawnIcon ? ((SpawnIcon)icon).getPos() : null;
 	}
 
 	private void addStyleMenu() {

@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.util.Str;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,7 +13,7 @@ public class FeatureEntry extends JPanel {
     private final JComponent iconView;
 
     public FeatureEntry(Feature<?, ?> feature) {
-        this.checkBox = new JCheckBox(feature.getName());
+        this.checkBox = new JCheckBox(Str.formatName(feature.getName()));
 
         this.iconView = new JComponent() {
             @Override
