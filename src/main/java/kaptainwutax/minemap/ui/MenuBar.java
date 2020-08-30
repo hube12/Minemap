@@ -26,6 +26,25 @@ public class MenuBar extends JMenuBar {
 		this.addFileMenu();
 		this.addWorldMenu();
 		this.addStyleMenu();
+		this.addSettingsMenu();
+	}
+
+	private void addSettingsMenu() {
+		JMenu settingsMenu = new JMenu("Settings");
+
+		JCheckBoxMenuItem zoom = new JCheckBoxMenuItem("Restrict Maximum Zoom");
+
+		zoom.addChangeListener(e -> {
+			Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom = zoom.getState();
+			Configs.USER_PROFILE.flush();
+		});
+
+		settingsMenu.addMenuListener(Events.Menu.onSelected(e -> {
+			zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
+		}));
+
+		settingsMenu.add(zoom);
+		this.add(settingsMenu);
 	}
 
 	private void addFileMenu() {

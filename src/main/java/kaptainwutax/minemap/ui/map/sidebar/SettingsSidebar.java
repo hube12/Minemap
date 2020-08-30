@@ -24,7 +24,7 @@ public class SettingsSidebar extends JPanel {
     private final MapPanel map;
     private final MapSettings settings;
 
-    private Dropdown<Integer> layerDropdown;
+    public Dropdown<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
     public JButton closeButton;
 
@@ -203,7 +203,7 @@ public class SettingsSidebar extends JPanel {
         }));
 
         reset.addMouseListener(Events.Mouse.onPressed(e -> {
-            this.settings.set(Configs.USER_PROFILE.getSettingsCopy(this.map.getContext().version, this.map.getContext().dimension));
+            this.settings.set(Configs.USER_PROFILE.getMapSettingsCopy(this.map.getContext().version, this.map.getContext().dimension));
             this.map.repaint();
             this.toggles.repaint();
         }));
@@ -218,7 +218,7 @@ public class SettingsSidebar extends JPanel {
     private void addCloseButton() {
         this.closeButton = new JButton("Close");
         this.closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(closeButton);
+        this.add(this.closeButton);
     }
 
 }

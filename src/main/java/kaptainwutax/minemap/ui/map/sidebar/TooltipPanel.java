@@ -2,7 +2,6 @@ package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -26,10 +25,9 @@ public class TooltipPanel extends JPanel {
             this.removeAll();
 
             int size = (int)this.map.getManager().pixelsPerFragment;
-            DrawInfo info = new DrawInfo(0, 0, size, size);
 
             this.map.scheduler.forEachFragment(fragment -> {
-                fragment.getHoveredFeatures(info).forEach((feature, positions) -> {
+                fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
                     positions.forEach(pos -> this.add(new Entry(feature, pos)));
                 });
             });

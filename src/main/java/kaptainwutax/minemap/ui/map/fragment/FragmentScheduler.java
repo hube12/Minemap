@@ -4,7 +4,6 @@ import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,30 +46,17 @@ public class FragmentScheduler {
 	}
 
 	public void purge() {
-		while(this.fragments.size() > 2000) {
-			this.removeFarthestFragment();
-		}
+		this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
 	}
 
-	private void removeFarthestFragment() {
-		RPos farthestFragment = null;
-		double farthestDistance = 0.0D;
-
-		BPos center = this.listener.getManager().getCenterPos();
-
-		for(Map.Entry<RPos, Fragment> e: this.fragments.entrySet()) {
-			RPos fragment = e.getKey();
-			double distance = fragment.toBlockPos().distanceTo(center, DistanceMetric.CHEBYSHEV);
-
-			if(distance > farthestDistance) {
-				farthestDistance = distance;
-				farthestFragment = e.getKey();
-			}
-		}
-
-		if(farthestFragment != null) {
-			this.fragments.remove(farthestFragment);
-		}
+	public boolean isInBounds(RPos region) {
+		BPos min = this.listener.getManager().getPos(0, 0);
+		BPos max = this.listener.getManager().getPos(this.listener.getWidth(), this.listener.getHeight());
+		RPos regionMin = min.toRegionPos(this.listener.getManager().blocksPerFragment);
+		RPos regionMax = max.toRegionPos(this.listener.getManager().blocksPerFragment);
+		if(region.getX() < regionMin.getX() - 40 || region.getX() > regionMax.getX() + 40)return false;
+		if(region.getZ() < regionMin.getZ() - 40 || region.getZ() > regionMax.getZ() + 40)return false;
+		return true;
 	}
 
 	public Fragment getFragmentAt(int regionX, int regionZ) {
@@ -84,9 +70,7 @@ public class FragmentScheduler {
 				try {
 					if(this.executor.isShutdown())return;
 
-					BPos center = this.listener.getManager().getCenterPos();
-
-					if(center.distanceTo(regionPos.toBlockPos(), DistanceMetric.CHEBYSHEV) > 14000.0D) {
+					if(!this.isInBounds(regionPos)) {
 						this.fragments.remove(regionPos);
 						return;
 					}

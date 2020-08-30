@@ -31,7 +31,7 @@ public class MapContext {
     }
 
     public MapContext(MCVersion version, Dimension dimension, long worldSeed) {
-        this(version, dimension, worldSeed, Configs.USER_PROFILE.getSettingsCopy(version, dimension));
+        this(version, dimension, worldSeed, Configs.USER_PROFILE.getMapSettingsCopy(version, dimension));
     }
 
     public IconManager getIconManager() {

@@ -84,15 +84,18 @@ public class Fragment {
     public void drawFeatures(Graphics graphics, DrawInfo info) {
         if(!this.context.getSettings().showFeatures)return;
 
+        Map<Feature<?, ?>, List<BPos>> hovered = this.getHoveredFeatures(info.width, info.height);
+
         for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
             if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
 
             for(BPos pos: entry.getValue()) {
+                if(hovered.getOrDefault(entry.getKey(), new ArrayList<>()).contains(pos))continue;
                 this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos);
             }
         }
 
-        this.getHoveredFeatures(info).forEach((feature, positions) -> {
+        this.getHoveredFeatures(info.width, info.height).forEach((feature, positions) -> {
             if(!this.context.getSettings().isActive(feature) || positions == null)return;
             StaticIcon.ICON_SIZE = 38;
 
@@ -108,10 +111,10 @@ public class Fragment {
         this.mousePos = this.isPosInFragment(blockX, blockZ) ? new BPos(blockX, 0, blockZ) : null;
     }
 
-    public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(DrawInfo info) {
+    public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
         if(this.mousePos == null || !this.context.getSettings().showFeatures)return Collections.emptyMap();
-        double distanceX = (this.regionSize / (double)info.width) * (StaticIcon.ICON_SIZE / 2.0D);
-        double distanceZ = (this.regionSize / (double)info.height) * (StaticIcon.ICON_SIZE / 2.0D);
+        double distanceX = (this.regionSize / (double)width) * (StaticIcon.ICON_SIZE / 2.0D);
+        double distanceZ = (this.regionSize / (double)height) * (StaticIcon.ICON_SIZE / 2.0D);
 
         Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
 

@@ -1,5 +1,7 @@
 package kaptainwutax.minemap.ui.map;
 
+import kaptainwutax.mathutils.util.Mth;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
@@ -7,6 +9,8 @@ import kaptainwutax.seedutils.util.math.Vec3i;
 import java.awt.*;
 
 public class MapManager {
+
+    public static final int DEFAULT_REGION_SIZE = 512;
 
     private final MapPanel panel;
     public final int blocksPerFragment;
@@ -18,13 +22,13 @@ public class MapManager {
     public Point mousePointer;
 
     public MapManager(MapPanel panel) {
-        this(panel, 512);
+        this(panel, DEFAULT_REGION_SIZE);
     }
 
     public MapManager(MapPanel panel, int blocksPerFragment) {
         this.panel = panel;
         this.blocksPerFragment = blocksPerFragment;
-        this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / 512.0D));
+        this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
             int dx = e.getX() - this.mousePointer.x;
@@ -59,25 +63,40 @@ public class MapManager {
         }));
 
         this.panel.addMouseWheelListener(e -> {
-            double newPixelsPerFragment = this.pixelsPerFragment;
+            if(!e.isControlDown()) {
+                double newPixelsPerFragment = this.pixelsPerFragment;
 
-            if(e.getUnitsToScroll() > 0) {
-                newPixelsPerFragment /= e.getUnitsToScroll() / 2.0D;
+                if(e.getUnitsToScroll() > 0) {
+                    newPixelsPerFragment /= e.getUnitsToScroll() / 2.0D;
+                } else {
+                    newPixelsPerFragment *= -e.getUnitsToScroll() / 2.0D;
+                }
+
+                if(newPixelsPerFragment > 2000.0D * (double)this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 2000.0D * (this.blocksPerFragment / 512.0D);
+                }
+
+                if(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom
+                        && newPixelsPerFragment < 40.0D * (double)this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 40.0D * (this.blocksPerFragment / 512.0D);
+                }
+
+                double scaleFactor = newPixelsPerFragment / this.pixelsPerFragment;
+                this.centerX *= scaleFactor;
+                this.centerY *= scaleFactor;
+                this.pixelsPerFragment = newPixelsPerFragment;
+                this.panel.repaint();
             } else {
-                newPixelsPerFragment *= -e.getUnitsToScroll() / 2.0D;
-            }
+                int layerId = this.panel.getContext().getLayerId();
+                layerId += e.getUnitsToScroll() < 0 ? 1 : -1;
+                layerId = Mth.clamp(layerId, 0, this.panel.getContext().getBiomeSource().getLayerCount() - 1);
 
-            if(newPixelsPerFragment < 40.0D * (this.blocksPerFragment / 512.0D)) {
-                newPixelsPerFragment = 40.0D * (this.blocksPerFragment / 512.0D);
-            } else if(newPixelsPerFragment > 2000.0D * (this.blocksPerFragment / 512.0D)) {
-                newPixelsPerFragment = 2000.0D * (this.blocksPerFragment / 512.0D);
+                if(this.panel.getContext().getLayerId() != layerId) {
+                    this.panel.getContext().setLayerId(layerId);
+                    this.panel.displayBar.settings.layerDropdown.selectIfPresent(layerId);
+                    this.panel.restart();
+                }
             }
-
-            double scaleFactor = newPixelsPerFragment / this.pixelsPerFragment;
-            this.centerX *= scaleFactor;
-            this.centerY *= scaleFactor;
-            this.pixelsPerFragment = newPixelsPerFragment;
-            this.panel.repaint();
         });
     }
 

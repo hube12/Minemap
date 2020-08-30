@@ -20,6 +20,7 @@ public class UserProfileConfig extends Config {
     @Expose protected int THREAD_COUNT;
     @Expose protected MCVersion MC_VERSION;
     @Expose protected String STYLE;
+    @Expose protected UserSettings USER_SETTINGS;
     @Expose protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
     @Expose protected Map<String, MapSettings> DEFAULT_MAP_SETTINGS = new LinkedHashMap<>();
 
@@ -41,6 +42,10 @@ public class UserProfileConfig extends Config {
         return this.STYLE;
     }
 
+    public UserSettings getUserSettings() {
+        return USER_SETTINGS;
+    }
+
     public boolean isDimensionEnabled(Dimension dimension) {
         return this.DIMENSIONS.get(dimension.name);
     }
@@ -50,7 +55,7 @@ public class UserProfileConfig extends Config {
                 .map(Dimension::fromString).collect(Collectors.toList());
     }
 
-    public MapSettings getSettingsCopy(MCVersion version, Dimension dimension) {
+    public MapSettings getMapSettingsCopy(MCVersion version, Dimension dimension) {
         return this.DEFAULT_MAP_SETTINGS.get(dimension.name).copyFor(version, dimension);
     }
 
@@ -83,7 +88,6 @@ public class UserProfileConfig extends Config {
         this.flush();
     }
 
-
     public void flush() {
         try {
             this.writeConfig();
@@ -97,6 +101,7 @@ public class UserProfileConfig extends Config {
         this.THREAD_COUNT = 1;
         this.MC_VERSION = MCVersion.values()[0];
         this.STYLE = BiomeColorsConfig.DEFAULT_STYLE_NAME;
+        this.USER_SETTINGS = new UserSettings();
 
         for(Dimension dimension: Dimension.values()) {
             this.DIMENSIONS.put(dimension.name, true);
