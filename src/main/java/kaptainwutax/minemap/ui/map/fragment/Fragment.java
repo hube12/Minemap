@@ -90,7 +90,7 @@ public class Fragment {
             if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
 
             for(BPos pos: entry.getValue()) {
-                if(hovered.getOrDefault(entry.getKey(), new ArrayList<>()).contains(pos))continue;
+                if(hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos))continue;
                 this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos);
             }
         }
