@@ -18,9 +18,9 @@ public class MapContext {
     private final ThreadLocal<BiomeSource> biomeSource;
     private int layerId;
 
-    public MapContext(MCVersion version, Dimension dimension, long worldSeed, MapSettings settings) {
-        this.version = version;
-        this.dimension = dimension;
+    public MapContext(long worldSeed, MapSettings settings) {
+        this.version = settings.getVersion();
+        this.dimension = settings.getDimension();
         this.worldSeed = worldSeed;
         this.settings = settings;
 
@@ -31,7 +31,7 @@ public class MapContext {
     }
 
     public MapContext(MCVersion version, Dimension dimension, long worldSeed) {
-        this(version, dimension, worldSeed, Configs.USER_PROFILE.getMapSettingsCopy(version, dimension));
+        this(worldSeed, Configs.USER_PROFILE.getMapSettingsCopy(version, dimension));
     }
 
     public IconManager getIconManager() {

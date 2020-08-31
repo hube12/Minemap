@@ -44,24 +44,20 @@ public class EnterSeedDialog extends JDialog {
 
 		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
 
-		JCheckBoxMenuItem OWtick = new JCheckBoxMenuItem("Render OverWorld");
-		OWtick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.OVERWORLD));
-		OWtick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.OVERWORLD, OWtick.getState()));
-
-		JCheckBoxMenuItem Ntick = new JCheckBoxMenuItem("Render Nether");
-		Ntick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.NETHER));
-		Ntick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.NETHER, Ntick.getState()));
-
-		JCheckBoxMenuItem Etick = new JCheckBoxMenuItem("Render End");
-		Etick.setState(Configs.USER_PROFILE.isDimensionEnabled(Dimension.END));
-		Etick.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(Dimension.END, Etick.getState()));
+		JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
+			String s = Character.toUpperCase(dimension.name.charAt(0)) + dimension.name.substring(1);
+			JCheckBoxMenuItem check = new JCheckBoxMenuItem("Show " + s);
+			check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
+			check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
+			return check;
+		}).toArray(JCheckBoxMenuItem[]::new);
 
 		contentPane.add(this.seedField);
-		contentPane.add(OWtick);
-		contentPane.add(Ntick);
-		contentPane.add(Etick);
+		contentPane.add(checkBoxes[0]);
 		contentPane.add(splitPanel);
+		contentPane.add(checkBoxes[1]);
 		contentPane.add(this.continueButton);
+		contentPane.add(checkBoxes[2]);
 
 		this.pack();
 

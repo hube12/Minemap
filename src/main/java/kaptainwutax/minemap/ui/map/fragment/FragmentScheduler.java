@@ -4,13 +4,15 @@ import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
+import kaptainwutax.seedutils.util.ThreadPool;
+import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 public class FragmentScheduler {
@@ -26,15 +28,44 @@ public class FragmentScheduler {
 
 		}
 	};
-
-	protected ThreadPoolExecutor executor;
-	protected Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
+	
+	protected ThreadPool executor;
+	protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
 
 	protected MapPanel listener;
+	public DistanceMetric metric = DistanceMetric.EUCLIDEAN_SQ;
+
+	public Queue<RPos> scheduledRegions = new ConcurrentLinkedQueue<>();
 
 	public FragmentScheduler(MapPanel listener, int threadCount) {
 		this.listener = listener;
-		this.executor = (ThreadPoolExecutor)Executors.newFixedThreadPool(threadCount);
+		this.executor = new ThreadPool(threadCount + 1);
+
+		this.executor.run(() -> {
+			while(!this.executor.getExecutor().isShutdown()) {
+				RPos nearest = this.getNearestScheduled();
+
+				if(nearest == null) {
+					try {Thread.sleep(20);}
+					catch(InterruptedException e) {e.printStackTrace();}
+					continue;
+				} else if(!this.isInBounds(nearest)) {
+					this.fragments.remove(nearest);
+					this.scheduledRegions.remove(nearest);
+					continue;
+				}
+
+				this.scheduledRegions.remove(nearest);
+
+				this.executor.run(() -> {
+					Fragment fragment = new Fragment(nearest, this.listener.getContext());
+					this.fragments.put(nearest, fragment);
+					SwingUtilities.invokeLater(() -> this.listener.repaint());
+				});
+
+				this.executor.awaitFreeThread();
+			}
+		});
 	}
 
 	public void forEachFragment(Consumer<Fragment> consumer) {
@@ -46,7 +77,25 @@ public class FragmentScheduler {
 	}
 
 	public void purge() {
+		this.scheduledRegions.removeIf(region -> !this.isInBounds(region));
 		this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
+	}
+
+	public RPos getNearestScheduled() {
+		double minDistance = Double.MAX_VALUE;
+		RPos nearest = null;
+
+		for(RPos region: this.scheduledRegions) {
+			double distance = region.distanceTo(this.listener.getManager().getCenterPos()
+					.toRegionPos(this.listener.getManager().blocksPerFragment), this.metric);
+
+			if(distance < minDistance) {
+				minDistance = distance;
+				nearest = region;
+			}
+		}
+
+		return nearest;
 	}
 
 	public boolean isInBounds(RPos region) {
@@ -60,28 +109,11 @@ public class FragmentScheduler {
 	}
 
 	public Fragment getFragmentAt(int regionX, int regionZ) {
-		int regionSize = this.listener.getManager().blocksPerFragment;
-		RPos regionPos = new RPos(regionX, regionZ, regionSize);
+		RPos regionPos = new RPos(regionX, regionZ, this.listener.getManager().blocksPerFragment);
 
-		if(!this.fragments.containsKey(regionPos)) {
+		if(!this.fragments.containsKey(regionPos) && !this.scheduledRegions.contains(regionPos)) {
 			this.fragments.put(regionPos, LOADING_FRAGMENT);
-
-			this.executor.execute(() -> {
-				try {
-					if(this.executor.isShutdown())return;
-
-					if(!this.isInBounds(regionPos)) {
-						this.fragments.remove(regionPos);
-						return;
-					}
-
-					Fragment fragment = new Fragment(new RPos(regionX, regionZ, regionSize), this.listener.getContext());
-					this.fragments.put(regionPos, fragment);
-					SwingUtilities.invokeLater(() -> this.listener.repaint());
-				} catch(Exception e) {
-					e.printStackTrace();
-				}
-			});
+			this.scheduledRegions.add(regionPos);
 		}
 
 		return this.fragments.get(regionPos);

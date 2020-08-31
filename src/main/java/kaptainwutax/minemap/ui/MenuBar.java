@@ -10,6 +10,7 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
 import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -43,7 +44,40 @@ public class MenuBar extends JMenuBar {
 			zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
 		}));
 
+		JMenu metric = new JMenu("Fragment Metric");
+		ButtonGroup group = new ButtonGroup();
+		JRadioButtonMenuItem metric1 = new JRadioButtonMenuItem("Euclidean");
+		JRadioButtonMenuItem metric2 = new JRadioButtonMenuItem("Manhattan");
+		JRadioButtonMenuItem metric3 = new JRadioButtonMenuItem("Chebyshev");
+		metric.add(metric1);
+		metric.add(metric2);
+		metric.add(metric3);
+		group.add(metric1);
+		group.add(metric2);
+		group.add(metric3);
+
+		metric1.setSelected(true);
+
+		metric1.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			panel.scheduler.metric = DistanceMetric.EUCLIDEAN_SQ;
+		}));
+
+		metric2.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			panel.scheduler.metric = DistanceMetric.MANHATTAN;
+		}));
+
+
+		metric3.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			panel.scheduler.metric = DistanceMetric.CHEBYSHEV;
+		}));
+
+		settingsMenu.addMenuListener(Events.Menu.onSelected(e -> metric.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+
 		settingsMenu.add(zoom);
+		settingsMenu.add(metric);
 		this.add(settingsMenu);
 	}
 

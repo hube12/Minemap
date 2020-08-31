@@ -108,11 +108,11 @@ public class Fragment {
     }
 
     public void onHovered(int blockX, int blockZ) {
-        this.mousePos = this.isPosInFragment(blockX, blockZ) ? new BPos(blockX, 0, blockZ) : null;
+        this.mousePos = new BPos(blockX, 0, blockZ);
     }
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
-        if(this.mousePos == null || !this.context.getSettings().showFeatures)return Collections.emptyMap();
+        if(this.mousePos == null || this.context == null || !this.context.getSettings().showFeatures)return Collections.emptyMap();
         double distanceX = (this.regionSize / (double)width) * (StaticIcon.ICON_SIZE / 2.0D);
         double distanceZ = (this.regionSize / (double)height) * (StaticIcon.ICON_SIZE / 2.0D);
 

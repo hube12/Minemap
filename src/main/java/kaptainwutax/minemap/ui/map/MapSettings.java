@@ -43,6 +43,14 @@ public class MapSettings {
                 .collect(Collectors.toMap(e -> e, e -> true));
     }
 
+    public MCVersion getVersion() {
+        return this.version;
+    }
+
+    public Dimension getDimension() {
+        return this.dimension;
+    }
+
     public MapSettings refresh() {
         this.featureTypes = Features.getForVersion(this.version).entrySet().stream()
                 .filter(e -> this.dimension == null || e.getValue().isValidDimension(this.dimension))
