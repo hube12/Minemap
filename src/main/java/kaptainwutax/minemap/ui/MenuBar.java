@@ -56,25 +56,25 @@ public class MenuBar extends JMenuBar {
 		group.add(metric2);
 		group.add(metric3);
 
-		metric1.setSelected(true);
+		DistanceMetric m = Configs.USER_PROFILE.getUserSettings().getFragmentMetric();
+		if(m == DistanceMetric.EUCLIDEAN_SQ)metric1.setSelected(true);
+		else if(m == DistanceMetric.MANHATTAN)metric2.setSelected(true);
+		else if(m == DistanceMetric.CHEBYSHEV)metric3.setSelected(true);
 
 		metric1.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			panel.scheduler.metric = DistanceMetric.EUCLIDEAN_SQ;
+			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric1.getText();
+			Configs.USER_PROFILE.flush();
 		}));
 
 		metric2.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			panel.scheduler.metric = DistanceMetric.MANHATTAN;
+			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric2.getText();
+			Configs.USER_PROFILE.flush();
 		}));
-
 
 		metric3.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			panel.scheduler.metric = DistanceMetric.CHEBYSHEV;
+			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric3.getText();
+			Configs.USER_PROFILE.flush();
 		}));
-
-		settingsMenu.addMenuListener(Events.Menu.onSelected(e -> metric.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
 		settingsMenu.add(zoom);
 		settingsMenu.add(metric);

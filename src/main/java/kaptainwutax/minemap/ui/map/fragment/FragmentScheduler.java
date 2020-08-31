@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -28,12 +29,11 @@ public class FragmentScheduler {
 
 		}
 	};
-	
+
 	protected ThreadPool executor;
 	protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
 
 	protected MapPanel listener;
-	public DistanceMetric metric = DistanceMetric.EUCLIDEAN_SQ;
 
 	public Queue<RPos> scheduledRegions = new ConcurrentLinkedQueue<>();
 
@@ -86,8 +86,7 @@ public class FragmentScheduler {
 		RPos nearest = null;
 
 		for(RPos region: this.scheduledRegions) {
-			double distance = region.distanceTo(this.listener.getManager().getCenterPos()
-					.toRegionPos(this.listener.getManager().blocksPerFragment), this.metric);
+			double distance = this.distanceToCenter(region);
 
 			if(distance < minDistance) {
 				minDistance = distance;
@@ -96,6 +95,12 @@ public class FragmentScheduler {
 		}
 
 		return nearest;
+	}
+
+	public double distanceToCenter(RPos regionPos) {
+		return regionPos.distanceTo(this.listener.getManager().getCenterPos()
+				.toRegionPos(this.listener.getManager().blocksPerFragment),
+				Configs.USER_PROFILE.getUserSettings().getFragmentMetric());
 	}
 
 	public boolean isInBounds(RPos region) {
