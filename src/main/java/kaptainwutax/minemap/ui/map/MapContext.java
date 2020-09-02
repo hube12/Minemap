@@ -6,6 +6,9 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MapContext {
 
     public final MCVersion version;
@@ -15,7 +18,7 @@ public class MapContext {
     private final MapSettings settings;
     private final IconManager iconManager;
 
-    private final ThreadLocal<BiomeSource> biomeSource;
+    private final ThreadLocal<Map<Dimension, BiomeSource>> biomeSource;
     private int layerId;
 
     public MapContext(long worldSeed, MapSettings settings) {
@@ -24,7 +27,12 @@ public class MapContext {
         this.worldSeed = worldSeed;
         this.settings = settings;
 
-        this.biomeSource = ThreadLocal.withInitial(() -> BiomeSource.of(dimension, version, worldSeed));
+        this.biomeSource = ThreadLocal.withInitial(() -> {
+            Map<Dimension, BiomeSource> map = new HashMap<>();
+            for(Dimension dim: Dimension.values()) map.put(dim, BiomeSource.of(dim, this.version, worldSeed));
+            return map;
+        });
+
         this.layerId = this.getBiomeSource().getLayerCount() - 2;
 
         this.iconManager = new IconManager(this);
@@ -47,7 +55,11 @@ public class MapContext {
     }
 
     public BiomeSource getBiomeSource() {
-        return this.biomeSource.get();
+        return this.getBiomeSource(this.dimension);
+    }
+
+    public BiomeSource getBiomeSource(Dimension dimension) {
+        return this.biomeSource.get().get(dimension);
     }
 
     public BiomeLayer getBiomeLayer() {

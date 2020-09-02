@@ -4,6 +4,8 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
+import kaptainwutax.minemap.feature.OWBastionRemnant;
+import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.ui.map.fragment.FeatureFactory;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -34,6 +36,9 @@ public class Features {
         register(SwampHut.class, SwampHut::new);
         register(Village.class, Village::new);
         register(Stronghold.class, Stronghold::new);
+
+        register(OWBastionRemnant.class, OWBastionRemnant::new);
+        register(OWFortress.class, OWFortress::new);
 
         register(EndGateway.class, EndGateway::new);
         register(SlimeChunk.class, SlimeChunk::new);

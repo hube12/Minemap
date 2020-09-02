@@ -19,15 +19,8 @@ import java.util.function.Consumer;
 public class FragmentScheduler {
 
 	public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
-		@Override
-		public void drawBiomes(Graphics graphics, DrawInfo info) {
-
-		}
-
-		@Override
-		public void drawFeatures(Graphics graphics, DrawInfo info) {
-
-		}
+		@Override public void drawBiomes(Graphics graphics, DrawInfo info) { }
+		@Override public void drawFeatures(Graphics graphics, DrawInfo info) { }
 	};
 
 	protected ThreadPool executor;

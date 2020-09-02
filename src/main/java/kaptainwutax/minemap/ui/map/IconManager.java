@@ -25,7 +25,7 @@ public class IconManager {
 
         this.override(
                 SpawnIcon::new, RegionIcon::new, MineshaftIcon::new, SlimeIcon::new,
-                EndGatewayIcon::new, c -> new StrongholdIcon(c, 128)
+                EndGatewayIcon::new, OWNetherIcon::new, c -> new StrongholdIcon(c, 128)
         );
     }
 

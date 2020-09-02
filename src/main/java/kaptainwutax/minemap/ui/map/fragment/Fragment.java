@@ -168,7 +168,7 @@ public class Fragment {
             for(int z = 0; z < scaledSize; z++) {
                 Biome biome = Biome.REGISTRY.get(this.biomeCache[x][z]);
                 if(biome == null)continue;
-                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), biome);
+                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 
                 if(!this.activeBiomesCache.contains(biome)) {
                     color = color.darker().darker().darker().darker().darker();

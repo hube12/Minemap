@@ -24,7 +24,7 @@ public class BiomeEntry extends JPanel {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getStyle(), biome);
+                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
                 g.setColor(color == null ? Color.BLACK : color);
                 g.fillRect(0, 0, 20, 20);
             }

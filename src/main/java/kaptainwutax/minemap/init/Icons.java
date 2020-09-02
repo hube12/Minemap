@@ -4,6 +4,8 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
+import kaptainwutax.minemap.feature.OWBastionRemnant;
+import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.SpawnPoint;
 
 import javax.imageio.ImageIO;
@@ -35,6 +37,9 @@ public class Icons {
         register(SwampHut.class, Structure.getName(SwampHut.class));
         register(Village.class, Structure.getName(Village.class));
         register(Stronghold.class, Structure.getName(Stronghold.class));
+
+        register(OWBastionRemnant.class, Structure.getName(BastionRemnant.class));
+        register(OWFortress.class, Structure.getName(Fortress.class));
 
         register(EndGateway.class, "end_gateway");
         register(SlimeChunk.class, "slime");

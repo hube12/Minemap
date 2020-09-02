@@ -26,12 +26,36 @@ public class MenuBar extends JMenuBar {
 	public MenuBar() {
 		this.addFileMenu();
 		this.addWorldMenu();
-		this.addStyleMenu();
 		this.addSettingsMenu();
 	}
 
 	private void addSettingsMenu() {
 		JMenu settingsMenu = new JMenu("Settings");
+
+		JMenu styleMenu = new JMenu("Style");
+		ButtonGroup styleButtons = new ButtonGroup();
+
+		for(String style: Configs.BIOME_COLORS.getStyles()) {
+			JRadioButtonMenuItem button = new JRadioButtonMenuItem(style);
+
+			button.addMouseListener(Events.Mouse.onPressed(e -> {
+				for(Component c: styleMenu.getMenuComponents()) {
+					c.setEnabled(true);
+				}
+
+				button.setEnabled(false);
+				Configs.USER_PROFILE.getUserSettings().style = style;
+				MineMap.INSTANCE.worldTabs.invalidateAll();
+				Configs.USER_PROFILE.flush();
+			}));
+
+			if(Configs.USER_PROFILE.getUserSettings().style.equals(style)) {
+				button.setEnabled(false);
+			}
+
+			styleButtons.add(button);
+			styleMenu.add(button);
+		}
 
 		JCheckBoxMenuItem zoom = new JCheckBoxMenuItem("Restrict Maximum Zoom");
 
@@ -76,8 +100,9 @@ public class MenuBar extends JMenuBar {
 			Configs.USER_PROFILE.flush();
 		}));
 
-		settingsMenu.add(zoom);
+		settingsMenu.add(styleMenu);
 		settingsMenu.add(metric);
+		settingsMenu.add(zoom);
 		this.add(settingsMenu);
 	}
 
@@ -155,25 +180,4 @@ public class MenuBar extends JMenuBar {
 		return icon instanceof SpawnIcon ? ((SpawnIcon)icon).getPos() : null;
 	}
 
-	private void addStyleMenu() {
-		JMenu styleMenu = new JMenu("Style");
-		for(String style: Configs.BIOME_COLORS.getStyles()) {
-			JMenuItem styleItem = new JMenuItem(style);
-
-			styleItem.addMouseListener(Events.Mouse.onPressed(e -> {
-				for(Component c: styleMenu.getMenuComponents()) {
-					c.setEnabled(true);
-				}
-
-				styleItem.setEnabled(false);
-				Configs.USER_PROFILE.setStyle(style);
-			}));
-
-			if(Configs.USER_PROFILE.getStyle().equals(style)) {
-				styleItem.setEnabled(false);
-			}
-			styleMenu.add(styleItem);
-		}
-		this.add(styleMenu);
-	}
 }

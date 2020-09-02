@@ -66,8 +66,11 @@ public class MapPanel extends JPanel {
 	}
 
 	public void drawCrossHair(Graphics graphics) {
-		graphics.setColor(Color.CYAN);
-		graphics.fillOval(this.getWidth() / 2 - 2, this.getHeight() / 2 - 2, 5, 5);
+		graphics.setXORMode(Color.BLACK);
+		int cx = this.getWidth() / 2, cz = this.getHeight() / 2;
+		graphics.fillRect(cx - 4, cz - 1, 8, 2);
+		graphics.fillRect(cx - 1, cz - 4, 2, 8);
+		graphics.setPaintMode();
 	}
 
 	public Map<Fragment, DrawInfo> getDrawQueue() {
@@ -78,18 +81,18 @@ public class MapPanel extends JPanel {
 		BPos max = this.manager.getPos(w, h);
 		RPos regionMin = min.toRegionPos(this.manager.blocksPerFragment);
 		RPos regionMax = max.toRegionPos(this.manager.blocksPerFragment);
+		double scaleFactor = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
 
 		for(int regionX = regionMin.getX(); regionX <= regionMax.getX(); regionX++) {
 			for(int regionZ = regionMin.getZ(); regionZ <= regionMax.getZ(); regionZ++) {
 				Fragment fragment = this.scheduler.getFragmentAt(regionX, regionZ);
 				int blockOffsetX = regionMin.toBlockPos().getX() - min.getX();
 				int blockOffsetZ = regionMin.toBlockPos().getZ() - min.getZ();
-				double pixelOffsetX = blockOffsetX * (this.manager.pixelsPerFragment / this.manager.blocksPerFragment);
-				double pixelOffsetZ = blockOffsetZ * (this.manager.pixelsPerFragment / this.manager.blocksPerFragment);
+				double pixelOffsetX = blockOffsetX * scaleFactor;
+				double pixelOffsetZ = blockOffsetZ * scaleFactor;
 				double x = (regionX - regionMin.getX()) * this.manager.pixelsPerFragment + pixelOffsetX;
 				double z = (regionZ - regionMin.getZ()) * this.manager.pixelsPerFragment + pixelOffsetZ;
 				int size = (int)(this.manager.pixelsPerFragment);
-
 				drawQueue.put(fragment, new DrawInfo((int)x, (int)z, size + 1, size + 1));
 			}
 		}
