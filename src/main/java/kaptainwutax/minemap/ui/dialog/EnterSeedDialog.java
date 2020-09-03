@@ -13,7 +13,7 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class EnterSeedDialog extends JDialog {
+public class EnterSeedDialog extends Dialog {
 
 	public JTextField seedField;
 	public Dropdown<Integer> threadDropdown;
@@ -21,45 +21,25 @@ public class EnterSeedDialog extends JDialog {
 	public JButton continueButton;
 
 	public EnterSeedDialog() {
-		this.setModal(true);
-		this.initComponents();
-		this.setTitle("Load new Seed");
+		super("Load new Seed", new GridLayout(3, 1));
 	}
 
+	@Override
 	public void initComponents() {
 		int cores = Runtime.getRuntime().availableProcessors();
-
-		Container contentPane = getContentPane();
-		contentPane.setLayout(new GridLayout(3, 1));
 
 		this.seedField = new JTextField();
 		PromptSupport.setPrompt("Enter your seed here...", this.seedField);
 
 		this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
-		this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_13)));
-		this.continueButton = new JButton("Continue");
-
 		this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
+
+		this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_13)));
 		this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
 		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
 
-		JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
-			String s = Character.toUpperCase(dimension.name.charAt(0)) + dimension.name.substring(1);
-			JCheckBoxMenuItem check = new JCheckBoxMenuItem("Show " + s);
-			check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
-			check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
-			return check;
-		}).toArray(JCheckBoxMenuItem[]::new);
-
-		contentPane.add(this.seedField);
-		contentPane.add(checkBoxes[0]);
-		contentPane.add(splitPanel);
-		contentPane.add(checkBoxes[1]);
-		contentPane.add(this.continueButton);
-		contentPane.add(checkBoxes[2]);
-
-		this.pack();
+		this.continueButton = new JButton("Continue");
 
 		this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
 			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
@@ -71,9 +51,20 @@ public class EnterSeedDialog extends JDialog {
 			this.dispose();
 		}));
 
-		this.setLocation(
-				MineMap.INSTANCE.getX() + MineMap.INSTANCE.getWidth() / 2 - this.getWidth() / 2,
-				MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
-		);
+		JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
+			String s = Character.toUpperCase(dimension.name.charAt(0)) + dimension.name.substring(1);
+			JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + s);
+			check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
+			check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
+			return check;
+		}).toArray(JCheckBoxMenuItem[]::new);
+
+		this.getContentPane().add(this.seedField);
+		this.getContentPane().add(checkBoxes[Dimension.OVERWORLD.ordinal()]);
+		this.getContentPane().add(splitPanel);
+		this.getContentPane().add(checkBoxes[Dimension.NETHER.ordinal()]);
+		this.getContentPane().add(this.continueButton);
+		this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
 	}
+
 }

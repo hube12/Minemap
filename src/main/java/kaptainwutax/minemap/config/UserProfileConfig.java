@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.featureutils.structure.NetherFossil;
-import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.ui.map.MapSettings;

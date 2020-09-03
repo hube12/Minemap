@@ -1,11 +1,15 @@
 package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.mathutils.util.Mth;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class MapManager {
@@ -31,12 +35,14 @@ public class MapManager {
         this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
-            int dx = e.getX() - this.mousePointer.x;
-            int dy = e.getY() - this.mousePointer.y;
-            this.mousePointer = e.getPoint();
-            this.centerX += dx;
-            this.centerY += dy;
-            this.panel.repaint();
+            if(SwingUtilities.isLeftMouseButton(e)) {
+                int dx = e.getX() - this.mousePointer.x;
+                int dy = e.getY() - this.mousePointer.y;
+                this.mousePointer = e.getPoint();
+                this.centerX += dx;
+                this.centerY += dy;
+                this.panel.repaint();
+            }
         }));
 
         this.panel.addMouseMotionListener(Events.Mouse.onMoved(e -> {
@@ -54,12 +60,16 @@ public class MapManager {
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
-            this.mousePointer = e.getPoint();
-            this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            if(SwingUtilities.isLeftMouseButton(e)) {
+                this.mousePointer = e.getPoint();
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+            }
         }));
 
-        this.panel.addMouseListener(Events.Mouse.onReleased(mouseEvent -> {
-            this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        this.panel.addMouseListener(Events.Mouse.onReleased(e -> {
+            if(SwingUtilities.isLeftMouseButton(e)) {
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            }
         }));
 
         this.panel.addMouseWheelListener(e -> {
@@ -98,6 +108,39 @@ public class MapManager {
                 }
             }
         });
+
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem pin = new JMenuItem("Pin");
+        pin.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        pin.addMouseListener(Events.Mouse.onReleased(e -> {
+            boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isPinned();
+            MineMap.INSTANCE.worldTabs.getSelectedHeader().setPinned(newState);
+            pin.setText(newState ? "Unpin" : "Pin");
+        }));
+
+        JMenuItem rename = new JMenuItem("Rename");
+        rename.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        rename.addMouseListener(Events.Mouse.onReleased(e -> {
+            RenameTabDialog renameTabDialog = new RenameTabDialog();
+            renameTabDialog.setVisible(true);
+        }));
+
+        JMenuItem settings = new JMenuItem("Settings");
+        settings.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        settings.addMouseListener(Events.Mouse.onReleased(e -> {
+            this.panel.displayBar.tooltip.setVisible(false);
+            this.panel.displayBar.settings.setVisible(true);
+            popup.setVisible(false);
+        }));
+
+        popup.add(pin);
+        popup.add(rename);
+        popup.add(settings);
+        this.panel.setComponentPopupMenu(popup);
     }
 
     public Vec3i getScreenSize() {

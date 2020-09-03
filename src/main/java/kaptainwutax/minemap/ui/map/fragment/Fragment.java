@@ -76,8 +76,10 @@ public class Fragment {
         }
 
         if(this.context.getSettings().showGrid) {
+            Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
             graphics.drawRect(info.x, info.y, info.width - 1, info.height - 1);
+            graphics.setColor(old);
         }
     }
 

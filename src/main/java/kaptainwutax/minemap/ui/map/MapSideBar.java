@@ -22,11 +22,6 @@ public class MapSideBar extends JPanel {
         this.tooltip.setVisible(true);
         this.settings.setVisible(false);
 
-        this.tooltip.settingsButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            this.tooltip.setVisible(false);
-            this.settings.setVisible(true);
-        }));
-
         this.settings.closeButton.addMouseListener(Events.Mouse.onPressed(e -> {
             this.tooltip.setVisible(true);
             this.settings.setVisible(false);

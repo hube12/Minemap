@@ -15,7 +15,7 @@ public class TooltipPanel extends JPanel {
 
     public TooltipPanel(MapPanel map) {
         this.map = map;
-        this.setLayout(new GridLayout(0, 1));
+        this.setLayout(new GridLayout(0, 1, 2, 2));
         this.setBackground(new Color(0, 0, 0, 0));
    }
 
@@ -56,12 +56,16 @@ public class TooltipPanel extends JPanel {
             };
 
             this.positionText = new JLabel(" [" + pos.getX() + ", " + pos.getZ() + "] " + Str.formatName(feature.getName()));
+            this.positionText.setFont(new Font(this.positionText.getFont().getName(), Font.PLAIN, 18));
+            this.positionText.setBackground(new Color(0, 0, 0, 0));
+            this.positionText.setFocusable(false);
+            this.positionText.setOpaque(true);
+            this.positionText.setForeground(Color.WHITE);
 
             this.add(this.iconView);
             this.add(this.positionText);
 
-            Color c = this.getBackground();
-            this.setBackground(new Color(c.getRed(), c.getGreen(), c.getBlue(), 250));
+            this.setBackground(new Color(0, 0, 0, 180));
         }
     }
 

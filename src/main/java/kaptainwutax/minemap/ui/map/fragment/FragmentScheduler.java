@@ -6,7 +6,6 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 import kaptainwutax.seedutils.util.ThreadPool;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import javax.swing.*;
 import java.awt.*;

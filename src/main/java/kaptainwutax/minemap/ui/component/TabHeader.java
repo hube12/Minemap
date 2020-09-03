@@ -28,6 +28,14 @@ public class TabHeader extends JPanel {
         this.closeButton.setVisible(!state);
     }
 
+    public String getName() {
+        return this.tabTitle.getText();
+    }
+
+    public void setName(String name) {
+        this.tabTitle.setText(name);
+    }
+
     public JLabel getTabTitle() {
         return this.tabTitle;
     }

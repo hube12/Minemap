@@ -1,80 +1,102 @@
 package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.IntUnaryOperator;
 
-public class CoordHopperDialog {
-    
-    public CoordHopperDialog() {
-        super();
-        initComponents();
-    }
+public class CoordHopperDialog extends Dialog {
 
-    private void cButtonPressed() {
-        int X, Z;
-
-        try {
-            X = Integer.parseInt(enterX.getText().trim());
-            Z = Integer.parseInt(enterZ.getText().trim());
-        } catch (NumberFormatException e) {
-            throw new RuntimeException();
-        }
-
-        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        if(map != null)map.getManager().setCenterPos(X, Z);
-        mainLogue.dispose();
-    }
-
-    private void initComponents() {
-        //GEN-BEGIN:initComponents
-        mainLogue = new JDialog();
-        enterX = new JTextField();
-        enterZ = new JTextField();
-        PromptSupport.setPrompt("X",enterX);
-        cButton = new JButton();
-        cLabel = new JLabel();
-
-        //======== mainLogue ========
-        {
-            mainLogue.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-            Container mainLogueContentPane = mainLogue.getContentPane();
-            mainLogueContentPane.setLayout(new BorderLayout());
-
-            //---- enterX ----
-            enterX.setMinimumSize(new Dimension(100, 30));
-            enterX.setPreferredSize(new Dimension(100, 30));
-            PromptSupport.setPrompt("Z",enterZ);
-            mainLogueContentPane.add(enterX, BorderLayout.LINE_START);
-
-            //---- enterZ ----
-            enterZ.setMinimumSize(new Dimension(100, 30));
-            enterZ.setPreferredSize(new Dimension(100, 30));
-            mainLogueContentPane.add(enterZ, BorderLayout.LINE_END);
-
-            //---- cButton ----
-            cButton.setText("jump to coordinates");
-            cButton.addActionListener(e -> cButtonPressed());
-            mainLogueContentPane.add(cButton, BorderLayout.PAGE_END);
-
-            //---- cLabel ----
-            cLabel.setText("Enter your coordinates here:");
-            cLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-            mainLogueContentPane.add(cLabel, BorderLayout.PAGE_START);
-            mainLogue.pack();
-            mainLogue.setLocationRelativeTo(mainLogue.getOwner());
-        }
-        //GEN-END:initComponents
-    }
-
-    //GEN-BEGIN:variables
-    public JDialog mainLogue;
     public JTextField enterX;
     public JTextField enterZ;
-    public JButton cButton;
-    public JLabel cLabel;
-    //GEN-END:variables
+    public Dropdown<Type> typeDropdown;
+    public JButton continueButton;
+
+    public CoordHopperDialog() {
+        super("Go to Coordinates", new GridLayout(0, 1));
+    }
+
+    @Override
+    public void initComponents() {
+        this.enterX = new JTextField("0");
+        PromptSupport.setPrompt("X Coordinate...", this.enterX);
+
+        this.enterX.addKeyListener(Events.Keyboard.onReleased(e -> {
+            try {
+                Integer.parseInt(this.enterX.getText().trim());
+                this.continueButton.setEnabled(true);
+            } catch(Exception _e) {
+                this.continueButton.setEnabled(false);
+            }
+        }));
+
+        this.enterZ = new JTextField("0");
+        PromptSupport.setPrompt("Z Coordinate...", this.enterZ);
+
+        this.enterZ.addKeyListener(Events.Keyboard.onReleased(e -> {
+            try {
+                Integer.parseInt(this.enterX.getText().trim());
+                this.continueButton.setEnabled(true);
+            } catch(Exception _e) {
+                this.continueButton.setEnabled(false);
+            }
+        }));
+
+        this.typeDropdown = new Dropdown<>(Type::getName, Type.values());
+
+        this.continueButton = new JButton();
+        this.continueButton.setText("Continue");
+
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
+            if(!this.isEnabled())return;
+
+            int x, z;
+
+            try {
+                x = Integer.parseInt(this.enterX.getText().trim());
+                z = Integer.parseInt(this.enterZ.getText().trim());
+            } catch(NumberFormatException _e) {
+                return;
+            }
+
+            x = this.typeDropdown.getSelected().transform(x);
+            z = this.typeDropdown.getSelected().transform(z);
+            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if(map != null)map.getManager().setCenterPos(x, z);
+            this.dispose();
+        }));
+
+        JSplitPane duo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.enterX, this.enterZ);
+        this.getContentPane().add(duo);
+        this.getContentPane().add(this.typeDropdown);
+        this.getContentPane().add(this.continueButton);
+    }
+
+    protected enum Type {
+        BLOCK("Block Coordinates", i -> i),
+        CHUNK("Chunk Coordinates", i -> i << 4),
+        REGION_32("Chunk Region Coordinates (32x32)", i -> CHUNK.transform(i) << 5);
+
+        private final String name;
+        private final IntUnaryOperator transformation;
+
+        Type(String name, IntUnaryOperator transformation) {
+            this.name = name;
+            this.transformation = transformation;
+        }
+
+        public String getName() {
+            return this.name;
+        }
+
+        public int transform(int i) {
+            return this.transformation.applyAsInt(i);
+        }
+    }
+
 }

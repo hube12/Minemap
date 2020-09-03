@@ -63,7 +63,7 @@ public class BiomeColorsConfig extends Config {
 
 	public List<String> getStyles() {
 		List<String> styles = new ArrayList<>();
-		styles.add("Default");
+		styles.add(BiomeColorsConfig.DEFAULT_STYLE_NAME);
 		styles.addAll(new ArrayList<>(this.OVERRIDES.keySet()));
 		return styles;
 	}
