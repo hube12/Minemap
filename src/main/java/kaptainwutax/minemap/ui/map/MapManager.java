@@ -49,14 +49,13 @@ public class MapManager {
             BPos pos = this.getPos(e.getX(), e.getY());
             int x = pos.getX();
             int z = pos.getZ();
+            this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(pos.getX(), pos.getZ()));
 
-            this.panel.displayBar.tooltip.updateBiomeDisplay(x, z);
-
-            this.panel.scheduler.forEachFragment(fragment -> {
-                fragment.onHovered(pos.getX(), pos.getZ());
+            SwingUtilities.invokeLater(() -> {
+                this.panel.displayBar.tooltip.updateBiomeDisplay(x, z);
+                this.panel.displayBar.tooltip.tooltip.repaint();
+                this.panel.repaint();
             });
-
-            this.panel.repaint();
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {

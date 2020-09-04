@@ -146,14 +146,22 @@ public class MapSettings {
     }
 
     public List<Feature<?, ?>> getAllFeatures() {
+        return this.getAllFeatures((o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
+    }
+
+    public List<Feature<?, ?>> getAllFeatures(Comparator<Feature<?, ?>> comparator) {
         List<Feature<?, ?>> f = new ArrayList<>(this.featureTypes.values());
-        f.sort((o1, o2) -> Collator.getInstance().compare(o1.getName(), o2.getName()));
+        f.sort(comparator);
         return f;
     }
 
     public List<Biome> getAllBiomes() {
+        return this.getAllBiomes(Comparator.comparingInt(Biome::getId));
+    }
+
+    public List<Biome> getAllBiomes(Comparator<Biome> comparator) {
         List<Biome> b = new ArrayList<>(this.biomeStates.keySet());
-        b.sort(Comparator.comparingInt(Biome::getId));
+        b.sort(comparator);
         return b;
     }
 

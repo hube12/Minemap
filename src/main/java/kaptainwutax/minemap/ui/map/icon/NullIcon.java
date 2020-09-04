@@ -27,8 +27,13 @@ public class NullIcon extends IconRenderer {
     }
 
     @Override
-    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos) {
+    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
 
+    }
+
+    @Override
+    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height) {
+        return false;
     }
 
 }

@@ -16,6 +16,11 @@ public class SlimeIcon extends DynamicIcon {
     }
 
     @Override
+    public float getZValue() {
+        return -1.0F;
+    }
+
+    @Override
     public boolean isValidFeature(Feature<?, ?> feature) {
         return feature instanceof SlimeChunk;
     }
@@ -31,6 +36,11 @@ public class SlimeIcon extends DynamicIcon {
                 positions.add(new BPos(x, 0, z).toChunkCorner());
             }
         }
+    }
+
+    @Override
+    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height) {
+        return false;
     }
 
 }

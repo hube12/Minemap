@@ -19,13 +19,14 @@ public abstract class DynamicIcon extends IconRenderer {
     }
 
     @Override
-    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos) {
+    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
         double iconWidth = (double)info.width / fragment.getSize() * this.blockSize;
         double iconHeight = (double)info.height / fragment.getSize() * this.blockSize;
 
         int sx = (int)((double)(pos.getX() - fragment.getX()) / fragment.getSize() * info.width);
         int sy = (int)((double)(pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height);
-        graphics.drawImage(Icons.REGISTRY.get(feature.getClass()), info.x + sx, info.y + sy, (int)iconWidth + 1, (int)iconHeight + 1, null);
+        graphics.drawImage(Icons.REGISTRY.get(feature.getClass()), info.x + sx, info.y + sy,
+                (int)iconWidth + 1, (int)iconHeight + 1, null);
     }
 
 }

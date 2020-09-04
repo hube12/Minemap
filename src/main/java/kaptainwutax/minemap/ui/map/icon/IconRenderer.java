@@ -21,10 +21,16 @@ public abstract class IconRenderer {
         return this.context;
     }
 
+    public float getZValue() {
+        return 0.0F;
+    }
+
     public abstract boolean isValidFeature(Feature<?, ?> feature);
 
     public abstract void addPositions(Feature<?, ?> feature, Fragment fragment, List<BPos> positions);
 
-    public abstract void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos);
+    public abstract void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered);
+
+    public abstract boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height);
 
 }

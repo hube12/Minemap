@@ -8,6 +8,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -65,8 +66,12 @@ public class IconManager {
         return positions;
     }
 
-    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos) {
-        this.renderers.get(feature).render(graphics, info, feature, fragment, pos);
+    public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
+        this.renderers.get(feature).render(graphics, info, feature, fragment, pos, hovered);
+    }
+
+    public Comparator<Feature<?, ?>> getZValueSorter() {
+        return Comparator.comparing(feature -> this.renderers.get(feature).getZValue());
     }
 
 }

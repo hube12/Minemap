@@ -5,8 +5,9 @@ import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
-import kaptainwutax.minemap.ui.map.icon.StaticIcon;
+import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -28,7 +29,7 @@ public class Fragment {
     private BufferedImage imageCache;
 
     private Map<Feature<?, ?>, List<BPos>> features;
-    private BPos mousePos;
+    private BPos hoveredPos;
 
     public Fragment(int blockX, int blockZ, int regionSize, MapContext context) {
         this.blockX = blockX;
@@ -93,44 +94,35 @@ public class Fragment {
 
             for(BPos pos: entry.getValue()) {
                 if(hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos))continue;
-                this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos);
+                this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos, false);
             }
         }
 
         this.getHoveredFeatures(info.width, info.height).forEach((feature, positions) -> {
             if(!this.context.getSettings().isActive(feature) || positions == null)return;
-            StaticIcon.ICON_SIZE = 38;
 
             for(BPos pos: positions) {
-                this.context.getIconManager().render(graphics, info, feature, this, pos);
+                this.context.getIconManager().render(graphics, info, feature, this, pos, true);
             }
         });
-
-        StaticIcon.ICON_SIZE = 24;
     }
 
     public void onHovered(int blockX, int blockZ) {
-        this.mousePos = new BPos(blockX, 0, blockZ);
+        this.hoveredPos = new BPos(blockX, 0, blockZ);
     }
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
-        if(this.mousePos == null || this.context == null || !this.context.getSettings().showFeatures)return Collections.emptyMap();
-        double distanceX = (this.regionSize / (double)width) * (StaticIcon.ICON_SIZE / 2.0D);
-        double distanceZ = (this.regionSize / (double)height) * (StaticIcon.ICON_SIZE / 2.0D);
+        if(this.hoveredPos == null || this.context == null || !this.context.getSettings().showFeatures) {
+            return Collections.emptyMap();
+        }
 
         Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
 
         for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
             if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
-
+            IconRenderer renderer = this.context.getIconManager().getFor(entry.getKey());
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
-
-            newList.removeIf(pos -> {
-                int dx = Math.abs(this.mousePos.getX() - pos.getX());
-                int dz = Math.abs(this.mousePos.getZ() - pos.getZ());
-                return dx >= distanceX || dz >= distanceZ;
-            });
-
+            newList.removeIf(pos -> !renderer.isHovered(this, this.hoveredPos, pos, width, height));
             map.put(entry.getKey(), newList);
         }
 
@@ -182,10 +174,11 @@ public class Fragment {
     }
 
     private void generateFeatures() {
-        this.features = new HashMap<>();
+        this.features = new LinkedHashMap<>();
+        IconManager iconManager = this.context.getIconManager();
 
-        for(Feature<?, ?> feature: this.context.getSettings().getAllFeatures()) {
-            List<BPos> positions = this.context.getIconManager().getPositions(feature, this);
+        for(Feature<?, ?> feature: this.context.getSettings().getAllFeatures(iconManager.getZValueSorter())) {
+            List<BPos> positions = iconManager.getPositions(feature, this);
             positions.removeIf(pos -> !this.isPosInFragment(pos));
             this.features.put(feature, positions);
         }
