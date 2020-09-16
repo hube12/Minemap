@@ -3,3 +3,7 @@
 build/
 configs/
 screenshots/
+.classpath
+.project
+.settings/org.eclipse.buildship.core.prefs
+bin/
