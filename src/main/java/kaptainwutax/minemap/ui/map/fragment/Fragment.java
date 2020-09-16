@@ -175,11 +175,14 @@ public class Fragment {
     private static final int INACTIVE_DIVISOR = 30;
 
     private Color makeInactive(Color c) {
-    	int sum = c.getRed() + c.getGreen() + c.getBlue();
+    	int r = c.getRed();
+    	int g = c.getGreen();
+    	int b = c.getBlue();
+    	int sum = r + g + b;
     	
-    	return new Color((int)((c.getRed() + sum) / INACTIVE_DIVISOR),
-    					 (int)((c.getGreen() + sum) / INACTIVE_DIVISOR),
-		    			 (int)((c.getBlue() + sum) / INACTIVE_DIVISOR),
+    	return new Color((int)((r + sum) / INACTIVE_DIVISOR),
+    					 (int)((g + sum) / INACTIVE_DIVISOR),
+		    			 (int)((b + sum) / INACTIVE_DIVISOR),
 		    			 c.getAlpha());
     }
 
