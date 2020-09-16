@@ -164,12 +164,26 @@ public class Fragment {
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 
                 if(!this.activeBiomesCache.contains(biome)) {
-                    color = color.darker().darker().darker().darker().darker();
+                    color = makeInactive(color);
                 }
 
                 this.imageCache.setRGB(x, z, color.getRGB());
             }
         }
+    }
+
+    private static final int INACTIVE_DIVISOR = 30;
+
+    private Color makeInactive(Color c) {
+    	int r = c.getRed();
+    	int g = c.getGreen();
+    	int b = c.getBlue();
+    	int sum = r + g + b;
+    	
+    	return new Color((int)((r + sum) / INACTIVE_DIVISOR),
+    					 (int)((g + sum) / INACTIVE_DIVISOR),
+		    			 (int)((b + sum) / INACTIVE_DIVISOR),
+		    			 c.getAlpha());
     }
 
     private void generateFeatures() {
