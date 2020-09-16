@@ -143,8 +143,7 @@ public class Fragment {
 
         for(int x = 0; x < effectiveRegion; x++) {
             for(int z = 0; z < effectiveRegion; z++) {
-                Biome biome = Biome.REGISTRY.get(layer.get(region.getX() + x, 0, region.getZ() + z));
-                this.biomeCache[x][z] = biome == null ? -1 : biome.getId();
+                this.biomeCache[x][z] = layer.get(region.getX() + x, 0, region.getZ() + z);
             }
         }
 
