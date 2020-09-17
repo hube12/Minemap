@@ -46,11 +46,6 @@ public class Dropdown<E> extends JComboBox<String> {
         }
     }
 
-    @Override
-    public Dimension getMaximumSize() {
-        return new Dimension(2000, 40);
-    }
-
     public E getElement(int index) {
         return (E)this.elements[index];
     }

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.function.Consumer;
 
 public class FragmentScheduler {
@@ -49,11 +50,15 @@ public class FragmentScheduler {
 
 				this.scheduledRegions.remove(nearest);
 
-				this.executor.run(() -> {
-					Fragment fragment = new Fragment(nearest, this.listener.getContext());
-					this.fragments.put(nearest, fragment);
-					SwingUtilities.invokeLater(() -> this.listener.repaint());
-				});
+				try {
+					this.executor.run(() -> {
+						Fragment fragment = new Fragment(nearest, this.listener.getContext());
+						this.fragments.put(nearest, fragment);
+						SwingUtilities.invokeLater(() -> this.listener.repaint());
+					});
+				} catch(RejectedExecutionException ignored) {
+
+				}
 
 				this.executor.awaitFreeThread();
 			}
