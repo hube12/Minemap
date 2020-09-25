@@ -9,11 +9,15 @@ import kaptainwutax.seedutils.util.ThreadPool;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class FragmentScheduler {
@@ -28,7 +32,8 @@ public class FragmentScheduler {
 
 	protected MapPanel listener;
 
-	public Queue<RPos> scheduledRegions = new ConcurrentLinkedQueue<>();
+	public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
+	private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
 
 	public FragmentScheduler(MapPanel listener, int threadCount) {
 		this.listener = listener;
@@ -45,10 +50,12 @@ public class FragmentScheduler {
 				} else if(!this.isInBounds(nearest)) {
 					this.fragments.remove(nearest);
 					this.scheduledRegions.remove(nearest);
+					this.scheduledModified.set(true);
 					continue;
 				}
 
 				this.scheduledRegions.remove(nearest);
+				this.scheduledModified.set(true);
 
 				try {
 					this.executor.run(() -> {
@@ -75,23 +82,27 @@ public class FragmentScheduler {
 
 	public void purge() {
 		this.scheduledRegions.removeIf(region -> !this.isInBounds(region));
+		this.scheduledModified.set(true);
 		this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
 	}
 
+	private final Comparator<RPos> centerDistCompatator = (r1, r2) -> 
+					Double.compare(this.distanceToCenter(r1), this.distanceToCenter(r2));
+
 	public RPos getNearestScheduled() {
-		double minDistance = Double.MAX_VALUE;
-		RPos nearest = null;
-
-		for(RPos region: this.scheduledRegions) {
-			double distance = this.distanceToCenter(region);
-
-			if(distance < minDistance) {
-				minDistance = distance;
-				nearest = region;
+		if(this.scheduledModified.getAndSet(false)) {
+			try {
+				SwingUtilities.invokeAndWait(() -> this.scheduledRegions.sort(this.centerDistCompatator));
+			} catch (InvocationTargetException | InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 
-		return nearest;
+		try {
+			return this.scheduledRegions.get(0);
+		} catch (IndexOutOfBoundsException e) {
+			return null;
+		}
 	}
 
 	public double distanceToCenter(RPos regionPos) {
@@ -116,6 +127,7 @@ public class FragmentScheduler {
 		if(!this.fragments.containsKey(regionPos) && !this.scheduledRegions.contains(regionPos)) {
 			this.fragments.put(regionPos, LOADING_FRAGMENT);
 			this.scheduledRegions.add(regionPos);
+			this.scheduledModified.set(true);
 		}
 
 		return this.fragments.get(regionPos);
