@@ -1,7 +1,6 @@
 package kaptainwutax.minemap.ui.component;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
