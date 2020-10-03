@@ -50,12 +50,10 @@ public class FragmentScheduler {
 				} else if(!this.isInBounds(nearest)) {
 					this.fragments.remove(nearest);
 					this.scheduledRegions.remove(nearest);
-					this.scheduledModified.set(true);
 					continue;
 				}
 
 				this.scheduledRegions.remove(nearest);
-				this.scheduledModified.set(true);
 
 				try {
 					this.executor.run(() -> {
@@ -82,27 +80,19 @@ public class FragmentScheduler {
 
 	public void purge() {
 		this.scheduledRegions.removeIf(region -> !this.isInBounds(region));
-		this.scheduledModified.set(true);
 		this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
 	}
 
-	private final Comparator<RPos> centerDistCompatator = (r1, r2) -> 
-					Double.compare(this.distanceToCenter(r1), this.distanceToCenter(r2));
-
 	public RPos getNearestScheduled() {
 		if(this.scheduledModified.getAndSet(false)) {
-			try {
-				SwingUtilities.invokeAndWait(() -> this.scheduledRegions.sort(this.centerDistCompatator));
-			} catch (InvocationTargetException | InterruptedException e) {
-				e.printStackTrace();
-			}
+			this.scheduledRegions.sort(Comparator.comparingDouble(this::distanceToCenter));
 		}
 
-		try {
+		if(!this.scheduledRegions.isEmpty()) {
 			return this.scheduledRegions.get(0);
-		} catch (IndexOutOfBoundsException e) {
-			return null;
 		}
+
+		return null;
 	}
 
 	public double distanceToCenter(RPos regionPos) {
