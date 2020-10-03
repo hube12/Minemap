@@ -81,7 +81,7 @@ public class FragmentScheduler {
 
 	public RPos getNearestScheduled() {
 		if(this.scheduledModified.getAndSet(false)) {
-			this.scheduledRegions.sort(Comparator.comparingDouble(this::distanceToCenter));
+			SwingUtilities.invokeLater(() -> this.scheduledRegions.sort(Comparator.comparingDouble(this::distanceToCenter)));
 		}
 
 		if(!this.scheduledRegions.isEmpty()) {
