@@ -172,18 +172,9 @@ public class Fragment {
         }
     }
 
-    private static final int INACTIVE_DIVISOR = 30;
-
     private Color makeInactive(Color c) {
-    	int r = c.getRed();
-    	int g = c.getGreen();
-    	int b = c.getBlue();
-    	int sum = r + g + b;
-    	
-    	return new Color((int)((r + sum) / INACTIVE_DIVISOR),
-    					 (int)((g + sum) / INACTIVE_DIVISOR),
-		    			 (int)((b + sum) / INACTIVE_DIVISOR),
-		    			 c.getAlpha());
+    	int r = c.getRed(), g = c.getGreen(), b = c.getBlue(), sum = r + g + b;
+    	return new Color((r + sum) / 30, (g + sum) / 30, (b + sum) / 30, c.getAlpha());
     }
 
     private void generateFeatures() {
