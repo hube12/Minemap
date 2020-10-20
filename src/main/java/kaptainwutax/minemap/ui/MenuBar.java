@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
+import kaptainwutax.minemap.ui.dialog.SaltDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
@@ -152,8 +153,7 @@ public class MenuBar extends JMenuBar {
 	private void addWorldMenu() {
 		JMenu worldMenu = new JMenu("World");
 
-		JMenuItem goToCoords = new JMenuItem();
-		goToCoords.setText("Go to Coordinates");
+		JMenuItem goToCoords = new JMenuItem("Go to Coordinates");
 
 		goToCoords.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
 			if(!goToCoords.isEnabled())return;
@@ -189,11 +189,26 @@ public class MenuBar extends JMenuBar {
 			loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
 		}));
 
+		JMenuItem changeSalts = new JMenuItem("Change Salts");
+
+		changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			SaltDialog dialog = null;
+			try {
+				dialog = new SaltDialog();
+				dialog.setVisible(true);
+			} catch (Exception exception) {
+				exception.printStackTrace();
+			}
+		})));
+
 		worldMenu.add(goToCoords);
 		worldMenu.add(goToSpawn);
 		worldMenu.add(loadShadowSeed);
+		worldMenu.add(changeSalts);
 		this.add(worldMenu);
 	}
+
+
 
 	private BPos getActiveSpawn() {
 		MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
