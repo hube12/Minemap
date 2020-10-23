@@ -12,7 +12,11 @@ public abstract class Dialog extends JDialog {
 
 		this.setTitle(title);
 		this.getContentPane().setLayout(layout);
-		this.initComponents();
+		try {
+			this.initComponents();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		this.pack();
 
@@ -24,6 +28,6 @@ public abstract class Dialog extends JDialog {
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	}
 
-	public abstract void initComponents();
+	public abstract void initComponents() throws Exception;
 
 }

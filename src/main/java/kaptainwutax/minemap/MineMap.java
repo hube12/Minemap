@@ -47,6 +47,7 @@ public class MineMap extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setTitle("MineMap");
 		System.out.println("Hello, its me");
+		System.out.println("General Kenobi");
 	}
 
 	private void initComponents() {

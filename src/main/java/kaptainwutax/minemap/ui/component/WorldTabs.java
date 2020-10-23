@@ -15,93 +15,93 @@ import java.util.List;
 
 public class WorldTabs extends JTabbedPane {
 
-	public static final Color BACKGROUND_COLOR = new Color(60, 63,65);
-	protected final List<TabGroup> tabGroups = new ArrayList<>();
+    public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
+    protected final List<TabGroup> tabGroups = new ArrayList<>();
 
-	public WorldTabs() {
-		//Copy seed to clipboard.
-		KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-			if(e.getKeyCode() != KeyEvent.VK_C
-					|| (e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0)return false;
-			MapPanel map = this.getSelectedMapPanel();
-			if(map == null)return false;
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-					new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
-			return true;
-		});
-	}
+    public WorldTabs() {
+        //Copy seed to clipboard.
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if (e.getKeyCode() != KeyEvent.VK_C
+                    || (e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
+            MapPanel map = this.getSelectedMapPanel();
+            if (map == null) return false;
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                    new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
+            return true;
+        });
+    }
 
-	public void load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
-		TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
-		this.tabGroups.add(tabGroup);
-		tabGroup.add(this);
-	}
+    public void load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
+        TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
+        this.tabGroups.add(tabGroup);
+        tabGroup.add(this);
+    }
 
-	@Override
-	public void remove(Component component) {
-		if(component instanceof MapPanel) {
-			this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel)component));
-			this.tabGroups.removeIf(TabGroup::isEmpty);
-		}
+    @Override
+    public void remove(Component component) {
+        if (component instanceof MapPanel) {
+            this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel) component));
+            this.tabGroups.removeIf(TabGroup::isEmpty);
+        }
 
-		super.remove(component);
-	}
+        super.remove(component);
+    }
 
-	public void remove(TabGroup tabGroup) {
-		for(MapPanel mapPanel: tabGroup.getMapPanels()) {
-			super.remove(mapPanel);
-		}
+    public void remove(TabGroup tabGroup) {
+        for (MapPanel mapPanel : tabGroup.getMapPanels()) {
+            super.remove(mapPanel);
+        }
 
-		this.tabGroups.remove(tabGroup);
-	}
+        this.tabGroups.remove(tabGroup);
+    }
 
-	public Component getSelectedComponent() {
-		if(this.getSelectedIndex() < 0)return null;
-		return this.getComponentAt(this.getSelectedIndex());
-	}
+    public Component getSelectedComponent() {
+        if (this.getSelectedIndex() < 0) return null;
+        return this.getComponentAt(this.getSelectedIndex());
+    }
 
-	public MapPanel getSelectedMapPanel() {
-		Component component = this.getSelectedComponent();
-		return component instanceof MapPanel ? (MapPanel)component : null;
-	}
+    public MapPanel getSelectedMapPanel() {
+        Component component = this.getSelectedComponent();
+        return component instanceof MapPanel ? (MapPanel) component : null;
+    }
 
-	public TabHeader getSelectedHeader() {
-		if(this.getSelectedIndex() < 0)return null;
-		Component c = this.getTabComponentAt(this.getSelectedIndex());
-		return c instanceof TabHeader ? (TabHeader)c : null;
-	}
+    public TabHeader getSelectedHeader() {
+        if (this.getSelectedIndex() < 0) return null;
+        Component c = this.getTabComponentAt(this.getSelectedIndex());
+        return c instanceof TabHeader ? (TabHeader) c : null;
+    }
 
-	@Override
-	public void paintComponent(Graphics g) {
-		if(MineMap.DARCULA) {
-			g.setColor(BACKGROUND_COLOR);
-			g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		}
+    @Override
+    public void paintComponent(Graphics g) {
+        if (MineMap.DARCULA) {
+            g.setColor(BACKGROUND_COLOR);
+            g.fillRect(0, 0, this.getWidth(), this.getHeight());
+        }
 
-		super.paintComponent(g);
-	}
+        super.paintComponent(g);
+    }
 
-	public synchronized void invalidateAll() {
-		this.tabGroups.forEach(TabGroup::invalidateAll);
-	}
+    public synchronized void invalidateAll() {
+        this.tabGroups.forEach(TabGroup::invalidateAll);
+    }
 
-	public int addTabAndGetIndex(String title, Component component) {
-		super.addTab(title, component);
-		return this.getTabCount() - 1;
-	}
+    public int addTabAndGetIndex(String title, Component component) {
+        super.addTab(title, component);
+        return this.getTabCount() - 1;
+    }
 
-	@Override
-	public void addTab(String title, Component component) {
-		this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> {
-			this.remove(component);
-		}));
-	}
+    @Override
+    public void addTab(String title, Component component) {
+        this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> {
+            this.remove(component);
+        }));
+    }
 
-	public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
-		this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), new TabHeader(title, e -> {
-			if(e.isShiftDown())this.remove(tabGroup);
-			else this.remove(mapPanel);
-		}));
-	}
+    public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
+        this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), new TabHeader(title, e -> {
+            if (e.isShiftDown()) this.remove(tabGroup);
+            else this.remove(mapPanel);
+        }));
+    }
 
 }
