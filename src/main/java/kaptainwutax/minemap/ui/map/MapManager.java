@@ -131,7 +131,7 @@ public class MapManager {
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         settings.addMouseListener(Events.Mouse.onReleased(e -> {
-            this.panel.displayBar.settings.setVisible(true);
+            this.panel.displayBar.settings.setVisible(!panel.displayBar.settings.isVisible());
             popup.setVisible(false);
         }));
 

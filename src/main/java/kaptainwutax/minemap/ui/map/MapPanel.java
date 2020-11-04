@@ -11,6 +11,8 @@ import kaptainwutax.seedutils.mc.pos.RPos;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +22,6 @@ public class MapPanel extends JPanel {
 	public final MapContext context;
 	public final MapManager manager;
 	public final MapSideBar displayBar;
-
 	public final int threadCount;
 	public FragmentScheduler scheduler;
 
@@ -34,6 +35,21 @@ public class MapPanel extends JPanel {
 
 		this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
 		this.add(this.displayBar, BorderLayout.WEST);
+		this.addComponentListener(new ComponentAdapter() {
+			public void componentResized(ComponentEvent e) {
+				if (e.getComponent().getSize().width<=600){
+					if (displayBar.settings.isVisible()){
+						displayBar.settings.setVisible(false);
+						displayBar.settings.isHiddenForSize=true;
+					}
+				}else{
+					if (displayBar.settings.isHiddenForSize){
+						displayBar.settings.setVisible(true);
+						displayBar.settings.isHiddenForSize=false;
+					}
+				}
+			}
+		});
 		this.restart();
 	}
 

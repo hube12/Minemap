@@ -11,6 +11,7 @@ import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,11 +28,11 @@ public class SettingsSidebar extends JPanel {
     public Dropdown<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
     public JButton closeButton;
+    public boolean isHiddenForSize=false;
 
     public SettingsSidebar(MapPanel map) {
         this.map = map;
         this.settings = this.map.getContext().getSettings();
-
         this.addLayerDropdown();
         this.addScrollPane();
         this.addGlobalToggles();
@@ -40,7 +41,7 @@ public class SettingsSidebar extends JPanel {
         this.addHideShowButtons();
         this.addSetResetButtons();
         this.addCloseButton();
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new VerticalLayout());
     }
 
     private void addScrollPane() {
@@ -56,7 +57,7 @@ public class SettingsSidebar extends JPanel {
                 if (map==null){
                     height=MineMap.INSTANCE.getHeight() - 210;
                 }else{
-                    height=map.getHeight()-120;
+                    height=map.getHeight()-150;
                 }
                 scrollPane.setPreferredSize(new Dimension(300, height));
                 scrollPane.setSize(new Dimension(300,height));
