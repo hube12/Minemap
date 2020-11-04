@@ -17,12 +17,24 @@ public class FeatureEntry extends JPanel {
         this.checkBox = new JCheckBox(Str.formatName(feature.getName()));
 
         this.iconView = new JComponent() {
-
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(20, 20);
+            }
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 BufferedImage icon = Icons.REGISTRY.get(feature.getClass());
-                g.drawImage(icon, 0, 0, icon.getWidth(), icon.getHeight(), null);
+                int iconSizeX,iconSizeZ;
+                int defaultValue=20;
+                if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
+                    iconSizeX = defaultValue;
+                    iconSizeZ=(int)(defaultValue*(float)icon.getRaster().getHeight()/icon.getRaster().getWidth());
+                }else{
+                    iconSizeZ = defaultValue;
+                    iconSizeX=(int)(defaultValue*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
+                }
+                g.drawImage(icon, (defaultValue-iconSizeX)/2, (defaultValue-iconSizeZ)/2, iconSizeX, iconSizeZ, null);
             }
         };
 

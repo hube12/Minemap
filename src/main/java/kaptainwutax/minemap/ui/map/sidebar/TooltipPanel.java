@@ -62,7 +62,7 @@ public class TooltipPanel extends JPanel {
                         iconSizeZ = defaultValue;
                         iconSizeX=(int)(defaultValue*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
                     }
-                    g.drawImage(icon, 0, 0, (int) (iconSizeX*factor),  (int) (iconSizeZ*factor), null);
+                    g.drawImage(icon, (defaultValue-iconSizeX)/2, (defaultValue-iconSizeZ)/2, (int) (iconSizeX*factor),  (int) (iconSizeZ*factor), null);
                 }
             };
 
