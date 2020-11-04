@@ -38,6 +38,7 @@ public class MapSideBar extends JPanel {
         gridBagConstraints.gridy = 0;
         this.add(this.tooltip,gridBagConstraints);
         this.setBackground(new Color(0, 0, 0, 0));
+        this.setOpaque(false);
     }
 
 }
