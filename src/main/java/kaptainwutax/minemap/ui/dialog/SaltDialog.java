@@ -1,13 +1,13 @@
 package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
@@ -41,7 +41,8 @@ public class SaltDialog extends Dialog {
             version = SaltDialog.version.call();
         } catch (Exception e) {
             e.printStackTrace();
-        };
+        }
+        ;
         Configs.SALTS.getSalts(version).forEach((name, value) -> {
                     if (value != null) {
                         JLabel saltName = new JLabel(name + " salt");
@@ -67,9 +68,19 @@ public class SaltDialog extends Dialog {
             assert (finalNumberSalts == salts.size());
             assert (finalNumberSalts == saltsNames.size());
             for (int i = 0; i < finalNumberSalts; i++) {
-                String name=saltsNames.get(i).getText().split(" salt")[0];
-                Integer value= (Integer) salts.get(i).getModel().getValue();
-                Configs.SALTS.addOverrideEntry(finalVersion,name,value);
+                String name = saltsNames.get(i).getText().split(" salt")[0];
+                try {
+                    String previous = ((JSpinner.NumberEditor) salts.get(i).getEditor()).getTextField().getText();
+                    salts.get(i).commitEdit();
+                    if (!previous.equals(salts.get(i).getValue().toString())) {
+                        JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use valid numbers we changed " +
+                                "from " + previous + " to " + salts.get(i).getValue().toString());
+                    }
+                } catch (ParseException parseException) {
+                    JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use numbers");
+                }
+                Integer value = (Integer) salts.get(i).getModel().getValue();
+                Configs.SALTS.addOverrideEntry(finalVersion, name, value);
             }
             Configs.SALTS.flush();
             MineMap.INSTANCE.worldTabs.invalidateAll();

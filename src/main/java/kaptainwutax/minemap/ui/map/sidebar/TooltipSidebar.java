@@ -22,7 +22,7 @@ public class TooltipSidebar extends JPanel {
         this.map = map;
         this.addBiomeDisplay();
         this.addTooltip();
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
     }
 

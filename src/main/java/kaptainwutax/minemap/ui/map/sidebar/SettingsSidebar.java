@@ -51,8 +51,15 @@ public class SettingsSidebar extends JPanel {
         scrollPane.addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
             @Override
             public void ancestorResized(HierarchyEvent e) {
-                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
-                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
+                MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                int height;
+                if (map==null){
+                    height=MineMap.INSTANCE.getHeight() - 210;
+                }else{
+                    height=map.getHeight()-120;
+                }
+                scrollPane.setPreferredSize(new Dimension(300, height));
+                scrollPane.setSize(new Dimension(300,height));
                 scrollPane.repaint();
             }
         });

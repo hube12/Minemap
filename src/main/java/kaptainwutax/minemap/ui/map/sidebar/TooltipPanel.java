@@ -8,6 +8,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class TooltipPanel extends JPanel {
 
@@ -50,8 +51,18 @@ public class TooltipPanel extends JPanel {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    Image icon = Icons.REGISTRY.get(feature.getClass());
-                    g.drawImage(icon, 0, 0, 30, 30, null);
+                    BufferedImage icon = Icons.REGISTRY.get(feature.getClass());
+                    int iconSizeX,iconSizeZ;
+                    int defaultValue=20;
+                    float factor=1.5F;
+                    if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
+                        iconSizeX = defaultValue;
+                        iconSizeZ=(int)(defaultValue*(float)icon.getRaster().getHeight()/icon.getRaster().getWidth());
+                    }else{
+                        iconSizeZ = defaultValue;
+                        iconSizeX=(int)(defaultValue*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
+                    }
+                    g.drawImage(icon, 0, 0, (int) (iconSizeX*factor),  (int) (iconSizeZ*factor), null);
                 }
             };
 

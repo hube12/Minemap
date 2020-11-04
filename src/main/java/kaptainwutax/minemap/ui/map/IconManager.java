@@ -68,6 +68,7 @@ public class IconManager {
 
     public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
         this.renderers.get(feature).render(graphics, info, feature, fragment, pos, hovered);
+        
     }
 
     public Comparator<Feature<?, ?>> getZValueSorter() {

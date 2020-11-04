@@ -21,14 +21,20 @@ public class MapSideBar extends JPanel {
 
         this.tooltip.setVisible(true);
         this.settings.setVisible(false);
-
         this.settings.closeButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            this.tooltip.setVisible(true);
             this.settings.setVisible(false);
         }));
 
-        this.add(this.tooltip);
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints  gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.anchor = GridBagConstraints.NORTH;
+        gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
         this.add(this.settings);
+        this.add(this.tooltip,gridBagConstraints);
         this.setBackground(new Color(0, 0, 0, 0));
     }
 

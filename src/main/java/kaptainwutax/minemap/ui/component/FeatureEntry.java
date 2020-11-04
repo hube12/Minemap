@@ -6,6 +6,7 @@ import kaptainwutax.minemap.util.Str;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class FeatureEntry extends JPanel {
 
@@ -16,16 +17,12 @@ public class FeatureEntry extends JPanel {
         this.checkBox = new JCheckBox(Str.formatName(feature.getName()));
 
         this.iconView = new JComponent() {
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(20, 20);
-            }
 
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                Image icon = Icons.REGISTRY.get(feature.getClass());
-                g.drawImage(icon, 0, 0, 20, 20, null);
+                BufferedImage icon = Icons.REGISTRY.get(feature.getClass());
+                g.drawImage(icon, 0, 0, icon.getWidth(), icon.getHeight(), null);
             }
         };
 

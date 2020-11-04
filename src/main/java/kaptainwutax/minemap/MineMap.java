@@ -16,7 +16,7 @@ public class MineMap extends JFrame {
 	public static MineMap INSTANCE;
 	public static boolean DARCULA = false;
 
-	private JMenuBar toolbarPane;
+	public JMenuBar toolbarPane;
 	public WorldTabs worldTabs;
 
 	public static void main(String[] args) {
