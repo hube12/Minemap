@@ -8,10 +8,14 @@ import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
+import kaptainwutax.minemap.ui.map.tool.LineTool;
+import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
@@ -37,7 +41,7 @@ public class Fragment {
         this.regionSize = regionSize;
         this.context = context;
 
-        if(this.context != null) {
+        if (this.context != null) {
             this.refreshBiomeCache();
             this.refreshImageCache();
             this.generateFeatures();
@@ -72,11 +76,11 @@ public class Fragment {
         this.refreshBiomeCache();
         this.refreshImageCache();
 
-        if(this.imageCache != null && this.context.getSettings().showBiomes) {
+        if (this.imageCache != null && this.context.getSettings().showBiomes) {
             graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
         }
 
-        if(this.context.getSettings().showGrid) {
+        if (this.context.getSettings().showGrid) {
             Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
             graphics.drawRect(info.x, info.y, info.width - 1, info.height - 1);
@@ -85,26 +89,59 @@ public class Fragment {
     }
 
     public void drawFeatures(Graphics graphics, DrawInfo info) {
-        if(!this.context.getSettings().showFeatures)return;
+        if (!this.context.getSettings().showFeatures) return;
 
         Map<Feature<?, ?>, List<BPos>> hovered = this.getHoveredFeatures(info.width, info.height);
 
-        for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
-            if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
+        for (Map.Entry<Feature<?, ?>, List<BPos>> entry : this.features.entrySet()) {
+            if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
 
-            for(BPos pos: entry.getValue()) {
-                if(hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos))continue;
+            for (BPos pos : entry.getValue()) {
+                if (hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos)) continue;
                 this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos, false);
             }
         }
 
         this.getHoveredFeatures(info.width, info.height).forEach((feature, positions) -> {
-            if(!this.context.getSettings().isActive(feature) || positions == null)return;
+            if (!this.context.getSettings().isActive(feature) || positions == null) return;
 
-            for(BPos pos: positions) {
+            for (BPos pos : positions) {
                 this.context.getIconManager().render(graphics, info, feature, this, pos, true);
             }
         });
+    }
+
+    public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
+        for (Tool tool : tools) {
+            if (tool.isComplete()) {
+                Area polygon = new Area(tool.getShape());
+                Area rectangle = new Area(this.getRectangle());
+
+                polygon.intersect(rectangle);
+                if (!polygon.isEmpty()) {
+                    Color old = graphics.getColor();
+                    Graphics2D g2d = (Graphics2D) graphics;
+                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+                    g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+                    g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+                    g2d.setColor(Color.RED);
+                    g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+                    AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
+                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(info.width / ((double) regionSize), info.height / ((double) regionSize));
+                    scaleToDisplayFragment.concatenate(translateToZero);
+                    AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
+                    translateBackToDisplay.concatenate(scaleToDisplayFragment);
+                    polygon = polygon.createTransformedArea(translateBackToDisplay);
+                    g2d.draw(polygon);
+                    if (tool.shouldFill()) {
+                        g2d.fill(polygon);
+                    }
+                    g2d.setColor(old);
+                }
+            }
+        }
+
     }
 
     public void onHovered(int blockX, int blockZ) {
@@ -112,14 +149,14 @@ public class Fragment {
     }
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
-        if(this.hoveredPos == null || this.context == null || !this.context.getSettings().showFeatures) {
+        if (this.hoveredPos == null || this.context == null || !this.context.getSettings().showFeatures) {
             return Collections.emptyMap();
         }
 
         Map<Feature<?, ?>, List<BPos>> map = new HashMap<>();
 
-        for(Map.Entry<Feature<?, ?>, List<BPos>> entry: this.features.entrySet()) {
-            if(!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null)continue;
+        for (Map.Entry<Feature<?, ?>, List<BPos>> entry : this.features.entrySet()) {
+            if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
             IconRenderer renderer = this.context.getIconManager().getFor(entry.getKey());
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
             newList.removeIf(pos -> !renderer.isHovered(this, this.hoveredPos, pos, width, height));
@@ -130,19 +167,19 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        if(this.biomeCache != null && this.layerIdCache == this.context.getLayerId())return;
+        if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId()) return;
 
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
         int effectiveRegion = Math.max(this.regionSize / layer.getScale(), 1);
         RPos region = new BPos(this.blockX, 0, this.blockZ).toRegionPos(layer.getScale());
 
-        if(this.biomeCache == null || this.biomeCache.length != effectiveRegion) {
+        if (this.biomeCache == null || this.biomeCache.length != effectiveRegion) {
             this.biomeCache = new int[effectiveRegion][effectiveRegion];
         }
 
-        for(int x = 0; x < effectiveRegion; x++) {
-            for(int z = 0; z < effectiveRegion; z++) {
+        for (int x = 0; x < effectiveRegion; x++) {
+            for (int z = 0; z < effectiveRegion; z++) {
                 this.biomeCache[x][z] = layer.get(region.getX() + x, 0, region.getZ() + z);
             }
         }
@@ -151,19 +188,19 @@ public class Fragment {
     }
 
     private void refreshImageCache() {
-        if(this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache))return;
+        if (this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache)) return;
 
         int scaledSize = this.biomeCache.length;
         this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
         this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
 
-        for(int x = 0; x < scaledSize; x++) {
-            for(int z = 0; z < scaledSize; z++) {
+        for (int x = 0; x < scaledSize; x++) {
+            for (int z = 0; z < scaledSize; z++) {
                 Biome biome = Biome.REGISTRY.get(this.biomeCache[x][z]);
-                if(biome == null)continue;
+                if (biome == null) continue;
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 
-                if(!this.activeBiomesCache.contains(biome)) {
+                if (!this.activeBiomesCache.contains(biome)) {
                     color = makeInactive(color);
                 }
 
@@ -173,15 +210,15 @@ public class Fragment {
     }
 
     private Color makeInactive(Color c) {
-    	int r = c.getRed(), g = c.getGreen(), b = c.getBlue(), sum = r + g + b;
-    	return new Color((r + sum) / 30, (g + sum) / 30, (b + sum) / 30, c.getAlpha());
+        int r = c.getRed(), g = c.getGreen(), b = c.getBlue(), sum = r + g + b;
+        return new Color((r + sum) / 30, (g + sum) / 30, (b + sum) / 30, c.getAlpha());
     }
 
     private void generateFeatures() {
         this.features = new LinkedHashMap<>();
         IconManager iconManager = this.context.getIconManager();
 
-        for(Feature<?, ?> feature: this.context.getSettings().getAllFeatures(iconManager.getZValueSorter())) {
+        for (Feature<?, ?> feature : this.context.getSettings().getAllFeatures(iconManager.getZValueSorter())) {
             List<BPos> positions = iconManager.getPositions(feature, this);
             positions.removeIf(pos -> !this.isPosInFragment(pos));
             this.features.put(feature, positions);
@@ -193,9 +230,28 @@ public class Fragment {
     }
 
     public boolean isPosInFragment(int blockX, int blockZ) {
-        if(blockX < this.getX() || blockX >= this.getX() + this.getSize())return false;
-        if(blockZ < this.getZ() || blockZ >= this.getZ() + this.getSize())return false;
+        if (blockX < this.getX() || blockX >= this.getX() + this.getSize()) return false;
+        if (blockZ < this.getZ() || blockZ >= this.getZ() + this.getSize()) return false;
         return true;
     }
 
+    public Rectangle getRectangle() {
+        return new Rectangle(blockX, blockZ, regionSize, regionSize);
+    }
+
+    @Override
+    public String toString() {
+        return "Fragment{" +
+                "blockX=" + blockX +
+                ", blockZ=" + blockZ +
+                ", regionSize=" + regionSize +
+                ", context=" + context +
+                ", layerIdCache=" + layerIdCache +
+                ", biomeCache=" + Arrays.toString(biomeCache) +
+                ", activeBiomesCache=" + activeBiomesCache +
+                ", imageCache=" + imageCache +
+                ", features=" + features +
+                ", hoveredPos=" + hoveredPos +
+                '}';
+    }
 }

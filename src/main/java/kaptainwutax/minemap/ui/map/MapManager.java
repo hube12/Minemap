@@ -4,15 +4,16 @@ import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
-import kaptainwutax.minemap.ui.map.tool.LineTool;
+import kaptainwutax.minemap.ui.map.tool.Ruler;
+import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class MapManager {
 
@@ -24,9 +25,9 @@ public class MapManager {
 
     public double centerX;
     public double centerY;
-    public boolean toolEnabled;
 
-    public final LineTool lineTool=new LineTool();
+    public final ArrayList<Tool> tools = new ArrayList<>();
+    public Tool selectedTool = null;
 
     public Point mousePointer;
 
@@ -37,10 +38,10 @@ public class MapManager {
     public MapManager(MapPanel panel, int blocksPerFragment) {
         this.panel = panel;
         this.blocksPerFragment = blocksPerFragment;
-        this.pixelsPerFragment = (int)(300.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
+        this.pixelsPerFragment = (int) (300.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
-            if(SwingUtilities.isLeftMouseButton(e)) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
                 int dx = e.getX() - this.mousePointer.x;
                 int dy = e.getY() - this.mousePointer.y;
                 this.mousePointer = e.getPoint();
@@ -57,53 +58,54 @@ public class MapManager {
             this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(pos.getX(), pos.getZ()));
 
             SwingUtilities.invokeLater(() -> {
-                this.panel.displayBar.tooltip.updateBiomeDisplay(x, z);
-                this.panel.displayBar.tooltip.tooltip.repaint();
+                this.panel.leftBar.tooltip.updateBiomeDisplay(x, z);
+                this.panel.leftBar.tooltip.tooltip.repaint();
                 this.panel.repaint();
             });
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
-            if(SwingUtilities.isLeftMouseButton(e)) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
-                if (!toolEnabled) {
+                if (selectedTool == null) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-                }else{
+                } else {
                     BPos pos = this.getPos(e.getX(), e.getY());
-                    int size = (int)(this.pixelsPerFragment);
-                    if (lineTool.addPoint(pos,new DrawInfo(e.getX(),e.getY(),size+1,size+1))){
-                        System.out.println("Added a point");
-                    }else{
-                        System.out.println("Can not add more points yet");
+                    // if tool has no more points to it
+                    if (!selectedTool.addPoint(pos)) {
+                        selectedTool = selectedTool.duplicate();
+                        tools.add(selectedTool);
+                        selectedTool.addPoint(pos);
                     }
+                    this.panel.rightBar.tooltip.updateToolsMetrics(tools);
                 }
             }
         }));
 
         this.panel.addMouseListener(Events.Mouse.onReleased(e -> {
-            if(SwingUtilities.isLeftMouseButton(e)) {
-                if (!toolEnabled) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                if (selectedTool == null) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 }
             }
         }));
 
         this.panel.addMouseWheelListener(e -> {
-            if(!e.isControlDown()) {
+            if (!e.isControlDown()) {
                 double newPixelsPerFragment = this.pixelsPerFragment;
 
-                if(e.getUnitsToScroll() > 0) {
+                if (e.getUnitsToScroll() > 0) {
                     newPixelsPerFragment /= e.getUnitsToScroll() / 2.0D;
                 } else {
                     newPixelsPerFragment *= -e.getUnitsToScroll() / 2.0D;
                 }
 
-                if(newPixelsPerFragment > 2000.0D * (double)this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                if (newPixelsPerFragment > 2000.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
                     newPixelsPerFragment = 2000.0D * (this.blocksPerFragment / 512.0D);
                 }
 
-                if(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom
-                        && newPixelsPerFragment < 40.0D * (double)this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom
+                        && newPixelsPerFragment < 40.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
                     newPixelsPerFragment = 40.0D * (this.blocksPerFragment / 512.0D);
                 }
 
@@ -117,9 +119,9 @@ public class MapManager {
                 layerId += e.getUnitsToScroll() < 0 ? 1 : -1;
                 layerId = Mth.clamp(layerId, 0, this.panel.getContext().getBiomeSource().getLayerCount() - 1);
 
-                if(this.panel.getContext().getLayerId() != layerId) {
+                if (this.panel.getContext().getLayerId() != layerId) {
                     this.panel.getContext().setLayerId(layerId);
-                    this.panel.displayBar.settings.layerDropdown.selectIfPresent(layerId);
+                    this.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
                     this.panel.restart();
                 }
             }
@@ -148,22 +150,28 @@ public class MapManager {
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         settings.addMouseListener(Events.Mouse.onReleased(e -> {
-            this.panel.displayBar.settings.setVisible(!panel.displayBar.settings.isVisible());
+            this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible());
         }));
 
 
-        JMenuItem ruler = new JMenuItem("Enable Ruler");
-        ruler.setBorder(new EmptyBorder(5, 15, 5, 15));
+        JMenuItem rulerTool = new JMenuItem("Enable Ruler");
+        rulerTool.setBorder(new EmptyBorder(5, 15, 5, 15));
 
-        ruler.addMouseListener(Events.Mouse.onReleased(e -> {
-            toolEnabled=!toolEnabled;
-            if (toolEnabled){
+        rulerTool.addMouseListener(Events.Mouse.onReleased(e -> {
+            if (selectedTool == null) {
                 this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                ruler.setText("Disable ruler");
-            }else{
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                ruler.setText("Enable ruler");
-                lineTool.reset();
+                rulerTool.setText("Disable ruler");
+                Ruler ruler = new Ruler();
+                tools.add(ruler);
+                selectedTool = ruler;
+            } else {
+                if (selectedTool instanceof Ruler) {
+                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    rulerTool.setText("Enable ruler");
+                    selectedTool = null;
+                } else {
+                    System.out.println("this shouldn't be possible, all method should check for their tool: Line");
+                }
             }
 
         }));
@@ -171,8 +179,19 @@ public class MapManager {
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
-        popup.add(ruler);
+        popup.add(rulerTool);
         this.panel.setComponentPopupMenu(popup);
+    }
+
+    public void removeTool(Tool tool) {
+        if (selectedTool == tool) {
+            selectedTool = tool.duplicate();
+            selectedTool.reset();
+        }
+        if (!tools.remove(tool)) {
+            System.out.println("This is unexpected");
+        }
+        this.panel.rightBar.tooltip.updateToolsMetrics(tools);
     }
 
     public Vec3i getScreenSize() {
@@ -195,12 +214,12 @@ public class MapManager {
         Vec3i screenSize = this.getScreenSize();
         double x = (mouseX - screenSize.getX() / 2.0D - centerX) / screenSize.getX();
         double y = (mouseY - screenSize.getZ() / 2.0D - centerY) / screenSize.getZ();
-        double blocksPerWidth = (screenSize.getX() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
-        double blocksPerHeight = (screenSize.getZ() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
+        double blocksPerWidth = (screenSize.getX() / this.pixelsPerFragment) * (double) this.blocksPerFragment;
+        double blocksPerHeight = (screenSize.getZ() / this.pixelsPerFragment) * (double) this.blocksPerFragment;
         x *= blocksPerWidth;
         y *= blocksPerHeight;
-        int xi = (int)Math.round(x);
-        int yi = (int)Math.round(y);
+        int xi = (int) Math.round(x);
+        int yi = (int) Math.round(y);
         return new BPos(xi, 0, yi);
     }
 

@@ -1,5 +1,8 @@
 package kaptainwutax.minemap.ui;
 
+import java.awt.*;
+import java.awt.geom.Rectangle2D;
+
 public class DrawInfo {
 
     public final int x;
@@ -12,6 +15,9 @@ public class DrawInfo {
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+    public Rectangle getRectangle(){
+        return new Rectangle(x,y,width,height);
     }
 
     @Override

@@ -7,6 +7,8 @@ import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.SpawnPoint;
+import kaptainwutax.minemap.ui.map.tool.Ruler;
+import kaptainwutax.minemap.ui.map.tool.Tool;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -16,7 +18,7 @@ import java.util.Map;
 
 public class Icons {
 
-    public static final Map<Class<? extends Feature<?, ?>>, BufferedImage> REGISTRY = new HashMap<>();
+    public static final Map<Class<?>, BufferedImage> REGISTRY = new HashMap<>();
 
     public static void registerIcons() {
         register(BastionRemnant.class, Structure.getName(BastionRemnant.class));
@@ -45,19 +47,21 @@ public class Icons {
         register(SlimeChunk.class, "slime");
 
         register(SpawnPoint.class, "spawn");
+
+        register(Ruler.class,"ruler");
     }
 
-    public static <T extends Feature<?, ?>> void register(Class<T> clazz, String name) {
+    public static <T> void register(Class<T> clazz, String name) {
         REGISTRY.put(clazz, getIcon(name));
     }
     
     public static BufferedImage getIcon(String name) {
         try {
             URL url = Icons.class.getResource("/icon/" + name + ".png");
-            System.out.println("Found structure icon " + name + ".");
+            System.out.println("Found icon " + name + ".");
             return ImageIO.read(url);
         } catch(Exception e) {
-            System.err.println("Didn't find structure icon " + name + ".");
+            System.err.println("Didn't find icon " + name + ".");
         }
 
         return null;

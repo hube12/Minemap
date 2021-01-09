@@ -7,14 +7,14 @@ import kaptainwutax.minemap.ui.map.sidebar.TooltipSidebar;
 import javax.swing.*;
 import java.awt.*;
 
-public class MapSideBar extends JPanel {
+public class MapLeftSideBar extends JPanel {
 
     private final MapPanel map;
 
     public final TooltipSidebar tooltip;
     public final SettingsSidebar settings;
 
-    public MapSideBar(MapPanel map) {
+    public MapLeftSideBar(MapPanel map) {
         this.map = map;
         this.tooltip = new TooltipSidebar(this.map);
         this.settings = new SettingsSidebar(this.map);

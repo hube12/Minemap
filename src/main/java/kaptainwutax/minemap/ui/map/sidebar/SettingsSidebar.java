@@ -28,7 +28,7 @@ public class SettingsSidebar extends JPanel {
     public Dropdown<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
     public JButton closeButton;
-    public boolean isHiddenForSize=false;
+    public boolean isHiddenForSize = false;
 
     public SettingsSidebar(MapPanel map) {
         this.map = map;
@@ -54,13 +54,13 @@ public class SettingsSidebar extends JPanel {
             public void ancestorResized(HierarchyEvent e) {
                 MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                 int height;
-                if (map==null){
-                    height=MineMap.INSTANCE.getHeight() - 210;
-                }else{
-                    height=map.getHeight()-150;
+                if (map == null) {
+                    height = MineMap.INSTANCE.getHeight() - 210;
+                } else {
+                    height = map.getHeight() - 150;
                 }
                 scrollPane.setPreferredSize(new Dimension(300, height));
-                scrollPane.setSize(new Dimension(300,height));
+                scrollPane.setSize(new Dimension(300, height));
                 scrollPane.repaint();
             }
         });
@@ -128,7 +128,7 @@ public class SettingsSidebar extends JPanel {
     }
 
     private void addFeatureToggles() {
-        for(Feature<?, ?> feature: this.settings.getAllFeatures()) {
+        for (Feature<?, ?> feature : this.settings.getAllFeatures()) {
             FeatureEntry entry = new FeatureEntry(feature) {
                 @Override
                 public void paintComponent(Graphics g) {
@@ -149,7 +149,7 @@ public class SettingsSidebar extends JPanel {
     }
 
     private void addBiomeToggles() {
-        for(Biome biome: this.settings.getAllBiomes()) {
+        for (Biome biome : this.settings.getAllBiomes()) {
             BiomeEntry entry = new BiomeEntry(biome) {
                 @Override
                 public void paintComponent(Graphics g) {
@@ -178,9 +178,9 @@ public class SettingsSidebar extends JPanel {
             this.settings.getAllFeatures().forEach(this.settings::hide);
 
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
-                    .map(c -> (FeatureEntry)c).forEach(c -> c.getCheckBox().setSelected(false));
+                    .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
-                    .map(c -> (BiomeEntry)c).forEach(c -> c.getCheckBox().setSelected(false));
+                    .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             this.map.repaint();
         }));
 
@@ -189,9 +189,9 @@ public class SettingsSidebar extends JPanel {
             this.settings.getAllFeatures().forEach(this.settings::show);
 
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
-                    .map(c -> (FeatureEntry)c).forEach(c -> c.getCheckBox().setSelected(true));
+                    .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
-                    .map(c -> (BiomeEntry)c).forEach(c -> c.getCheckBox().setSelected(true));
+                    .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             this.map.repaint();
         }));
 
