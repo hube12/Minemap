@@ -5,6 +5,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
+import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -170,7 +171,30 @@ public class MapManager {
                     rulerTool.setText("Enable ruler");
                     selectedTool = null;
                 } else {
-                    System.out.println("this shouldn't be possible, all method should check for their tool: Line");
+                    System.out.println("this shouldn't be possible, all method should check for their tool: Rule");
+                }
+            }
+
+        }));
+
+
+        JMenuItem areaTool = new JMenuItem("Enable Area");
+        areaTool.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        areaTool.addMouseListener(Events.Mouse.onReleased(e -> {
+            if (selectedTool == null) {
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                areaTool.setText("Disable Area");
+                Area ruler = new Area();
+                tools.add(ruler);
+                selectedTool = ruler;
+            } else {
+                if (selectedTool instanceof Area) {
+                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    areaTool.setText("Enable Area");
+                    selectedTool = null;
+                } else {
+                    System.out.println("this shouldn't be possible, all method should check for their tool: Area");
                 }
             }
 
@@ -180,6 +204,7 @@ public class MapManager {
         popup.add(rename);
         popup.add(settings);
         popup.add(rulerTool);
+        popup.add(areaTool);
         this.panel.setComponentPopupMenu(popup);
     }
 

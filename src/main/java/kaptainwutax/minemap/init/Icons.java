@@ -7,6 +7,7 @@ import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.SpawnPoint;
+import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 
@@ -49,6 +50,7 @@ public class Icons {
         register(SpawnPoint.class, "spawn");
 
         register(Ruler.class,"ruler");
+        register(Area.class,"area");
     }
 
     public static <T> void register(Class<T> clazz, String name) {

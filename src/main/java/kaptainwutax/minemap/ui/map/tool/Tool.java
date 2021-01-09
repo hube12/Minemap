@@ -22,6 +22,9 @@ public abstract class Tool implements Cloneable {
 
     public abstract boolean shouldFill();
 
+    // allow to use technics to hide the fragment sides
+    public abstract boolean shouldHideArtefact();
+
     public abstract Tool duplicate();
 
     public abstract Color getColor();

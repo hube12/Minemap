@@ -1,27 +1,27 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.DisplayMaths;
-import kaptainwutax.minemap.util.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import java.awt.*;
 import java.util.Random;
 
 
-public class Ruler extends Tool {
+public class Area extends Tool {
     private BPos pos1 = null;
     private BPos pos2 = null;
+    private BPos pos3 = null;
+    private BPos pos4 = null;
     private int pointsTraced = 0;
     private Color color;
 
-    public Ruler(){
+    public Area() {
         // you could crack that seed ;)
         Random rand = new Random();
         float r = rand.nextFloat();
         float g = rand.nextFloat();
         float b = rand.nextFloat();
-        color=new Color(r,g,b);
+        color = new Color(r, g, b);
     }
 
     public boolean addPoint(BPos bpos) {
@@ -32,6 +32,12 @@ public class Ruler extends Tool {
             case 1:
                 pos2 = bpos;
                 break;
+            case 2:
+                pos3 = bpos;
+                break;
+            case 3:
+                pos4 = bpos;
+                break;
             default:
                 return false;
         }
@@ -40,22 +46,19 @@ public class Ruler extends Tool {
     }
 
     public Polygon getShape() {
-        double angle = DisplayMaths.getAngle(new Pair<>(pos1, pos2));
-        int offsetX = (int) DisplayMaths.getOffset(angle, 5);
-        int offsetY = 5 - offsetX;
         return new Polygon(
                 new int[] {
-                        pos1.getX() + offsetX,
-                        pos1.getX() - offsetX,
-                        pos2.getX() - offsetX,
-                        pos2.getX() + offsetX,
+                        pos1.getX(),
+                        pos2.getX(),
+                        pos3.getX(),
+                        pos4.getX(),
 
                         },
                 new int[] {
-                        pos1.getZ() + offsetY,
-                        pos1.getZ() - offsetY,
-                        pos2.getZ() - offsetY,
-                        pos2.getZ() + offsetY,
+                        pos1.getZ(),
+                        pos2.getZ(),
+                        pos3.getZ(),
+                        pos4.getZ(),
                         },
                 4
         );
@@ -66,7 +69,7 @@ public class Ruler extends Tool {
     }
 
     public boolean isComplete() {
-        return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
+        return this.getPointsTraced() == 4 && pos1 != null && pos2 != null;
     }
 
     public void reset() {
@@ -76,33 +79,44 @@ public class Ruler extends Tool {
     }
 
     public double getMetric() {
-        if (this.isComplete())  {
-            return DisplayMaths.round(DistanceMetric.EUCLIDEAN.getDistance(
-                    pos1.getX() - pos2.getX(),
-                    pos1.getY() - pos2.getY(),
-                    pos1.getZ() - pos2.getZ()
-            ),2) ;
+        if (this.isComplete()) {
+            return DisplayMaths.round(DisplayMaths.polygonArea(
+                    new int[] {
+                            pos1.getX(),
+                            pos2.getX(),
+                            pos3.getX(),
+                            pos4.getX(),
+
+                            },
+                    new int[] {
+                            pos1.getZ(),
+                            pos2.getZ(),
+                            pos3.getZ(),
+                            pos4.getZ(),
+                            },
+                    4
+            ), 2);
         }
         return 0;
     }
 
-    public String getMetricString(){
-       return this.getMetric()+" blocks";
+    public String getMetricString() {
+        return this.getMetric() + " blocks sq";
     }
 
     @Override
     public boolean shouldFill() {
-        return true;
-    }
-
-    @Override
-    public boolean shouldHideArtefact() {
         return false;
     }
 
     @Override
+    public boolean shouldHideArtefact() {
+        return true;
+    }
+
+    @Override
     public Tool duplicate() {
-        return new Ruler();
+        return new Area();
     }
 
     @Override
@@ -112,15 +126,18 @@ public class Ruler extends Tool {
 
     @Override
     public void setColor(Color color) {
-        this.color=color;
+        this.color = color;
     }
 
     @Override
     public String toString() {
-        return "Ruler{" +
+        return "Square{" +
                 "pos1=" + pos1 +
                 ", pos2=" + pos2 +
+                ", pos3=" + pos3 +
+                ", pos4=" + pos4 +
                 ", pointsTraced=" + pointsTraced +
+                ", color=" + color +
                 '}';
     }
 }

@@ -46,4 +46,14 @@ public class DisplayMaths {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+
+    public static double polygonArea(int[] xPoints, int[] yPoints, int n) {
+        double area = 0.0;
+        int j = n - 1;
+        for (int i = 0; i < n; i++) {
+            area += (xPoints[j] + xPoints[i]) * (yPoints[j] - yPoints[i]);
+            j = i;
+        }
+        return Math.abs(area / 2.0);
+    }
 }

@@ -125,16 +125,26 @@ public class Fragment {
                     g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
                     g2d.setColor(tool.getColor());
-                    g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+
+                    // get the correct polygon in the fragment
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
                     AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(info.width / ((double) regionSize), info.height / ((double) regionSize));
                     scaleToDisplayFragment.concatenate(translateToZero);
                     AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
                     translateBackToDisplay.concatenate(scaleToDisplayFragment);
                     polygon = polygon.createTransformedArea(translateBackToDisplay);
-                    g2d.draw(polygon);
+
+                    // decide to fill or hide artefacts due to fragments
                     if (tool.shouldFill()) {
                         g2d.fill(polygon);
+                    }
+                    if (tool.shouldHideArtefact()){
+                        Color color = new Color(tool.getColor().getRed(), tool.getColor().getGreen(), tool.getColor().getBlue(), 127);
+                        g2d.setColor(color);
+                        g2d.fill(polygon);
+                    }else{
+                        g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+                        g2d.draw(polygon);
                     }
                     g2d.setColor(old);
                 }
