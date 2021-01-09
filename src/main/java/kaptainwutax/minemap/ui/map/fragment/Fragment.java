@@ -8,7 +8,6 @@ import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
-import kaptainwutax.minemap.ui.map.tool.LineTool;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
@@ -125,7 +124,7 @@ public class Fragment {
                     g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-                    g2d.setColor(Color.RED);
+                    g2d.setColor(tool.getColor());
                     g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
                     AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(info.width / ((double) regionSize), info.height / ((double) regionSize));

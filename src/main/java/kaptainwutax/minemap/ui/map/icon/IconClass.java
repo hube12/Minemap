@@ -1,2 +1,4 @@
-package kaptainwutax.minemap.ui.map.icon;public class IconClass {
+package kaptainwutax.minemap.ui.map.icon;
+
+public class IconClass {
 }
