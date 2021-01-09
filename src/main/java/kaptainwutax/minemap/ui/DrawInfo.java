@@ -14,4 +14,13 @@ public class DrawInfo {
         this.height = height;
     }
 
+    @Override
+    public String toString() {
+        return "DrawInfo{" +
+                "x=" + x +
+                ", y=" + y +
+                ", width=" + width +
+                ", height=" + height +
+                '}';
+    }
 }

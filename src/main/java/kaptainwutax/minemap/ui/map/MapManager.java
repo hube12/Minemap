@@ -4,7 +4,9 @@ import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
+import kaptainwutax.minemap.ui.map.tool.LineTool;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
@@ -22,6 +24,9 @@ public class MapManager {
 
     public double centerX;
     public double centerY;
+    public boolean toolEnabled;
+
+    public final LineTool lineTool=new LineTool();
 
     public Point mousePointer;
 
@@ -61,13 +66,25 @@ public class MapManager {
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
             if(SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                if (!toolEnabled) {
+                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                }else{
+                    BPos pos = this.getPos(e.getX(), e.getY());
+                    int size = (int)(this.pixelsPerFragment);
+                    if (lineTool.addPoint(pos,new DrawInfo(e.getX(),e.getY(),size+1,size+1))){
+                        System.out.println("Added a point");
+                    }else{
+                        System.out.println("Can not add more points yet");
+                    }
+                }
             }
         }));
 
         this.panel.addMouseListener(Events.Mouse.onReleased(e -> {
             if(SwingUtilities.isLeftMouseButton(e)) {
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                if (!toolEnabled) {
+                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                }
             }
         }));
 
@@ -132,12 +149,29 @@ public class MapManager {
 
         settings.addMouseListener(Events.Mouse.onReleased(e -> {
             this.panel.displayBar.settings.setVisible(!panel.displayBar.settings.isVisible());
-            popup.setVisible(false);
+        }));
+
+
+        JMenuItem ruler = new JMenuItem("Enable Ruler");
+        ruler.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        ruler.addMouseListener(Events.Mouse.onReleased(e -> {
+            toolEnabled=!toolEnabled;
+            if (toolEnabled){
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                ruler.setText("Disable ruler");
+            }else{
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                ruler.setText("Enable ruler");
+                lineTool.reset();
+            }
+
         }));
 
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
+        popup.add(ruler);
         this.panel.setComponentPopupMenu(popup);
     }
 
