@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.minemap.ui.map.tool.Area;
+import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -196,11 +197,33 @@ public class MapManager {
 
         }));
 
+
+        JMenuItem circleTool = new JMenuItem("Enable Circle");
+        circleTool.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        circleTool.addMouseListener(Events.Mouse.onReleased(e -> {
+            if (selectedTool == null) {
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                circleTool.setText("Disable Circle");
+                Circle tool = new Circle();
+                tools.add(tool);
+                selectedTool = tool;
+            } else {
+                if (selectedTool instanceof Circle) {
+                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                    circleTool.setText("Enable Circle");
+                    selectedTool = null;
+                }
+            }
+
+        }));
+
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
         popup.add(rulerTool);
         popup.add(areaTool);
+        popup.add(circleTool);
         this.panel.setComponentPopupMenu(popup);
     }
 

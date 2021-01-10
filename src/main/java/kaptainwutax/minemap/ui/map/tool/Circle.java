@@ -1,23 +1,19 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.DisplayMaths;
-import kaptainwutax.minemap.util.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Random;
 
 
-public class Area extends Tool {
+public class Circle extends Tool {
     private BPos pos1 = null;
     private BPos pos2 = null;
-    private BPos pos3 = null;
-    private BPos pos4 = null;
     private int pointsTraced = 0;
     private Color color;
 
-    public Area() {
+    public Circle() {
         // you could crack that seed ;)
         Random rand = new Random();
         float r = rand.nextFloat();
@@ -34,12 +30,6 @@ public class Area extends Tool {
             case 1:
                 pos2 = bpos;
                 break;
-            case 2:
-                pos3 = bpos;
-                break;
-            case 3:
-                pos4 = bpos;
-                break;
             default:
                 return false;
         }
@@ -47,19 +37,14 @@ public class Area extends Tool {
         return true;
     }
 
-
     @Override
-    public Polygon getPartialShape() {
+    public Shape getPartialShape() {
         int offset = 5;
         switch (this.getPointsTraced()) {
             case 1:
                 return DisplayMaths.getPolygon(pos1, offset);
             case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-            case 3:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3);
-            case 4:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
+                return DisplayMaths.getCircle(pos1, pos2);
         }
         return null;
     }
@@ -69,7 +54,7 @@ public class Area extends Tool {
     }
 
     public boolean isComplete() {
-        return this.getPointsTraced() == 4 && pos1 != null && pos2 != null && pos3 != null && pos4 != null;
+        return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
     }
 
     @Override
@@ -81,10 +66,6 @@ public class Area extends Tool {
                 return pos1 != null;
             case 2:
                 return pos1 != null && pos2 != null;
-            case 3:
-                return pos1 != null && pos2 != null && pos3 != null;
-            case 4:
-                return pos1 != null && pos2 != null && pos3 != null && pos4 != null;
         }
         return false;
     }
@@ -96,14 +77,11 @@ public class Area extends Tool {
     }
 
     public double getMetric() {
-        double metric=0;
         if (this.isComplete()) {
-            metric=DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3, pos4));
+            double metric=DisplayMaths.circleArea(pos1, pos2);
+            return DisplayMaths.round(metric, 2);
         }
-        if (this.getPointsTraced() >= 3) {
-            metric=DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3));
-        }
-        return DisplayMaths.round(metric, 2);
+        return 0;
     }
 
     public String getMetricString() {
@@ -122,7 +100,7 @@ public class Area extends Tool {
 
     @Override
     public Tool duplicate() {
-        return new Area();
+        return new Circle();
     }
 
     @Override
@@ -137,11 +115,9 @@ public class Area extends Tool {
 
     @Override
     public String toString() {
-        return "Square{" +
+        return "Circle{" +
                 "pos1=" + pos1 +
                 ", pos2=" + pos2 +
-                ", pos3=" + pos3 +
-                ", pos4=" + pos4 +
                 ", pointsTraced=" + pointsTraced +
                 ", color=" + color +
                 '}';

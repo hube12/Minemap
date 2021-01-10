@@ -10,9 +10,7 @@ public abstract class Tool implements Cloneable {
 
     public abstract boolean addPoint(BPos bpos);
 
-    public abstract Polygon getShape();
-
-    public abstract Polygon getPartialShape();
+    public abstract Shape getPartialShape();
 
     public abstract boolean isComplete();
 

@@ -83,11 +83,8 @@ public class Ruler extends Tool {
 
     public double getMetric() {
         if (this.isComplete()) {
-            return DisplayMaths.round(DistanceMetric.EUCLIDEAN.getDistance(
-                    pos1.getX() - pos2.getX(),
-                    pos1.getY() - pos2.getY(),
-                    pos1.getZ() - pos2.getZ()
-            ), 2);
+            double metric=DisplayMaths.getDistance2D(pos1,pos2);
+            return DisplayMaths.round(metric, 2);
         }
         return 0;
     }

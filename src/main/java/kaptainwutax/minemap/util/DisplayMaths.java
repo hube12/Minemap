@@ -1,10 +1,13 @@
 package kaptainwutax.minemap.util;
 
 import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.function.Function;
 
 public class DisplayMaths {
@@ -42,23 +45,42 @@ public class DisplayMaths {
 
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
-
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 
-    public static double polygonArea(int[] xPoints, int[] yPoints, int n) {
+    public static double polygonArea(List<BPos> bPosList) {
         double area = 0.0;
-        int j = n - 1;
-        for (int i = 0; i < n; i++) {
-            area += (xPoints[j] + xPoints[i]) * (yPoints[j] - yPoints[i]);
+        int j = bPosList.size() - 1;
+        for (int i = 0; i < bPosList.size(); i++) {
+            area += (bPosList.get(j).getX() + bPosList.get(i).getX()) * (bPosList.get(j).getZ() - bPosList.get(i).getZ());
             j = i;
         }
         return Math.abs(area / 2.0);
     }
 
-    public static Polygon getPolygon(BPos pos1,BPos pos2,BPos pos3, BPos pos4){
+    public static double circleArea(BPos pos1, BPos pos2) {
+        return Math.PI * getDistance2DSquared(pos1, pos2);
+    }
+
+    public static double getDistance2D(BPos pos1, BPos pos2) {
+        return DistanceMetric.EUCLIDEAN.getDistance(
+                pos1.getX() - pos2.getX(),
+                pos1.getY() - pos2.getY(),
+                pos1.getZ() - pos2.getZ()
+        );
+    }
+
+    public static double getDistance2DSquared(BPos pos1, BPos pos2) {
+        return DistanceMetric.EUCLIDEAN_SQ.getDistance(
+                pos1.getX() - pos2.getX(),
+                pos1.getY() - pos2.getY(),
+                pos1.getZ() - pos2.getZ()
+        );
+    }
+
+    public static Polygon getPolygon(BPos pos1, BPos pos2, BPos pos3, BPos pos4) {
         return new Polygon(
                 new int[] {
                         pos1.getX(),
@@ -77,7 +99,7 @@ public class DisplayMaths {
         );
     }
 
-    public static Polygon getPolygon(BPos pos1, BPos pos2,BPos pos3) {
+    public static Polygon getPolygon(BPos pos1, BPos pos2, BPos pos3) {
         return new Polygon(
                 new int[] {
                         pos1.getX(),
@@ -133,5 +155,12 @@ public class DisplayMaths {
                         },
                 4
         );
+    }
+
+    public static Ellipse2D getCircle(BPos pos1, BPos pos2) {
+        Ellipse2D ellipse=new Ellipse2D.Double();
+        double radius=getDistance2D(pos1,pos2);
+        ellipse.setFrameFromCenter(pos1.getX(),pos1.getZ(), pos1.getX()+radius,pos1.getZ()+radius);
+        return ellipse;
     }
 }

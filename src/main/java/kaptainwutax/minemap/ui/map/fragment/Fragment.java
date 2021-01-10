@@ -114,11 +114,7 @@ public class Fragment {
         for (Tool tool : tools) {
             if (tool.isPartial()) {
                 Area polygon;
-                if (tool.isComplete()){
-                    polygon = new Area(tool.getShape());
-                }else{
-                    polygon = new Area(tool.getPartialShape());
-                }
+                polygon = new Area(tool.getPartialShape());
                 Area rectangle = new Area(this.getRectangle());
 
                 polygon.intersect(rectangle);
