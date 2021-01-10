@@ -4,8 +4,6 @@ import kaptainwutax.minemap.util.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
-import java.util.Random;
-
 
 public class Circle extends Tool {
     private BPos pos1 = null;
@@ -14,12 +12,7 @@ public class Circle extends Tool {
     private Color color;
 
     public Circle() {
-        // you could crack that seed ;)
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        color = new Color(r, g, b);
+        color = DisplayMaths.getRandomColor();
     }
 
     public boolean addPoint(BPos bpos) {

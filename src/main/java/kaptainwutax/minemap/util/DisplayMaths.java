@@ -8,6 +8,7 @@ import java.awt.geom.Ellipse2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Function;
 
 public class DisplayMaths {
@@ -162,5 +163,13 @@ public class DisplayMaths {
         double radius=getDistance2D(pos1,pos2);
         ellipse.setFrameFromCenter(pos1.getX(),pos1.getZ(), pos1.getX()+radius,pos1.getZ()+radius);
         return ellipse;
+    }
+
+    public static Color getRandomColor(){
+        Random rand = new Random();
+        float r = rand.nextFloat();
+        float g = rand.nextFloat();
+        float b = rand.nextFloat();
+        return new Color(r, g, b);
     }
 }

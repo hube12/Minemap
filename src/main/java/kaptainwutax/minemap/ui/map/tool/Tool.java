@@ -4,7 +4,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
 
-public abstract class Tool implements Cloneable {
+public abstract class Tool {
 
     public abstract int getPointsTraced();
 

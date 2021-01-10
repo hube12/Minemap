@@ -9,6 +9,7 @@ import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -122,14 +123,17 @@ public class Fragment {
                     Color old = graphics.getColor();
                     Graphics2D g2d = (Graphics2D) graphics;
                     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
                     g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+                    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                    g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
                     g2d.setColor(tool.getColor());
 
                     // get the correct polygon in the fragment
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(info.width / ((double) regionSize), info.height / ((double) regionSize));
+                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.97) / ((double) regionSize), ((double) info.height-0.97) / ((double) regionSize));
                     scaleToDisplayFragment.concatenate(translateToZero);
                     AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
                     translateBackToDisplay.concatenate(scaleToDisplayFragment);
@@ -139,11 +143,11 @@ public class Fragment {
                     if (tool.shouldFill()) {
                         g2d.fill(polygon);
                     }
-                    if (tool.shouldHideArtefact()){
-                        Color color = new Color(tool.getColor().getRed(), tool.getColor().getGreen(), tool.getColor().getBlue(), 127);
+                    if (tool.shouldHideArtefact()) {
+                        Color color = new Color(tool.getColor().getRed(), tool.getColor().getGreen(), tool.getColor().getBlue(), 140);
                         g2d.setColor(color);
                         g2d.fill(polygon);
-                    }else{
+                    } else {
                         g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
                         g2d.draw(polygon);
                     }

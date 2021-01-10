@@ -5,7 +5,6 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.Random;
 
 
 public class Area extends Tool {
@@ -17,12 +16,7 @@ public class Area extends Tool {
     private Color color;
 
     public Area() {
-        // you could crack that seed ;)
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        color = new Color(r, g, b);
+        color = DisplayMaths.getRandomColor();
     }
 
     public boolean addPoint(BPos bpos) {

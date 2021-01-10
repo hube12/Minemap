@@ -4,8 +4,6 @@ import kaptainwutax.minemap.util.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
-import java.util.Random;
-
 
 public class Ruler extends Tool {
     private BPos pos1 = null;
@@ -14,12 +12,7 @@ public class Ruler extends Tool {
     private Color color;
 
     public Ruler() {
-        // you could crack that seed ;)
-        Random rand = new Random();
-        float r = rand.nextFloat();
-        float g = rand.nextFloat();
-        float b = rand.nextFloat();
-        color = new Color(r, g, b);
+        color = DisplayMaths.getRandomColor();
     }
 
     public boolean addPoint(BPos bpos) {
@@ -35,10 +28,6 @@ public class Ruler extends Tool {
         }
         pointsTraced++;
         return true;
-    }
-
-    public Polygon getShape() {
-        return DisplayMaths.getPolygon(pos1, pos2, 5);
     }
 
     @Override
@@ -81,7 +70,7 @@ public class Ruler extends Tool {
 
     public double getMetric() {
         if (this.isComplete()) {
-            double metric=DisplayMaths.getDistance2D(pos1,pos2);
+            double metric = DisplayMaths.getDistance2D(pos1, pos2);
             return DisplayMaths.round(metric, 2);
         }
         return 0;
