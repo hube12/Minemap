@@ -28,7 +28,7 @@ public class TooltipTools extends JPanel {
     public void updateToolsMetrics(ArrayList<Tool> tools) {
         this.removeAll();
         for (Tool tool : tools) {
-            this.add(new Entry(tool, e -> { map.manager.removeTool(tool);}));
+            this.add(new Entry(tool, e -> map.manager.removeTool(tool)));
         }
     }
 
@@ -39,6 +39,9 @@ public class TooltipTools extends JPanel {
         private final JButton closeButton;
 
         public Entry(Tool tool, Consumer<MouseEvent> onClose) {
+            this.setLayout(new GridBagLayout());
+            GridBagConstraints gbc = new GridBagConstraints();
+
             this.iconView = new JComponent() {
                 @Override
                 public Dimension getPreferredSize() {
@@ -78,10 +81,10 @@ public class TooltipTools extends JPanel {
             this.closeButton = new JButton(MetalIconFactory.getInternalFrameCloseIcon(14));
             this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
 
-            this.add(this.iconView);
-            this.add(this.colorChooser);
-            this.add(this.positionText);
-            this.add(this.closeButton);
+            this.add(this.iconView,gbc);
+            this.add(this.colorChooser,gbc);
+            this.add(this.positionText,gbc);
+            this.add(this.closeButton,gbc);
 
             this.setBackground(new Color(0, 0, 0, 180));
         }

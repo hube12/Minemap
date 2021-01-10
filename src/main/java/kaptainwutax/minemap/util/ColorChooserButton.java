@@ -18,12 +18,9 @@ import java.awt.Color;
 
         public ColorChooserButton(Color c) {
             setSelectedColor(c); 
-            addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    Color newColor = JColorChooser.showDialog(null, "Choose a color", current);
-                    setSelectedColor(newColor);
-                }
+            addActionListener(actionEvent -> {
+                Color newColor = JColorChooser.showDialog(null, "Choose a color", current);
+                setSelectedColor(newColor);
             });
         }
 
