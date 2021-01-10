@@ -47,7 +47,7 @@ public class Area extends Tool {
     }
 
     public Polygon getShape() {
-        return DisplayMaths.getPolygon(pos1, pos2, pos3,pos4);
+        return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Area extends Tool {
             case 3:
                 return DisplayMaths.getPolygon(pos1, pos2, pos3);
             case 4:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3,pos4);
+                return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
         }
         return null;
     }
@@ -114,6 +114,22 @@ public class Area extends Tool {
                             pos4.getZ(),
                             },
                     4
+            ), 2);
+        }
+        if (this.getPointsTraced() >= 3) {
+            return DisplayMaths.round(DisplayMaths.polygonArea(
+                    new int[] {
+                            pos1.getX(),
+                            pos2.getX(),
+                            pos3.getX(),
+
+                            },
+                    new int[] {
+                            pos1.getZ(),
+                            pos2.getZ(),
+                            pos3.getZ(),
+                            },
+                    3
             ), 2);
         }
         return 0;
