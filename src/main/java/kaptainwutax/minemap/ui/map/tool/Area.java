@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.DisplayMaths;
+import kaptainwutax.minemap.util.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
@@ -46,22 +47,23 @@ public class Area extends Tool {
     }
 
     public Polygon getShape() {
-        return new Polygon(
-                new int[] {
-                        pos1.getX(),
-                        pos2.getX(),
-                        pos3.getX(),
-                        pos4.getX(),
+        return DisplayMaths.getPolygon(pos1, pos2, pos3,pos4);
+    }
 
-                        },
-                new int[] {
-                        pos1.getZ(),
-                        pos2.getZ(),
-                        pos3.getZ(),
-                        pos4.getZ(),
-                        },
-                4
-        );
+    @Override
+    public Polygon getPartialShape() {
+        int offset = 5;
+        switch (this.getPointsTraced()) {
+            case 1:
+                return DisplayMaths.getPolygon(pos1, offset);
+            case 2:
+                return DisplayMaths.getPolygon(pos1, pos2, offset);
+            case 3:
+                return DisplayMaths.getPolygon(pos1, pos2, pos3);
+            case 4:
+                return DisplayMaths.getPolygon(pos1, pos2, pos3,pos4);
+        }
+        return null;
     }
 
     public int getPointsTraced() {
@@ -69,7 +71,24 @@ public class Area extends Tool {
     }
 
     public boolean isComplete() {
-        return this.getPointsTraced() == 4 && pos1 != null && pos2 != null;
+        return this.getPointsTraced() == 4 && pos1 != null && pos2 != null && pos3 != null && pos4 != null;
+    }
+
+    @Override
+    public boolean isPartial() {
+        switch (this.getPointsTraced()) {
+            case 0:
+                return false;
+            case 1:
+                return pos1 != null;
+            case 2:
+                return pos1 != null && pos2 != null;
+            case 3:
+                return pos1 != null && pos2 != null && pos3 != null;
+            case 4:
+                return pos1 != null && pos2 != null && pos3 != null && pos4 != null;
+        }
+        return false;
     }
 
     public void reset() {

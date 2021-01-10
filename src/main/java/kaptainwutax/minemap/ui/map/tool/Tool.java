@@ -12,7 +12,11 @@ public abstract class Tool implements Cloneable {
 
     public abstract Polygon getShape();
 
+    public abstract Polygon getPartialShape();
+
     public abstract boolean isComplete();
+
+    public abstract boolean isPartial();
 
     public abstract void reset();
 

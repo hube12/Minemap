@@ -7,6 +7,7 @@ import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
+import kaptainwutax.seedutils.mc.seed.WorldSeed;
 
 import javax.swing.*;
 import java.awt.*;

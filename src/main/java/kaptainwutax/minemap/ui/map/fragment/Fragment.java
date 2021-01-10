@@ -112,8 +112,13 @@ public class Fragment {
 
     public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
         for (Tool tool : tools) {
-            if (tool.isComplete()) {
-                Area polygon = new Area(tool.getShape());
+            if (tool.isPartial()) {
+                Area polygon;
+                if (tool.isComplete()){
+                    polygon = new Area(tool.getShape());
+                }else{
+                    polygon = new Area(tool.getPartialShape());
+                }
                 Area rectangle = new Area(this.getRectangle());
 
                 polygon.intersect(rectangle);

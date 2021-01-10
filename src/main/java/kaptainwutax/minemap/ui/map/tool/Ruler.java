@@ -15,13 +15,13 @@ public class Ruler extends Tool {
     private int pointsTraced = 0;
     private Color color;
 
-    public Ruler(){
+    public Ruler() {
         // you could crack that seed ;)
         Random rand = new Random();
         float r = rand.nextFloat();
         float g = rand.nextFloat();
         float b = rand.nextFloat();
-        color=new Color(r,g,b);
+        color = new Color(r, g, b);
     }
 
     public boolean addPoint(BPos bpos) {
@@ -40,25 +40,19 @@ public class Ruler extends Tool {
     }
 
     public Polygon getShape() {
-        double angle = DisplayMaths.getAngle(new Pair<>(pos1, pos2));
-        int offsetX = (int) DisplayMaths.getOffset(angle, 5);
-        int offsetY = 5 - offsetX;
-        return new Polygon(
-                new int[] {
-                        pos1.getX() + offsetX,
-                        pos1.getX() - offsetX,
-                        pos2.getX() - offsetX,
-                        pos2.getX() + offsetX,
+        return DisplayMaths.getPolygon(pos1, pos2, 5);
+    }
 
-                        },
-                new int[] {
-                        pos1.getZ() + offsetY,
-                        pos1.getZ() - offsetY,
-                        pos2.getZ() - offsetY,
-                        pos2.getZ() + offsetY,
-                        },
-                4
-        );
+    @Override
+    public Polygon getPartialShape() {
+        int offset = 5;
+        switch (this.getPointsTraced()) {
+            case 1:
+                return DisplayMaths.getPolygon(pos1, offset);
+            case 2:
+                return DisplayMaths.getPolygon(pos1, pos2, offset);
+        }
+        return null;
     }
 
     public int getPointsTraced() {
@@ -69,6 +63,18 @@ public class Ruler extends Tool {
         return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
     }
 
+    public boolean isPartial() {
+        switch (this.getPointsTraced()) {
+            case 0:
+                return false;
+            case 1:
+                return pos1 != null;
+            case 2:
+                return pos1 != null && pos2 != null;
+        }
+        return false;
+    }
+
     public void reset() {
         pointsTraced = 0;
         pos1 = null;
@@ -76,18 +82,18 @@ public class Ruler extends Tool {
     }
 
     public double getMetric() {
-        if (this.isComplete())  {
+        if (this.isComplete()) {
             return DisplayMaths.round(DistanceMetric.EUCLIDEAN.getDistance(
                     pos1.getX() - pos2.getX(),
                     pos1.getY() - pos2.getY(),
                     pos1.getZ() - pos2.getZ()
-            ),2) ;
+            ), 2);
         }
         return 0;
     }
 
-    public String getMetricString(){
-       return this.getMetric()+" blocks";
+    public String getMetricString() {
+        return this.getMetric() + " blocks";
     }
 
     @Override
@@ -112,7 +118,7 @@ public class Ruler extends Tool {
 
     @Override
     public void setColor(Color color) {
-        this.color=color;
+        this.color = color;
     }
 
     @Override

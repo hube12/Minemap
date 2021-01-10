@@ -162,16 +162,14 @@ public class MapManager {
             if (selectedTool == null) {
                 this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
                 rulerTool.setText("Disable ruler");
-                Ruler ruler = new Ruler();
-                tools.add(ruler);
-                selectedTool = ruler;
+                Ruler tool = new Ruler();
+                tools.add(tool);
+                selectedTool = tool;
             } else {
                 if (selectedTool instanceof Ruler) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     rulerTool.setText("Enable ruler");
                     selectedTool = null;
-                } else {
-                    System.out.println("this shouldn't be possible, all method should check for their tool: Rule");
                 }
             }
 
@@ -185,16 +183,14 @@ public class MapManager {
             if (selectedTool == null) {
                 this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
                 areaTool.setText("Disable Area");
-                Area ruler = new Area();
-                tools.add(ruler);
-                selectedTool = ruler;
+                Area tool = new Area();
+                tools.add(tool);
+                selectedTool = tool;
             } else {
                 if (selectedTool instanceof Area) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                     areaTool.setText("Enable Area");
                     selectedTool = null;
-                } else {
-                    System.out.println("this shouldn't be possible, all method should check for their tool: Area");
                 }
             }
 

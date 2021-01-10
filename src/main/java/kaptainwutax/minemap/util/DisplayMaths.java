@@ -2,16 +2,17 @@ package kaptainwutax.minemap.util;
 
 import kaptainwutax.seedutils.mc.pos.BPos;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.function.Function;
 
 public class DisplayMaths {
     public static double getAngle(Pair<BPos, BPos> pair) {
-        double deltaY=pair.getFirst().getZ() - pair.getSecond().getZ();
-        double deltaX= pair.getFirst().getX() - pair.getSecond().getX();
-        double angle = Math.toDegrees(Math.atan2(deltaY,deltaX));
-        return angle<0?angle+360:angle;
+        double deltaY = pair.getFirst().getZ() - pair.getSecond().getZ();
+        double deltaX = pair.getFirst().getX() - pair.getSecond().getX();
+        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return angle < 0 ? angle + 360 : angle;
     }
 
     /*
@@ -20,7 +21,7 @@ public class DisplayMaths {
      */
     public static double getOffset(double angleBetween, int maxOffset) {
         // make sure the angle is in [0;180]
-        angleBetween=angleBetween%180;
+        angleBetween = angleBetween % 180;
         if (angleBetween < 0) {
             angleBetween += 180;
         }
@@ -55,5 +56,82 @@ public class DisplayMaths {
             j = i;
         }
         return Math.abs(area / 2.0);
+    }
+
+    public static Polygon getPolygon(BPos pos1,BPos pos2,BPos pos3, BPos pos4){
+        return new Polygon(
+                new int[] {
+                        pos1.getX(),
+                        pos2.getX(),
+                        pos3.getX(),
+                        pos4.getX(),
+
+                        },
+                new int[] {
+                        pos1.getZ(),
+                        pos2.getZ(),
+                        pos3.getZ(),
+                        pos4.getZ(),
+                        },
+                4
+        );
+    }
+
+    public static Polygon getPolygon(BPos pos1, BPos pos2,BPos pos3) {
+        return new Polygon(
+                new int[] {
+                        pos1.getX(),
+                        pos2.getX(),
+                        pos3.getX(),
+
+                        },
+                new int[] {
+                        pos1.getZ(),
+                        pos2.getZ(),
+                        pos3.getZ(),
+                        },
+                3
+        );
+    }
+
+    public static Polygon getPolygon(BPos pos1, BPos pos2, int maxOffset) {
+        double angle = DisplayMaths.getAngle(new Pair<>(pos1, pos2));
+        int offsetX = (int) DisplayMaths.getOffset(angle, maxOffset);
+        int offsetY = maxOffset - offsetX;
+        return new Polygon(
+                new int[] {
+                        pos1.getX() + offsetX,
+                        pos1.getX() - offsetX,
+                        pos2.getX() - offsetX,
+                        pos2.getX() + offsetX,
+
+                        },
+                new int[] {
+                        pos1.getZ() + offsetY,
+                        pos1.getZ() - offsetY,
+                        pos2.getZ() - offsetY,
+                        pos2.getZ() + offsetY,
+                        },
+                4
+        );
+    }
+
+    public static Polygon getPolygon(BPos pos1, int maxOffset) {
+        return new Polygon(
+                new int[] {
+                        pos1.getX() - maxOffset,
+                        pos1.getX() + maxOffset,
+                        pos1.getX() + maxOffset,
+                        pos1.getX() - maxOffset,
+
+                        },
+                new int[] {
+                        pos1.getZ() - maxOffset,
+                        pos1.getZ() - maxOffset,
+                        pos1.getZ() + maxOffset,
+                        pos1.getZ() + maxOffset,
+                        },
+                4
+        );
     }
 }
