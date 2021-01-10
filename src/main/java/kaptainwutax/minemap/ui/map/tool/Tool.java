@@ -20,7 +20,7 @@ public abstract class Tool implements Cloneable {
 
     public abstract double getMetric();
 
-    public abstract String getMetricString();
+    public abstract String[] getMetricString();
 
     public abstract boolean shouldFill();
 

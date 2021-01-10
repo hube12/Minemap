@@ -1,9 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.DisplayMaths;
-import kaptainwutax.minemap.util.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import java.awt.*;
 import java.util.Random;
@@ -89,8 +87,10 @@ public class Ruler extends Tool {
         return 0;
     }
 
-    public String getMetricString() {
-        return this.getMetric() + " blocks";
+    public String[] getMetricString() {
+        return new String[] {
+                String.format("Distance: %.2f blocks", this.getMetric())
+        };
     }
 
     @Override

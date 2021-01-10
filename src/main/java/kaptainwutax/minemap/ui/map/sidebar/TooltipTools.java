@@ -1,13 +1,10 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
-import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.ui.map.tool.ColorChooserButton;
+import kaptainwutax.minemap.util.ColorChooserButton;
 import kaptainwutax.minemap.ui.map.tool.Tool;
-import kaptainwutax.minemap.util.Str;
-import kaptainwutax.seedutils.mc.pos.BPos;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;
@@ -37,8 +34,8 @@ public class TooltipTools extends JPanel {
 
     public static class Entry extends JPanel {
         private final JComponent iconView;
-        private final JLabel positionText;
-        private final ColorChooserButton colorChoser;
+        private final JTextArea positionText;
+        private final ColorChooserButton colorChooser;
         private final JButton closeButton;
 
         public Entry(Tool tool, Consumer<MouseEvent> onClose) {
@@ -66,21 +63,23 @@ public class TooltipTools extends JPanel {
                 }
             };
 
-            this.positionText = new JLabel(tool.getMetricString());
+            this.positionText = new JTextArea(
+                    String.join("\n", tool.getMetricString())
+            );
             this.positionText.setFont(new Font(this.positionText.getFont().getName(), Font.PLAIN, 18));
             this.positionText.setBackground(new Color(0, 0, 0, 0));
             this.positionText.setFocusable(false);
             this.positionText.setOpaque(true);
             this.positionText.setForeground(Color.WHITE);
 
-            this.colorChoser = new ColorChooserButton(tool.getColor());
-            this.colorChoser.addColorChangedListener(tool::setColor);
+            this.colorChooser = new ColorChooserButton(tool.getColor());
+            this.colorChooser.addColorChangedListener(tool::setColor);
 
             this.closeButton = new JButton(MetalIconFactory.getInternalFrameCloseIcon(14));
             this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
 
             this.add(this.iconView);
-            this.add(this.colorChoser);
+            this.add(this.colorChooser);
             this.add(this.positionText);
             this.add(this.closeButton);
 

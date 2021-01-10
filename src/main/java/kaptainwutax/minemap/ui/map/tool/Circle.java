@@ -78,14 +78,25 @@ public class Circle extends Tool {
 
     public double getMetric() {
         if (this.isComplete()) {
-            double metric=DisplayMaths.circleArea(pos1, pos2);
+            double metric = DisplayMaths.circleArea(pos1, pos2);
             return DisplayMaths.round(metric, 2);
         }
         return 0;
     }
 
-    public String getMetricString() {
-        return this.getMetric() + " blocks sq";
+    public double getRadius() {
+        if (this.isComplete()) {
+            double metric = DisplayMaths.getDistance2D(pos1, pos2);
+            return DisplayMaths.round(metric, 2);
+        }
+        return 0;
+    }
+
+    public String[] getMetricString() {
+        return new String[] {
+                String.format("Area: %.2f blocks sq", this.getMetric()),
+                String.format("Radius: %.2f blocks", this.getRadius())
+        };
     }
 
     @Override

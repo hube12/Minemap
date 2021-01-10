@@ -1,7 +1,6 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.DisplayMaths;
-import kaptainwutax.minemap.util.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
@@ -96,18 +95,20 @@ public class Area extends Tool {
     }
 
     public double getMetric() {
-        double metric=0;
+        double metric = 0;
         if (this.isComplete()) {
-            metric=DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3, pos4));
+            metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3, pos4));
         }
         if (this.getPointsTraced() >= 3) {
-            metric=DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3));
+            metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3));
         }
         return DisplayMaths.round(metric, 2);
     }
 
-    public String getMetricString() {
-        return this.getMetric() + " blocks sq";
+    public String[] getMetricString() {
+        return new String[] {
+                String.format("Area: %.2f blocks sq", this.getMetric())
+        };
     }
 
     @Override

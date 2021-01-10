@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.ui.map.tool;
+package kaptainwutax.minemap.util;
 
 import java.awt.Color;
     import java.awt.Graphics2D;
