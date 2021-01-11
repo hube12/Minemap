@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
+import kaptainwutax.minemap.ui.dialog.FeatureHopperDialog;
 import kaptainwutax.minemap.ui.dialog.SaltDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
@@ -182,11 +183,21 @@ public class MenuBar extends JMenuBar {
 					map.threadCount, Collections.singletonList(map.getContext().dimension));
 		})));
 
+
+		JMenuItem goToFeature = new JMenuItem("Go to Feature");
+
+		goToFeature.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			if(!goToFeature.isEnabled())return;
+			JDialog jumpDialogue = new FeatureHopperDialog();
+			jumpDialogue.setVisible(true);
+		})));
+
 		worldMenu.addMenuListener(Events.Menu.onSelected(e -> {
 			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 			goToCoords.setEnabled(map != null);
 			goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
 			loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
+			goToFeature.setEnabled(map != null);
 		}));
 
 		JMenuItem changeSalts = new JMenuItem("Change Salts");
@@ -203,6 +214,7 @@ public class MenuBar extends JMenuBar {
 
 		worldMenu.add(goToCoords);
 		worldMenu.add(goToSpawn);
+		worldMenu.add(goToFeature);
 		worldMenu.add(loadShadowSeed);
 		worldMenu.add(changeSalts);
 		this.add(worldMenu);
