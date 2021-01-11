@@ -11,6 +11,7 @@ import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -18,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 public class StructureHelper {
 
-    public static Stream<BPos> getClosest(RegionStructure<?, ?> structure, BPos currentPos ,long worldseed, ChunkRand chunkRand, BiomeSource source) {
+    public static Stream<BPos> getClosest(RegionStructure<?, ?> structure, BPos currentPos ,long worldseed, ChunkRand chunkRand, BiomeSource source,int dimCoeff) {
         int chunkInRegion = structure.getSpacing();
         int regionSize=chunkInRegion*16;
         RPos centerRPos = currentPos.toRegionPos(regionSize);
@@ -26,12 +27,12 @@ public class StructureHelper {
 
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(spiral.iterator(), Spliterator.ORDERED), false)
                 .map(rPos-> StructureHelper.getInRegion(structure,worldseed,chunkRand,rPos))
+                .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
                 .filter(cPos -> StructureHelper.canSpawn(structure,cPos,source))
-                .map(cPos -> cPos.toBlockPos().add(9, 0, 9));
-    }
-
-    public static void main(String[] args) {
-        StructureHelper.getClosest(new Village(MCVersion.v1_14),new BPos(0,0,0),1L,new ChunkRand(), new OverworldBiomeSource(MCVersion.v1_14,1L)).forEach(System.out::println);
+                .map(cPos -> {
+                    BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
+                    return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+                });
     }
 
     public static CPos getInRegion(RegionStructure<?, ?> structure, long worldseed, ChunkRand chunkRand, RPos rPos) {

@@ -184,7 +184,7 @@ public class MenuBar extends JMenuBar {
 		})));
 
 
-		JMenuItem goToFeature = new JMenuItem("Go to Feature");
+		JMenuItem goToFeature = new JMenuItem("Go to Structure");
 
 		goToFeature.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
 			if(!goToFeature.isEnabled())return;
