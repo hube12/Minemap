@@ -23,6 +23,7 @@ import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class MapManager {
 
@@ -169,48 +170,44 @@ public class MapManager {
         rulerTool.setBorder(new EmptyBorder(5, 15, 5, 15));
         areaTool.setBorder(new EmptyBorder(5, 15, 5, 15));
         circleTool.setBorder(new EmptyBorder(5, 15, 5, 15));
-        Consumer<String> rTools= x->resetTools(new JMenuItem[]{rulerTool, areaTool, circleTool},new Tool[]{new Ruler(), new Area(), new Circle()},x);
+        Consumer<String> rTools = x -> resetTools(new JMenuItem[] {rulerTool, areaTool, circleTool}, new Tool[] {new Ruler(), new Area(), new Circle()}, x);
         rTools.accept("Enable");
 
-        BiConsumer<Class<? extends Tool>,JMenuItem> createNewTool=(clazz,menuItem)->{
-            try {
-                Tool tool = clazz.getDeclaredConstructor().newInstance();
-                tools.add(tool);
-                selectedTool = tool;
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                menuItem.setText("Disable "+tool.getName());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        BiConsumer<Tool, JMenuItem> createNewTool = (newTool, menuItem) -> {
+            tools.add(newTool);
+            selectedTool = newTool;
+            this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+            menuItem.setText("Disable " + newTool.getName());
         };
-        BiConsumer<Class<? extends Tool>,JMenuItem> toggleTool= (clazz,menuItem)->{
+        BiConsumer<Supplier<Tool>, JMenuItem> toggleTool = (newTool, menuItem) -> {
+            Tool tool = newTool.get(); // to avoid creating an instance at one point (not recommended)
             if (selectedTool == null) {
-                createNewTool.accept(clazz,menuItem);
+                createNewTool.accept(tool, menuItem);
             } else {
                 this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 rTools.accept("Enable");
-                if (!selectedTool.isAcceptable()){
+                if (!selectedTool.isAcceptable()) {
                     removeTool(selectedTool);
                 }
-                if (clazz.isInstance(selectedTool)) {
+                if (tool.getClass().equals(selectedTool.getClass())) {
                     selectedTool = null;
-                }else {
-                    createNewTool.accept(clazz,menuItem);
+                } else {
+                    createNewTool.accept(tool, menuItem);
                 }
             }
         };
 
         rulerTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Ruler.class,rulerTool);
+            toggleTool.accept(Ruler::new, rulerTool);
         }));
 
         areaTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Area.class,areaTool);
+            toggleTool.accept(Area::new, areaTool);
 
         }));
 
         circleTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Circle.class,circleTool);
+            toggleTool.accept(Circle::new, circleTool);
         }));
 
         popup.add(pin);
@@ -222,12 +219,11 @@ public class MapManager {
         this.panel.setComponentPopupMenu(popup);
     }
 
-    public static void resetTools(JMenuItem[] toolMenus,Tool[] tools,String command){
+    public static void resetTools(JMenuItem[] toolMenus, Tool[] tools, String command) {
         for (int i = 0; i < toolMenus.length; i++) {
-            toolMenus[i].setText(String.join(" ",command,tools[i].getName()));
+            toolMenus[i].setText(String.join(" ", command, tools[i].getName()));
         }
     }
-
 
 
     public void removeTool(Tool tool) {
