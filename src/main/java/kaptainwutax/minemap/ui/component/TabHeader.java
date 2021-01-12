@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.util.ui.CloseIcon;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;
@@ -49,7 +50,7 @@ public class TabHeader extends JPanel {
     }
 
     protected void createCloseButton(Consumer<MouseEvent> onClose) {
-        this.closeButton = new JButton(MetalIconFactory.getInternalFrameCloseIcon(14));
+        this.closeButton = new CloseIcon(12,5,1.5F);
         this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
         this.add(this.closeButton);
     }

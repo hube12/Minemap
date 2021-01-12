@@ -1,6 +1,5 @@
 package kaptainwutax.minemap.init;
 
-import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
@@ -10,7 +9,7 @@ import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
-import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.ui.CloseIcon;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -53,6 +52,9 @@ public class Icons {
         register(Ruler.class,"ruler");
         register(Area.class,"area");
         register(Circle.class,"circle");
+
+
+        register(CloseIcon.class,"close");
     }
 
     public static <T> void register(Class<T> clazz, String name) {
@@ -69,6 +71,10 @@ public class Icons {
         }
 
         return null;
+    }
+
+    public static URL getURI(String name){
+        return Icons.class.getResource("/icon/" + name + ".png");
     }
 
 }

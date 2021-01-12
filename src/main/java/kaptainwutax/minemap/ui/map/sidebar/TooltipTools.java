@@ -3,11 +3,12 @@ package kaptainwutax.minemap.ui.map.sidebar;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.ColorChooserButton;
+import kaptainwutax.minemap.util.ui.CloseIcon;
+import kaptainwutax.minemap.util.ui.ColorChooserButton;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.ui.RoundedPanel;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalIconFactory;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -21,7 +22,7 @@ public class TooltipTools extends JPanel {
 
     public TooltipTools(MapPanel map) {
         this.map = map;
-        this.setLayout(new GridLayout(0, 1, 2, 2));
+        this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
     }
 
@@ -32,7 +33,7 @@ public class TooltipTools extends JPanel {
         }
     }
 
-    public static class Entry extends JPanel {
+    public static class Entry extends RoundedPanel {
         private final JComponent iconView;
         private final JTextArea positionText;
         private final ColorChooserButton colorChooser;
@@ -41,6 +42,7 @@ public class TooltipTools extends JPanel {
         public Entry(Tool tool, Consumer<MouseEvent> onClose) {
             this.setLayout(new GridBagLayout());
             GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(3,3,3,3);
 
             this.iconView = new JComponent() {
                 @Override
@@ -78,7 +80,7 @@ public class TooltipTools extends JPanel {
             this.colorChooser = new ColorChooserButton(tool.getColor());
             this.colorChooser.addColorChangedListener(tool::setColor);
 
-            this.closeButton = new JButton(MetalIconFactory.getInternalFrameCloseIcon(14));
+            this.closeButton = new CloseIcon();
             this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
 
             this.add(this.iconView,gbc);
@@ -86,8 +88,9 @@ public class TooltipTools extends JPanel {
             this.add(this.positionText,gbc);
             this.add(this.closeButton,gbc);
 
-            this.setBackground(new Color(0, 0, 0, 180));
+            this.setBackground(new Color(0, 0, 0, 200));
         }
+
     }
 
 }

@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.util;
+package kaptainwutax.minemap.util.data;
 
 import java.util.Objects;
 

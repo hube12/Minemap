@@ -43,11 +43,9 @@ public class MenuBar extends JMenuBar {
 
 			button.addMouseListener(Events.Mouse.onPressed(e -> {
 				if(!button.isEnabled())return;
-
 				for(Component c: lookMenu.getMenuComponents()) {
 					c.setEnabled(true);
 				}
-
 				button.setEnabled(false);
 				Configs.USER_PROFILE.getUserSettings().look = look;
 				MineMap.lookType=look;

@@ -14,6 +14,8 @@ public abstract class Tool {
 
     public abstract boolean isComplete();
 
+    public abstract boolean isAcceptable();
+
     public abstract boolean isPartial();
 
     public abstract void reset();
@@ -23,7 +25,6 @@ public abstract class Tool {
     public abstract String[] getMetricString();
 
     public abstract boolean shouldFill();
-
     // allow to use technics to hide the fragment sides
     public abstract boolean shouldHideArtefact();
 
@@ -32,5 +33,7 @@ public abstract class Tool {
     public abstract Color getColor();
 
     public abstract void setColor(Color color);
+
+    public abstract String getName();
 
 }

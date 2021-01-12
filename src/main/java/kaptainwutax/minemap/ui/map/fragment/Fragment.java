@@ -9,7 +9,6 @@ import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
-import kaptainwutax.minemap.util.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -133,7 +132,7 @@ public class Fragment {
 
                     // get the correct polygon in the fragment
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.97) / ((double) regionSize), ((double) info.height-0.97) / ((double) regionSize));
+                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.80) / ((double) regionSize), ((double) info.height-0.80) / ((double) regionSize));
                     scaleToDisplayFragment.concatenate(translateToZero);
                     AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
                     translateBackToDisplay.concatenate(scaleToDisplayFragment);

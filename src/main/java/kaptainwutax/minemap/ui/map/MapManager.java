@@ -9,13 +9,20 @@ import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MapManager {
 
@@ -156,66 +163,54 @@ public class MapManager {
         }));
 
 
-        JMenuItem rulerTool = new JMenuItem("Enable Ruler");
+        JMenuItem rulerTool = new JMenuItem();
+        JMenuItem areaTool = new JMenuItem();
+        JMenuItem circleTool = new JMenuItem();
         rulerTool.setBorder(new EmptyBorder(5, 15, 5, 15));
+        areaTool.setBorder(new EmptyBorder(5, 15, 5, 15));
+        circleTool.setBorder(new EmptyBorder(5, 15, 5, 15));
+        Consumer<String> rTools= x->resetTools(new JMenuItem[]{rulerTool, areaTool, circleTool},new Tool[]{new Ruler(), new Area(), new Circle()},x);
+        rTools.accept("Enable");
+
+        BiConsumer<Class<? extends Tool>,JMenuItem> createNewTool=(clazz,menuItem)->{
+            try {
+                Tool tool = clazz.getDeclaredConstructor().newInstance();
+                tools.add(tool);
+                selectedTool = tool;
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+                menuItem.setText("Disable "+tool.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        };
+        BiConsumer<Class<? extends Tool>,JMenuItem> toggleTool= (clazz,menuItem)->{
+            if (selectedTool == null) {
+                createNewTool.accept(clazz,menuItem);
+            } else {
+                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+                rTools.accept("Enable");
+                if (!selectedTool.isAcceptable()){
+                    removeTool(selectedTool);
+                }
+                if (clazz.isInstance(selectedTool)) {
+                    selectedTool = null;
+                }else {
+                    createNewTool.accept(clazz,menuItem);
+                }
+            }
+        };
 
         rulerTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            if (selectedTool == null) {
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                rulerTool.setText("Disable ruler");
-                Ruler tool = new Ruler();
-                tools.add(tool);
-                selectedTool = tool;
-            } else {
-                if (selectedTool instanceof Ruler) {
-                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    rulerTool.setText("Enable ruler");
-                    selectedTool = null;
-                }
-            }
-
+            toggleTool.accept(Ruler.class,rulerTool);
         }));
-
-
-        JMenuItem areaTool = new JMenuItem("Enable Area");
-        areaTool.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         areaTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            if (selectedTool == null) {
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                areaTool.setText("Disable Area");
-                Area tool = new Area();
-                tools.add(tool);
-                selectedTool = tool;
-            } else {
-                if (selectedTool instanceof Area) {
-                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    areaTool.setText("Enable Area");
-                    selectedTool = null;
-                }
-            }
+            toggleTool.accept(Area.class,areaTool);
 
         }));
 
-
-        JMenuItem circleTool = new JMenuItem("Enable Circle");
-        circleTool.setBorder(new EmptyBorder(5, 15, 5, 15));
-
         circleTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            if (selectedTool == null) {
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-                circleTool.setText("Disable Circle");
-                Circle tool = new Circle();
-                tools.add(tool);
-                selectedTool = tool;
-            } else {
-                if (selectedTool instanceof Circle) {
-                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                    circleTool.setText("Enable Circle");
-                    selectedTool = null;
-                }
-            }
-
+            toggleTool.accept(Circle.class,circleTool);
         }));
 
         popup.add(pin);
@@ -226,6 +221,14 @@ public class MapManager {
         popup.add(circleTool);
         this.panel.setComponentPopupMenu(popup);
     }
+
+    public static void resetTools(JMenuItem[] toolMenus,Tool[] tools,String command){
+        for (int i = 0; i < toolMenus.length; i++) {
+            toolMenus[i].setText(String.join(" ",command,tools[i].getName()));
+        }
+    }
+
+
 
     public void removeTool(Tool tool) {
         if (selectedTool == tool) {

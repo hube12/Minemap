@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.DisplayMaths;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
@@ -15,6 +15,7 @@ public class Ruler extends Tool {
         color = DisplayMaths.getRandomColor();
     }
 
+    @Override
     public boolean addPoint(BPos bpos) {
         switch (pointsTraced) {
             case 0:
@@ -42,14 +43,22 @@ public class Ruler extends Tool {
         return null;
     }
 
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }
 
+    @Override
     public boolean isComplete() {
         return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
     }
 
+    @Override
+    public boolean isAcceptable() {
+        return isComplete();
+    }
+
+    @Override
     public boolean isPartial() {
         switch (this.getPointsTraced()) {
             case 0:
@@ -62,12 +71,14 @@ public class Ruler extends Tool {
         return false;
     }
 
+    @Override
     public void reset() {
         pointsTraced = 0;
         pos1 = null;
         pos2 = null;
     }
 
+    @Override
     public double getMetric() {
         if (this.isComplete()) {
             double metric = DisplayMaths.getDistance2D(pos1, pos2);
@@ -76,6 +87,7 @@ public class Ruler extends Tool {
         return 0;
     }
 
+    @Override
     public String[] getMetricString() {
         return new String[] {
                 String.format("Distance: %.2f blocks", this.getMetric())
@@ -105,6 +117,11 @@ public class Ruler extends Tool {
     @Override
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public String getName() {
+        return "Ruler";
     }
 
     @Override

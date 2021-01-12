@@ -2,7 +2,7 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.util.Str;
+import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import java.awt.*;

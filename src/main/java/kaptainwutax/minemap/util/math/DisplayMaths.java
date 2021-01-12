@@ -1,5 +1,6 @@
-package kaptainwutax.minemap.util;
+package kaptainwutax.minemap.util.math;
 
+import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 

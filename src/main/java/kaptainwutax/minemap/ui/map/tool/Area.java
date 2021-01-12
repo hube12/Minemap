@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.DisplayMaths;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
@@ -19,6 +19,7 @@ public class Area extends Tool {
         color = DisplayMaths.getRandomColor();
     }
 
+    @Override
     public boolean addPoint(BPos bpos) {
         switch (pointsTraced) {
             case 0:
@@ -57,12 +58,19 @@ public class Area extends Tool {
         return null;
     }
 
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }
 
+    @Override
     public boolean isComplete() {
         return this.getPointsTraced() == 4 && pos1 != null && pos2 != null && pos3 != null && pos4 != null;
+    }
+
+    @Override
+    public boolean isAcceptable() {
+        return this.getPointsTraced() >= 3 && pos1 != null && pos2 != null && pos3 != null;
     }
 
     @Override
@@ -82,12 +90,14 @@ public class Area extends Tool {
         return false;
     }
 
+    @Override
     public void reset() {
         pointsTraced = 0;
         pos1 = null;
         pos2 = null;
     }
 
+    @Override
     public double getMetric() {
         double metric = 0;
         if (this.isComplete()) {
@@ -99,6 +109,7 @@ public class Area extends Tool {
         return DisplayMaths.round(metric, 2);
     }
 
+    @Override
     public String[] getMetricString() {
         return new String[] {
                 String.format("Area: %.2f blocks sq", this.getMetric())
@@ -128,6 +139,11 @@ public class Area extends Tool {
     @Override
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public String getName() {
+        return "Area";
     }
 
     @Override

@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.DisplayMaths;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
@@ -15,6 +15,7 @@ public class Circle extends Tool {
         color = DisplayMaths.getRandomColor();
     }
 
+    @Override
     public boolean addPoint(BPos bpos) {
         switch (pointsTraced) {
             case 0:
@@ -42,12 +43,19 @@ public class Circle extends Tool {
         return null;
     }
 
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }
 
+    @Override
     public boolean isComplete() {
         return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
+    }
+
+    @Override
+    public boolean isAcceptable() {
+        return this.isComplete();
     }
 
     @Override
@@ -63,12 +71,14 @@ public class Circle extends Tool {
         return false;
     }
 
+    @Override
     public void reset() {
         pointsTraced = 0;
         pos1 = null;
         pos2 = null;
     }
 
+    @Override
     public double getMetric() {
         if (this.isComplete()) {
             double metric = DisplayMaths.circleArea(pos1, pos2);
@@ -85,6 +95,7 @@ public class Circle extends Tool {
         return 0;
     }
 
+    @Override
     public String[] getMetricString() {
         return new String[] {
                 String.format("Area: %.2f blocks sq", this.getMetric()),
@@ -115,6 +126,11 @@ public class Circle extends Tool {
     @Override
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    @Override
+    public String getName() {
+        return "Circle";
     }
 
     @Override

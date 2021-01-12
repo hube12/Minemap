@@ -3,7 +3,7 @@ package kaptainwutax.minemap.ui.map.sidebar;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.Str;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
