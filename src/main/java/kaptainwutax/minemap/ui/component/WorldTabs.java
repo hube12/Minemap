@@ -73,7 +73,7 @@ public class WorldTabs extends JTabbedPane {
 
     @Override
     public void paintComponent(Graphics g) {
-        if (MineMap.DARCULA) {
+        if (MineMap.lookType.isDark()) {
             g.setColor(BACKGROUND_COLOR);
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
         }

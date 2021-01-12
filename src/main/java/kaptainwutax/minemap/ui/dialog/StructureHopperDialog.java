@@ -22,12 +22,12 @@ import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FeatureHopperDialog extends Dialog {
+public class StructureHopperDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;
     public JButton continueButton;
 
 
-    public FeatureHopperDialog() {
+    public StructureHopperDialog() {
         super("Go to Structure Coordinates", new GridLayout(0, 1));
     }
 

@@ -4,10 +4,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
-import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
-import kaptainwutax.minemap.ui.dialog.FeatureHopperDialog;
-import kaptainwutax.minemap.ui.dialog.SaltDialog;
+import kaptainwutax.minemap.ui.dialog.*;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
@@ -31,13 +28,42 @@ public class MenuBar extends JMenuBar {
 	public MenuBar() {
 		this.addFileMenu();
 		this.addWorldMenu();
+		this.addUtilityMenu();
 		this.addSettingsMenu();
 	}
 
 	private void addSettingsMenu() {
 		JMenu settingsMenu = new JMenu("Settings");
 
-		JMenu styleMenu = new JMenu("Style");
+		JMenu lookMenu = new JMenu("UI Look");
+		ButtonGroup lookButtons = new ButtonGroup();
+
+		for(MineMap.LookType look: MineMap.LookType.values()) {
+			JRadioButtonMenuItem button = new JRadioButtonMenuItem(look.getName());
+
+			button.addMouseListener(Events.Mouse.onPressed(e -> {
+				if(!button.isEnabled())return;
+
+				for(Component c: lookMenu.getMenuComponents()) {
+					c.setEnabled(true);
+				}
+
+				button.setEnabled(false);
+				Configs.USER_PROFILE.getUserSettings().look = look;
+				MineMap.lookType=look;
+				look.setLookAndFeel();
+				Configs.USER_PROFILE.flush();
+			}));
+
+			if(Configs.USER_PROFILE.getUserSettings().look.equals(look)) {
+				button.setEnabled(false);
+			}
+
+			lookButtons.add(button);
+			lookMenu.add(button);
+		}
+
+		JMenu styleMenu = new JMenu("Biome Style");
 		ButtonGroup styleButtons = new ButtonGroup();
 
 		for(String style: Configs.BIOME_COLORS.getStyles()) {
@@ -63,6 +89,9 @@ public class MenuBar extends JMenuBar {
 			styleButtons.add(button);
 			styleMenu.add(button);
 		}
+
+
+
 
 		JCheckBoxMenuItem zoom = new JCheckBoxMenuItem("Restrict Maximum Zoom");
 
@@ -107,6 +136,7 @@ public class MenuBar extends JMenuBar {
 			Configs.USER_PROFILE.flush();
 		}));
 
+		settingsMenu.add(lookMenu);
 		settingsMenu.add(styleMenu);
 		settingsMenu.add(metric);
 		settingsMenu.add(zoom);
@@ -151,6 +181,23 @@ public class MenuBar extends JMenuBar {
 		this.add(fileMenu);
 	}
 
+
+	private void addUtilityMenu() {
+		JMenu utilityMenu = new JMenu("Utilities");
+
+		JMenuItem listStructure = new JMenuItem("List N Structures");
+
+		listStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			if(!listStructure.isEnabled())return;
+			JDialog jumpDialogue = new StructureListDialog();
+			jumpDialogue.setVisible(true);
+		})));
+
+
+		utilityMenu.add(listStructure);
+		this.add(utilityMenu);
+	}
+
 	private void addWorldMenu() {
 		JMenu worldMenu = new JMenu("World");
 
@@ -184,11 +231,11 @@ public class MenuBar extends JMenuBar {
 		})));
 
 
-		JMenuItem goToFeature = new JMenuItem("Go to Structure");
+		JMenuItem goToStructure = new JMenuItem("Go to Structure");
 
-		goToFeature.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-			if(!goToFeature.isEnabled())return;
-			JDialog jumpDialogue = new FeatureHopperDialog();
+		goToStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
+			if(!goToStructure.isEnabled())return;
+			JDialog jumpDialogue = new StructureHopperDialog();
 			jumpDialogue.setVisible(true);
 		})));
 
@@ -197,7 +244,7 @@ public class MenuBar extends JMenuBar {
 			goToCoords.setEnabled(map != null);
 			goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
 			loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
-			goToFeature.setEnabled(map != null);
+			goToStructure.setEnabled(map != null);
 		}));
 
 		JMenuItem changeSalts = new JMenuItem("Change Salts");
@@ -214,7 +261,7 @@ public class MenuBar extends JMenuBar {
 
 		worldMenu.add(goToCoords);
 		worldMenu.add(goToSpawn);
-		worldMenu.add(goToFeature);
+		worldMenu.add(goToStructure);
 		worldMenu.add(loadShadowSeed);
 		worldMenu.add(changeSalts);
 		this.add(worldMenu);
