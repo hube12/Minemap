@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.util.ui.icons;
+package kaptainwutax.minemap.util.ui.buttons;
 
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.util.ui.RoundedBorder;
@@ -13,32 +13,30 @@ public abstract class ButtonIcon extends JButton {
     public final float factor;
     public final boolean background;
     public Color backgroundColor;
-    public final Class<? extends ButtonIcon> clazz;
 
-    public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor, Class<? extends ButtonIcon> clazz) {
+    public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor) {
         super();
         this.size = size;
         this.inset = inset;
         this.factor = factor;
         this.background = background;
         this.backgroundColor = backgroundColor;
-        this.clazz = clazz;
     }
 
-    public ButtonIcon(int size, int inset, float factor, Class<? extends ButtonIcon> clazz) {
-        this(size, inset, factor, false, Color.WHITE, clazz);
+    public ButtonIcon(int size, int inset, float factor) {
+        this(size, inset, factor, false, Color.WHITE);
     }
 
-    public ButtonIcon(int size, int inset, Class<? extends ButtonIcon> clazz) {
-        this(size, inset, 1.7F, clazz);
+    public ButtonIcon(int size, int inset) {
+        this(size, inset, 1.7F);
     }
 
-    public ButtonIcon(int size, Class<? extends ButtonIcon> clazz) {
-        this(size, 1, clazz);
+    public ButtonIcon(int size) {
+        this(size, 1);
     }
 
-    public ButtonIcon(Class<? extends ButtonIcon> clazz) {
-        this(16, clazz);
+    public ButtonIcon() {
+        this(16);
     }
 
     @Override
@@ -75,7 +73,7 @@ public abstract class ButtonIcon extends JButton {
             g.setColor(old);
         }
 
-        BufferedImage icon = Icons.REGISTRY.get(clazz);
+        BufferedImage icon = Icons.REGISTRY.get(this.getClass());
         int iconSizeX, iconSizeZ;
         int defaultValue = size;
         if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {

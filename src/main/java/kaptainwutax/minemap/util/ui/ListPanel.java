@@ -1,16 +1,12 @@
 package kaptainwutax.minemap.util.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -25,14 +21,10 @@ public class ListPanel extends JPanel {
     }
 
     public ListPanel(List<JPanel> panels) {
-        this(panels, 20);
+        this(panels, new Insets(2, 0, 2, 0));
     }
 
-    public ListPanel(List<JPanel> panels, int height) {
-        this(panels, height, new Insets(2, 0, 2, 0));
-    }
-
-    public ListPanel(List<JPanel> panels, int height, Insets insets) {
+    public ListPanel(List<JPanel> panels, Insets insets) {
         super();
         this.panels = panels;
         this.setLayout(new BorderLayout());
@@ -48,28 +40,28 @@ public class ListPanel extends JPanel {
         mainList.add(new JPanel(), gbc);
 
         // create a scrollpane around it
-        JScrollPane scrollPane=new JScrollPane(mainList);
+        JScrollPane scrollPane = new JScrollPane(mainList);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         // need to resize the element hidden by forcing the validate.
-        scrollPane.getVerticalScrollBar().addAdjustmentListener(e-> panels.forEach(JComponent::revalidate));
+        scrollPane.getVerticalScrollBar().addAdjustmentListener(e -> panels.forEach(JComponent::revalidate));
         this.add(scrollPane);
 
-        panels.forEach(panel -> this.addPanel(panel, height, insets));
+        panels.forEach(panel -> this.addPanel(panel, insets));
     }
 
-    public void addPanel(JPanel p, int height) {
-        addPanel(p, height, new Insets(2, 0, 2, 0));
+    public void addPanel(JPanel p) {
+        addPanel(p, new Insets(2, 0, 2, 0));
     }
 
-    public void addPanel(JPanel p, int height, Insets insets) {
+    public void addPanel(JPanel p, Insets insets) {
         JPanel panel = new JPanel();
         panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets=insets;
+        gbc.insets = insets;
         panel.add(p);
 
         panels.add(p);
@@ -97,7 +89,39 @@ public class ListPanel extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(420, 350);
+        return new Dimension(500, 350);
     }
 
+    public static List<Component> findAllMatchingChildren(Container container, Predicate<Component> predicate,int step){
+        if (step<0 || container== null){
+            return new ArrayList<>();
+        }
+        if (step==0){
+            return predicate.test(container)? new ArrayList<>(Collections.singletonList(container)):new ArrayList<>();
+        }
+        Component[] containers= container.getComponents() ;
+        List<Component> res=new ArrayList<>();
+        for (Component c:containers){
+            if (c instanceof Container){
+                res.addAll(findAllMatchingChildren((Container) c,predicate,step-1));
+            }else if (predicate.test(c)){
+                // this is just because we might want to get node in the tree even if they are not at the same level
+                res.add(c);
+            }
+        }
+        return res;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends JComponent> void toggleParentChildren(int nParents, T component, Consumer<T> action) {
+        Container container = component;
+        for (int i = 0; i < nParents; i++) {
+            container = container.getParent();
+        }
+        Component[] components = container.getComponents();
+        Arrays.stream(components)
+                .map(c-> findAllMatchingChildren((Container) c,comp->component.getClass().equals(comp.getClass()),nParents-1))
+                .collect(ArrayList::new,ArrayList::addAll,ArrayList::addAll)
+                .forEach(e -> action.accept((T) e));
+    }
 }

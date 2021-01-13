@@ -16,8 +16,8 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.*;
-import kaptainwutax.minemap.util.ui.icons.CopyIcon;
-import kaptainwutax.minemap.util.ui.icons.JumpIcon;
+import kaptainwutax.minemap.util.ui.buttons.CopyButton;
+import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -28,7 +28,9 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class StructureListDialog extends Dialog {
@@ -42,15 +44,15 @@ public class StructureListDialog extends Dialog {
 
     @Override
     public void initComponents() {
-
-
         MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         if (map == null) return;
+
         MapContext context = map.getContext();
         MapSettings settings = context.getSettings();
         MapManager manager = map.getManager();
         ChunkRand chunkRand = new ChunkRand();
         List<Feature<?, ?>> features = settings.getAllFeatures();
+
         List<StructureItem> structureItems = features.stream()
                 .filter(e -> e instanceof RegionStructure)
                 .map(e -> new StructureItem((RegionStructure<?, ?>) e))
@@ -70,7 +72,6 @@ public class StructureListDialog extends Dialog {
             }
         }));
 
-
         this.continueButton = new JButton();
         this.continueButton.setText("Continue");
 
@@ -84,10 +85,12 @@ public class StructureListDialog extends Dialog {
                 JOptionPane.showMessageDialog(this, String.format("This is not a number: %s", this.enterN.getText().trim()));
                 return;
             }
+
             if (n > 300 || n <= 0) {
                 JOptionPane.showMessageDialog(this, String.format("You have chosen a number (%d) outside of the permitted range [1;300]", n));
                 return;
             }
+
             RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
             BPos centerPos = manager.getCenterPos();
             BiomeSource biomeSource = context.getBiomeSource();
@@ -96,20 +99,23 @@ public class StructureListDialog extends Dialog {
                 biomeSource = context.getBiomeSource(Dimension.NETHER);
                 dimCoeff = 3;
             }
+
             List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
                     .sequential()
                     .limit(n)
                     .collect(Collectors.toList());
+
+            // destroy the current container
             this.dispose();
 
             // create a new frame
             JFrame frame = new JFrame(String.format("List of %d %s", n, feature.getName()));
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setPreferredSize(new java.awt.Dimension(420, 80 + Math.min(350, 70 * bPosList.size())));
+            frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
 
             // create the inner list
             final ListPanel listPanel = new ListPanel();
-            bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos), 20));
+            bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos)));
 
             JButton copyTPs = new JButton("Copy all TPs");
             copyTPs.addActionListener(event->{
@@ -121,6 +127,7 @@ public class StructureListDialog extends Dialog {
                 copyTPs.setBackground(new Color(50, 255, 84));
                 copyTPs.setForeground(Color.WHITE);
             });
+
             JButton copyLocations = new JButton("Copy all locations");
             copyLocations.addActionListener(event->{
                 StringBuilder copyString=new StringBuilder(String.format("%s\nposX,posZ\n", feature.getName()));
@@ -131,6 +138,7 @@ public class StructureListDialog extends Dialog {
                 copyLocations.setBackground(new Color(50, 255, 84));
                 copyLocations.setForeground(Color.WHITE);
             });
+
             JSplitPane copyPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,copyTPs,copyLocations);
             copyPane.setResizeWeight(1.0);
             listPanel.add(copyPane, BorderLayout.SOUTH);
@@ -170,8 +178,8 @@ public class StructureListDialog extends Dialog {
     static class Entry extends RoundedPanel {
         private final JComponent iconView;
         private final JLabel positionText;
-        private final CopyIcon copyCoordinate;
-        private final JumpIcon jumpCoordinate;
+        private final CopyButton copyCoordinate;
+        private final JumpButton jumpCoordinate;
 
         public Entry(Feature<?, ?> feature, BPos pos) {
             this.setLayout(new GridBagLayout());
@@ -209,18 +217,20 @@ public class StructureListDialog extends Dialog {
             this.positionText.setOpaque(true);
             this.positionText.setForeground(Color.WHITE);
 
-            this.copyCoordinate = new CopyIcon(16, 6, 1.0F);
+            this.copyCoordinate = new CopyButton(16, 6, 1.0F,true,Color.DARK_GRAY);
             this.copyCoordinate.addActionListener(e->{
                 String myString = String.format("/tp @p %d ~ %d", pos.getX(),pos.getZ());
                 StringSelection stringSelection = new StringSelection(myString);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(stringSelection, null);
+                ListPanel.toggleParentChildren(2,this, component -> component.copyCoordinate.changeBColor(Color.DARK_GRAY));
                 this.copyCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
-            this.jumpCoordinate = new JumpIcon(16, 6, 1.0F);
+            this.jumpCoordinate = new JumpButton(16, 6, 1.0F,true,Color.DARK_GRAY);
             this.jumpCoordinate.addActionListener(e->{
                 MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.setCenterPos(pos.getX(), pos.getZ());
+                ListPanel.toggleParentChildren(2,this, component -> component.jumpCoordinate.changeBColor(Color.DARK_GRAY));
                 this.jumpCoordinate.changeBColor(new Color(50, 255, 84));
             });
 

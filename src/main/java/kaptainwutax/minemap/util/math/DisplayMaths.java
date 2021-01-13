@@ -2,15 +2,22 @@ package kaptainwutax.minemap.util.math;
 
 import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import java.awt.*;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DisplayMaths {
     public static double getAngle(Pair<BPos, BPos> pair) {
@@ -172,5 +179,29 @@ public class DisplayMaths {
         float g = rand.nextFloat();
         float b = rand.nextFloat();
         return new Color(r, g, b);
+    }
+
+    public static List<BPos> getPointsInArea(Area area){
+        // TODO actually increase speed by using a proper method, fill flood, raycast or winding number
+        Rectangle rectangle=area.getBounds();
+        List<BPos> bPosList=new ArrayList<>();
+        for (int x = 0; x < rectangle.width; x++) {
+            for (int y = 0; y < rectangle.height; y++) {
+                int X=rectangle.x+x;
+                int Y=rectangle.y+x;
+                if (area.contains(X,Y)){
+                    bPosList.add(new BPos(X,0,Y));
+                }
+            }
+        }
+        return bPosList;
+    }
+
+    public static final BiPredicate<CPos,List<BPos>> DEFAULT_CPOS_BPOS=(c,l)-> l.contains(c.toBlockPos().add(9,0,9));
+
+    public static List<CPos> getChunkInArea(Area area, BiPredicate<CPos,List<BPos>> predicate){
+        List<BPos> bPosList=getPointsInArea(area);
+        Stream<CPos> cPosStream=bPosList.stream().map(BPos::toChunkPos).distinct();
+        return  cPosStream.filter(c->predicate.test(c,bPosList)).collect(Collectors.toList());
     }
 }

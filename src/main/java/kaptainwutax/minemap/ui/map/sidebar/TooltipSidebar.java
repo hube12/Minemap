@@ -22,7 +22,7 @@ public class TooltipSidebar extends JPanel {
         this.map = map;
         this.addBiomeDisplay();
         this.addTooltip();
-        this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
     }
 
@@ -47,7 +47,7 @@ public class TooltipSidebar extends JPanel {
     }
 
     public void updateBiomeDisplay(int blockX, int blockZ) {
-        int biomeId = this.getBiome(blockX, blockZ);
+        int biomeId = getBiome(this.map,blockX, blockZ);
         Biome biome = Biome.REGISTRY.get(biomeId);
         String name = biome == null ? "Unknown" : Str.formatName(biome.getName());
 
@@ -56,8 +56,8 @@ public class TooltipSidebar extends JPanel {
         this.biomeDisplay.setText(text);
     }
 
-    private int getBiome(int blockX, int blockZ) {
-        BiomeLayer layer = this.map.getContext().getBiomeLayer();
+    public static int getBiome(MapPanel map, int blockX, int blockZ) {
+        BiomeLayer layer = map.getContext().getBiomeLayer();
         RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
         return layer.get(pos.getX(), 0, pos.getZ());
     }
