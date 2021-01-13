@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.util.ui;
+package kaptainwutax.minemap.util.ui.icons;
 
 import java.awt.*;
 

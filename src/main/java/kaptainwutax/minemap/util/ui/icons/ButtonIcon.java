@@ -1,6 +1,7 @@
-package kaptainwutax.minemap.util.ui;
+package kaptainwutax.minemap.util.ui.icons;
 
 import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.util.ui.RoundedBorder;
 
 import javax.swing.*;
 import java.awt.*;

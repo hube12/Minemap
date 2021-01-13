@@ -17,7 +17,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
 
 public class ListPanel extends JPanel {
-    private JPanel mainList;
+    private final JPanel mainList;
     private final List<JPanel> panels;
 
     public ListPanel() {
@@ -50,6 +50,7 @@ public class ListPanel extends JPanel {
         // create a scrollpane around it
         JScrollPane scrollPane=new JScrollPane(mainList);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         // need to resize the element hidden by forcing the validate.
         scrollPane.getVerticalScrollBar().addAdjustmentListener(e-> panels.forEach(JComponent::revalidate));
         this.add(scrollPane);

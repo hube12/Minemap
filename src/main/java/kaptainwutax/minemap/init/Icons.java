@@ -9,8 +9,9 @@ import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
-import kaptainwutax.minemap.util.ui.CloseIcon;
-import kaptainwutax.minemap.util.ui.CopyIcon;
+import kaptainwutax.minemap.util.ui.icons.CloseIcon;
+import kaptainwutax.minemap.util.ui.icons.CopyIcon;
+import kaptainwutax.minemap.util.ui.icons.JumpIcon;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -57,6 +58,7 @@ public class Icons {
 
         register(CloseIcon.class,"close");
         register(CopyIcon.class,"copy");
+        register(JumpIcon.class,"jump");
     }
 
     public static <T> void register(Class<T> clazz, String name) {

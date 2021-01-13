@@ -11,7 +11,7 @@ public class RoundedBorder implements Border {
     /*
     The radius is the radius of the inside circle and size is the size of the rectangle around it
      */
-    RoundedBorder(int radius, int size) {
+    public RoundedBorder(int radius, int size) {
         this.radius = radius;
         this.size = size;
         this.diff = size / 2 - radius;

@@ -1,10 +1,9 @@
 package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.CloseIcon;
+import kaptainwutax.minemap.util.ui.icons.CloseIcon;
 
 import javax.swing.*;
-import javax.swing.plaf.metal.MetalIconFactory;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;

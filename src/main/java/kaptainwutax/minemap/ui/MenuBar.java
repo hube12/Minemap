@@ -191,6 +191,10 @@ public class MenuBar extends JMenuBar {
 			jumpDialogue.setVisible(true);
 		})));
 
+		utilityMenu.addMenuListener(Events.Menu.onSelected(e -> {
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			listStructure.setEnabled(map != null);
+		}));
 
 		utilityMenu.add(listStructure);
 		this.add(utilityMenu);

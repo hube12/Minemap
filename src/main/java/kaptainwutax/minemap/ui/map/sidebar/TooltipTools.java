@@ -3,7 +3,7 @@ package kaptainwutax.minemap.ui.map.sidebar;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.ui.CloseIcon;
+import kaptainwutax.minemap.util.ui.icons.CloseIcon;
 import kaptainwutax.minemap.util.ui.ColorChooserButton;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.ui.RoundedPanel;

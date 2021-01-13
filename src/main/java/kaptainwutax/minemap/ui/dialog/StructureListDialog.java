@@ -14,10 +14,10 @@ import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.minemap.ui.map.sidebar.TooltipTools;
-import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.*;
+import kaptainwutax.minemap.util.ui.icons.CopyIcon;
+import kaptainwutax.minemap.util.ui.icons.JumpIcon;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -27,13 +27,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class StructureListDialog extends Dialog {
@@ -176,6 +171,7 @@ public class StructureListDialog extends Dialog {
         private final JComponent iconView;
         private final JLabel positionText;
         private final CopyIcon copyCoordinate;
+        private final JumpIcon jumpCoordinate;
 
         public Entry(Feature<?, ?> feature, BPos pos) {
             this.setLayout(new GridBagLayout());
@@ -222,8 +218,15 @@ public class StructureListDialog extends Dialog {
                 this.copyCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
+            this.jumpCoordinate = new JumpIcon(16, 6, 1.0F);
+            this.jumpCoordinate.addActionListener(e->{
+                MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.setCenterPos(pos.getX(), pos.getZ());
+                this.jumpCoordinate.changeBColor(new Color(50, 255, 84));
+            });
+
             this.add(this.iconView, gbc);
             this.add(this.positionText, gbc);
+            this.add(this.jumpCoordinate, gbc);
             this.add(this.copyCoordinate, gbc);
 
             this.setBackground(new Color(0, 0, 0, 180));
