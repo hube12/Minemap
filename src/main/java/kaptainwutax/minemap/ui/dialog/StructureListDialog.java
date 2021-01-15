@@ -60,7 +60,7 @@ public class StructureListDialog extends Dialog {
 
         this.structureItemDropdown = new Dropdown<>(structureItems);
 
-        this.enterN = new JTextField("0");
+        this.enterN = new JTextField("1");
         PromptSupport.setPrompt("Number of structures", this.enterN);
 
         this.enterN.addKeyListener(Events.Keyboard.onReleased(e -> {

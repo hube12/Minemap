@@ -91,23 +91,13 @@ public class Fragment {
         if (!this.context.getSettings().showFeatures) return;
 
         Map<Feature<?, ?>, List<BPos>> hovered = this.getHoveredFeatures(info.width, info.height);
-
         for (Map.Entry<Feature<?, ?>, List<BPos>> entry : this.features.entrySet()) {
             if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
 
             for (BPos pos : entry.getValue()) {
-                if (hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos)) continue;
-                this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos, false);
+                this.context.getIconManager().render(graphics, info, entry.getKey(), this, pos, hovered.getOrDefault(entry.getKey(), Collections.emptyList()).contains(pos));
             }
         }
-
-        this.getHoveredFeatures(info.width, info.height).forEach((feature, positions) -> {
-            if (!this.context.getSettings().isActive(feature) || positions == null) return;
-
-            for (BPos pos : positions) {
-                this.context.getIconManager().render(graphics, info, feature, this, pos, true);
-            }
-        });
     }
 
     public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
@@ -132,7 +122,7 @@ public class Fragment {
 
                     // get the correct polygon in the fragment
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.80) / ((double) regionSize), ((double) info.height-0.80) / ((double) regionSize));
+                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.70) / ((double) regionSize), ((double) info.height-0.70) / ((double) regionSize));
                     scaleToDisplayFragment.concatenate(translateToZero);
                     AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
                     translateBackToDisplay.concatenate(scaleToDisplayFragment);
@@ -230,7 +220,6 @@ public class Fragment {
     private void generateFeatures() {
         this.features = new LinkedHashMap<>();
         IconManager iconManager = this.context.getIconManager();
-
         for (Feature<?, ?> feature : this.context.getSettings().getAllFeatures(iconManager.getZValueSorter())) {
             List<BPos> positions = iconManager.getPositions(feature, this);
             positions.removeIf(pos -> !this.isPosInFragment(pos));
@@ -244,8 +233,7 @@ public class Fragment {
 
     public boolean isPosInFragment(int blockX, int blockZ) {
         if (blockX < this.getX() || blockX >= this.getX() + this.getSize()) return false;
-        if (blockZ < this.getZ() || blockZ >= this.getZ() + this.getSize()) return false;
-        return true;
+        return blockZ >= this.getZ() && blockZ < this.getZ() + this.getSize();
     }
 
     public Rectangle getRectangle() {

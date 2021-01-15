@@ -9,20 +9,17 @@ import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
-import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MapManager {
@@ -36,7 +33,7 @@ public class MapManager {
     public double centerX;
     public double centerY;
 
-    public final ArrayList<Tool> tools = new ArrayList<>();
+    public final ArrayList<Tool> toolsList = new ArrayList<>();
     public Tool selectedTool = null;
 
     public Point mousePointer;
@@ -84,10 +81,10 @@ public class MapManager {
                     // if tool has no more points to it
                     if (!selectedTool.addPoint(pos)) {
                         selectedTool = selectedTool.duplicate();
-                        tools.add(selectedTool);
+                        toolsList.add(selectedTool);
                         selectedTool.addPoint(pos);
                     }
-                    this.panel.rightBar.tooltip.updateToolsMetrics(tools);
+                    this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
                 }
             }
         }));
@@ -163,24 +160,37 @@ public class MapManager {
             this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible());
         }));
 
+        popup.add(pin);
+        popup.add(rename);
+        popup.add(settings);
+        this.addTools(popup, Arrays.asList(Ruler::new,  Area::new,  Circle::new));
 
-        JMenuItem rulerTool = new JMenuItem();
-        JMenuItem areaTool = new JMenuItem();
-        JMenuItem circleTool = new JMenuItem();
-        rulerTool.setBorder(new EmptyBorder(5, 15, 5, 15));
-        areaTool.setBorder(new EmptyBorder(5, 15, 5, 15));
-        circleTool.setBorder(new EmptyBorder(5, 15, 5, 15));
-        Consumer<String> rTools = x -> resetTools(new JMenuItem[] {rulerTool, areaTool, circleTool}, new Tool[] {new Ruler(), new Area(), new Circle()}, x);
+        this.panel.setComponentPopupMenu(popup);
+    }
+
+    public void addTools(JPopupMenu popup,List<Supplier<Tool>> tools){
+        List<JMenuItem> toolMenus=new ArrayList<>();
+        for (int i = 0; i < tools.size(); i++) {
+            JMenuItem toolMenu=new JMenuItem();
+            toolMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
+            toolMenus.add(toolMenu);
+        }
+        Consumer<String> rTools = prefix -> {
+            for (int i = 0; i < tools.size(); i++) {
+                toolMenus.get(i).setText(String.join(" ", prefix, tools.get(i).get().getName()));
+            }
+        };
         rTools.accept("Enable");
 
         BiConsumer<Tool, JMenuItem> createNewTool = (newTool, menuItem) -> {
-            tools.add(newTool);
+            toolsList.add(newTool);
             selectedTool = newTool;
             this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
             menuItem.setText("Disable " + newTool.getName());
         };
+
         BiConsumer<Supplier<Tool>, JMenuItem> toggleTool = (newTool, menuItem) -> {
-            Tool tool = newTool.get(); // to avoid creating an instance at one point (not recommended)
+            Tool tool = newTool.get(); // to avoid creating an instance at one point
             if (selectedTool == null) {
                 createNewTool.accept(tool, menuItem);
             } else {
@@ -197,44 +207,23 @@ public class MapManager {
             }
         };
 
-        rulerTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Ruler::new, rulerTool);
-        }));
-
-        areaTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Area::new, areaTool);
-
-        }));
-
-        circleTool.addMouseListener(Events.Mouse.onReleased(e -> {
-            toggleTool.accept(Circle::new, circleTool);
-        }));
-
-        popup.add(pin);
-        popup.add(rename);
-        popup.add(settings);
-        popup.add(rulerTool);
-        popup.add(areaTool);
-        popup.add(circleTool);
-        this.panel.setComponentPopupMenu(popup);
-    }
-
-    public static void resetTools(JMenuItem[] toolMenus, Tool[] tools, String command) {
-        for (int i = 0; i < toolMenus.length; i++) {
-            toolMenus[i].setText(String.join(" ", command, tools[i].getName()));
+        for (int i = 0; i < tools.size(); i++) {
+            JMenuItem toolMenu=toolMenus.get(i);
+            Supplier<Tool> tool=tools.get(i);
+            toolMenu.addMouseListener(Events.Mouse.onReleased(e -> toggleTool.accept(tool, toolMenu)));
+            popup.add(toolMenu);
         }
     }
-
 
     public void removeTool(Tool tool) {
         if (selectedTool == tool) {
             selectedTool = tool.duplicate();
             selectedTool.reset();
         }
-        if (!tools.remove(tool)) {
+        if (!toolsList.remove(tool)) {
             System.out.println("This is unexpected");
         }
-        this.panel.rightBar.tooltip.updateToolsMetrics(tools);
+        this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
     }
 
     public Vec3i getScreenSize() {

@@ -5,6 +5,7 @@ import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.seedutils.mc.ChunkRand;
@@ -12,6 +13,8 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -41,10 +44,14 @@ public class RegionIcon extends StaticIcon {
             for(int z = fragment.getZ() - increment; z < fragment.getZ() + fragment.getSize() + increment; z += increment) {
                 RegionStructure.Data<?> data = structure.at(x >> 4, z >> 4);
                 CPos pos = structure.getInRegion(worldSeedWithSalt, data.regionX, data.regionZ, rand);
-
-                if(pos != null && structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource())) {
-                    positions.add(pos.toBlockPos().add(9, 0, 9));
+                if(pos != null){
+                    if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource())) {
+                        positions.add(pos.toBlockPos().add(9, 0, 9));
+                    }else if(Configs.USER_PROFILE.getUserSettings().structureMode){
+                        positions.add(pos.toBlockPos().add(9, 0, 9));
+                    }
                 }
+
             }
         }
     }

@@ -13,6 +13,8 @@ import java.awt.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class MineMap extends JFrame {
 
@@ -32,7 +34,7 @@ public class MineMap extends JFrame {
     }
 
     public MineMap() {
-        lookType.setLookAndFeel();
+        applyStyle();
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
         this.initComponents();
@@ -53,29 +55,35 @@ public class MineMap extends JFrame {
         this.add(this.worldTabs);
     }
 
+    public static void applyStyle(){
+        try {
+            lookType.setLookAndFeel();
+        }catch (Exception e){
+            lookType=LookType.DARCULA;
+            try {
+                lookType.setLookAndFeel();
+            }catch (Exception impossibleError){
+                impossibleError.printStackTrace();
+            }
+        }
+    }
+
     public enum LookType {
-        DARK("Dark", FlatDarkLaf.class),
-        LIGHT("Light", FlatLightLaf.class),
-        INTELLIJ("Intellij", FlatIntelliJLaf.class),
-        DARCULA("Darcula", FlatDarculaLaf.class);
+        DARK("Dark", FlatDarkLaf::new),
+        LIGHT("Light", FlatLightLaf::new),
+        INTELLIJ("Intellij", FlatIntelliJLaf::new),
+        DARCULA("Darcula", FlatDarculaLaf::new);
 
         private final String name;
-        private final Class<? extends FlatLaf> clazz;
+        private final Supplier<FlatLaf> supplier;
 
-        LookType(String name, Class<? extends FlatLaf> clazz) {
+        LookType(String name, Supplier<FlatLaf> supplier) {
             this.name = name;
-            this.clazz = clazz;
+            this.supplier = supplier;
         }
 
-        public void setLookAndFeel() {
-            try {
-                Constructor<?> cons = clazz.getConstructor();
-                FlatLaf object = (FlatLaf) cons.newInstance();
-                UIManager.setLookAndFeel(object);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return;
-            }
+        public void setLookAndFeel() throws UnsupportedLookAndFeelException {
+            UIManager.setLookAndFeel(supplier.get());
             for(Window window : JFrame.getWindows()) {
                 SwingUtilities.updateComponentTreeUI(window);
             }
@@ -86,14 +94,7 @@ public class MineMap extends JFrame {
         }
 
         public boolean isDark() {
-            try {
-                Constructor<?> cons = clazz.getConstructor();
-                FlatLaf object = (FlatLaf) cons.newInstance();
-                return object.isDark();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
+            return supplier.get().isDark();
         }
     }
 

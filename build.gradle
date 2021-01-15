@@ -4,7 +4,10 @@ plugins {
     id "com.github.johnrengelman.shadow" version "5.0.0"
 }
 
-sourceCompatibility = 1.8
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
 
 repositories {
     mavenCentral()
@@ -13,6 +16,10 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+}
+
+tasks.withType(JavaCompile) {
+    //options.compilerArgs += ['-Xlint:deprecation','-Xlint:unchecked']
 }
 
 dependencies {

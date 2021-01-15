@@ -21,8 +21,7 @@ public class WorldTabs extends JTabbedPane {
     public WorldTabs() {
         //Copy seed to clipboard.
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if (e.getKeyCode() != KeyEvent.VK_C
-                    || (e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
+            if (e.getKeyCode() != KeyEvent.VK_C || (e.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
             MapPanel map = this.getSelectedMapPanel();
             if (map == null) return false;
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(

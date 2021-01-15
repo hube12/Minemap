@@ -90,7 +90,7 @@ public class MapPanel extends JPanel {
         Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
         drawQueue.forEach((fragment, info) -> fragment.drawBiomes(graphics, info));
         drawQueue.forEach((fragment, info) -> fragment.drawFeatures(graphics, info));
-        drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.tools));
+        drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.toolsList));
 
     }
 

@@ -6,10 +6,16 @@ import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 public class UserSettings {
 
-    @Expose public String style = BiomeColorsConfig.DEFAULT_STYLE_NAME;
-    @Expose public MineMap.LookType look = MineMap.LookType.DARCULA;
-    @Expose public boolean restrictMaximumZoom = true;
-    @Expose public String fragmentMetric = "Euclidean";
+    @Expose
+    public String style = BiomeColorsConfig.DEFAULT_STYLE_NAME;
+    @Expose
+    public MineMap.LookType look = MineMap.LookType.DARCULA;
+    @Expose
+    public boolean restrictMaximumZoom = true;
+    @Expose
+    public String fragmentMetric = "Euclidean";
+    @Expose
+    public boolean structureMode = false;
 
     public DistanceMetric getFragmentMetric() {
         switch (this.fragmentMetric) {

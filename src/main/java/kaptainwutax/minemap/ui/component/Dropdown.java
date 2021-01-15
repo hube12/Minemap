@@ -45,6 +45,7 @@ public class Dropdown<E> extends JComboBox<String> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public E getElement(int index) {
         return (E)this.elements[index];
     }

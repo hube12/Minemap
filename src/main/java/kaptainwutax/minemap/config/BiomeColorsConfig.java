@@ -165,5 +165,4 @@ public class BiomeColorsConfig extends Config {
 		Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(type, s -> new LinkedHashMap<>());
 		typeMap.put(biome.getName().toUpperCase(), color.toUpperCase());
 	}
-
 }

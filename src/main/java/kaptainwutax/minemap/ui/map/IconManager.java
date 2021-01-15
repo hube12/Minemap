@@ -25,8 +25,13 @@ public class IconManager {
                 .collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
 
         this.override(
-                SpawnIcon::new, RegionIcon::new, MineshaftIcon::new, SlimeIcon::new,
-                EndGatewayIcon::new, OWNetherIcon::new, c -> new StrongholdIcon(c, 128)
+                SpawnIcon::new,
+                RegionIcon::new,
+                MineshaftIcon::new,
+                SlimeIcon::new,
+                EndGatewayIcon::new,
+                OWNetherIcon::new,
+                c -> new StrongholdIcon(c, 128)
         );
     }
 
@@ -56,7 +61,6 @@ public class IconManager {
                 this.renderers.replace(feature, renderer);
             }
         }
-
         return this;
     }
 
@@ -68,7 +72,6 @@ public class IconManager {
 
     public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
         this.renderers.get(feature).render(graphics, info, feature, fragment, pos, hovered);
-        
     }
 
     public Comparator<Feature<?, ?>> getZValueSorter() {

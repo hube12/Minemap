@@ -13,11 +13,16 @@ import java.util.stream.Collectors;
 
 public class MapSettings {
 
-    @Expose public boolean showBiomes = true;
-    @Expose public boolean showFeatures = true;
-    @Expose public boolean showGrid = false;
-    @Expose private Map<String, Boolean> features;
-    @Expose private Map<String, Boolean> biomes;
+    @Expose
+    public boolean showBiomes = true;
+    @Expose
+    public boolean showFeatures = true;
+    @Expose
+    public boolean showGrid = false;
+    @Expose
+    private Map<String, Boolean> features;
+    @Expose
+    private Map<String, Boolean> biomes;
 
     private Map<Class<? extends Feature<?, ?>>, Feature<?, ?>> featureTypes;
     private Map<Class<? extends Feature<?, ?>>, Boolean> featureStates;
@@ -73,14 +78,15 @@ public class MapSettings {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public MapSettings setState(Feature<?, ?> feature, boolean state) {
-        return this.setState((Class<? extends Feature<?, ?>>)feature.getClass(), state);
+        return this.setState((Class<? extends Feature<?, ?>>) feature.getClass(), state);
     }
 
     public MapSettings setState(Class<? extends Feature<?, ?>> feature, boolean state) {
         this.featureStates.replace(feature, state);
         Feature<?, ?> f = this.featureTypes.get(feature);
-        if(f != null)this.features.put(f.getName(), state);
+        if (f != null) this.features.put(f.getName(), state);
         return this;
     }
 
@@ -91,7 +97,7 @@ public class MapSettings {
     }
 
     public final MapSettings hide(Feature<?, ?>... features) {
-        for(Feature<?, ?> feature: features) {
+        for (Feature<?, ?> feature : features) {
             this.setState(feature, false);
         }
 
@@ -99,7 +105,7 @@ public class MapSettings {
     }
 
     public final MapSettings show(Feature<?, ?>... features) {
-        for(Feature<?, ?> feature: features) {
+        for (Feature<?, ?> feature : features) {
             this.setState(feature, true);
         }
 
@@ -108,7 +114,7 @@ public class MapSettings {
 
     @SafeVarargs
     public final MapSettings hide(Class<? extends Feature<?, ?>>... features) {
-        for(Class<? extends Feature<?, ?>> feature: features) {
+        for (Class<? extends Feature<?, ?>> feature : features) {
             this.setState(feature, false);
         }
 
@@ -117,7 +123,7 @@ public class MapSettings {
 
     @SafeVarargs
     public final MapSettings show(Class<? extends Feature<?, ?>>... features) {
-        for(Class<? extends Feature<?, ?>> feature: features) {
+        for (Class<? extends Feature<?, ?>> feature : features) {
             this.setState(feature, true);
         }
 
@@ -125,7 +131,7 @@ public class MapSettings {
     }
 
     public final MapSettings hide(Biome... biomes) {
-        for(Biome biome: biomes) {
+        for (Biome biome : biomes) {
             this.setState(biome, false);
         }
 
@@ -133,16 +139,17 @@ public class MapSettings {
     }
 
     public final MapSettings show(Biome... biomes) {
-        for(Biome biome: biomes) {
+        for (Biome biome : biomes) {
             this.setState(biome, true);
         }
 
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Feature<?, ?>> T getFeatureOfType(Class<? extends T> feature) {
         Feature<?, ?> v = this.featureTypes.get(feature);
-        return v == null ? null : (T)v;
+        return v == null ? null : (T) v;
     }
 
     public List<Feature<?, ?>> getAllFeatures() {
