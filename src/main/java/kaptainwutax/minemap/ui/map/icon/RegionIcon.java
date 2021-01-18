@@ -32,7 +32,6 @@ public class RegionIcon extends StaticIcon {
     @Override
     public void addPositions(Feature<?, ?> feature, Fragment fragment, List<BPos> positions) {
         RegionStructure<?, ?> structure = (RegionStructure<?, ?>)feature;
-        System.out.println(structure);
         int increment = 16 * structure.getSpacing();
         ChunkRand rand = new ChunkRand();
 
