@@ -10,7 +10,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 
     public SpawnPoint() {
-        super(null, null);
+        super(new Config(), null);
     }
 
     @Override

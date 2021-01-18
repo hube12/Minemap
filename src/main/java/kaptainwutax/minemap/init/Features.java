@@ -45,7 +45,7 @@ public class Features {
 
         register(SpawnPoint.class, v -> new SpawnPoint());
     }
-    
+
     public static <T extends Feature<?, ?>> void register(Class<T> clazz, FeatureFactory<T> factory) {
         REGISTRY.put(clazz, factory);
     }
@@ -53,11 +53,16 @@ public class Features {
     public static Map<Class<? extends Feature<?, ?>>, Feature<?, ?>> getForVersion(MCVersion version) {
         Map<Class<? extends Feature<?, ?>>, Feature<?, ?>> result = new HashMap<>();
 
-        for(Map.Entry<Class<? extends Feature<?, ?>>, FeatureFactory<?>> entry: REGISTRY.entrySet()) {
+        for (Map.Entry<Class<? extends Feature<?, ?>>, FeatureFactory<?>> entry : REGISTRY.entrySet()) {
             try {
                 Feature<?, ?> feature = entry.getValue().create(version);
-                result.put(entry.getKey(), feature);
-            } catch(NullPointerException ignored) {
+                if (feature.getConfig() != null) {
+                    result.put(entry.getKey(), feature);
+                } else {
+                    System.out.println(feature.getName()+"   eeee ");
+                }
+            } catch (NullPointerException ignored) {
+                //ignored.printStackTrace();
             }
         }
 

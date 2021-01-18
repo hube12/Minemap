@@ -23,7 +23,7 @@ public class Test {
         Configs.registerConfigs();
         Icons.registerIcons();
 
-        MapSettings settings = new MapSettings(MCVersion.v1_16, Dimension.OVERWORLD).refresh();
+        MapSettings settings = new MapSettings(MCVersion.v1_12, Dimension.OVERWORLD).refresh();
         MapContext context = new MapContext(1234L, settings);
 
         settings.hide(SlimeChunk.class, Mineshaft.class);
