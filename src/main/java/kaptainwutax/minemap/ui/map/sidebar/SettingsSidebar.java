@@ -181,6 +181,7 @@ public class SettingsSidebar extends JPanel {
                     .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
                     .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
+            this.map.restart();
             this.map.repaint();
         }));
 
@@ -192,6 +193,7 @@ public class SettingsSidebar extends JPanel {
                     .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
                     .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
+            this.map.restart();
             this.map.repaint();
         }));
 

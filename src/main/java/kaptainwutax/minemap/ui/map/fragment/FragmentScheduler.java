@@ -40,7 +40,7 @@ public class FragmentScheduler {
 				RPos nearest = this.getNearestScheduled();
 
 				if(nearest == null) {
-					try {Thread.sleep(20);}
+					try {Thread.sleep(10);}
 					catch(InterruptedException e) {e.printStackTrace();}
 					continue;
 				} else if(!this.isInBounds(nearest)) {
