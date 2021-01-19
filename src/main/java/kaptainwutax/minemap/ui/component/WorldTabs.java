@@ -27,8 +27,7 @@ public class WorldTabs extends JTabbedPane {
             if (e.getKeyCode() != KeyEvent.VK_C || (e.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
             MapPanel map = this.getSelectedMapPanel();
             if (map == null) return false;
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
         });
     }
@@ -101,19 +100,8 @@ public class WorldTabs extends JTabbedPane {
             else this.remove(mapPanel);
         });
 
-        JPopupMenu popup = new JPopupMenu();
 
-        JMenuItem removeOthers = new JMenuItem("Close Other Tabs ");
-        removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
-
-        removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
-            List<TabGroup> others=this.tabGroups.stream().filter(g->g!=tabGroup).collect(Collectors.toList());
-            for (TabGroup other:others){
-                this.remove(other);
-            }
-        }));
-        popup.add(removeOthers);
-        tabHeader.setComponentPopupMenu(popup);
+        tabHeader.setComponentPopupMenu(createTabMenu(tabGroup,mapPanel));
         tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
             if (e.getSource() instanceof TabHeader){
                 TabHeader source=(TabHeader) e.getSource();
@@ -124,4 +112,27 @@ public class WorldTabs extends JTabbedPane {
         this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), tabHeader);
     }
 
+    public JPopupMenu createTabMenu(TabGroup current,MapPanel mapPanel){
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem removeOthers = new JMenuItem("Close Other Tabs");
+        removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
+            List<TabGroup> others=this.tabGroups.stream().filter(g->g!=current).collect(Collectors.toList());
+            for (TabGroup other:others){
+                this.remove(other);
+            }
+        }));
+        JMenuItem copySeed = new JMenuItem("Copy seed");
+        copySeed.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        copySeed.addMouseListener(Events.Mouse.onReleased(e -> {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(mapPanel.getContext().worldSeed)), null);
+        }));
+
+        popup.add(removeOthers);
+        popup.add(copySeed);
+        return popup;
+    }
 }
