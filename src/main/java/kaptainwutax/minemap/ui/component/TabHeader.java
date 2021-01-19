@@ -18,6 +18,7 @@ public class TabHeader extends JPanel {
         this.createTabTitle(title);
         this.createCloseButton(onClose);
         this.setOpaque(false);
+
     }
 
     public boolean isPinned() {

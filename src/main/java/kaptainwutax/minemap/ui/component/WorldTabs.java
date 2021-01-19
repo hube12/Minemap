@@ -1,11 +1,13 @@
 package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
@@ -50,7 +52,6 @@ public class WorldTabs extends JTabbedPane {
         for (MapPanel mapPanel : tabGroup.getMapPanels()) {
             super.remove(mapPanel);
         }
-
         this.tabGroups.remove(tabGroup);
     }
 
@@ -76,7 +77,6 @@ public class WorldTabs extends JTabbedPane {
             g.setColor(BACKGROUND_COLOR);
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
         }
-
         super.paintComponent(g);
     }
 
@@ -91,16 +91,37 @@ public class WorldTabs extends JTabbedPane {
 
     @Override
     public void addTab(String title, Component component) {
-        this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> {
-            this.remove(component);
-        }));
+        this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> this.remove(component)));
     }
 
     public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
-        this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), new TabHeader(title, e -> {
+        TabHeader tabHeader = new TabHeader(title, e -> {
             if (e.isShiftDown()) this.remove(tabGroup);
             else this.remove(mapPanel);
+        });
+
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem removeOthers = new JMenuItem("Close Other Tabs ");
+        removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
+
+        removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
+            for (TabGroup other:this.tabGroups){
+                if (other!=tabGroup){
+                    this.remove(other);
+                }
+            }
         }));
+        popup.add(removeOthers);
+        tabHeader.setComponentPopupMenu(popup);
+        tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
+            if (e.getSource() instanceof TabHeader){
+                TabHeader source=(TabHeader) e.getSource();
+                this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
+            }
+        }));
+
+        this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), tabHeader);
     }
 
 }
