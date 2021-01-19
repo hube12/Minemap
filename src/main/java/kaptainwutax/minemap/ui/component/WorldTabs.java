@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WorldTabs extends JTabbedPane {
 
@@ -106,10 +107,9 @@ public class WorldTabs extends JTabbedPane {
         removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
-            for (TabGroup other:this.tabGroups){
-                if (other!=tabGroup){
-                    this.remove(other);
-                }
+            List<TabGroup> others=this.tabGroups.stream().filter(g->g!=tabGroup).collect(Collectors.toList());
+            for (TabGroup other:others){
+                this.remove(other);
             }
         }));
         popup.add(removeOthers);
