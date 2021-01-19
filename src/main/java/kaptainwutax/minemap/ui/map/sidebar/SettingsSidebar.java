@@ -200,7 +200,9 @@ public class SettingsSidebar extends JPanel {
         JPanel duo = new JPanel();
         duo.add(showAll);
         duo.add(hideAll);
-        duo.setLayout(new BoxLayout(duo, BoxLayout.X_AXIS));
+        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        layout.setVgap(0);
+        duo.setLayout(layout);
         this.add(duo);
     }
 
@@ -221,14 +223,22 @@ public class SettingsSidebar extends JPanel {
         JPanel duo = new JPanel();
         duo.add(set);
         duo.add(reset);
-        duo.setLayout(new BoxLayout(duo, BoxLayout.X_AXIS));
+        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        layout.setVgap(0);
+        duo.setLayout(layout);
         this.add(duo);
     }
 
     private void addCloseButton() {
-        this.closeButton = new JButton("Close");
-        this.closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.add(this.closeButton);
+        JPanel panel=new JPanel();
+
+        this.closeButton = new JButton("Close Settings");
+        panel.add(this.closeButton);
+
+        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        panel.setLayout(layout);
+
+        this.add(panel);
     }
 
 }
