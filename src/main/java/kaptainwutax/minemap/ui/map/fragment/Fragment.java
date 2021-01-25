@@ -9,6 +9,7 @@ import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
 
@@ -82,7 +83,7 @@ public class Fragment {
         if (this.context.getSettings().showGrid) {
             Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
-            graphics.drawRect(info.x, info.y, info.width - 1, info.height - 1);
+            graphics.drawRect(info.x, info.y, info.width, info.height);
             graphics.setColor(old);
         }
     }
@@ -122,7 +123,7 @@ public class Fragment {
 
                     // get the correct polygon in the fragment
                     AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width-0.70) / ((double) regionSize), ((double) info.height-0.70) / ((double) regionSize));
+                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width) / ((double) regionSize), ((double) info.height) / ((double) regionSize));
                     scaleToDisplayFragment.concatenate(translateToZero);
                     AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
                     translateBackToDisplay.concatenate(scaleToDisplayFragment);
@@ -137,7 +138,8 @@ public class Fragment {
                         g2d.setColor(color);
                         g2d.fill(polygon);
                     } else {
-                        g2d.setStroke(new BasicStroke((int) (((double) regionSize) / info.height), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL));
+                        int strokeSize = (int) (((double) regionSize) / info.height);
+                        g2d.setStroke(new BasicStroke(DisplayMaths.clamp(strokeSize, 1, 7), BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                         g2d.draw(polygon);
                     }
                     g2d.setColor(old);

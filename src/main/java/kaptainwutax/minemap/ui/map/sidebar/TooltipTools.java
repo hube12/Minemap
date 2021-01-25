@@ -4,7 +4,6 @@ import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.dialog.StructureListDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.math.DisplayMaths;
@@ -17,12 +16,9 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
@@ -43,6 +39,7 @@ public class TooltipTools extends JPanel {
         for (Tool tool : tools) {
             this.add(new Entry(tool, e -> map.manager.removeTool(tool)));
         }
+        map.repaint();
     }
 
     public static class Entry extends RoundedPanel {

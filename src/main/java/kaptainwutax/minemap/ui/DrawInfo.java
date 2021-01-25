@@ -1,7 +1,6 @@
 package kaptainwutax.minemap.ui;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 
 public class DrawInfo {
 

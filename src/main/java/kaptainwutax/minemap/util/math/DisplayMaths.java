@@ -204,4 +204,9 @@ public class DisplayMaths {
         Stream<CPos> cPosStream=bPosList.stream().map(BPos::toChunkPos).distinct();
         return  cPosStream.filter(c->predicate.test(c,bPosList)).collect(Collectors.toList());
     }
+
+
+    public static float clamp(float val, float min, float max) {
+        return Math.max(min, Math.min(max, val));
+    }
 }

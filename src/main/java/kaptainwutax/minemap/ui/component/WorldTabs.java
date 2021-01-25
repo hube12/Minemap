@@ -128,7 +128,8 @@ public class WorldTabs extends JTabbedPane {
         copySeed.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         copySeed.addMouseListener(Events.Mouse.onReleased(e -> {
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(mapPanel.getContext().worldSeed)), null);
+            StringSelection content=new StringSelection(String.valueOf(mapPanel.getContext().worldSeed));
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(content, null);
         }));
 
         popup.add(removeOthers);

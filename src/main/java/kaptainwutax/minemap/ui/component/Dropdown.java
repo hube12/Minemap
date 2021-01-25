@@ -13,6 +13,7 @@ public class Dropdown<E> extends JComboBox<String> {
     public final StringMapper<E> mapper;
     public final Object[] elements;
 
+    @SafeVarargs
     public Dropdown(E... elements) {
         this(Object::toString, Arrays.asList(elements));
     }
@@ -25,6 +26,7 @@ public class Dropdown<E> extends JComboBox<String> {
         this(Object::toString, elements);
     }
 
+    @SafeVarargs
     public Dropdown(StringMapper<E> mapper, E... elements) {
         this(mapper, Arrays.asList(elements));
     }

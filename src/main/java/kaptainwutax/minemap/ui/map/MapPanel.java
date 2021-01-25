@@ -122,7 +122,7 @@ public class MapPanel extends JPanel {
                 double x = (regionX - regionMin.getX()) * this.manager.pixelsPerFragment + pixelOffsetX;
                 double z = (regionZ - regionMin.getZ()) * this.manager.pixelsPerFragment + pixelOffsetZ;
                 int size = (int) (this.manager.pixelsPerFragment);
-                drawQueue.put(fragment, new DrawInfo((int) x, (int) z, size + 1, size + 1));
+                drawQueue.put(fragment, new DrawInfo((int) x, (int) z, size, size));
             }
         }
 

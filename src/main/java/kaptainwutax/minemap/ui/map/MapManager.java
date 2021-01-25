@@ -45,7 +45,7 @@ public class MapManager {
     public MapManager(MapPanel panel, int blocksPerFragment) {
         this.panel = panel;
         this.blocksPerFragment = blocksPerFragment;
-        this.pixelsPerFragment = (int) (300.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
+        this.pixelsPerFragment = (int) (256.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
@@ -102,18 +102,19 @@ public class MapManager {
                 double newPixelsPerFragment = this.pixelsPerFragment;
 
                 if (e.getUnitsToScroll() > 0) {
-                    newPixelsPerFragment /= e.getUnitsToScroll() / 2.0D;
+                    newPixelsPerFragment /= 2.0D;
                 } else {
-                    newPixelsPerFragment *= -e.getUnitsToScroll() / 2.0D;
+                    newPixelsPerFragment *= 2.0D;
                 }
 
-                if (newPixelsPerFragment > 2000.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 2000.0D * (this.blocksPerFragment / 512.0D);
+                // restrict min zoom to 4096 chunks per fragment
+                if (newPixelsPerFragment > 4096.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 4096.0D * (this.blocksPerFragment / 512.0D);
                 }
 
-                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom
-                        && newPixelsPerFragment < 40.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 40.0D * (this.blocksPerFragment / 512.0D);
+                // restrict max zoom to 32 chunks per fragment
+                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 32.0D * (this.blocksPerFragment / 512.0D);
                 }
 
                 double scaleFactor = newPixelsPerFragment / this.pixelsPerFragment;
@@ -163,15 +164,15 @@ public class MapManager {
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
-        this.addTools(popup, Arrays.asList(Ruler::new,  Area::new,  Circle::new));
+        this.addTools(popup, Arrays.asList(Ruler::new, Area::new, Circle::new));
 
         this.panel.setComponentPopupMenu(popup);
     }
 
-    public void addTools(JPopupMenu popup,List<Supplier<Tool>> tools){
-        List<JMenuItem> toolMenus=new ArrayList<>();
+    public void addTools(JPopupMenu popup, List<Supplier<Tool>> tools) {
+        List<JMenuItem> toolMenus = new ArrayList<>();
         for (int i = 0; i < tools.size(); i++) {
-            JMenuItem toolMenu=new JMenuItem();
+            JMenuItem toolMenu = new JMenuItem();
             toolMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
             toolMenus.add(toolMenu);
         }
@@ -208,8 +209,8 @@ public class MapManager {
         };
 
         for (int i = 0; i < tools.size(); i++) {
-            JMenuItem toolMenu=toolMenus.get(i);
-            Supplier<Tool> tool=tools.get(i);
+            JMenuItem toolMenu = toolMenus.get(i);
+            Supplier<Tool> tool = tools.get(i);
             toolMenu.addMouseListener(Events.Mouse.onReleased(e -> toggleTool.accept(tool, toolMenu)));
             popup.add(toolMenu);
         }
