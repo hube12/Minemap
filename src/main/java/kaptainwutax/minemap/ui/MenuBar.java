@@ -6,7 +6,6 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.*;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -25,15 +24,38 @@ import java.util.Calendar;
 import java.util.Collections;
 
 public class MenuBar extends JMenuBar {
+    public JMenu fileMenu;
+    public JMenu worldMenu;
+    public JMenu utilitiesMenu;
+    public JMenu settingsMenu;
+    public JButton structureSeedModePopup;
 
     public MenuBar() {
-        this.addFileMenu();
-        this.addWorldMenu();
-        this.addUtilityMenu();
-        this.addSettingsMenu();
+
+        fileMenu = this.addFileMenu();
+        worldMenu = this.addWorldMenu();
+        utilitiesMenu = this.addUtilitiesMenu();
+        settingsMenu = this.addSettingsMenu();
+        structureSeedModePopup = this.addStructureModePopup();
+
+        this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridheight = 1; // 1 row
+        gbc.gridwidth = 5; // 5 columns
+        gbc.fill = GridBagConstraints.NONE; // no expanding of component
+        // no insets (external padding) nor internal padding (ipadx/y)
+        gbc.anchor = GridBagConstraints.LINE_START;// put it at the start
+
+        this.add(fileMenu, gbc);
+        this.add(worldMenu, gbc);
+        this.add(utilitiesMenu, gbc);
+        gbc.weightx=1; // give all the space before to that component (needed to offcenter the first part)
+        this.add(settingsMenu, gbc);
+        gbc.anchor = GridBagConstraints.LINE_END; // put it at the end
+        this.add(structureSeedModePopup, gbc);
     }
 
-    private void addSettingsMenu() {
+    private JMenu addSettingsMenu() {
         JMenu settingsMenu = new JMenu("Settings");
 
         JMenu lookMenu = new JMenu("UI Look");
@@ -137,10 +159,10 @@ public class MenuBar extends JMenuBar {
         settingsMenu.add(styleMenu);
         settingsMenu.add(metric);
         settingsMenu.add(zoom);
-        this.add(settingsMenu);
+        return settingsMenu;
     }
 
-    private void addFileMenu() {
+    private JMenu addFileMenu() {
         JMenu fileMenu = new JMenu("Home");
 
         JMenuItem loadSeed = new JMenuItem("New From Seed...");
@@ -184,11 +206,11 @@ public class MenuBar extends JMenuBar {
         fileMenu.add(loadSeed);
         fileMenu.add(screenshot);
         fileMenu.add(close);
-        this.add(fileMenu);
+        return fileMenu;
     }
 
 
-    private void addUtilityMenu() {
+    private JMenu addUtilitiesMenu() {
         JMenu utilityMenu = new JMenu("Utilities");
 
         JMenuItem listStructure = new JMenuItem("List N Structures");
@@ -206,6 +228,12 @@ public class MenuBar extends JMenuBar {
             Configs.USER_PROFILE.getUserSettings().structureMode = structureSeedMode.isSelected();
             Configs.USER_PROFILE.flush();
             MineMap.INSTANCE.worldTabs.invalidateAll();
+            if (this.structureSeedModePopup == null) {
+                MineMap.INSTANCE.toolbarPane = new MenuBar();
+                System.out.println("This should not happen");
+                return;
+            }
+            this.structureSeedModePopup.setVisible(structureSeedMode.isSelected());
         });
 
         structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
@@ -213,15 +241,14 @@ public class MenuBar extends JMenuBar {
         utilityMenu.addMenuListener(Events.Menu.onSelected(e -> {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             listStructure.setEnabled(map != null);
-            structureSeedMode.setEnabled(map != null);
         }));
 
         utilityMenu.add(listStructure);
         utilityMenu.add(structureSeedMode);
-        this.add(utilityMenu);
+        return utilityMenu;
     }
 
-    private void addWorldMenu() {
+    private JMenu addWorldMenu() {
         JMenu worldMenu = new JMenu("World");
 
         JMenuItem goToCoords = new JMenuItem("Go to Coordinates");
@@ -273,7 +300,7 @@ public class MenuBar extends JMenuBar {
         JMenuItem changeSalts = new JMenuItem("Change Salts");
 
         changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            SaltDialog dialog = null;
+            SaltDialog dialog;
             try {
                 dialog = new SaltDialog();
                 dialog.setVisible(true);
@@ -287,7 +314,7 @@ public class MenuBar extends JMenuBar {
         worldMenu.add(goToStructure);
         worldMenu.add(loadShadowSeed);
         worldMenu.add(changeSalts);
-        this.add(worldMenu);
+        return worldMenu;
     }
 
 
@@ -295,6 +322,19 @@ public class MenuBar extends JMenuBar {
         MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         IconRenderer icon = map.getContext().getIconManager().getFor(SpawnPoint.class);
         return icon instanceof SpawnIcon ? ((SpawnIcon) icon).getPos() : null;
+    }
+
+    private JButton addStructureModePopup() {
+        structureSeedModePopup = new JButton("Sister seeds info");
+        structureSeedModePopup.addActionListener(a -> {
+            MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (map==null)return;
+
+        });
+        if (!Configs.USER_PROFILE.getUserSettings().structureMode) {
+            structureSeedModePopup.setVisible(false);
+        }
+        return structureSeedModePopup;
     }
 
 }

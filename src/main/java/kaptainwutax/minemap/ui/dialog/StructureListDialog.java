@@ -116,6 +116,7 @@ public class StructureListDialog extends Dialog {
             // create the inner list
             final ListPanel listPanel = new ListPanel();
             bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos)));
+            listPanel.removeLastBorder();
 
             JButton copyTPs = new JButton("Copy all TPs");
             copyTPs.addActionListener(event->{

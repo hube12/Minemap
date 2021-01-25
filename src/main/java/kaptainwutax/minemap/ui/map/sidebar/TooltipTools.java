@@ -115,6 +115,7 @@ public class TooltipTools extends JPanel {
                     panel.add(label);
                     listPanel.addPanel(panel);
                 });
+                listPanel.removeLastBorder();
 
                 frame.add(listPanel);
 
