@@ -162,7 +162,7 @@ public class BiomeColorsConfig extends Config {
 	}
 
 	protected void addOverrideEntry(String type, Biome biome, String color) {
-		Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(type, s -> new HashMap<>());
+		Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(type, s -> new LinkedHashMap<>());
 		typeMap.put(biome.getName().toUpperCase(), color.toUpperCase());
 	}
 

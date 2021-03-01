@@ -17,8 +17,8 @@ import java.util.Map;
 
 public class MapPanel extends JPanel {
 
-	private final MapContext context;
-	private final MapManager manager;
+	public final MapContext context;
+	public final MapManager manager;
 	public final MapSideBar displayBar;
 
 	public final int threadCount;

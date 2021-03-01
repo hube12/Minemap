@@ -7,7 +7,7 @@ import java.io.*;
 
 public abstract class Config {
 
-	private static Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
 	protected String root = "configs/";
 	protected String extension = ".json";
 
