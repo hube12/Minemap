@@ -29,7 +29,7 @@ public class FragmentScheduler {
 	protected MapPanel listener;
 
 	public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
-	private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
+	public final AtomicBoolean scheduledModified = new AtomicBoolean(false);
 
 	public FragmentScheduler(MapPanel listener, int threadCount) {
 		this.listener = listener;

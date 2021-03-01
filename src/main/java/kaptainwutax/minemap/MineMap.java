@@ -1,7 +1,6 @@
 package kaptainwutax.minemap;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
-import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
@@ -29,13 +28,8 @@ public class MineMap extends JFrame {
 	}
 
 	public MineMap() {
-		try {
-			FlatLightLaf.install();
-			UIManager.setLookAndFeel(new FlatDarculaLaf());
-			DARCULA = true;
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+		FlatDarkLaf.install();
+		DARCULA = true;
 
 		BorderLayout layout = new BorderLayout();
 		this.setLayout(layout);

@@ -93,16 +93,22 @@ public class MenuBar extends JMenuBar {
 		metric1.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
 			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric1.getText();
 			Configs.USER_PROFILE.flush();
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map != null)map.scheduler.scheduledModified.set(true);
 		}));
 
 		metric2.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
 			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric2.getText();
 			Configs.USER_PROFILE.flush();
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map != null)map.scheduler.scheduledModified.set(true);
 		}));
 
 		metric3.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
 			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric3.getText();
 			Configs.USER_PROFILE.flush();
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map != null)map.scheduler.scheduledModified.set(true);
 		}));
 
 		settingsMenu.add(styleMenu);

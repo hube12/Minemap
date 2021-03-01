@@ -14,12 +14,12 @@ public class StrongholdIcon extends StaticIcon {
 
     private CPos[] starts;
 
-    public StrongholdIcon(MapContext context, int count) {
+    public StrongholdIcon(MapContext context) {
         super(context);
         Stronghold stronghold = context.getSettings().getFeatureOfType(Stronghold.class);
 
         if(stronghold != null) {
-            starts = stronghold.getStarts(this.getContext().getBiomeSource(), count, new JRand(0L));
+            this.starts = stronghold.getStarts(this.getContext().getBiomeSource(), stronghold.getCount(), new JRand(0L));
         }
     }
 

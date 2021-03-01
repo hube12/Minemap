@@ -56,7 +56,7 @@ public class Features {
         for(Map.Entry<Class<? extends Feature<?, ?>>, FeatureFactory<?>> entry: REGISTRY.entrySet()) {
             try {
                 Feature<?, ?> feature = entry.getValue().create(version);
-                result.put(entry.getKey(), feature);
+                if(feature.getConfig() != null)result.put(entry.getKey(), feature);
             } catch(NullPointerException ignored) {
             }
         }

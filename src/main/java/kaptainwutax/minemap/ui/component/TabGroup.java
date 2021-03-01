@@ -59,7 +59,7 @@ public class TabGroup {
         AtomicBoolean first = new AtomicBoolean(true);
 
         this.mapPanels.forEach((dimension, mapPanel) -> {
-            String s = dimension.name.substring(0, 1).toUpperCase() + dimension.name.substring(1);
+            String s = dimension.getName().substring(0, 1).toUpperCase() + dimension.getName().substring(1);
             tabs.addMapTab(prefix + s + " " + this.worldSeed, this, mapPanel);
 
             if(first.get()) {

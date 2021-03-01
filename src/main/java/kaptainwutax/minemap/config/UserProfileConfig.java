@@ -43,7 +43,7 @@ public class UserProfileConfig extends Config {
     }
 
     public boolean isDimensionEnabled(Dimension dimension) {
-        return this.DIMENSIONS.get(dimension.name);
+        return this.DIMENSIONS.get(dimension.getName());
     }
 
     public List<Dimension> getEnabledDimensions() {
@@ -52,7 +52,7 @@ public class UserProfileConfig extends Config {
     }
 
     public MapSettings getMapSettingsCopy(MCVersion version, Dimension dimension) {
-        return this.DEFAULT_MAP_SETTINGS.get(dimension.name).copyFor(version, dimension);
+        return this.DEFAULT_MAP_SETTINGS.get(dimension.getName()).copyFor(version, dimension);
     }
 
     public void setThreadCount(int threadCount) {
@@ -66,12 +66,12 @@ public class UserProfileConfig extends Config {
     }
 
     public void setDefaultSettings(Dimension dimension, MapSettings settings) {
-        this.DEFAULT_MAP_SETTINGS.put(dimension.name, settings.copy());
+        this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings.copy());
         this.flush();
     }
 
     public void setDimensionState(Dimension dimension, boolean state) {
-        this.DIMENSIONS.put(dimension.name, state);
+        this.DIMENSIONS.put(dimension.getName(), state);
         this.flush();
     }
 
@@ -90,10 +90,10 @@ public class UserProfileConfig extends Config {
         this.USER_SETTINGS = new UserSettings();
 
         for(Dimension dimension: Dimension.values()) {
-            this.DIMENSIONS.put(dimension.name, true);
+            this.DIMENSIONS.put(dimension.getName(), true);
             MapSettings settings = new MapSettings(dimension).refresh();
             settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class);
-            this.DEFAULT_MAP_SETTINGS.put(dimension.name, settings);
+            this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings);
         }
     }
 
