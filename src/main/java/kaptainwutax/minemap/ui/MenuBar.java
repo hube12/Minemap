@@ -15,6 +15,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.seed.WorldSeed;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 import swing.SwingUtils;
+import swing.components.MenuBuilder;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -32,6 +33,107 @@ public class MenuBar extends JMenuBar {
 		this.addFileMenu();
 		this.addWorldMenu();
 		this.addSettingsMenu();
+	}
+
+	//TODO make factory equivalent to ctor Instance
+	public static JMenuBar create() {
+		return new MenuBuilder().
+				addTab("File",
+						new MenuBuilder.Item("New from Seed...", e ->
+								SwingUtilities.invokeLater(() -> new EnterSeedDialog().setVisible(true))
+						),
+						new MenuBuilder.Item("Screenshot...", e -> {
+							MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+							if (map == null) return;
+							BufferedImage image = map.getScreenshot();
+
+							String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+							File dir = new File("screenshots/");
+							File file = new File("screenshots/" + fileName + ".png");
+							if (!dir.exists() && !dir.mkdirs()) return;
+
+							try {
+								ImageIO.write(image, "png", file);
+							} catch (IOException exception) {
+								exception.printStackTrace();
+							}
+						})
+				).
+				addTab("World",
+						new MenuBuilder.Item("Go to Coordinates", e ->
+								SwingUtilities.invokeLater(() -> new CoordHopperDialog().setEnabled(true))),
+						new MenuBuilder.Item("Load Shadow Seed", e ->
+								SwingUtilities.invokeLater(() -> {
+									MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+									MineMap.INSTANCE.worldTabs.load(
+											map.getContext().version,
+											String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
+											map.threadCount, Collections.singletonList(map.getContext().dimension));
+								})),
+						new MenuBuilder.Item("Change Salts", e ->
+								SwingUtilities.invokeLater(() -> {
+									try {
+										new SaltDialog().setVisible(true);
+									} catch (Exception exception) {
+										exception.printStackTrace();
+									}
+								}))
+				).
+				addTab("Settings",
+						new MenuBuilder.Menu("Style")//.run(item -> {
+//							for (String style : Configs.BIOME_COLORS.getStyles()) {
+//								JRadioButtonMenuItem button = new JRadioButtonMenuItem(style);
+//								button.addActionListener(e -> {
+//									Configs.USER_PROFILE.getUserSettings().style = style;
+//									MineMap.INSTANCE.worldTabs.invalidateAll();
+//									Configs.USER_PROFILE.flush();
+//								});
+//								item.add(button);
+//							}
+						/*}*/,
+						new MenuBuilder.CheckBox("Restrict Maximum Zoom", e -> {
+							//TODO update lib
+						}),
+						new MenuBuilder.Menu("Fragment Metric",
+								new MenuBuilder.RadioBox("Euclidean", null).run(MenuBar::setUserConfig),
+								new MenuBuilder.RadioBox("Manhattan", null).run(MenuBar::setUserConfig),
+								new MenuBuilder.RadioBox("Chebyshev", null).run(MenuBar::setUserConfig))
+				);
+	}
+
+	private void addFileMenu() {
+		JMenu fileMenu = new JMenu("File");
+
+		JMenuItem loadSeed = new JMenuItem("New From Seed...");
+
+		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> new EnterSeedDialog().setVisible(true))));
+
+		JMenuItem screenshot = new JMenuItem("Screenshot...");
+
+		screenshot.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			if(!screenshot.isEnabled())return;
+
+			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+			if(map == null)return;
+			BufferedImage image = map.getScreenshot();
+
+			String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			File dir = new File("screenshots/");
+			File file = new File("screenshots/" + fileName + ".png");
+			if(!dir.exists() && !dir.mkdirs())return;
+
+			try {
+				ImageIO.write(image, "png", file);
+			} catch(IOException e) {
+				e.printStackTrace();
+			}
+		}));
+
+		fileMenu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+
+		fileMenu.add(loadSeed);
+		fileMenu.add(screenshot);
+		this.add(fileMenu);
 	}
 
 	private void addSettingsMenu() {
@@ -71,9 +173,7 @@ public class MenuBar extends JMenuBar {
 			Configs.USER_PROFILE.flush();
 		});
 
-		settingsMenu.addMenuListener(Events.Menu.onSelected(e -> {
-			zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
-		}));
+		settingsMenu.addMenuListener(Events.Menu.onSelected(e -> zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom)));
 
 		JMenu metric = new JMenu("Fragment Metric");
 		ButtonGroup group = new ButtonGroup();
@@ -92,26 +192,9 @@ public class MenuBar extends JMenuBar {
 		else if(m == DistanceMetric.MANHATTAN)metric2.setSelected(true);
 		else if(m == DistanceMetric.CHEBYSHEV)metric3.setSelected(true);
 
-		metric1.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric1.getText();
-			Configs.USER_PROFILE.flush();
-			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map != null)map.scheduler.scheduledModified.set(true);
-		}));
-
-		metric2.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric2.getText();
-			Configs.USER_PROFILE.flush();
-			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map != null)map.scheduler.scheduledModified.set(true);
-		}));
-
-		metric3.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric3.getText();
-			Configs.USER_PROFILE.flush();
-			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map != null)map.scheduler.scheduledModified.set(true);
-		}));
+		setUserConfig(metric1);
+		setUserConfig(metric2);
+		setUserConfig(metric3);
 
 		settingsMenu.add(styleMenu);
 		settingsMenu.add(metric);
@@ -119,43 +202,16 @@ public class MenuBar extends JMenuBar {
 		this.add(settingsMenu);
 	}
 
-	private void addFileMenu() {
-		JMenu fileMenu = new JMenu("File");
-
-		JMenuItem loadSeed = new JMenuItem("New From Seed...");
-
-		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-			EnterSeedDialog dialog = new EnterSeedDialog();
-			dialog.setVisible(true);
-		})));
-
-		JMenuItem screenshot = new JMenuItem("Screenshot...");
-
-		screenshot.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-			if(!screenshot.isEnabled())return;
-
+	private static void setUserConfig(JMenuItem metric) {
+		metric.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
+			Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric.getText();
+			Configs.USER_PROFILE.flush();
 			MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-			if(map == null)return;
-			BufferedImage image = map.getScreenshot();
-
-			String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-			File dir = new File("screenshots/");
-			File file = new File("screenshots/" + fileName + ".png");
-			if(!dir.exists() && !dir.mkdirs())return;
-
-			try {
-				ImageIO.write(image, "png", file);
-			} catch(IOException e) {
-				e.printStackTrace();
-			}
+			if(map != null)map.scheduler.scheduledModified.set(true);
 		}));
-
-		fileMenu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
-
-		fileMenu.add(loadSeed);
-		fileMenu.add(screenshot);
-		this.add(fileMenu);
 	}
+
+
 
 	private void addWorldMenu() {
 		JMenu worldMenu = new JMenu("World");
