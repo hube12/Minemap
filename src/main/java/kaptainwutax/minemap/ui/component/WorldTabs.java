@@ -21,6 +21,7 @@ public class WorldTabs extends JTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
 
+    @SuppressWarnings("deprecation")
     public WorldTabs() {
         //Copy seed to clipboard.
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {

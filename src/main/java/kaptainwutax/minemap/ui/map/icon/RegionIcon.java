@@ -2,21 +2,14 @@ package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
-import kaptainwutax.featureutils.structure.Structure;
-import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 public class RegionIcon extends StaticIcon {
 

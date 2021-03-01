@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;

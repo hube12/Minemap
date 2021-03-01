@@ -1,16 +1,14 @@
 package kaptainwutax.minemap.util.ui;
 
+import javax.swing.*;
+import javax.swing.border.MatteBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.MatteBorder;
 
 public class ListPanel extends JPanel {
     private final JPanel mainList;

@@ -1,10 +1,6 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.map.sidebar.SettingsSidebar;
-import kaptainwutax.minemap.ui.map.sidebar.TooltipSidebar;
 import kaptainwutax.minemap.ui.map.sidebar.TooltipTools;
-import org.jdesktop.swingx.JXStatusBar;
 
 import javax.swing.*;
 import java.awt.*;

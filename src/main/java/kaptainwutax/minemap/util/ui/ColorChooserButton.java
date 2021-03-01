@@ -1,16 +1,10 @@
 package kaptainwutax.minemap.util.ui;
 
-import java.awt.Color;
-    import java.awt.Graphics2D;
-    import java.awt.event.ActionEvent;
-    import java.awt.event.ActionListener;
-    import java.awt.image.BufferedImage;
-    import java.util.ArrayList;
-    import java.util.List;
-
-    import javax.swing.ImageIcon;
-    import javax.swing.JButton;
-    import javax.swing.JColorChooser;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
     public class ColorChooserButton extends JButton {
 

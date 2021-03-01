@@ -4,16 +4,12 @@ import com.formdev.flatlaf.*;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.MenuBar;
+import kaptainwutax.minemap.init.KeyShortcuts;
+import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
-import kaptainwutax.seedutils.mc.seed.WorldSeed;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class MineMap extends JFrame {
@@ -31,6 +27,8 @@ public class MineMap extends JFrame {
 
         INSTANCE = new MineMap();
         INSTANCE.setVisible(true);
+        // register keyboard event after the menus creation (very important)
+        KeyShortcuts.registerShortcuts();
     }
 
     public MineMap() {

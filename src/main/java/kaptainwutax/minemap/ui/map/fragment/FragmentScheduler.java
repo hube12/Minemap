@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;

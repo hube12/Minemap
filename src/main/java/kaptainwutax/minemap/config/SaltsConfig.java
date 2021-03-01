@@ -5,7 +5,6 @@ import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

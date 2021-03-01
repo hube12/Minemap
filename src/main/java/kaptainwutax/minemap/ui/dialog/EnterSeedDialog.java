@@ -20,8 +20,9 @@ public class EnterSeedDialog extends Dialog {
 	public Dropdown<MCVersion> versionDropdown;
 	public JButton continueButton;
 
-	public EnterSeedDialog() {
+	public EnterSeedDialog(Runnable onExit) {
 		super("Load new Seed", new GridLayout(3, 1));
+		this.addExitProcedure(onExit);
 	}
 
 	@Override
@@ -67,5 +68,4 @@ public class EnterSeedDialog extends Dialog {
 		this.getContentPane().add(this.continueButton);
 		this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
 	}
-
 }

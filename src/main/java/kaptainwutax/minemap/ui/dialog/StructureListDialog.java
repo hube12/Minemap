@@ -15,7 +15,8 @@ import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.*;
+import kaptainwutax.minemap.util.ui.ListPanel;
+import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 import kaptainwutax.seedutils.mc.ChunkRand;
@@ -28,9 +29,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class StructureListDialog extends Dialog {

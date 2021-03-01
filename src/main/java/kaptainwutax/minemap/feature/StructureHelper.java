@@ -1,11 +1,8 @@
 package kaptainwutax.minemap.feature;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
-import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.structure.RegionStructure;
-import kaptainwutax.featureutils.structure.Village;
 import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 import kaptainwutax.seedutils.mc.pos.RPos;

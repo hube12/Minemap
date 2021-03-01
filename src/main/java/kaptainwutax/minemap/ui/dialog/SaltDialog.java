@@ -73,8 +73,8 @@ public class SaltDialog extends Dialog {
                     String previous = ((JSpinner.NumberEditor) salts.get(i).getEditor()).getTextField().getText();
                     salts.get(i).commitEdit();
                     if (!previous.equals(salts.get(i).getValue().toString())) {
-                        JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use valid numbers we changed " +
-                                "from " + previous + " to " + salts.get(i).getValue().toString());
+                        JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should " +
+                                "only use valid numbers we changed " + "from " + previous + " to " + salts.get(i).getValue().toString());
                     }
                 } catch (ParseException parseException) {
                     JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use numbers");

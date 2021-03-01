@@ -4,7 +4,7 @@ import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;

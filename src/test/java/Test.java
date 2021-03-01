@@ -3,7 +3,7 @@ import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;

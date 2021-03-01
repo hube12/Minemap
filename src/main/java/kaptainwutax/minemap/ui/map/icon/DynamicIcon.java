@@ -2,7 +2,7 @@ package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.DrawInfo;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.seedutils.mc.pos.BPos;
