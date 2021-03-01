@@ -5,12 +5,13 @@ import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.Dimension;
+import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 
 public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 
-    public SpawnPoint() {
-        super(null, null);
+    public SpawnPoint(MCVersion version) {
+        super(new Config(), version);
     }
 
     @Override
