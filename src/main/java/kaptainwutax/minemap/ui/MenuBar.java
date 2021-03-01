@@ -4,9 +4,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
-import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
-import kaptainwutax.minemap.ui.dialog.SaltDialog;
+import kaptainwutax.minemap.ui.dialog.DialogStorage;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
@@ -43,7 +41,7 @@ public class MenuBar extends JMenuBar {
 		return new MenuBuilder(
 				new MenuBuilder.Menu("File",
 						new MenuBuilder.Item("New from Seed...", (item, e) ->
-								SwingUtilities.invokeLater(() -> new EnterSeedDialog().setVisible(true))
+								SwingUtilities.invokeLater(() -> DialogStorage.ENTER_SEED_DIALOG.setVisible(true))
 						),
 						new MenuBuilder.Item("Screenshot...", (item, e) -> {
 							MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
@@ -64,7 +62,7 @@ public class MenuBar extends JMenuBar {
 				),
 				new MenuBuilder.Menu("World",
 						new MenuBuilder.Item("Go to Coordinates", (item, e) ->
-								SwingUtilities.invokeLater(() -> CoordHopperDialog.COORD_HOPPER_DIALOG.setVisible(true))),
+								SwingUtilities.invokeLater(() -> DialogStorage.COORD_HOPPER_DIALOG.setVisible(true))),
 						new MenuBuilder.Item("Load Shadow Seed", (item, e) ->
 								SwingUtilities.invokeLater(() -> {
 									MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
@@ -76,7 +74,7 @@ public class MenuBar extends JMenuBar {
 						new MenuBuilder.Item("Change Salts", (item, e) ->
 								SwingUtilities.invokeLater(() -> {
 									try {
-										new SaltDialog().setVisible(true);
+//										new SaltDialog().setVisible(true);
 									} catch (Exception exception) {
 										exception.printStackTrace();
 									}
@@ -124,7 +122,7 @@ public class MenuBar extends JMenuBar {
 
 		JMenuItem loadSeed = new JMenuItem("New From Seed...");
 
-		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> new EnterSeedDialog().setVisible(true))));
+		loadSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> DialogStorage.ENTER_SEED_DIALOG.setVisible(true))));
 
 		JMenuItem screenshot = new JMenuItem("Screenshot...");
 
@@ -238,8 +236,7 @@ public class MenuBar extends JMenuBar {
 
 		goToCoords.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
 			if(!goToCoords.isEnabled())return;
-			JDialog jumpDialogue = new CoordHopperDialog();
-			jumpDialogue.setVisible(true);
+			DialogStorage.COORD_HOPPER_DIALOG.setVisible(true);
 		})));
 
 		JMenuItem goToSpawn = new JMenuItem("Go to Spawn");
@@ -273,10 +270,10 @@ public class MenuBar extends JMenuBar {
 		JMenuItem changeSalts = new JMenuItem("Change Salts");
 
 		changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-			SaltDialog dialog;
+//			SaltDialog dialog;
 			try {
-				dialog = new SaltDialog();
-				dialog.setVisible(true);
+//				dialog = new SaltDialog();
+//				dialog.setVisible(true);
 			} catch (Exception exception) {
 				exception.printStackTrace();
 			}

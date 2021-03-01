@@ -4,7 +4,6 @@ import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
@@ -123,8 +122,8 @@ public class MapManager {
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         rename.addMouseListener(Events.Mouse.onReleased(e -> {
-            RenameTabDialog renameTabDialog = new RenameTabDialog();
-            renameTabDialog.setVisible(true);
+//            RenameTabDialog renameTabDialog = new RenameTabDialog();
+//            renameTabDialog.setVisible(true);
         }));
 
         JMenuItem settings = new JMenuItem("Settings");
