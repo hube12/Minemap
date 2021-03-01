@@ -21,6 +21,7 @@ dependencies {
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
     implementation "com.intellij:forms_rt:7.0.3"
+    implementation 'com.github.wearblackallday:JavaUtils:f30861ac77'
 }
 
 application {

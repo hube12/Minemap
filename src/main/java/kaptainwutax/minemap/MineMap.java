@@ -14,8 +14,6 @@ public class MineMap extends JFrame {
 
 	public static MineMap INSTANCE;
 	public static boolean DARCULA = false;
-
-	private JMenuBar toolbarPane;
 	public WorldTabs worldTabs;
 
 	public static void main(String[] args) {
@@ -24,32 +22,22 @@ public class MineMap extends JFrame {
 		Configs.registerConfigs();
 
 		INSTANCE = new MineMap();
-		INSTANCE.setVisible(true);
 	}
 
 	public MineMap() {
 		FlatDarkLaf.install();
 		DARCULA = true;
 
-		BorderLayout layout = new BorderLayout();
-		this.setLayout(layout);
+		this.setLayout(new BorderLayout());
+		this.add(new MenuBar(), BorderLayout.NORTH);
+		this.add(this.worldTabs = new WorldTabs());
 
-		this.initComponents();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.setSize(screenSize.width / 2, screenSize.height / 2);
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
 		this.setTitle("MineMap");
-		System.out.println("Hello, its me");
-		System.out.println("General Kenobi");
+		this.setVisible(true);
 	}
-
-	private void initComponents() {
-		this.toolbarPane = new MenuBar();
-		this.add(this.toolbarPane, BorderLayout.NORTH);
-
-		this.worldTabs = new WorldTabs();
-		this.add(this.worldTabs);
-	}
-
 }

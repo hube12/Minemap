@@ -14,6 +14,7 @@ import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.seed.WorldSeed;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
+import swing.SwingUtils;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -198,7 +199,7 @@ public class MenuBar extends JMenuBar {
 		JMenuItem changeSalts = new JMenuItem("Change Salts");
 
 		changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-			SaltDialog dialog = null;
+			SaltDialog dialog;
 			try {
 				dialog = new SaltDialog();
 				dialog.setVisible(true);
@@ -207,19 +208,13 @@ public class MenuBar extends JMenuBar {
 			}
 		})));
 
-		worldMenu.add(goToCoords);
-		worldMenu.add(goToSpawn);
-		worldMenu.add(loadShadowSeed);
-		worldMenu.add(changeSalts);
+		SwingUtils.addSet(worldMenu, goToCoords, goToSpawn, loadShadowSeed, changeSalts);
 		this.add(worldMenu);
 	}
-
-
 
 	private BPos getActiveSpawn() {
 		MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 		IconRenderer icon = map.getContext().getIconManager().getFor(SpawnPoint.class);
 		return icon instanceof SpawnIcon ? ((SpawnIcon)icon).getPos() : null;
 	}
-
 }
