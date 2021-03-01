@@ -43,7 +43,7 @@ public class Features {
         register(EndGateway.class, EndGateway::new);
         register(SlimeChunk.class, SlimeChunk::new);
 
-        register(SpawnPoint.class, v -> new SpawnPoint());
+        register(SpawnPoint.class, SpawnPoint::new);
     }
     
     public static <T extends Feature<?, ?>> void register(Class<T> clazz, FeatureFactory<T> factory) {
@@ -56,7 +56,10 @@ public class Features {
         for(Map.Entry<Class<? extends Feature<?, ?>>, FeatureFactory<?>> entry: REGISTRY.entrySet()) {
             try {
                 Feature<?, ?> feature = entry.getValue().create(version);
-                if(feature.getConfig() != null)result.put(entry.getKey(), feature);
+
+                if(feature.getConfig() != null) {
+                    result.put(entry.getKey(), feature);
+                }
             } catch(NullPointerException ignored) {
             }
         }
