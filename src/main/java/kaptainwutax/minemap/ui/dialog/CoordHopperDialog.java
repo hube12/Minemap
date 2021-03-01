@@ -1,80 +1,53 @@
 package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import org.jdesktop.swingx.prompt.PromptSupport;
+import wearblackallday.swing.components.CustomPanel;
+import wearblackallday.swing.components.SelectionBox;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.IntUnaryOperator;
 
-public class CoordHopperDialog extends Dialog {
+public class CoordHopperDialog extends JDialog {
 
-    public JTextField enterX;
-    public JTextField enterZ;
-    public Dropdown<Type> typeDropdown;
-    public JButton continueButton;
+    public static final CoordHopperDialog COORD_HOPPER_DIALOG = new CoordHopperDialog();
+    public CustomPanel customPanel;
+    public CustomPanel.Key<SelectionBox<Type>> typeSelection;
 
     public CoordHopperDialog() {
-        super("Go to Coordinates", new GridLayout(0, 1));
+
+        this.setAlwaysOnTop(true);
+        this.setModalityType(ModalityType.APPLICATION_MODAL);
+        this.setContentPane(this.customPanel = new CustomPanel(new GridLayout(0, 2), 70, 40).
+                addTextField("X Coordinate...", "x").
+                addTextField("Z Coordinate...", "z").
+                addComponent(this.typeSelection, () -> new SelectionBox<>(Type::getName, Type.values())).
+                addButton("Continue", e -> this.enter())
+        );
+
+        this.setLocation(
+                MineMap.INSTANCE.getX() + MineMap.INSTANCE.getWidth() / 2 - this.getWidth() / 2,
+                MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
+        );
+
+        this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+        this.pack();
+        this.setVisible(false);
     }
 
-    @Override
-    public void initComponents() {
-        this.enterX = new JTextField("0");
-        PromptSupport.setPrompt("X Coordinate...", this.enterX);
-
-        this.enterX.addKeyListener(Events.Keyboard.onReleased(e -> {
-            try {
-                Integer.parseInt(this.enterX.getText().trim());
-                this.continueButton.setEnabled(true);
-            } catch(Exception _e) {
-                this.continueButton.setEnabled(false);
-            }
-        }));
-
-        this.enterZ = new JTextField("0");
-        PromptSupport.setPrompt("Z Coordinate...", this.enterZ);
-
-        this.enterZ.addKeyListener(Events.Keyboard.onReleased(e -> {
-            try {
-                Integer.parseInt(this.enterX.getText().trim());
-                this.continueButton.setEnabled(true);
-            } catch(Exception _e) {
-                this.continueButton.setEnabled(false);
-            }
-        }));
-
-        this.typeDropdown = new Dropdown<>(Type::getName, Type.values());
-
-        this.continueButton = new JButton();
-        this.continueButton.setText("Continue");
-
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            if(!this.isEnabled())return;
-
+    private void enter() {
+        try {
             int x, z;
-
-            try {
-                x = Integer.parseInt(this.enterX.getText().trim());
-                z = Integer.parseInt(this.enterZ.getText().trim());
-            } catch(NumberFormatException _e) {
-                return;
-            }
-
-            x = this.typeDropdown.getSelected().transform(x);
-            z = this.typeDropdown.getSelected().transform(z);
+            x = Integer.parseInt(this.customPanel.getText("x").trim());
+            z = Integer.parseInt(this.customPanel.getText("z").trim());
+            x = this.customPanel.getComponent(this.typeSelection).getSelected().transform(x);
+            z = this.customPanel.getComponent(this.typeSelection).getSelected().transform(z);
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            if(map != null)map.getManager().setCenterPos(x, z);
-            this.dispose();
-        }));
-
-        JSplitPane duo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.enterX, this.enterZ);
-        this.getContentPane().add(duo);
-        this.getContentPane().add(this.typeDropdown);
-        this.getContentPane().add(this.continueButton);
+            if(map != null) map.getManager().setCenterPos(x, z);
+            this.setVisible(false);
+        } catch (NumberFormatException ignored) {
+        }
     }
 
     protected enum Type {
@@ -98,5 +71,4 @@ public class CoordHopperDialog extends Dialog {
             return this.transformation.applyAsInt(i);
         }
     }
-
 }

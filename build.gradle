@@ -19,7 +19,6 @@ dependencies {
     implementation 'com.github.KaptainWutax:SEED:1c966a327ec286906f92f9e849d46a9b2408d3ad'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
-    implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
     implementation "com.intellij:forms_rt:7.0.3"
     implementation 'com.github.wearblackallday:JavaUtils:4e9e729703d1150bad91178a3134932b2382cd4a'
 }

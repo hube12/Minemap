@@ -6,7 +6,7 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
-import org.jdesktop.swingx.prompt.PromptSupport;
+import wearblackallday.swing.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -29,7 +29,7 @@ public class EnterSeedDialog extends Dialog {
 		int cores = Runtime.getRuntime().availableProcessors();
 
 		this.seedField = new JTextField();
-		PromptSupport.setPrompt("Enter your seed here...", this.seedField);
+		SwingUtils.setPrompt("Enter your seed here...", this.seedField);
 
 		this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
 		this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));

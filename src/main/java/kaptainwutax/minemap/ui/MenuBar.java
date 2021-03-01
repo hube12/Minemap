@@ -64,7 +64,7 @@ public class MenuBar extends JMenuBar {
 				),
 				new MenuBuilder.Menu("World",
 						new MenuBuilder.Item("Go to Coordinates", (item, e) ->
-								SwingUtilities.invokeLater(() -> new CoordHopperDialog().setEnabled(true))),
+								SwingUtilities.invokeLater(() -> CoordHopperDialog.COORD_HOPPER_DIALOG.setVisible(true))),
 						new MenuBuilder.Item("Load Shadow Seed", (item, e) ->
 								SwingUtilities.invokeLater(() -> {
 									MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();

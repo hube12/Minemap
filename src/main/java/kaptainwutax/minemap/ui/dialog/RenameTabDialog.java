@@ -3,7 +3,7 @@ package kaptainwutax.minemap.ui.dialog;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.TabHeader;
-import org.jdesktop.swingx.prompt.PromptSupport;
+import wearblackallday.swing.SwingUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +22,7 @@ public class RenameTabDialog extends Dialog {
 		TabHeader header = MineMap.INSTANCE.worldTabs.getSelectedHeader();
 
 		this.nameField = new JTextField(header.getName());
-		PromptSupport.setPrompt("Enter the tab name here...", this.nameField);
+		SwingUtils.setPrompt("Enter the tab name here...", this.nameField);
 
 		this.continueButton = new JButton("Continue");
 
