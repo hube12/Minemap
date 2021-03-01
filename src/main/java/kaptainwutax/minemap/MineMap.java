@@ -28,8 +28,8 @@ public class MineMap extends JFrame {
 		FlatDarkLaf.install();
 		DARCULA = true;
 
-		this.setJMenuBar(new MenuBar());
-//		this.setJMenuBar(MenuBar.create());
+//		this.setJMenuBar(new MenuBar());
+		this.setJMenuBar(MenuBar.create());
 		this.add(this.worldTabs = new WorldTabs());
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

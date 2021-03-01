@@ -14,12 +14,13 @@ import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.seed.WorldSeed;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
-import swing.SwingUtils;
-import swing.components.MenuBuilder;
+import wearblackallday.swing.SwingUtils;
+import wearblackallday.swing.components.MenuBuilder;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +30,8 @@ import java.util.Collections;
 
 public class MenuBar extends JMenuBar {
 
+	private static final ButtonGroup buttonGroup = new ButtonGroup();
+
 	public MenuBar() {
 		this.addFileMenu();
 		this.addWorldMenu();
@@ -37,12 +40,12 @@ public class MenuBar extends JMenuBar {
 
 	//TODO make factory equivalent to ctor Instance
 	public static JMenuBar create() {
-		return new MenuBuilder().
-				addTab("File",
-						new MenuBuilder.Item("New from Seed...", e ->
+		return new MenuBuilder(
+				new MenuBuilder.Menu("File",
+						new MenuBuilder.Item("New from Seed...", (item, e) ->
 								SwingUtilities.invokeLater(() -> new EnterSeedDialog().setVisible(true))
 						),
-						new MenuBuilder.Item("Screenshot...", e -> {
+						new MenuBuilder.Item("Screenshot...", (item, e) -> {
 							MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 							if (map == null) return;
 							BufferedImage image = map.getScreenshot();
@@ -58,11 +61,11 @@ public class MenuBar extends JMenuBar {
 								exception.printStackTrace();
 							}
 						})
-				).
-				addTab("World",
-						new MenuBuilder.Item("Go to Coordinates", e ->
+				),
+				new MenuBuilder.Menu("World",
+						new MenuBuilder.Item("Go to Coordinates", (item, e) ->
 								SwingUtilities.invokeLater(() -> new CoordHopperDialog().setEnabled(true))),
-						new MenuBuilder.Item("Load Shadow Seed", e ->
+						new MenuBuilder.Item("Load Shadow Seed", (item, e) ->
 								SwingUtilities.invokeLater(() -> {
 									MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
 									MineMap.INSTANCE.worldTabs.load(
@@ -70,7 +73,7 @@ public class MenuBar extends JMenuBar {
 											String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
 											map.threadCount, Collections.singletonList(map.getContext().dimension));
 								})),
-						new MenuBuilder.Item("Change Salts", e ->
+						new MenuBuilder.Item("Change Salts", (item, e) ->
 								SwingUtilities.invokeLater(() -> {
 									try {
 										new SaltDialog().setVisible(true);
@@ -78,27 +81,42 @@ public class MenuBar extends JMenuBar {
 										exception.printStackTrace();
 									}
 								}))
-				).
-				addTab("Settings",
-						new MenuBuilder.Menu("Style")//.run(item -> {
-//							for (String style : Configs.BIOME_COLORS.getStyles()) {
-//								JRadioButtonMenuItem button = new JRadioButtonMenuItem(style);
-//								button.addActionListener(e -> {
-//									Configs.USER_PROFILE.getUserSettings().style = style;
-//									MineMap.INSTANCE.worldTabs.invalidateAll();
-//									Configs.USER_PROFILE.flush();
-//								});
-//								item.add(button);
-//							}
-						/*}*/,
-						new MenuBuilder.CheckBox("Restrict Maximum Zoom", e -> {
-							//TODO update lib
+				).addSelectedListener((menu, menuEvent) -> {
+					for (Component c : menu.getMenuComponents()) {
+						c.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null);
+					}
+				}),
+				new MenuBuilder.Menu("Settings",
+						new MenuBuilder.Menu("Style").run(menu -> {
+							ButtonGroup buttonGroup1 = new ButtonGroup();
+							for (String style : Configs.BIOME_COLORS.getStyles()) {
+								JRadioButtonMenuItem button = new JRadioButtonMenuItem(style);
+								button.addActionListener(e -> {
+									Configs.USER_PROFILE.getUserSettings().style = style;
+									MineMap.INSTANCE.worldTabs.invalidateAll();
+									Configs.USER_PROFILE.flush();
+								});
+								menu.add(button);
+								buttonGroup1.add(button);
+							}
+						}),
+						new MenuBuilder.CheckBox("Restrict Maximum Zoom", (item, e) -> {
+							Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom = item.getState();
+							Configs.USER_PROFILE.flush();
 						}),
 						new MenuBuilder.Menu("Fragment Metric",
-								new MenuBuilder.RadioBox("Euclidean", null).run(MenuBar::setUserConfig),
-								new MenuBuilder.RadioBox("Manhattan", null).run(MenuBar::setUserConfig),
-								new MenuBuilder.RadioBox("Chebyshev", null).run(MenuBar::setUserConfig))
-				);
+								new MenuBuilder.RadioBox("Euclidean", MenuBar::radioListener),
+								new MenuBuilder.RadioBox("Manhattan", MenuBar::radioListener),
+								new MenuBuilder.RadioBox("Chebyshev", MenuBar::radioListener))
+				));
+	}
+
+	private static void radioListener(MenuBuilder.RadioBox item, ActionEvent e) {
+		buttonGroup.add(item);
+		Configs.USER_PROFILE.getUserSettings().fragmentMetric = item.getText();
+		Configs.USER_PROFILE.flush();
+		MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+		if (map != null) map.scheduler.scheduledModified.set(true);
 	}
 
 	private void addFileMenu() {
