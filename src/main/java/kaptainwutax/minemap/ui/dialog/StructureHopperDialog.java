@@ -27,8 +27,9 @@ public class StructureHopperDialog extends Dialog {
     public JButton continueButton;
 
 
-    public StructureHopperDialog() {
+    public StructureHopperDialog(Runnable onExit) {
         super("Go to Structure Coordinates", new GridLayout(0, 1));
+        this.addExitProcedure(onExit);
     }
 
     @Override

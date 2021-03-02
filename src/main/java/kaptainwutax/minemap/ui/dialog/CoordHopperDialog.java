@@ -17,8 +17,9 @@ public class CoordHopperDialog extends Dialog {
     public Dropdown<Type> typeDropdown;
     public JButton continueButton;
 
-    public CoordHopperDialog() {
+    public CoordHopperDialog(Runnable onExit) {
         super("Go to Coordinates", new GridLayout(0, 1));
+        this.addExitProcedure(onExit);
     }
 
     @Override

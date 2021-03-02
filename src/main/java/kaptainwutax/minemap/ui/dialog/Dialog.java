@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 public abstract class Dialog extends JDialog {
+    private Runnable runAtExit;
 
     public Dialog(String title, LayoutManager layout) {
         this.setModal(true);
@@ -32,6 +33,11 @@ public abstract class Dialog extends JDialog {
 
     public abstract void initComponents() throws Exception;
 
+    public void dispose(){
+        super.dispose();
+        runAtExit.run();
+    }
+
     public void addExitProcedure(Runnable runnable) {
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -39,5 +45,6 @@ public abstract class Dialog extends JDialog {
                 runnable.run();
             }
         });
+        runAtExit=runnable;
     }
 }

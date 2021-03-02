@@ -27,14 +27,14 @@ import java.util.function.Consumer;
 
 public class MenuBar extends JMenuBar {
     public FileMenu fileMenu;
-    public JMenu worldMenu;
+    public WorldMenu worldMenu;
     public JMenu utilitiesMenu;
     public SettingsMenu settingsMenu;
     public JButton structureSeedModePopup;
 
     public MenuBar() {
         fileMenu = new FileMenu();
-        worldMenu = this.addWorldMenu();
+        worldMenu = new WorldMenu();
         utilitiesMenu = this.addUtilitiesMenu();
         settingsMenu = new SettingsMenu();
         structureSeedModePopup = this.addStructureModePopup();
@@ -48,7 +48,7 @@ public class MenuBar extends JMenuBar {
         gbc.anchor = GridBagConstraints.LINE_START;// put it at the start
 
         this.add(fileMenu.getMenu(), gbc);
-        this.add(worldMenu, gbc);
+        this.add(worldMenu.getMenu(), gbc);
         this.add(utilitiesMenu, gbc);
         gbc.weightx=1; // give all the space before to that component (needed to offcenter the first part)
         this.add(settingsMenu.getMenu(), gbc);
@@ -57,7 +57,7 @@ public class MenuBar extends JMenuBar {
     }
 
     public boolean isActive(){
-        return fileMenu.isActive();
+        return fileMenu.isActive() || worldMenu.isActive();
     }
 
     private JMenu addUtilitiesMenu() {
@@ -98,88 +98,14 @@ public class MenuBar extends JMenuBar {
         return utilityMenu;
     }
 
-    private JMenu addWorldMenu() {
-        JMenu worldMenu = new JMenu("World");
 
-        JMenuItem goToCoords = new JMenuItem("Go to Coordinates");
-
-        goToCoords.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            if (!goToCoords.isEnabled()) return;
-            JDialog jumpDialogue = new CoordHopperDialog();
-            jumpDialogue.setVisible(true);
-        })));
-
-        JMenuItem goToSpawn = new JMenuItem("Go to Spawn");
-
-        goToSpawn.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            if (!goToSpawn.isEnabled()) return;
-            BPos pos = this.getActiveSpawn();
-            if (pos != null) {
-                MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager().setCenterPos(pos.getX(), pos.getZ());
-            }
-        })));
-
-        JMenuItem loadShadowSeed = new JMenuItem("Load Shadow Seed");
-
-        loadShadowSeed.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            if (!loadShadowSeed.isEnabled()) return;
-            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            MineMap.INSTANCE.worldTabs.load(
-                    map.getContext().version,
-                    String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
-                    map.threadCount, Collections.singletonList(map.getContext().dimension));
-        })));
-
-
-        JMenuItem goToStructure = new JMenuItem("Go to Structure");
-
-        goToStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            if (!goToStructure.isEnabled()) return;
-            JDialog jumpDialogue = new StructureHopperDialog();
-            jumpDialogue.setVisible(true);
-        })));
-
-        worldMenu.addMenuListener(Events.Menu.onSelected(e -> {
-            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            goToCoords.setEnabled(map != null);
-            goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
-            loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
-            goToStructure.setEnabled(map != null);
-        }));
-
-        JMenuItem changeSalts = new JMenuItem("Change Salts");
-
-        changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(() -> {
-            SaltDialog dialog;
-            try {
-                dialog = new SaltDialog();
-                dialog.setVisible(true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-        })));
-
-        worldMenu.add(goToCoords);
-        worldMenu.add(goToSpawn);
-        worldMenu.add(goToStructure);
-        worldMenu.add(loadShadowSeed);
-        worldMenu.add(changeSalts);
-        return worldMenu;
-    }
-
-
-    private BPos getActiveSpawn() {
-        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        IconRenderer icon = map.getContext().getIconManager().getFor(SpawnPoint.class);
-        return icon instanceof SpawnIcon ? ((SpawnIcon) icon).getPos() : null;
-    }
 
     private JButton addStructureModePopup() {
         structureSeedModePopup = new JButton("Sister seeds info");
         structureSeedModePopup.addActionListener(a -> {
             MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             if (map==null)return;
-
+            // TODO implement
         });
         if (!Configs.USER_PROFILE.getUserSettings().structureMode) {
             structureSeedModePopup.setVisible(false);

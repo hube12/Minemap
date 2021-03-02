@@ -16,6 +16,11 @@ public class KeyShortcuts {
         register(KeyRegister.registerCtrlKey("N"), menuBar.fileMenu.newSeed());
         register(KeyRegister.registerCtrlKey("S"), menuBar.fileMenu.screenshot());
         register(KeyRegister.registerCtrlKey("C"), menuBar.fileMenu.close(true));
+        register(KeyRegister.registerAltKey("G"), menuBar.worldMenu.goToCoords());
+        register(KeyRegister.registerAltKey("P"), menuBar.worldMenu.goToSpawn());
+        register(KeyRegister.registerAltKey("L"), menuBar.worldMenu.loadShadowSeed());
+        register(KeyRegister.registerAltKey("S"), menuBar.worldMenu.goToStructure());
+        register(KeyRegister.registerAltKey("C"), menuBar.worldMenu.changeSalts());
     }
 
     public static void register(KeyRegister keyRegister, Runnable runnable) {
@@ -27,7 +32,6 @@ public class KeyShortcuts {
                         } else {
                             System.out.println("You can not open a new popup like that");
                         }
-
                     }
                     return false;
                 });

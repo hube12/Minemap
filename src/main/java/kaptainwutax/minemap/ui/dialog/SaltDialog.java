@@ -21,8 +21,9 @@ public class SaltDialog extends Dialog {
     public static Callable<MCVersion> version = () -> MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0];
     public static Callable<Integer> numberSalts = () -> Configs.SALTS.getSalts(version.call()).size();
 
-    public SaltDialog() throws Exception {
+    public SaltDialog(Runnable onExit) throws Exception {
         super("Change salts", new GridLayout(numberSalts.call() + 1, 1));
+        this.addExitProcedure(onExit);
     }
 
     @Override
@@ -42,7 +43,7 @@ public class SaltDialog extends Dialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        ;
+
         Configs.SALTS.getSalts(version).forEach((name, value) -> {
                     if (value != null) {
                         JLabel saltName = new JLabel(name + " salt");

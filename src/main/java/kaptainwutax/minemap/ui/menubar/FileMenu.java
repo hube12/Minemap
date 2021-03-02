@@ -14,35 +14,28 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class FileMenu {
-    private final JMenu menu;
+public class FileMenu extends Menu {
     private final JMenuItem screenshot;
-    private boolean isActive = false;
-    private final Runnable deactivate=() -> isActive = false;
-    private final Runnable activate=() -> isActive = true;
 
     public FileMenu() {
-        menu = new JMenu("Home");
+        this.menu = new JMenu("Home");
 
         JMenuItem loadSeed = new JMenuItem("New From Seed... (Ctrl+N)");
-        loadSeed.addMouseListener(Events.Mouse.onPressed(e -> newSeed().run()));
+        loadSeed.addMouseListener(Events.Mouse.onPressed(e -> newSeed().run())); // this needs to run immediately
 
-        screenshot = new JMenuItem("Screenshot... (Ctrl+S)");
-        screenshot.addMouseListener(Events.Mouse.onPressed(e -> screenshot().run()));
+        this.screenshot = new JMenuItem("Screenshot... (Ctrl+S)");
+        this.screenshot.addMouseListener(Events.Mouse.onPressed(e -> screenshot().run())); // this needs to run immediately
 
         JMenuItem close = new JMenuItem("Close (Ctrl+C)");
-        close.addMouseListener(Events.Mouse.onPressed(mouseEvent -> close(false).run()));
+        close.addMouseListener(Events.Mouse.onPressed(mouseEvent -> close(false).run())); // this needs to run immediately
 
-        menu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
-        menu.add(loadSeed);
-        menu.add(screenshot);
-        menu.add(close);
+        this.menu.add(loadSeed);
+        this.menu.add(this.screenshot);
+        this.menu.add(close);
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
 
     public Runnable newSeed() {
         return () -> {
@@ -54,7 +47,7 @@ public class FileMenu {
 
     public Runnable screenshot() {
         return () -> {
-            if (!screenshot.isEnabled()) return;
+            if (!this.screenshot.isEnabled()) return;
 
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             if (map == null) return;
@@ -93,7 +86,4 @@ public class FileMenu {
         };
     }
 
-    public JMenu getMenu() {
-        return menu;
-    }
 }
