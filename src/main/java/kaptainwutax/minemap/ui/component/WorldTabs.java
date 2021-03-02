@@ -4,6 +4,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
+import wearblackallday.data.Strings;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,14 +20,12 @@ public class WorldTabs extends JTabbedPane {
     protected final List<TabGroup> tabGroups = new ArrayList<>();
 
     public WorldTabs() {
-        //Copy seed to clipboard.
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             if (e.getKeyCode() != KeyEvent.VK_C
                     || (e.getModifiers() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
             MapPanel map = this.getSelectedMapPanel();
             if (map == null) return false;
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
-                    new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
+            Strings.clipboard(String.valueOf(map.getContext().worldSeed));
             return true;
         });
     }

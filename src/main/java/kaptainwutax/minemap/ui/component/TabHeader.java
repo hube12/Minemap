@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.component;
 
-import kaptainwutax.minemap.listener.Events;
+
+import wearblackallday.swing.Events;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalIconFactory;

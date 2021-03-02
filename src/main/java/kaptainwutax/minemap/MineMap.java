@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
+import kaptainwutax.minemap.ui.dialog.Dialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,8 @@ public class MineMap extends JFrame {
 	public static MineMap INSTANCE;
 	public static boolean DARCULA = false;
 	public WorldTabs worldTabs;
+	public static final Dialog COORD_HOPPER_DIALOG = new Dialog.CoordHopperDialogue();
+	public static final Dialog ENTER_SEED_DIALOG = new Dialog.EnterSeedDialog();
 
 	public static void main(String[] args) {
 		Features.registerFeatures();

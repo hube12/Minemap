@@ -1,8 +1,8 @@
 package kaptainwutax.minemap.ui.map;
 
-import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.sidebar.SettingsSidebar;
 import kaptainwutax.minemap.ui.map.sidebar.TooltipSidebar;
+import wearblackallday.swing.Events;
 
 import javax.swing.*;
 import java.awt.*;

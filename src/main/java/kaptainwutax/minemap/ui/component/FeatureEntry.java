@@ -10,12 +10,11 @@ import java.awt.*;
 public class FeatureEntry extends JPanel {
 
     private final JCheckBox checkBox;
-    private final JComponent iconView;
 
     public FeatureEntry(Feature<?, ?> feature) {
         this.checkBox = new JCheckBox(Str.formatName(feature.getName()));
 
-        this.iconView = new JComponent() {
+        JComponent iconView = new JComponent() {
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(20, 20);
@@ -29,7 +28,7 @@ public class FeatureEntry extends JPanel {
             }
         };
 
-        this.add(this.iconView);
+        this.add(iconView);
         this.add(this.checkBox);
         this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     }

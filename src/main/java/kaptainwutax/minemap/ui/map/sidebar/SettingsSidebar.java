@@ -5,12 +5,13 @@ import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.BiomeEntry;
-import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import wearblackallday.swing.Events;
+import wearblackallday.swing.SwingUtils;
+import wearblackallday.swing.components.SelectionBox;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,7 +25,7 @@ public class SettingsSidebar extends JPanel {
     private final MapPanel map;
     private final MapSettings settings;
 
-    public Dropdown<Integer> layerDropdown;
+    public SelectionBox<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
     public JButton closeButton;
 
@@ -62,7 +63,7 @@ public class SettingsSidebar extends JPanel {
 
     private void addLayerDropdown() {
         BiomeSource source = this.map.getContext().getBiomeSource();
-        this.layerDropdown = new Dropdown<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
+        this.layerDropdown = new SelectionBox<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
         this.layerDropdown.selectIfPresent(this.map.getContext().getLayerId());
 
         this.layerDropdown.addActionListener(e1 -> {
@@ -220,5 +221,4 @@ public class SettingsSidebar extends JPanel {
         this.closeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(this.closeButton);
     }
-
 }

@@ -164,7 +164,7 @@ public class Fragment {
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 
                 if(!this.activeBiomesCache.contains(biome)) {
-                    color = makeInactive(color);
+                    color = this.makeInactive(color);
                 }
 
                 this.imageCache.setRGB(x, z, color.getRGB());
@@ -197,5 +197,4 @@ public class Fragment {
         if(blockZ < this.getZ() || blockZ >= this.getZ() + this.getSize())return false;
         return true;
     }
-
 }

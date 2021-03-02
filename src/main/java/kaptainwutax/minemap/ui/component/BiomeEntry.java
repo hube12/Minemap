@@ -10,12 +10,11 @@ import java.awt.*;
 public class BiomeEntry extends JPanel {
 
     private final JCheckBox checkBox;
-    private final JComponent colorView;
 
     public BiomeEntry(Biome biome) {
         this.checkBox = new JCheckBox(Str.formatName(biome.getName()));
 
-        this.colorView = new JComponent() {
+        JComponent colorView = new JComponent() {
             @Override
             public Dimension getPreferredSize() {
                 return new Dimension(20, 20);
@@ -30,7 +29,7 @@ public class BiomeEntry extends JPanel {
             }
         };
 
-        this.add(this.colorView);
+        this.add(colorView);
         this.add(this.checkBox);
         this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
     }

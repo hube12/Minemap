@@ -3,9 +3,9 @@ package kaptainwutax.minemap.ui.map;
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
+import wearblackallday.swing.Events;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
