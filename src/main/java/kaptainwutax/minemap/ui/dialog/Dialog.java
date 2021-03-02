@@ -2,7 +2,6 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.ui.component.TabHeader;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -135,12 +134,18 @@ public abstract class Dialog extends JDialog {
 					addTextField("Enter your Tab name", "head").
 					addComponent(() -> continueButton));
 			continueButton.addActionListener(e -> {
-				TabHeader header = MineMap.INSTANCE.worldTabs.getSelectedHeader();
-				header.setName(customPanel.getText("head"));
+				MineMap.INSTANCE.worldTabs.getSelectedHeader().setName(customPanel.getText("head"));
 				this.setVisible(false);
 			});
 			this.format();
 		}
 	}
 
+	public static class SaltDialog extends Dialog {
+
+		public SaltDialog() {
+			super("Change salts");
+			//TODO Wutax: "I think i will rewrite it anyway"
+		}
+	}
 }

@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 import wearblackallday.swing.Events;
+import wearblackallday.swing.SwingUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -132,9 +133,7 @@ public class MapManager {
             popup.setVisible(false);
         }));
 
-        popup.add(pin);
-        popup.add(rename);
-        popup.add(settings);
+        SwingUtils.addSet(popup, pin, rename, settings);
         this.panel.setComponentPopupMenu(popup);
     }
 
@@ -144,7 +143,7 @@ public class MapManager {
 
     public BPos getCenterPos() {
         Vec3i screenSize = this.getScreenSize();
-        return getPos(screenSize.getX() / 2.0D, screenSize.getZ() / 2.0D);
+        return this.getPos(screenSize.getX() / 2.0D, screenSize.getZ() / 2.0D);
     }
 
     public void setCenterPos(int blockX, int blockZ) {
@@ -156,8 +155,8 @@ public class MapManager {
 
     public BPos getPos(double mouseX, double mouseY) {
         Vec3i screenSize = this.getScreenSize();
-        double x = (mouseX - screenSize.getX() / 2.0D - centerX) / screenSize.getX();
-        double y = (mouseY - screenSize.getZ() / 2.0D - centerY) / screenSize.getZ();
+        double x = (mouseX - screenSize.getX() / 2.0D - this.centerX) / screenSize.getX();
+        double y = (mouseY - screenSize.getZ() / 2.0D - this.centerY) / screenSize.getZ();
         double blocksPerWidth = (screenSize.getX() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
         double blocksPerHeight = (screenSize.getZ() / this.pixelsPerFragment) * (double)this.blocksPerFragment;
         x *= blocksPerWidth;
@@ -166,5 +165,4 @@ public class MapManager {
         int yi = (int)Math.round(y);
         return new BPos(xi, 0, yi);
     }
-
 }

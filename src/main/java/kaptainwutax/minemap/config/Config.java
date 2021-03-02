@@ -48,5 +48,4 @@ public abstract class Config {
 		writer.flush();
 		writer.close();
 	}
-
 }

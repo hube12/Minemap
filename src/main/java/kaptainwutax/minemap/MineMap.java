@@ -19,6 +19,7 @@ public class MineMap extends JFrame {
 	public static Dialog COORD_HOPPER_DIALOG;
 	public static Dialog ENTER_SEED_DIALOG;
 	public static Dialog RENAME_TAB_DIALOG;
+	public static Dialog SALT_DIALOG;
 
 	public static void main(String[] args) {
 		Features.registerFeatures();
@@ -29,6 +30,7 @@ public class MineMap extends JFrame {
 		COORD_HOPPER_DIALOG = new Dialog.CoordHopperDialogue();
 		ENTER_SEED_DIALOG = new Dialog.EnterSeedDialog();
 		RENAME_TAB_DIALOG = new Dialog.RenameTabDialog();
+		SALT_DIALOG = new Dialog.SaltDialog();
 	}
 
 	public MineMap() {
