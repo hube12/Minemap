@@ -16,8 +16,9 @@ public class MineMap extends JFrame {
 	public static MineMap INSTANCE;
 	public static boolean DARCULA = false;
 	public WorldTabs worldTabs;
-	public static final Dialog COORD_HOPPER_DIALOG = new Dialog.CoordHopperDialogue();
-	public static final Dialog ENTER_SEED_DIALOG = new Dialog.EnterSeedDialog();
+	public static Dialog COORD_HOPPER_DIALOG;
+	public static Dialog ENTER_SEED_DIALOG;
+	public static Dialog RENAME_TAB_DIALOG;
 
 	public static void main(String[] args) {
 		Features.registerFeatures();
@@ -25,6 +26,9 @@ public class MineMap extends JFrame {
 		Configs.registerConfigs();
 
 		INSTANCE = new MineMap();
+		COORD_HOPPER_DIALOG = new Dialog.CoordHopperDialogue();
+		ENTER_SEED_DIALOG = new Dialog.EnterSeedDialog();
+		RENAME_TAB_DIALOG = new Dialog.RenameTabDialog();
 	}
 
 	public MineMap() {

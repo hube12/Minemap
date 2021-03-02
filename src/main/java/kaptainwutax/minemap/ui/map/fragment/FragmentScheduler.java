@@ -5,7 +5,7 @@ import kaptainwutax.minemap.ui.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
-import kaptainwutax.seedutils.util.ThreadPool;
+import wearblackallday.threading.ThreadPool;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,7 @@ public class FragmentScheduler {
 		this.listener = listener;
 		this.executor = new ThreadPool(threadCount + 1);
 
-		this.executor.run(() -> {
+		this.executor.execute(() -> {
 			while(!this.executor.getExecutor().isShutdown()) {
 				RPos nearest = this.getNearestScheduled();
 
@@ -52,7 +52,7 @@ public class FragmentScheduler {
 				this.scheduledRegions.remove(nearest);
 
 				try {
-					this.executor.run(() -> {
+					this.executor.execute(() -> {
 						Fragment fragment = new Fragment(nearest, this.listener.getContext());
 						this.fragments.put(nearest, fragment);
 						SwingUtilities.invokeLater(() -> this.listener.repaint());
@@ -118,5 +118,4 @@ public class FragmentScheduler {
 
 		return this.fragments.get(regionPos);
 	}
-
 }

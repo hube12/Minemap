@@ -64,7 +64,7 @@ public class SettingsSidebar extends JPanel {
     private void addLayerDropdown() {
         BiomeSource source = this.map.getContext().getBiomeSource();
         this.layerDropdown = new SelectionBox<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
-        this.layerDropdown.selectIfPresent(this.map.getContext().getLayerId());
+        this.layerDropdown.selectIfContains(this.map.getContext().getLayerId());
 
         this.layerDropdown.addActionListener(e1 -> {
             this.map.getContext().setLayerId(this.layerDropdown.getSelected());

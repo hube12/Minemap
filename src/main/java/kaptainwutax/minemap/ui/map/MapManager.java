@@ -101,7 +101,7 @@ public class MapManager {
 
                 if(this.panel.getContext().getLayerId() != layerId) {
                     this.panel.getContext().setLayerId(layerId);
-                    this.panel.displayBar.settings.layerDropdown.selectIfPresent(layerId);
+                    this.panel.displayBar.settings.layerDropdown.selectIfContains(layerId);
                     this.panel.restart();
                 }
             }
@@ -121,10 +121,7 @@ public class MapManager {
         JMenuItem rename = new JMenuItem("Rename");
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
 
-        rename.addMouseListener(Events.Mouse.onReleased(e -> {
-//            RenameTabDialog renameTabDialog = new RenameTabDialog();
-//            renameTabDialog.setVisible(true);
-        }));
+        rename.addMouseListener(Events.Mouse.onReleased(e -> MineMap.RENAME_TAB_DIALOG.setVisible(true)));
 
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
