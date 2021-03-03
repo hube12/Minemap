@@ -2,18 +2,55 @@ package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SettingsMenu {
-    private final JMenu menu;
+import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
+
+public class SettingsMenu extends Menu {
+    private final JMenu lookMenu;
+    private final JMenu styleMenu;
+    private final JMenu metric;
+    private final JCheckBoxMenuItem zoom;
+    private final JMenuItem shortcuts;
 
     public SettingsMenu() {
-        menu= new JMenu("Settings");
-        JMenu lookMenu = new JMenu("UI Look");
+        this.menu= new JMenu("Settings");
+
+        this.lookMenu = new JMenu("UI Look");
+        this.addLookGroup();
+
+        this.styleMenu= new JMenu("Biome Style");
+        this.addBiomeGroup();
+
+        this.metric = new JMenu("Fragment Metric");
+        this.addMetricGroup();
+
+        this.zoom = new JCheckBoxMenuItem("Restrict Maximum Zoom");
+        this.zoom.addChangeListener(e -> {
+            Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom = zoom.getState();
+            Configs.USER_PROFILE.flush();
+        });
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> {
+            zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
+        }));
+
+        this.shortcuts = new JMenuItem("Shortcuts");
+        this.shortcuts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(changeShortcuts())));
+
+        this.menu.add(this.lookMenu);
+        this.menu.add(this.styleMenu);
+        this.menu.add(this.metric);
+        this.menu.add(zoom);
+        this.menu.add(this.shortcuts);
+    }
+
+    private void addLookGroup(){
         ButtonGroup lookButtons = new ButtonGroup();
 
         for (MineMap.LookType look : MineMap.LookType.values()) {
@@ -21,7 +58,7 @@ public class SettingsMenu {
 
             button.addMouseListener(Events.Mouse.onPressed(e -> {
                 if (!button.isEnabled()) return;
-                for (Component c : lookMenu.getMenuComponents()) {
+                for (Component c : this.lookMenu.getMenuComponents()) {
                     c.setEnabled(true);
                 }
                 button.setEnabled(false);
@@ -36,10 +73,11 @@ public class SettingsMenu {
             }
 
             lookButtons.add(button);
-            lookMenu.add(button);
+            this.lookMenu.add(button);
         }
+    }
 
-        JMenu styleMenu = new JMenu("Biome Style");
+    private void addBiomeGroup(){
         ButtonGroup styleButtons = new ButtonGroup();
 
         for (String style : Configs.BIOME_COLORS.getStyles()) {
@@ -48,7 +86,7 @@ public class SettingsMenu {
             button.addMouseListener(Events.Mouse.onPressed(e -> {
                 if (!button.isEnabled()) return;
 
-                for (Component c : styleMenu.getMenuComponents()) {
+                for (Component c : this.styleMenu.getMenuComponents()) {
                     c.setEnabled(true);
                 }
 
@@ -63,29 +101,17 @@ public class SettingsMenu {
             }
 
             styleButtons.add(button);
-            styleMenu.add(button);
+            this.styleMenu.add(button);
         }
-
-
-        JCheckBoxMenuItem zoom = new JCheckBoxMenuItem("Restrict Maximum Zoom");
-
-        zoom.addChangeListener(e -> {
-            Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom = zoom.getState();
-            Configs.USER_PROFILE.flush();
-        });
-
-        menu.addMenuListener(Events.Menu.onSelected(e -> {
-            zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
-        }));
-
-        JMenu metric = new JMenu("Fragment Metric");
+    }
+    private void addMetricGroup(){
         ButtonGroup group = new ButtonGroup();
         JRadioButtonMenuItem metric1 = new JRadioButtonMenuItem("Euclidean");
         JRadioButtonMenuItem metric2 = new JRadioButtonMenuItem("Manhattan");
         JRadioButtonMenuItem metric3 = new JRadioButtonMenuItem("Chebyshev");
-        metric.add(metric1);
-        metric.add(metric2);
-        metric.add(metric3);
+        this.metric.add(metric1);
+        this.metric.add(metric2);
+        this.metric.add(metric3);
         group.add(metric1);
         group.add(metric2);
         group.add(metric3);
@@ -109,14 +135,24 @@ public class SettingsMenu {
             Configs.USER_PROFILE.getUserSettings().fragmentMetric = metric3.getText();
             Configs.USER_PROFILE.flush();
         }));
-
-        menu.add(lookMenu);
-        menu.add(styleMenu);
-        menu.add(metric);
-        menu.add(zoom);
     }
 
-    public JMenu getMenu() {
-        return menu;
+    public Runnable changeShortcuts() {
+        return () -> {
+            ShortcutDialog dialog;
+            try {
+                this.activate.run();
+                dialog = new ShortcutDialog(this.deactivate);
+                dialog.setVisible(true);
+            } catch (Exception exception) {
+                this.deactivate.run();
+                exception.printStackTrace();
+            }
+        };
+    }
+
+    @Override
+    public void doDelayedLabels() {
+        this.shortcuts.setText(String.format("Shortcuts (%s)", getKeyComboString(KeyShortcuts.Shortcut.SHORTCUTS)));
     }
 }

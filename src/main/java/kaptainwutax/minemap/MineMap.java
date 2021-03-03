@@ -5,8 +5,8 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.KeyShortcuts;
-import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
+import kaptainwutax.minemap.ui.menubar.MenuBar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,7 @@ public class MineMap extends JFrame {
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
 
-    public JMenuBar toolbarPane;
+    public MenuBar toolbarPane;
     public WorldTabs worldTabs;
 
     public static void main(String[] args) {
@@ -28,7 +28,9 @@ public class MineMap extends JFrame {
         INSTANCE = new MineMap();
         INSTANCE.setVisible(true);
         // register keyboard event after the menus creation (very important)
+        Configs.registerDelayedConfigs();
         KeyShortcuts.registerShortcuts();
+        INSTANCE.doDelayedInitTasks();
     }
 
     public MineMap() {
@@ -51,6 +53,10 @@ public class MineMap extends JFrame {
 
         this.worldTabs = new WorldTabs();
         this.add(this.worldTabs);
+    }
+
+    public void doDelayedInitTasks(){
+        this.toolbarPane.doDelayedLabels();
     }
 
     public static void applyStyle(){

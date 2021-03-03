@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
@@ -14,20 +15,24 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
+
 public class FileMenu extends Menu {
     private final JMenuItem screenshot;
+    private final JMenuItem loadSeed;
+    private final JMenuItem close;
 
     public FileMenu() {
         this.menu = new JMenu("Home");
 
-        JMenuItem loadSeed = new JMenuItem("New From Seed... (Ctrl+N)");
-        loadSeed.addMouseListener(Events.Mouse.onPressed(e -> newSeed().run())); // this needs to run immediately
+        this.loadSeed = new JMenuItem("New From Seed");
+        this.loadSeed.addMouseListener(Events.Mouse.onPressed(e -> newSeed().run())); // this needs to run immediately
 
-        this.screenshot = new JMenuItem("Screenshot... (Ctrl+S)");
+        this.screenshot = new JMenuItem("Screenshot");
         this.screenshot.addMouseListener(Events.Mouse.onPressed(e -> screenshot().run())); // this needs to run immediately
 
-        JMenuItem close = new JMenuItem("Close (Ctrl+C)");
-        close.addMouseListener(Events.Mouse.onPressed(mouseEvent -> close(false).run())); // this needs to run immediately
+        this.close = new JMenuItem("Close");
+        this.close.addMouseListener(Events.Mouse.onPressed(mouseEvent -> close(false).run())); // this needs to run immediately
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
@@ -86,4 +91,10 @@ public class FileMenu extends Menu {
         };
     }
 
+    @Override
+    public void doDelayedLabels() {
+        this.loadSeed.setText(String.format("New From Seed (%s)", getKeyComboString(KeyShortcuts.Shortcut.NEW_SEED)));
+        this.screenshot.setText(String.format("Screenshot (%s)", getKeyComboString(KeyShortcuts.Shortcut.SCREENSHOT)));
+        this.close.setText(String.format("Close (%s)", getKeyComboString(KeyShortcuts.Shortcut.CLOSE)));
+    }
 }

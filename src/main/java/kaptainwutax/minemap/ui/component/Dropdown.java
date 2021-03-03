@@ -45,7 +45,17 @@ public class Dropdown<E> extends JComboBox<String> {
         for(Iterator<E> it = elements.iterator(); it.hasNext(); i++) {
             this.elements[i] = it.next();
         }
+        this.setOpaque(true);
+        DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
+        listRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+        listRenderer.setVerticalAlignment(SwingConstants.CENTER);
+        this.setRenderer(listRenderer);
     }
+
+    public void setDefault(E element){
+        this.setSelectedItem(mapper.map(element));
+    }
+
 
     @SuppressWarnings("unchecked")
     public E getElement(int index) {

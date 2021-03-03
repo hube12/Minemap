@@ -15,4 +15,6 @@ public abstract class Menu {
     public JMenu getMenu() {
         return menu;
     }
+
+    public abstract void doDelayedLabels();
 }

@@ -2,33 +2,49 @@ package kaptainwutax.minemap.init;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
+import kaptainwutax.minemap.util.data.Str;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-
-import static java.awt.event.KeyEvent.getKeyText;
 
 public class KeyShortcuts {
-    public static MenuBar menuBar = (MenuBar) MineMap.INSTANCE.toolbarPane;
+    public static MenuBar menuBar = MineMap.INSTANCE.toolbarPane;
 
-    public static void registerShortcuts() {
-        register(KeyRegister.registerCtrlKey("N"), menuBar.fileMenu.newSeed());
-        register(KeyRegister.registerCtrlKey("S"), menuBar.fileMenu.screenshot());
-        register(KeyRegister.registerCtrlKey("C"), menuBar.fileMenu.close(true));
-        register(KeyRegister.registerAltKey("G"), menuBar.worldMenu.goToCoords());
-        register(KeyRegister.registerAltKey("P"), menuBar.worldMenu.goToSpawn());
-        register(KeyRegister.registerAltKey("L"), menuBar.worldMenu.loadShadowSeed());
-        register(KeyRegister.registerAltKey("S"), menuBar.worldMenu.goToStructure());
-        register(KeyRegister.registerAltKey("C"), menuBar.worldMenu.changeSalts());
+    public enum Shortcut {
+        NEW_SEED(menuBar.fileMenu.newSeed()),
+        SCREENSHOT(menuBar.fileMenu.screenshot()),
+        CLOSE(menuBar.fileMenu.close(true)),
+        GO_TO_COORDS(menuBar.worldMenu.goToCoords()),
+        GO_TO_SPAWN(menuBar.worldMenu.goToSpawn()),
+        LOAD_SHADOW_SEED(menuBar.worldMenu.loadShadowSeed()),
+        GO_TO_STRUCTURE(menuBar.worldMenu.goToStructure()),
+        CHANGE_SALTS(menuBar.worldMenu.changeSalts()),
+        TOGGLE_STS_MODE(menuBar.utilitiesMenu.toggleStructureMode()),
+        SHORTCUTS(menuBar.settingsMenu.changeShortcuts()),
+        ;
+
+        public Runnable action;
+
+        Shortcut(Runnable action) {
+            this.action = action;
+        }
+
+        @Override
+        public String toString() {
+            return Str.capitalize(this.name().toLowerCase().replace("_"," "));
+        }
     }
 
-    public static void register(KeyRegister keyRegister, Runnable runnable) {
+    public static void registerShortcuts() {
+        Configs.KEYBOARDS.getKEYBOARDS().forEach(KeyShortcuts::register);
+    }
+
+    public static void register(KeyRegister keyRegister, Shortcut shortcut) {
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
                 .addKeyEventDispatcher(keyEvent -> {
                     if (keyRegister.check(keyEvent)) {
                         if (!menuBar.isActive()) {
-                            runnable.run();
+                            shortcut.action.run();
                         } else {
                             System.out.println("You can not open a new popup like that");
                         }
@@ -38,13 +54,13 @@ public class KeyShortcuts {
     }
 
     public static class KeyRegister {
-        private final String keyText;
-        private final Type type;
-        private final Modifier modifier;
-        private final KeyLocation keyLocation;
+       private final String keyText;
+       private final Type type;
+       private final Modifier modifier;
+       private final KeyLocation keyLocation;
 
         public KeyRegister(int keyCode) {
-            this(getKeyText(keyCode));
+            this(KeyEvent.getKeyText(keyCode));
         }
 
         public KeyRegister(String keyText) {
@@ -82,6 +98,64 @@ public class KeyShortcuts {
             this.keyLocation = keyLocation;
         }
 
+        public KeyLocation getKeyLocation() {
+            return keyLocation;
+        }
+
+        public Modifier getModifier() {
+            return modifier;
+        }
+
+        public String getKeyText() {
+            return keyText;
+        }
+
+        public Type getType() {
+            return type;
+        }
+
+        public static KeyRegister initFromString(String json) {
+            String[] parts = json.split("\\|\\|\\|");
+            String keyText = parts[0];
+            if (parts.length!=4){
+                return new KeyRegister(keyText);
+            }
+            Type type;
+            Modifier modifier;
+            KeyLocation keyLocation;
+            try {
+                int ord = Integer.parseInt(parts[1]);
+                Type[] values = Type.values();
+                if (ord < 0 || ord > values.length) {
+                    return new KeyRegister(keyText);
+                }
+                type = values[ord];
+            } catch (NumberFormatException e) {
+                return new KeyRegister(keyText);
+            }
+            try {
+                int ord = Integer.parseInt(parts[2]);
+                Modifier[] values = Modifier.values();
+                if (ord < 0 || ord > values.length) {
+                    return new KeyRegister(keyText);
+                }
+                modifier = values[ord];
+            } catch (NumberFormatException e) {
+                return new KeyRegister(keyText);
+            }
+            try {
+                int ord = Integer.parseInt(parts[3]);
+                KeyLocation[] values = KeyLocation.values();
+                if (ord < 0 || ord > values.length) {
+                    return new KeyRegister(keyText);
+                }
+                keyLocation = values[ord];
+            } catch (NumberFormatException e) {
+                return new KeyRegister(keyText);
+            }
+            return new KeyRegister(keyText, type, modifier, keyLocation);
+        }
+
         public static KeyRegister registerCtrlKey(String keyText) {
             return new KeyRegister(keyText, Type.KEY_PRESSED, Modifier.CTRL, KeyLocation.ANY);
         }
@@ -91,7 +165,7 @@ public class KeyShortcuts {
         }
 
         public boolean check(KeyEvent keyEvent) {
-            boolean isTextOk = this.keyText.equals(getKeyText(keyEvent.getKeyCode()));
+            boolean isTextOk = this.keyText.equals(KeyEvent.getKeyText(keyEvent.getKeyCode()));
             boolean isTypeOk = true;
             if (this.type != Type.ANY) {
                 int id = keyEvent.getID();
@@ -163,7 +237,63 @@ public class KeyShortcuts {
         }
 
         public enum Modifier {
-            CTRL, META, SHIFT, ALT, ALT_GR, NONE, ANY
+            CTRL(0),
+            META(1),
+            SHIFT(2),
+            ALT(3),
+            ALT_GR(4),
+            NONE(5),
+            ANY(6);
+            public final int id;
+
+            Modifier(int id) { this.id = id; }
+
+            public int getValue() { return id; }
+        }
+
+
+        public static String getDisplayRepresentation(KeyRegister key) {
+            if (key==null) return "None";
+            StringBuilder stringBuilder = new StringBuilder();
+            switch (key.keyLocation) {
+                case KEY_LOCATION_LEFT:
+                    stringBuilder.append("Left_");
+                    break;
+                case KEY_LOCATION_RIGHT:
+                    stringBuilder.append("Right_");
+                    break;
+                case KEY_LOCATION_NUMPAD:
+                    stringBuilder.append("Num_");
+                    break;
+            }
+            switch (key.modifier) {
+                case CTRL:
+                    stringBuilder.append("Ctrl");
+                    break;
+                case META:
+                    stringBuilder.append("Meta");
+                    break;
+                case SHIFT:
+                    stringBuilder.append("Shift");
+                    break;
+                case ALT:
+                    stringBuilder.append("Alt");
+                    break;
+                case ALT_GR:
+                    stringBuilder.append("AltGr");
+                    break;
+                default:
+                    break;
+            }
+            if (!key.keyText.isEmpty()) {
+                stringBuilder.append("+").append(key.keyText);
+            }
+            return stringBuilder.toString();
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s|||%d|||%d|||%d", keyText, type.ordinal(), modifier.ordinal(), keyLocation.ordinal());
         }
     }
 }

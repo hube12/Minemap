@@ -2,6 +2,8 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.structure.*;
+import kaptainwutax.minemap.feature.NERuinedPortal;
+import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
@@ -103,7 +105,8 @@ public class SaltsConfig extends Config {
         this.addDefaultEntry(version, Structure.getName(NetherFossil.class), NetherFossil.CONFIGS.getAsOf(version) == null ? null : NetherFossil.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(OceanRuin.class), OceanRuin.CONFIGS.getAsOf(version) == null ? null : OceanRuin.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(PillagerOutpost.class), PillagerOutpost.CONFIGS.getAsOf(version) == null ? null : PillagerOutpost.CONFIGS.getAsOf(version).salt);
-        this.addDefaultEntry(version, Structure.getName(RuinedPortal.class), RuinedPortal.CONFIGS.getAsOf(version) == null ? null : RuinedPortal.CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, Structure.getName(OWRuinedPortal.class), RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, Structure.getName(NERuinedPortal.class), RuinedPortal.NETHER_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.NETHER_CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Shipwreck.class), Shipwreck.CONFIGS.getAsOf(version) == null ? null : Shipwreck.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(SwampHut.class), SwampHut.CONFIGS.getAsOf(version) == null ? null : SwampHut.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Village.class), Village.CONFIGS.getAsOf(version) == null ? null : Village.CONFIGS.getAsOf(version).salt);

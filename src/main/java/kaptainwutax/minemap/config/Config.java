@@ -7,7 +7,7 @@ import java.io.*;
 
 public abstract class Config {
 
-	private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
+	private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT).setPrettyPrinting().create();
 	protected String root = "configs/";
 	protected String extension = ".json";
 
@@ -34,6 +34,11 @@ public abstract class Config {
 			this.generateConfig();
 		}
 
+		return this;
+	}
+
+	public Config forceGenerateConfig() {
+		this.generateConfig();
 		return this;
 	}
 

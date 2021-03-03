@@ -23,7 +23,7 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    implementation 'com.github.hube12:SEED:master-SNAPSHOT'
+    implementation 'com.github.kaptainwutax:SEED:master-SNAPSHOT'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
