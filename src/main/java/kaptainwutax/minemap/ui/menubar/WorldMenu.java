@@ -125,10 +125,10 @@ public class WorldMenu extends Menu {
 
     @Override
     public void doDelayedLabels() {
-        this.goToCoords.setText(String.format("Go to Coordinates (%s)", getKeyComboString(KeyShortcuts.Shortcut.GO_TO_COORDS)));
-        this.goToSpawn.setText(String.format("Go to Spawn (%s)", getKeyComboString(KeyShortcuts.Shortcut.GO_TO_SPAWN)));
-        this.goToStructure.setText(String.format("Go to Structure (%s)", getKeyComboString(KeyShortcuts.Shortcut.GO_TO_STRUCTURE)));
-        this.loadShadowSeed.setText(String.format("Load Shadow Seed (%s)", getKeyComboString(KeyShortcuts.Shortcut.LOAD_SHADOW_SEED)));
-        this.changeSalts.setText(String.format("Change Salts (%s)", getKeyComboString(KeyShortcuts.Shortcut.CHANGE_SALTS)));
+        this.goToCoords.setText(String.format("Go to Coordinates (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_COORDS)));
+        this.goToSpawn.setText(String.format("Go to Spawn (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_SPAWN)));
+        this.goToStructure.setText(String.format("Go to Structure (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_STRUCTURE)));
+        this.loadShadowSeed.setText(String.format("Load Shadow Seed (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.LOAD_SHADOW_SEED)));
+        this.changeSalts.setText(String.format("Change Salts (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.CHANGE_SALTS)));
     }
 }

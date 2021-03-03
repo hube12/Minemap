@@ -153,6 +153,6 @@ public class SettingsMenu extends Menu {
 
     @Override
     public void doDelayedLabels() {
-        this.shortcuts.setText(String.format("Shortcuts (%s)", getKeyComboString(KeyShortcuts.Shortcut.SHORTCUTS)));
+        this.shortcuts.setText(String.format("Shortcuts (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.SHORTCUTS)));
     }
 }

@@ -93,8 +93,8 @@ public class FileMenu extends Menu {
 
     @Override
     public void doDelayedLabels() {
-        this.loadSeed.setText(String.format("New From Seed (%s)", getKeyComboString(KeyShortcuts.Shortcut.NEW_SEED)));
-        this.screenshot.setText(String.format("Screenshot (%s)", getKeyComboString(KeyShortcuts.Shortcut.SCREENSHOT)));
-        this.close.setText(String.format("Close (%s)", getKeyComboString(KeyShortcuts.Shortcut.CLOSE)));
+        this.loadSeed.setText(String.format("New From Seed (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.NEW_SEED)));
+        this.screenshot.setText(String.format("Screenshot (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.SCREENSHOT)));
+        this.close.setText(String.format("Close (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.CLOSE)));
     }
 }

@@ -6,11 +6,12 @@ import kaptainwutax.minemap.util.data.Str;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 public class KeyShortcuts {
     public static MenuBar menuBar = MineMap.INSTANCE.toolbarPane;
-
-    public enum Shortcut {
+    public static final ArrayList<KeyEventDispatcher> currentDispatchers=new ArrayList<>();
+    public enum ShortcutAction {
         NEW_SEED(menuBar.fileMenu.newSeed()),
         SCREENSHOT(menuBar.fileMenu.screenshot()),
         CLOSE(menuBar.fileMenu.close(true)),
@@ -25,7 +26,7 @@ public class KeyShortcuts {
 
         public Runnable action;
 
-        Shortcut(Runnable action) {
+        ShortcutAction(Runnable action) {
             this.action = action;
         }
 
@@ -36,21 +37,28 @@ public class KeyShortcuts {
     }
 
     public static void registerShortcuts() {
-        Configs.KEYBOARDS.getKEYBOARDS().forEach(KeyShortcuts::register);
+        Configs.KEYBOARDS.getRegisters().forEach(KeyShortcuts::register);
     }
 
-    public static void register(KeyRegister keyRegister, Shortcut shortcut) {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .addKeyEventDispatcher(keyEvent -> {
-                    if (keyRegister.check(keyEvent)) {
-                        if (!menuBar.isActive()) {
-                            shortcut.action.run();
-                        } else {
-                            System.out.println("You can not open a new popup like that");
-                        }
-                    }
-                    return false;
-                });
+    public static void deRegisterShortcuts(){
+       KeyboardFocusManager manager= KeyboardFocusManager.getCurrentKeyboardFocusManager();
+       currentDispatchers.forEach(manager::removeKeyEventDispatcher);
+       currentDispatchers.clear();
+    }
+
+    public static void register(ShortcutAction shortcutAction,KeyRegister keyRegister) {
+        KeyEventDispatcher keyEventDispatcher=keyEvent -> {
+            if (keyRegister.check(keyEvent)) {
+                if (!menuBar.isActive()) {
+                    shortcutAction.action.run();
+                } else {
+                    System.out.println("You can not open a new popup like that");
+                }
+            }
+            return false;
+        };
+        currentDispatchers.add(keyEventDispatcher);
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
     }
 
     public static class KeyRegister {

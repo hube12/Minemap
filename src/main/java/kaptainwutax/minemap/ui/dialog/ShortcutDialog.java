@@ -5,23 +5,21 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.minemap.util.data.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.concurrent.Callable;
 
-public class ShortcutDialog extends Dialog {
+public class ShortcutDialog extends Dialog  {
 
-    public ArrayList<JSpinner> salts;
-    public ArrayList<JLabel> saltsNames;
+    public ArrayList<KeyShortcuts.ShortcutAction> shortcutActions;
+    public ArrayList<Pair<Dropdown<?>[],JTextField>> keyShortcuts;
     public JButton continueButton;
     public JButton resetButton;
 
     public ShortcutDialog(Runnable onExit) {
-        super("Change shorcuts", new GridLayout(Configs.KEYBOARDS.getKEYBOARDS().size()+1, 5));
+        super("Change shorcuts", new GridLayout(Configs.KEYBOARDS.getKEYBOARDS().size()+1, 4));
         this.addExitProcedure(onExit);
     }
 
@@ -32,7 +30,9 @@ public class ShortcutDialog extends Dialog {
 
     @Override
     public void initComponents() {
-        Configs.KEYBOARDS.getShortcuts().forEach((key, action) -> {
+        this.shortcutActions=new ArrayList<>();
+        this.keyShortcuts=new ArrayList<>();
+        Configs.KEYBOARDS.getShortcuts().forEach((action, key) -> {
                     if (action != null) {
                         KeyShortcuts.KeyRegister keyRegister= KeyShortcuts.KeyRegister.initFromString(key);
                         JLabel actionName = new JLabel(action.toString());
@@ -46,8 +46,10 @@ public class ShortcutDialog extends Dialog {
                         JTextField keyText=new JTextField(keyRegister.getKeyText());
                         keyText.setHorizontalAlignment(SwingConstants.CENTER);
 
+                        keyShortcuts.add(new Pair<>(new Dropdown<?>[]{typeDropdown,modifierDropDown,keyLocationDropdown},keyText));
+                        shortcutActions.add(action);
+
                         this.getContentPane().add(actionName);
-                        this.getContentPane().add(typeDropdown);
                         this.getContentPane().add(typeDropdown);
                         this.getContentPane().add(modifierDropDown);
                         this.getContentPane().add(keyLocationDropdown);
@@ -56,10 +58,21 @@ public class ShortcutDialog extends Dialog {
                 }
         );
         this.continueButton = new JButton("Continue");
-
+        int numberShortcuts=Configs.KEYBOARDS.getKEYBOARDS().size();
         this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            
+            assert ( numberShortcuts== shortcutActions.size());
+            assert (numberShortcuts == keyShortcuts.size());
+            for (int i = 0; i < numberShortcuts; i++) {
+                Pair<Dropdown<?>[],JTextField> keyShortcut=keyShortcuts.get(i);
+                KeyShortcuts.ShortcutAction action=shortcutActions.get(i);
+                KeyShortcuts.KeyRegister.Type type= (KeyShortcuts.KeyRegister.Type) keyShortcut.getFirst()[0].getSelected();
+                KeyShortcuts.KeyRegister.Modifier modifier= (KeyShortcuts.KeyRegister.Modifier) keyShortcut.getFirst()[1].getSelected();
+                KeyShortcuts.KeyRegister.KeyLocation keylocation= (KeyShortcuts.KeyRegister.KeyLocation) keyShortcut.getFirst()[2].getSelected();
+                Configs.KEYBOARDS.addOverrideEntry(action,new KeyShortcuts.KeyRegister(keyShortcut.getSecond().getText(),type,modifier,keylocation));
+            }
             Configs.KEYBOARDS.flush();
+            KeyShortcuts.deRegisterShortcuts();
+            KeyShortcuts.registerShortcuts();
             MineMap.INSTANCE.toolbarPane.doDelayedLabels();
             this.continueButton.setEnabled(false);
             this.dispose();
@@ -69,6 +82,8 @@ public class ShortcutDialog extends Dialog {
         this.resetButton.addMouseListener(Events.Mouse.onPressed(e -> {
             Configs.KEYBOARDS.resetOverrides();
             Configs.KEYBOARDS.flush();
+            KeyShortcuts.deRegisterShortcuts();
+            KeyShortcuts.registerShortcuts();
             MineMap.INSTANCE.toolbarPane.doDelayedLabels();
             this.resetButton.setEnabled(false);
             this.dispose();

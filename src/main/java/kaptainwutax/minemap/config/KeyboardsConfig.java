@@ -3,59 +3,66 @@ package kaptainwutax.minemap.config;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
-import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class KeyboardsConfig extends Config {
     @Expose
-    protected Map<String, KeyShortcuts.Shortcut> KEYBOARDS = new LinkedHashMap<>();
+    protected Map<KeyShortcuts.ShortcutAction,String> KEYBOARDS = new LinkedHashMap<>();
     @Expose
-    protected Map<String, KeyShortcuts.Shortcut> OVERRIDES = new LinkedHashMap<>();
+    protected Map<KeyShortcuts.ShortcutAction,String> OVERRIDES = new LinkedHashMap<>();
 
-    public Map<KeyShortcuts.KeyRegister, KeyShortcuts.Shortcut> getKEYBOARDS() {
+    public Map<KeyShortcuts.ShortcutAction,KeyShortcuts.KeyRegister> getKEYBOARDS() {
         return KEYBOARDS.entrySet().stream().collect(Collectors.toMap(
-                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getKey()),
-                Map.Entry::getValue
+                Map.Entry::getKey,
+                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
         ));
     }
 
-    public Map<String, KeyShortcuts.Shortcut> getShortcuts(){
-        Map<String, KeyShortcuts.Shortcut> shortcuts = new LinkedHashMap<>(this.KEYBOARDS);
-        for (String s : this.OVERRIDES.keySet()) {
+    public Map<KeyShortcuts.ShortcutAction,KeyShortcuts.KeyRegister> getOVERRIDES() {
+        return OVERRIDES.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
+        ));
+    }
+
+    public Map<KeyShortcuts.ShortcutAction,KeyShortcuts.KeyRegister> getRegisters(){
+        Map<KeyShortcuts.ShortcutAction,KeyShortcuts.KeyRegister> shortcuts = new LinkedHashMap<>(this.getKEYBOARDS());
+        Map<KeyShortcuts.ShortcutAction,KeyShortcuts.KeyRegister> overrides=this.getOVERRIDES();
+        for (KeyShortcuts.ShortcutAction s : overrides.keySet()) {
+            shortcuts.put(s, overrides.get(s));
+        }
+        return shortcuts;
+    }
+
+    public Map<KeyShortcuts.ShortcutAction,String> getShortcuts(){
+        Map<KeyShortcuts.ShortcutAction,String> shortcuts = new LinkedHashMap<>(this.KEYBOARDS);
+        for (KeyShortcuts.ShortcutAction s : this.OVERRIDES.keySet()) {
             shortcuts.put(s, this.OVERRIDES.get(s));
         }
         return shortcuts;
     }
 
-    public Map<KeyShortcuts.KeyRegister, KeyShortcuts.Shortcut> getOVERRIDES() {
-        return OVERRIDES.entrySet().stream().collect(Collectors.toMap(
-                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getKey()),
-                Map.Entry::getValue
-        ));
-    }
-
-    public static KeyShortcuts.KeyRegister getKeyCombo(KeyShortcuts.Shortcut shortcut) {
+    public static KeyShortcuts.KeyRegister getKeyCombo(KeyShortcuts.ShortcutAction shortcutAction) {
         return Configs.KEYBOARDS.OVERRIDES.entrySet()
                 .stream()
-                .filter(entry -> entry.getValue().equals(shortcut)).map(Map.Entry::getKey)
+                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
                 .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
                 .orElse(
                         Configs.KEYBOARDS.KEYBOARDS.entrySet()
                                 .stream()
-                                .filter(entry -> entry.getValue().equals(shortcut)).map(Map.Entry::getKey)
+                                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
                                 .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
                                 .orElse(null)
                 );
 
     }
 
-    public static String getKeyComboString(KeyShortcuts.Shortcut shortcut) {
-        return KeyShortcuts.KeyRegister.getDisplayRepresentation(getKeyCombo(shortcut));
+    public static String getKeyComboString(KeyShortcuts.ShortcutAction shortcutAction) {
+        return KeyShortcuts.KeyRegister.getDisplayRepresentation(getKeyCombo(shortcutAction));
     }
 
     @Override
@@ -66,28 +73,28 @@ public class KeyboardsConfig extends Config {
     @Override
     protected void resetConfig() {
         this.KEYBOARDS.clear();
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerCtrlKey("N"), KeyShortcuts.Shortcut.NEW_SEED);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerCtrlKey("S"), KeyShortcuts.Shortcut.SCREENSHOT);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerCtrlKey("W"), KeyShortcuts.Shortcut.CLOSE);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("G"), KeyShortcuts.Shortcut.GO_TO_COORDS);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("P"), KeyShortcuts.Shortcut.GO_TO_SPAWN);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("L"), KeyShortcuts.Shortcut.LOAD_SHADOW_SEED);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("S"), KeyShortcuts.Shortcut.GO_TO_STRUCTURE);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("C"), KeyShortcuts.Shortcut.CHANGE_SALTS);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("A"), KeyShortcuts.Shortcut.TOGGLE_STS_MODE);
-        this.addDefaultEntry(KeyShortcuts.KeyRegister.registerAltKey("K"), KeyShortcuts.Shortcut.SHORTCUTS);
+        this.addDefaultEntry( KeyShortcuts.ShortcutAction.NEW_SEED,KeyShortcuts.KeyRegister.registerCtrlKey("N"));
+        this.addDefaultEntry( KeyShortcuts.ShortcutAction.SCREENSHOT,KeyShortcuts.KeyRegister.registerCtrlKey("S"));
+        this.addDefaultEntry( KeyShortcuts.ShortcutAction.CLOSE,KeyShortcuts.KeyRegister.registerCtrlKey("W"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_COORDS,KeyShortcuts.KeyRegister.registerAltKey("G"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_SPAWN,KeyShortcuts.KeyRegister.registerAltKey("P"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.LOAD_SHADOW_SEED,KeyShortcuts.KeyRegister.registerAltKey("L"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_STRUCTURE,KeyShortcuts.KeyRegister.registerAltKey("S"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.CHANGE_SALTS,KeyShortcuts.KeyRegister.registerAltKey("C"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE,KeyShortcuts.KeyRegister.registerAltKey("A"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.SHORTCUTS,KeyShortcuts.KeyRegister.registerAltKey("K"));
     }
 
     public void resetOverrides() {
         this.OVERRIDES.clear();
     }
 
-    private void addDefaultEntry(KeyShortcuts.KeyRegister keyCombo, KeyShortcuts.Shortcut shortcut) {
-        KEYBOARDS.put(keyCombo.toString(), shortcut);
+    private void addDefaultEntry(KeyShortcuts.ShortcutAction shortcutAction,KeyShortcuts.KeyRegister keyCombo) {
+        KEYBOARDS.put(shortcutAction,keyCombo.toString());
     }
 
-    public void addOverrideEntry(KeyShortcuts.KeyRegister keyCombo, KeyShortcuts.Shortcut shortcut) {
-        OVERRIDES.put(keyCombo.toString(), shortcut);
+    public void addOverrideEntry(KeyShortcuts.ShortcutAction shortcutAction,KeyShortcuts.KeyRegister keyCombo) {
+        OVERRIDES.put(shortcutAction,keyCombo.toString());
     }
 
     public void flush() {

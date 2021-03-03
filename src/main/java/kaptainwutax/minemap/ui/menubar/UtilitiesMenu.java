@@ -59,6 +59,6 @@ public class UtilitiesMenu extends Menu {
 
     @Override
     public void doDelayedLabels() {
-        this.listStructure.setText(String.format("Structure Seed Mode (%s)", getKeyComboString(KeyShortcuts.Shortcut.TOGGLE_STS_MODE)));
+        this.listStructure.setText(String.format("Structure Seed Mode (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE)));
     }
 }
