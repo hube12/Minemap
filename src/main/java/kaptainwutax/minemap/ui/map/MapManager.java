@@ -15,17 +15,19 @@ import kaptainwutax.seedutils.util.math.Vec3i;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class MapManager {
 
     public static final int DEFAULT_REGION_SIZE = 512;
-
     private final MapPanel panel;
     public final int blocksPerFragment;
     public double pixelsPerFragment;
@@ -98,7 +100,7 @@ public class MapManager {
         }));
 
         this.panel.addMouseWheelListener(e -> {
-            if (!e.isControlDown()) {
+            if (!Configs.USER_PROFILE.getUserSettings().modifierDown.getModifier().apply(e)) {
                 double newPixelsPerFragment = this.pixelsPerFragment;
 
                 if (e.getUnitsToScroll() > 0) {
@@ -255,5 +257,25 @@ public class MapManager {
         int yi = (int) Math.round(y);
         return new BPos(xi, 0, yi);
     }
+
+    public enum ModifierDown{
+        CTRL_DOWN(InputEvent::isControlDown),
+        ALT_DOWN(InputEvent::isAltDown),
+        META_DOWN(InputEvent::isMetaDown),
+        SHIFT_DOWN(InputEvent::isShiftDown),
+        ALT_GR_DOWN(InputEvent::isAltGraphDown),
+
+        ;
+
+        private final Function<InputEvent,Boolean>  modifier;
+        ModifierDown(Function<InputEvent,Boolean> modifier){
+            this.modifier=modifier;
+        }
+
+        public Function<InputEvent, Boolean> getModifier() {
+            return modifier;
+        }
+    }
+
 
 }

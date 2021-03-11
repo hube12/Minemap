@@ -2,6 +2,7 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 public class UserSettings {
@@ -16,6 +17,8 @@ public class UserSettings {
     public String fragmentMetric = "Euclidean";
     @Expose
     public boolean structureMode = false;
+    @Expose
+    public MapManager.ModifierDown modifierDown= MapManager.ModifierDown.CTRL_DOWN;
 
     public DistanceMetric getFragmentMetric() {
         switch (this.fragmentMetric) {

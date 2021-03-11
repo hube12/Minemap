@@ -2,7 +2,7 @@ package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
-import kaptainwutax.biomeutils.terrain.ChunkGenerator;
+import kaptainwutax.terrainutils.ChunkGenerator;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
