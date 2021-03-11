@@ -18,6 +18,7 @@ public class TooltipPanel extends JPanel {
         this.map = map;
         this.setLayout(new GridLayout(0, 1, 2, 2));
         this.setBackground(new Color(0, 0, 0, 0));
+        this.setOpaque(false);
    }
 
     @Override
@@ -33,8 +34,6 @@ public class TooltipPanel extends JPanel {
                 });
             });
         }
-
-        super.repaint();
     }
 
     public static class Entry extends JPanel {
@@ -75,8 +74,18 @@ public class TooltipPanel extends JPanel {
 
             this.add(this.iconView);
             this.add(this.positionText);
+            this.setOpaque(false);
+        }
 
-            this.setBackground(new Color(0, 0, 0, 180));
+        @Override
+        public void paint(Graphics g) {
+            // this is a trick to have a background
+            Graphics2D g2d = (Graphics2D) g.create();
+            g2d.setColor(new Color(0, 0, 0, 180));
+            g2d.fillRect(0, 0, this.getWidth(), this.getHeight());
+            g2d.dispose();
+            // only paint the stuff atop after
+            super.paint(g);
         }
     }
 

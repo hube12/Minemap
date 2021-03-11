@@ -24,19 +24,19 @@ public class MapLeftSideBar extends JPanel {
         this.settings.closeButton.addMouseListener(Events.Mouse.onPressed(e -> this.settings.setVisible(false)));
 
         this.setLayout(new GridBagLayout());
-        GridBagConstraints  gridBagConstraints = new GridBagConstraints();
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.anchor = GridBagConstraints.CENTER;
         gridBagConstraints.fill = GridBagConstraints.CENTER;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        this.add(this.settings,gridBagConstraints);
+        this.add(this.settings, gridBagConstraints);
         gridBagConstraints.anchor = GridBagConstraints.NORTH;
         gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
-        this.add(this.tooltip,gridBagConstraints);
+        this.add(this.tooltip, gridBagConstraints);
         this.setBackground(new Color(0, 0, 0, 0));
         this.setOpaque(false);
     }

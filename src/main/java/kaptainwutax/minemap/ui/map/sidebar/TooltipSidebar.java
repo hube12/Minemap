@@ -24,6 +24,7 @@ public class TooltipSidebar extends JPanel {
         this.addTooltip();
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
+        this.setOpaque(false);
     }
 
     private void addBiomeDisplay() {
@@ -42,6 +43,9 @@ public class TooltipSidebar extends JPanel {
 
     private void addTooltip() {
         this.tooltip = new TooltipPanel(this.map);
+
+        this.tooltip.setFocusable(false);
+        this.tooltip.setOpaque(false);
         this.tooltip.setBorder(new EmptyBorder(5, 0, 5, 0));
         this.add(this.tooltip);
     }
