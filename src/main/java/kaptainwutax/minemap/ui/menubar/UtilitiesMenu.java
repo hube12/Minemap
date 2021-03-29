@@ -22,7 +22,7 @@ public class UtilitiesMenu extends Menu {
         this.listStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(getNStructure())));
 
         this.structureSeedMode = new JCheckBoxMenuItem("Structure Seed Mode");
-        this.structureSeedMode.addActionListener(e -> toggleStructureMode().run());
+        this.structureSeedMode.addActionListener(e -> toggleStructureMode(false).run());
         this.structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> {
@@ -34,8 +34,9 @@ public class UtilitiesMenu extends Menu {
         this.menu.add(structureSeedMode);
     }
 
-    public Runnable toggleStructureMode() {
+    public Runnable toggleStructureMode(boolean isKeyboard) {
         return () -> {
+            if (isKeyboard) this.structureSeedMode.setSelected(!this.structureSeedMode.isSelected());
             if (!this.structureSeedMode.isEnabled()) return;
             Configs.USER_PROFILE.getUserSettings().structureMode = this.structureSeedMode.isSelected();
             Configs.USER_PROFILE.flush();
@@ -59,6 +60,6 @@ public class UtilitiesMenu extends Menu {
 
     @Override
     public void doDelayedLabels() {
-        this.listStructure.setText(String.format("Structure Seed Mode (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE)));
+        this.structureSeedMode.setText(String.format("Structure Seed Mode (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE)));
     }
 }

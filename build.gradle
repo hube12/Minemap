@@ -24,8 +24,8 @@ tasks.withType(JavaCompile) {
 
 dependencies {
     implementation 'com.github.kaptainwutax:SEED:master-SNAPSHOT'
-    implementation 'com.github.kaptainwutax:BiomeUtils:master-SNAPSHOT'
-    implementation 'com.github.kaptainwutax:TerrainUtils:main-SNAPSHOT'
+    implementation 'com.github.kaptainwutax:BiomeUtils:6623ba970ef9ed0f7ec27356c8700c3319ec2a23'
+    implementation 'com.github.kaptainwutax:TerrainUtils:a17e48ea2ccfcb495363b366827800bb3df42e84'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"

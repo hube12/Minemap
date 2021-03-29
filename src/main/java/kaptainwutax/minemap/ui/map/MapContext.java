@@ -52,7 +52,7 @@ public class MapContext {
                     ChunkGenerator chunkGenerator=ChunkGenerator.of(dim, this.biomeSource.get().get(dim));
                     map.put(dim, chunkGenerator);
                 }catch (UnsupportedVersion e){
-                    System.out.printf("Chunk generator for the %s for version %s could not be initialized%n",dim.getName(),this.version.toString() );
+                    System.err.printf("Chunk generator for the %s for version %s could not be initialized%n",dim.getName(),this.version.toString() );
                     map.put(dim,null);
                 }
             }

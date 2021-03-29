@@ -20,7 +20,7 @@ public class KeyShortcuts {
         LOAD_SHADOW_SEED(menuBar.worldMenu.loadShadowSeed()),
         GO_TO_STRUCTURE(menuBar.worldMenu.goToStructure()),
         CHANGE_SALTS(menuBar.worldMenu.changeSalts()),
-        TOGGLE_STS_MODE(menuBar.utilitiesMenu.toggleStructureMode()),
+        TOGGLE_STS_MODE(menuBar.utilitiesMenu.toggleStructureMode(true)),
         SHORTCUTS(menuBar.settingsMenu.changeShortcuts()),
         ;
 
