@@ -49,14 +49,14 @@ public class SettingsSidebar extends JPanel {
         JScrollPane scrollPane = new JScrollPane(this.toggles);
         scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 
-        scrollPane.addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
-            @Override
-            public void ancestorResized(HierarchyEvent e) {
-                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
-                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
-                scrollPane.repaint();
-            }
-        });
+//        scrollPane.addHierarchyBoundsListener(new HierarchyBoundsAdapter() {
+//            @Override
+//            public void ancestorResized(HierarchyEvent e) {
+//                scrollPane.setPreferredSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
+//                scrollPane.setSize(new Dimension(300, MineMap.INSTANCE.getHeight() - 210));
+//                scrollPane.repaint();
+//            }
+//        });
 
         this.add(scrollPane);
     }
@@ -115,9 +115,7 @@ public class SettingsSidebar extends JPanel {
             this.map.repaint();
         });
 
-        this.toggles.add(showBiomes);
-        this.toggles.add(showFeatures);
-        this.toggles.add(showGrid);
+        SwingUtils.addSet(this.toggles, showBiomes, showFeatures, showGrid);
     }
 
     private void addFeatureToggles() {
@@ -199,9 +197,7 @@ public class SettingsSidebar extends JPanel {
         JButton set = new JButton("Set as Default");
         JButton reset = new JButton("Reset to Default");
 
-        set.addMouseListener(Events.Mouse.onPressed(e -> {
-            Configs.USER_PROFILE.setDefaultSettings(this.map.getContext().dimension, this.settings);
-        }));
+        set.addMouseListener(Events.Mouse.onPressed(e -> Configs.USER_PROFILE.setDefaultSettings(this.map.getContext().dimension, this.settings)));
 
         reset.addMouseListener(Events.Mouse.onPressed(e -> {
             this.settings.set(Configs.USER_PROFILE.getMapSettingsCopy(this.map.getContext().version, this.map.getContext().dimension));

@@ -1,52 +1,33 @@
 package kaptainwutax.minemap;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.init.Features;
-import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.MenuBar;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.dialog.Dialog;
+import wearblackallday.swing.components.builder.FrameBuilder;
 
-import javax.swing.*;
-import java.awt.*;
+public class MineMap {
 
-public class MineMap extends JFrame {
+	public static final WorldTabs WORLD_TABS;
+	public static final Dialog COORD_HOPPER_DIALOG;
+	public static final Dialog ENTER_SEED_DIALOG;
+	public static final Dialog RENAME_TAB_DIALOG;
+	public static final Dialog SALT_DIALOG;
 
-	public static MineMap INSTANCE;
-	public static boolean DARCULA = false;
-	public WorldTabs worldTabs;
-	public static Dialog COORD_HOPPER_DIALOG;
-	public static Dialog ENTER_SEED_DIALOG;
-	public static Dialog RENAME_TAB_DIALOG;
-	public static Dialog SALT_DIALOG;
-
-	public static void main(String[] args) {
+	static {
 		Features.registerFeatures();
 		Icons.registerIcons();
 		Configs.registerConfigs();
-
-		INSTANCE = new MineMap();
+		FlatDarkLaf.install();
+		WORLD_TABS = new WorldTabs();
 		COORD_HOPPER_DIALOG = new Dialog.CoordHopperDialogue();
 		ENTER_SEED_DIALOG = new Dialog.EnterSeedDialog();
 		RENAME_TAB_DIALOG = new Dialog.RenameTabDialog();
 		SALT_DIALOG = new Dialog.SaltDialog();
 	}
 
-	public MineMap() {
-		FlatDarkLaf.install();
-		DARCULA = true;
-
-//		this.setJMenuBar(new MenuBar());
-		this.setJMenuBar(MenuBar.create());
-		this.add(this.worldTabs = new WorldTabs());
-
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		this.setSize(screenSize.width / 2, screenSize.height / 2);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-		this.setTitle("MineMap");
-		this.setVisible(true);
+	public static void main(String[] args) {
+		FrameBuilder.newBuilder().visible().fullScreen().contentPane(WORLD_TABS).menu(MenuBar.create()).create();
 	}
 }

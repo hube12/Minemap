@@ -8,8 +8,6 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
-    jcenter()
-
     maven {
         url "https://jitpack.io"
     }
@@ -19,7 +17,7 @@ dependencies {
     implementation 'com.github.KaptainWutax:SEED:1c966a327ec286906f92f9e849d46a9b2408d3ad'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
-    implementation 'com.github.wearblackallday:JavaUtils:a680009ff05e83c36977bc5dd206dca27f770eea'
+    implementation 'com.github.wearblackallday:JavaUtils:6341f4093b9adb3de1342bb96bcf5b9d10e7058c'
 }
 
 application {

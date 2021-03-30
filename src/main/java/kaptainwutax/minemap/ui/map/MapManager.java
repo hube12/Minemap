@@ -114,8 +114,8 @@ public class MapManager {
         pin.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         pin.addMouseListener(Events.Mouse.onReleased(e -> {
-            boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isPinned();
-            MineMap.INSTANCE.worldTabs.getSelectedHeader().setPinned(newState);
+            boolean newState = !MineMap.WORLD_TABS.getSelectedHeader().isPinned();
+            MineMap.WORLD_TABS.getSelectedHeader().setPinned(newState);
             pin.setText(newState ? "Unpin" : "Pin");
         }));
 

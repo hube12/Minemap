@@ -32,7 +32,6 @@ public class MapPanel extends JPanel {
 		this.manager = new MapManager(this);
 		this.displayBar = new MapSideBar(this);
 
-		this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
 		this.add(this.displayBar, BorderLayout.WEST);
 		this.restart();
 	}
@@ -105,5 +104,4 @@ public class MapPanel extends JPanel {
 		this.drawMap(image.getGraphics());
 		return image;
 	}
-
 }

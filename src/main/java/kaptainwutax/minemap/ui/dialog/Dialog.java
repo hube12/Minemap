@@ -32,35 +32,31 @@ public abstract class Dialog extends JDialog {
 
 	public static class CoordHopperDialogue extends Dialog {
 
-		public CustomPanel customPanel;
-		public CustomPanel.Key<SelectionBox<Type>> typeSelection;
-
 		public CoordHopperDialogue() {
 			super("Go to Coordinates");
-			JButton continueButton = new JButton("Continue");
-			continueButton.addActionListener(e -> {
-				try {
-					int x, z;
-					x = Integer.parseInt(this.customPanel.getText("x").trim());
-					z = Integer.parseInt(this.customPanel.getText("z").trim());
-					x = this.customPanel.getComponent(this.typeSelection).getSelected().transform(x);
-					z = this.customPanel.getComponent(this.typeSelection).getSelected().transform(z);
-					MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-					if (map != null) map.getManager().setCenterPos(x, z);
-					this.setVisible(false);
-				} catch (NumberFormatException ignored) {
-				}
-			});
-			this.getRootPane().setDefaultButton(continueButton);
-			this.setContentPane(this.customPanel = new CustomPanel(new GridLayout(0, 2), 70, 40).
-					addTextField("X Coordinate...", "x").
-					addTextField("Z Coordinate...", "z").
-					addComponent(this.typeSelection, () -> new SelectionBox<>(Type::getName, Type.values())).
-					addComponent(() -> continueButton));
+			SelectionBox<Type> typeSelectionBox = new SelectionBox<>(Type::getName, Type.values());
+//			this.getRootPane().setDefaultButton(continueButton);
+			this.setContentPane(new CustomPanel(new GridLayout(0, 2), 70, 40)
+					.addTextField("X Coordinate...", "x")
+					.addTextField("Z Coordinate...", "z")
+					.addComponent(() -> typeSelectionBox)
+					.addButton("Continue", ((customPanel, button, event) -> {
+						try {
+							int x, z;
+							x = Integer.parseInt(customPanel.getText("x").trim());
+							z = Integer.parseInt(customPanel.getText("z").trim());
+							x = typeSelectionBox.getSelected().transform(x);
+							z = typeSelectionBox.getSelected().transform(z);
+							MapPanel map = MineMap.WORLD_TABS.getSelectedMapPanel();
+							if (map != null) map.getManager().setCenterPos(x, z);
+							this.setVisible(false);
+						} catch (NumberFormatException ignored) {
+						}
+					})));
 			this.format();
 		}
 
-		protected enum Type {
+		private enum Type {
 			BLOCK("Block Coordinates", i -> i),
 			CHUNK("Chunk Coordinates", i -> i << 4),
 			REGION_32("Chunk Region Coordinates (32x32)", i -> CHUNK.transform(i) << 5);
@@ -86,18 +82,18 @@ public abstract class Dialog extends JDialog {
 	public static class EnterSeedDialog extends Dialog {
 
 		private final CustomPanel customPanel;
-		private final CustomPanel.Key<SelectionBox<Integer>> threadSelection = new CustomPanel.Key<>();
-		private final CustomPanel.Key<SelectionBox<MCVersion>> versionSelection = new CustomPanel.Key<>();
 
 		public EnterSeedDialog() {
 			super("Load new Seed");
 			int cores = Runtime.getRuntime().availableProcessors();
-			this.setContentPane(this.customPanel = new CustomPanel(new GridLayout(3, 1), 80, 30).
-					addTextField("Enter your seed here", "seed").
-					addComponent(this.threadSelection, () -> new SelectionBox<>(
-							i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed())).
-					addComponent(this.versionSelection, () -> new SelectionBox<>(
-							Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_8)))));
+			SelectionBox<Integer> threadSelection =
+					new SelectionBox<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
+			SelectionBox<MCVersion> versionSelection =
+					new SelectionBox<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_8)));
+			this.setContentPane(this.customPanel = new CustomPanel(new GridLayout(3, 1), 80, 30)
+					.addTextField("Enter your seed here", "seed")
+					.addComponent(threadSelection)
+					.addComponent(versionSelection));
 			SwingUtils.addSet(this.customPanel, Arrays.stream(Dimension.values()).map(dimension -> {
 				String s = Character.toUpperCase(dimension.getName().charAt(0)) + dimension.getName().substring(1);
 				JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + s);
@@ -108,9 +104,9 @@ public abstract class Dialog extends JDialog {
 			JButton continueButton = new JButton("Continue");
 			this.getRootPane().setDefaultButton(continueButton);
 			continueButton.addActionListener(e -> {
-				int usedCores = this.customPanel.getComponent(this.threadSelection).getSelected();
-				MCVersion ver = this.customPanel.getComponent(this.versionSelection).getSelected();
-				MineMap.INSTANCE.worldTabs.load(ver,
+				int usedCores = threadSelection.getSelected();
+				MCVersion ver = versionSelection.getSelected();
+				MineMap.WORLD_TABS.load(ver,
 						this.customPanel.getText("seed").trim(),
 						usedCores, Configs.USER_PROFILE.getEnabledDimensions());
 				Configs.USER_PROFILE.setThreadCount(usedCores);
@@ -134,7 +130,7 @@ public abstract class Dialog extends JDialog {
 					addTextField("Enter your Tab name", "head").
 					addComponent(() -> continueButton));
 			continueButton.addActionListener(e -> {
-				MineMap.INSTANCE.worldTabs.getSelectedHeader().setName(customPanel.getText("head"));
+				MineMap.WORLD_TABS.getSelectedHeader().setName(customPanel.getText("head"));
 				this.setVisible(false);
 			});
 			this.format();
