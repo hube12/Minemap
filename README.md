@@ -7,4 +7,4 @@ There is severals nice features added, you can see per layers of biome generatio
 area and use a ruler.
 
 
-Supports 1.6.4+
+Supports all release starting from 1.0+
