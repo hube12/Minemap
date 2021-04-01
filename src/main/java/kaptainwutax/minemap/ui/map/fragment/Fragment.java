@@ -34,6 +34,7 @@ public class Fragment {
 
     private Map<Feature<?, ?>, List<BPos>> features;
     private BPos hoveredPos;
+    private BPos clickedPos;
 
     public Fragment(int blockX, int blockZ, int regionSize, MapContext context) {
         this.blockX = blockX;
@@ -153,8 +154,20 @@ public class Fragment {
         this.hoveredPos = new BPos(blockX, 0, blockZ);
     }
 
+    public void onClicked(int blockX, int blockZ) {
+        this.clickedPos = new BPos(blockX, 0, blockZ);
+    }
+
+    public Map<Feature<?, ?>, List<BPos>> getClickedFeatures(int width, int height) {
+        return getFeatures(width,height,this.clickedPos);
+    }
+
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
-        if (this.hoveredPos == null || this.context == null || !this.context.getSettings().showFeatures) {
+        return getFeatures(width,height,this.hoveredPos);
+    }
+
+    public Map<Feature<?, ?>, List<BPos>> getFeatures(int width, int height,BPos checkPos) {
+        if (checkPos == null || this.context == null || !this.context.getSettings().showFeatures) {
             return Collections.emptyMap();
         }
 
@@ -164,7 +177,7 @@ public class Fragment {
             if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
             IconRenderer renderer = this.context.getIconManager().getFor(entry.getKey());
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
-            newList.removeIf(pos -> !renderer.isHovered(this, this.hoveredPos, pos, width, height));
+            newList.removeIf(pos -> !renderer.isHovered(this, checkPos, pos, width, height));
             map.put(entry.getKey(), newList);
         }
 

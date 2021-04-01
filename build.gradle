@@ -23,13 +23,22 @@ tasks.withType(JavaCompile) {
 }
 
 dependencies {
-    implementation 'com.github.kaptainwutax:SEED:master-SNAPSHOT'
-    implementation 'com.github.kaptainwutax:BiomeUtils:4f2981d8f1f17cfecc25552e0d6e3d6438f31dee'
-    implementation 'com.github.kaptainwutax:TerrainUtils:a17e48ea2ccfcb495363b366827800bb3df42e84'
+    implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') {transitive = false}
+    implementation('com.github.KaptainWutax:SeedUtils:40b5cc6f369afb0a10dd735f5bc3342fd338c4e3') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:d93927e4ff601b76b23f126312c936adec9a7f79') {transitive = false}
+    implementation('com.github.KaptainWutax:TerrainUtils:dd3721da6ebb93be6fb0a54a1f44fcb0aa868e5d') {transitive = false}
+    implementation('com.github.KaptainWutax:NoiseUtils:5919e438dc1cda50bf8e2ba0a99b4618349ac085') {transitive = false}
+    implementation('com.github.KaptainWutax:BiomeUtils:0d7d6b986a3fc44ef1b6839eb66433cbf9623525') {transitive = false}
+    implementation('com.github.KaptainWutax:ChunkRandomReversal:8174cd55b8ee492b54fbc860fbafc83726bac846') {transitive = false}
+    implementation('com.github.KaptainWutax:LattiCG:cc39ed32419881bd4dc080ac77b7a5c72a3fd36d') {transitive = false}
+
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
     implementation "com.intellij:forms_rt:7.0.3"
+
+
+
 }
 
 application {

@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.map;
 
+import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
@@ -9,17 +10,19 @@ import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.util.math.Vec3i;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -29,9 +32,9 @@ public class MapManager {
 
     public static final int DEFAULT_REGION_SIZE = 512;
     private final MapPanel panel;
+    private final JPopupMenu popup;
     public final int blocksPerFragment;
     public double pixelsPerFragment;
-
     public double centerX;
     public double centerY;
 
@@ -71,15 +74,17 @@ public class MapManager {
                 this.panel.leftBar.tooltip.tooltip.repaint();
                 this.panel.repaint();
             });
+
         }));
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
+                BPos pos = this.getPos(e.getX(), e.getY());
+                this.panel.scheduler.forEachFragment(fragment -> fragment.onClicked(pos.getX(), pos.getZ()));
                 if (selectedTool == null) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                 } else {
-                    BPos pos = this.getPos(e.getX(), e.getY());
                     // if tool has no more points to it
                     if (!selectedTool.addPoint(pos)) {
                         selectedTool = selectedTool.duplicate();
@@ -137,7 +142,7 @@ public class MapManager {
             }
         });
 
-        JPopupMenu popup = new JPopupMenu();
+        this.popup = new JPopupMenu();
 
         JMenuItem pin = new JMenuItem("Pin");
         pin.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -158,15 +163,43 @@ public class MapManager {
 
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
+        settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible())));
 
-        settings.addMouseListener(Events.Mouse.onReleased(e -> {
-            this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible());
-        }));
+        JMenuItem chest = new JMenuItem("Chest");
+        chest.setBorder(new EmptyBorder(5, 15, 5, 15));
+        chest.setEnabled(false);
 
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
         this.addTools(popup, Arrays.asList(Ruler::new, Area::new, Circle::new));
+        popup.add(chest);
+        popup.addPopupMenuListener(new PopupMenuListener() {
+                                       @Override
+                                       public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
+                                           SwingUtilities.invokeLater(() -> {
+                                               MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                                               ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
+                                               int size = (int)map.manager.pixelsPerFragment;
+                                               map.scheduler.forEachFragment(fragment -> {
+                                                   fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
+                                                       if (!positions.isEmpty()) {
+                                                           features.add(new Pair<>(feature, positions));
+                                                       }
+                                                   });
+                                               });
+                                               chest.setEnabled(!features.isEmpty());
+                                           });
+                                       }
+
+                                       @Override
+                                       public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+                                       }
+
+                                       @Override
+                                       public void popupMenuCanceled(PopupMenuEvent e) { }
+                                   }
+        );
 
         this.panel.setComponentPopupMenu(popup);
     }
@@ -258,7 +291,7 @@ public class MapManager {
         return new BPos(xi, 0, yi);
     }
 
-    public enum ModifierDown{
+    public enum ModifierDown {
         CTRL_DOWN(InputEvent::isControlDown),
         ALT_DOWN(InputEvent::isAltDown),
         META_DOWN(InputEvent::isMetaDown),
@@ -267,9 +300,10 @@ public class MapManager {
 
         ;
 
-        private final Function<InputEvent,Boolean>  modifier;
-        ModifierDown(Function<InputEvent,Boolean> modifier){
-            this.modifier=modifier;
+        private final Function<InputEvent, Boolean> modifier;
+
+        ModifierDown(Function<InputEvent, Boolean> modifier) {
+            this.modifier = modifier;
         }
 
         public Function<InputEvent, Boolean> getModifier() {
