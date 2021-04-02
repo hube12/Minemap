@@ -1,6 +1,7 @@
 package kaptainwutax.minemap;
 
 import com.formdev.flatlaf.*;
+import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
@@ -23,6 +24,7 @@ public class MineMap extends JFrame {
     public static void main(String[] args) {
         Features.registerFeatures();
         Icons.registerIcons();
+        Chests.registerChests();
         Configs.registerConfigs();
 
         INSTANCE = new MineMap();

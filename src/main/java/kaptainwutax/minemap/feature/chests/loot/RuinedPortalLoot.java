@@ -21,7 +21,6 @@ public class RuinedPortalLoot extends Loot {
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);
         List<ItemStack> loot1 = MCLootTables.RUINED_PORTAL_CHEST.generate(context);
-
         return Collections.singletonList(loot1);
     }
 }

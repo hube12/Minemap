@@ -13,11 +13,14 @@ public abstract class Loot {
 
     public static final Predicate<ItemStack> ENCHANTED_GAPPLES_PRED=e->e.getItem().equals(Item.ENCHANTED_GOLDEN_APPLE);
     public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, MCVersion version) {
-        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), new ChunkRand(), version);
+        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), version);
     }
 
     public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, ChunkRand rand, MCVersion version) {
         return getLootAt(worldSeed, new CPos(chunkX, chunkZ), rand, version);
+    }
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, MCVersion version){
+        return getLootAt(worldSeed, cPos, new ChunkRand(), version);
     }
 
     public abstract List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, ChunkRand rand, MCVersion version);

@@ -1,11 +1,13 @@
 package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
+import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
@@ -33,6 +35,7 @@ public class MapManager {
     public static final int DEFAULT_REGION_SIZE = 512;
     private final MapPanel panel;
     private final JPopupMenu popup;
+    private final Chest chestMenu;
     public final int blocksPerFragment;
     public double pixelsPerFragment;
     public double centerX;
@@ -168,6 +171,8 @@ public class MapManager {
         JMenuItem chest = new JMenuItem("Chest");
         chest.setBorder(new EmptyBorder(5, 15, 5, 15));
         chest.setEnabled(false);
+        chestMenu=new Chest(this.panel);
+        chest.addMouseListener(Events.Mouse.onReleased(e -> this.chestMenu.setVisible(true)));
 
         popup.add(pin);
         popup.add(rename);
@@ -183,12 +188,20 @@ public class MapManager {
                                                int size = (int)map.manager.pixelsPerFragment;
                                                map.scheduler.forEachFragment(fragment -> {
                                                    fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
-                                                       if (!positions.isEmpty()) {
+                                                       if (!positions.isEmpty() && feature instanceof RegionStructure<?,?>) {
                                                            features.add(new Pair<>(feature, positions));
                                                        }
                                                    });
                                                });
                                                chest.setEnabled(!features.isEmpty());
+                                               if (!features.isEmpty()){
+                                                   Pair<Feature<?, ?>, List<BPos>> featureListPair=features.get(0);
+                                                   Feature<?, ?> feature=featureListPair.getFirst();
+                                                   BPos bPos=featureListPair.getSecond().get(0);
+                                                   chestMenu.setFeature((RegionStructure<?, ?>) feature);
+                                                   chestMenu.setPos(bPos.toChunkPos());
+                                                   chestMenu.updateContent();
+                                               }
                                            });
                                        }
 

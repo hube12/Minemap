@@ -10,30 +10,20 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class BurriedTreasureLoot extends Loot {
 
     public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, ChunkRand rand, MCVersion version) {
-        rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 40003, version);
+        rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 30001, version);
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);
-        List<ItemStack> loot1 = MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
+        List<ItemStack> loot1 = MCLootTables.BURIED_TREASURE_CHEST.generate(context);
 
-        lootTableSeed = rand.nextLong();
-        context = new LootContext(lootTableSeed);
-        List<ItemStack> loot2 = MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
 
-        lootTableSeed = rand.nextLong();
-        context = new LootContext(lootTableSeed);
-        List<ItemStack> loot3 = MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
-
-        lootTableSeed = rand.nextLong();
-        context = new LootContext(lootTableSeed);
-        List<ItemStack> loot4 = MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
-
-        return Arrays.asList(loot1, loot2, loot3, loot4);
+        return Collections.singletonList(loot1);
     }
 
 

@@ -107,48 +107,8 @@ public class StructureListDialog extends Dialog {
             // destroy the current container
             this.dispose();
 
-            // create a new frame
-            JFrame frame = new JFrame(String.format("List of %d %s", n, feature.getName()));
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
+            this.makeFrame(bPosList,feature,n);
 
-            // create the inner list
-            final ListPanel listPanel = new ListPanel();
-            bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos)));
-            listPanel.removeLastBorder();
-
-            JButton copyTPs = new JButton("Copy all TPs");
-            copyTPs.addActionListener(event->{
-                StringBuilder copyString=new StringBuilder();
-                bPosList.forEach(bPos -> copyString.append(String.format("/tp @p %d ~ %d", bPos.getX(),bPos.getZ())).append("\n"));
-                StringSelection stringSelection = new StringSelection(copyString.toString());
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-                copyTPs.setBackground(new Color(50, 255, 84));
-                copyTPs.setForeground(Color.WHITE);
-            });
-
-            JButton copyLocations = new JButton("Copy all locations");
-            copyLocations.addActionListener(event->{
-                StringBuilder copyString=new StringBuilder(String.format("%s\nposX,posZ\n", feature.getName()));
-                bPosList.forEach(bPos -> copyString.append(String.format("%d,%d", bPos.getX(),bPos.getZ())).append("\n"));
-                StringSelection stringSelection = new StringSelection(copyString.toString());
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                clipboard.setContents(stringSelection, null);
-                copyLocations.setBackground(new Color(50, 255, 84));
-                copyLocations.setForeground(Color.WHITE);
-            });
-
-            JSplitPane copyPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,copyTPs,copyLocations);
-            copyPane.setResizeWeight(1.0);
-            listPanel.add(copyPane, BorderLayout.SOUTH);
-
-            frame.add(listPanel);
-
-            // display it
-            frame.pack();
-            frame.setLocationRelativeTo(null); // center
-            frame.setVisible(true);
         }));
 
         this.getContentPane().add(this.enterN);
@@ -156,6 +116,51 @@ public class StructureListDialog extends Dialog {
         this.getContentPane().add(this.continueButton);
     }
 
+
+    private void makeFrame(List<BPos> bPosList,RegionStructure<?, ?> feature,int n){
+        // create a new frame
+        JFrame frame = new JFrame(String.format("List of %d %s", n, feature.getName()));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
+
+        // create the inner list
+        final ListPanel listPanel = new ListPanel();
+        bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos)));
+        listPanel.removeLastBorder();
+
+        JButton copyTPs = new JButton("Copy all TPs");
+        copyTPs.addActionListener(event->{
+            StringBuilder copyString=new StringBuilder();
+            bPosList.forEach(bPos -> copyString.append(String.format("/tp @p %d ~ %d", bPos.getX(),bPos.getZ())).append("\n"));
+            StringSelection stringSelection = new StringSelection(copyString.toString());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+            copyTPs.setBackground(new Color(50, 255, 84));
+            copyTPs.setForeground(Color.WHITE);
+        });
+
+        JButton copyLocations = new JButton("Copy all locations");
+        copyLocations.addActionListener(event->{
+            StringBuilder copyString=new StringBuilder(String.format("%s\nposX,posZ\n", feature.getName()));
+            bPosList.forEach(bPos -> copyString.append(String.format("%d,%d", bPos.getX(),bPos.getZ())).append("\n"));
+            StringSelection stringSelection = new StringSelection(copyString.toString());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+            copyLocations.setBackground(new Color(50, 255, 84));
+            copyLocations.setForeground(Color.WHITE);
+        });
+
+        JSplitPane copyPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,copyTPs,copyLocations);
+        copyPane.setResizeWeight(1.0);
+        listPanel.add(copyPane, BorderLayout.SOUTH);
+
+        frame.add(listPanel);
+
+        // display it
+        frame.pack();
+        frame.setLocationRelativeTo(null); // center
+        frame.setVisible(true);
+    }
 
     static class StructureItem {
 
