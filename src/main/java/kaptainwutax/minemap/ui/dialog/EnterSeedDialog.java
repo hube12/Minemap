@@ -10,62 +10,102 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class EnterSeedDialog extends Dialog {
 
-	public JTextField seedField;
-	public Dropdown<Integer> threadDropdown;
-	public Dropdown<MCVersion> versionDropdown;
-	public JButton continueButton;
+    public JTextField seedField;
+    public Dropdown<Integer> threadDropdown;
+    public Dropdown<MCVersion> versionDropdown;
+    public JButton continueButton;
+    public JButton cancelButton;
 
-	public EnterSeedDialog(Runnable onExit) {
-		super("Load new Seed", new GridLayout(3, 1));
-		this.addExitProcedure(onExit);
-	}
+    public EnterSeedDialog(Runnable onExit) {
+        super("Load new Seed (<enter> to create)", new GridLayout(3, 1));
+        this.addExitProcedure(onExit);
+    }
 
-	@Override
-	public void initComponents() {
-		int cores = Runtime.getRuntime().availableProcessors();
+    @Override
+    public void initComponents() {
+        int cores = Runtime.getRuntime().availableProcessors();
 
-		this.seedField = new JTextField();
-		PromptSupport.setPrompt("Enter your seed here...", this.seedField);
+        this.seedField = new JTextField();
+        PromptSupport.setPrompt("Enter your seed here...", this.seedField);
 
-		this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
-		this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
+        this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
+        this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
 
-		this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values())
-				.filter(v -> v.isNewerOrEqualTo(MCVersion.v1_0)));
-		this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
+        this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_0)));
+        this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
-		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
+        JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
 
-		this.continueButton = new JButton("Continue");
+        this.continueButton = new JButton("Continue");
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> this.create()));
 
-		this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-			MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-					threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+        this.cancelButton = new JButton("Cancel");
+        this.cancelButton.addMouseListener(Events.Mouse.onPressed(e -> this.cancel()));
 
-			Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
-			Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
-			this.continueButton.setEnabled(false);
-			this.dispose();
-		}));
+		JSplitPane splitPanel2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.continueButton, this.cancelButton);
 
-		JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
-			String s = Character.toUpperCase(dimension.getName().charAt(0)) + dimension.getName().substring(1);
-			JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + s);
-			check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
-			check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
-			return check;
-		}).toArray(JCheckBoxMenuItem[]::new);
+        JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
+            String s = Character.toUpperCase(dimension.getName().charAt(0)) + dimension.getName().substring(1);
+            JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + s);
+            check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
+            check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
+            return check;
+        }).toArray(JCheckBoxMenuItem[]::new);
 
-		this.getContentPane().add(this.seedField);
-		this.getContentPane().add(checkBoxes[Dimension.OVERWORLD.ordinal()]);
-		this.getContentPane().add(splitPanel);
-		this.getContentPane().add(checkBoxes[Dimension.NETHER.ordinal()]);
-		this.getContentPane().add(this.continueButton);
-		this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
-	}
+        this.getContentPane().add(this.seedField);
+        this.getContentPane().add(checkBoxes[Dimension.OVERWORLD.ordinal()]);
+        this.getContentPane().add(splitPanel);
+        this.getContentPane().add(checkBoxes[Dimension.NETHER.ordinal()]);
+        this.getContentPane().add(splitPanel2);
+        this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
+
+        this.registerBindings();
+    }
+
+    public void registerBindings() {
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = getRootPane().getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "continue");
+        actionMap.put("continue", new ButtonContinue());
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+        actionMap.put("cancel", new ButtonCancel());
+    }
+
+    private void create() {
+        continueButton.setEnabled(false);
+        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+                threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+
+        Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
+        Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
+        dispose();
+    }
+
+    private void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
+
+    public class ButtonContinue extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            create();
+        }
+    }
+
+    public class ButtonCancel extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cancel();
+        }
+    }
 }

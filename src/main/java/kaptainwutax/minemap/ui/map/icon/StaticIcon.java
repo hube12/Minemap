@@ -14,7 +14,7 @@ public abstract class StaticIcon extends IconRenderer {
 
     private int iconSizeX;
     private int iconSizeZ;
-    private static final int DEFAULT_VALUE = 20;
+    private static final int DEFAULT_VALUE = 32;
 
     public StaticIcon(MapContext context) {
         this(context, DEFAULT_VALUE, DEFAULT_VALUE);
@@ -41,8 +41,10 @@ public abstract class StaticIcon extends IconRenderer {
             this.iconSizeZ = DEFAULT_VALUE;
             this.iconSizeX=(int)(DEFAULT_VALUE*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
         }
+
         float sizeX = hovered ? this.iconSizeX * this.getHoverScaleFactor() : this.iconSizeX;
         float sizeZ = hovered ? this.iconSizeZ * this.getHoverScaleFactor() : this.iconSizeZ;
+        System.out.println(sizeX+" "+sizeZ);
         int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width - sizeX / 2.0F);
         int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height - sizeZ / 2.0F);
 
