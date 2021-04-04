@@ -14,9 +14,7 @@ import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -83,6 +81,15 @@ public class Icons {
             System.out.println("Found icon " + name + ".");
             return ImageIO.read(uri.toURL());
         } catch (Exception e) {
+            try {
+                FileWriter fstream = new FileWriter("error.log", true); //true tells to append data.
+                BufferedWriter  out = new BufferedWriter(fstream);
+                out.write(e.toString());
+                fstream.close();
+            }catch (Exception ee){
+                ee.printStackTrace();
+            }
+
             e.printStackTrace();
             System.err.println("Didn't find icon " + name + ".");
         }
