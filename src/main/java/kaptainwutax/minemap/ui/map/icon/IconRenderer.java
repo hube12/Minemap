@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
@@ -33,4 +34,17 @@ public abstract class IconRenderer {
 
     public abstract boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height);
 
+    public float getZoomScaleFactor(){
+        double pxFrag= MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager().pixelsPerFragment;
+        if (pxFrag<64){
+            return 1/2F;
+        }else if (pxFrag<128){
+            return 1/1.5F;
+        }
+        return 1F;
+    }
+
+    public float getHoverScaleFactor() {
+        return 1.5F;
+    }
 }
