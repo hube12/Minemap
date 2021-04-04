@@ -16,13 +16,12 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.nio.file.*;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -77,29 +76,18 @@ public class Icons {
 
     public static BufferedImage getIcon(String name) {
         try {
-            URI uri = getURI(name);
+            URI uri = getFileHierarchical("/icon",name);
             if (uri == null) {
                 throw new FileNotFoundException();
             }
-            System.out.println("Found icon "+name+".");
+            System.out.println("Found icon " + name + ".");
             return ImageIO.read(uri.toURL());
         } catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Didn't find icon " + name + ".");
         }
 
         return null;
-    }
-
-    public static URI getURI(String name) {
-        File dir = getFileFromURL("/icon");
-        if (dir == null) {
-            return null;
-        }
-        List<File> matches=collectAllFiles(dir, file -> file.getName().equals(name + ".png")).collect(Collectors.toList());
-        if (matches.size() == 0) {
-            return null;
-        }
-        return matches.get(0).toURI();
     }
 
     public static Stream<File> collectAllFiles(File path, Predicate<File> predicate) {
@@ -115,16 +103,40 @@ public class Icons {
         return fileStream;
     }
 
-    public static File getFileFromURL(String path) {
-        URL url = Icons.class.getResource(path);
-        File file;
-        try {
-            file = new File(url.toURI());
-        } catch (URISyntaxException e) {
-            file = new File(url.getPath());
+    public static URI getFileHierarchical(String mainPath, String fileName) throws URISyntaxException, IOException {
+        Path dir;
+        FileSystem fileSystem=null;
+        URL url = Icons.class.getResource(mainPath);
+        if (url == null) return null;
+        URI uri = url.toURI();
+        if ("jar".equals(uri.getScheme())) {
+            try {
+                fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap(), null);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            try {
+                dir=fileSystem.getPath(mainPath);
+            }catch (Exception e ){
+                e.printStackTrace();
+                fileSystem.close();
+                return null;
+            }
+
+        } else {
+            dir= new File(uri).toPath();
         }
-        return file;
+        List<Path> matches = Files.walk(dir).
+                filter(file-> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName+".png")).
+                collect(Collectors.toList());
+        if (fileSystem!=null){
+            fileSystem.close();
+        }
+        if (matches.size() == 0) {
+            return null;
+        }
+        return matches.get(0).toUri();
     }
-
-
 }
