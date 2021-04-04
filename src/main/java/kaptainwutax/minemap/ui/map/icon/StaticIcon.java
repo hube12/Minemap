@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
@@ -14,7 +15,7 @@ public abstract class StaticIcon extends IconRenderer {
 
     private int iconSizeX;
     private int iconSizeZ;
-    private static final int DEFAULT_VALUE = 32;
+    private static final int DEFAULT_VALUE = 24;
 
     public StaticIcon(MapContext context) {
         this(context, DEFAULT_VALUE, DEFAULT_VALUE);
@@ -41,14 +42,33 @@ public abstract class StaticIcon extends IconRenderer {
             this.iconSizeZ = DEFAULT_VALUE;
             this.iconSizeX=(int)(DEFAULT_VALUE*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
         }
+        Graphics2D g2d = (Graphics2D) graphics;
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+        // disable stroke change
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        // disable weird floating point since pixel accurate
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
+        // Interpolation correctly
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        // disable dithering for full color accuracy
+        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+
 
         float sizeX = hovered ? this.iconSizeX * this.getHoverScaleFactor() : this.iconSizeX;
         float sizeZ = hovered ? this.iconSizeZ * this.getHoverScaleFactor() : this.iconSizeZ;
-        System.out.println(sizeX+" "+sizeZ);
+
         int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width - sizeX / 2.0F);
         int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height - sizeZ / 2.0F);
-
-        graphics.drawImage(icon, info.x + sx, info.y + sy, (int) sizeX, (int) sizeZ, null);
+        double pxFrag=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager().pixelsPerFragment;
+        if (pxFrag<64){
+            sizeX/=2;
+            sizeZ/=2;
+        }else if (pxFrag<128){
+            sizeX/=1.5F;
+            sizeZ/=1.5F;
+        }
+        g2d.drawImage(icon, info.x + sx, info.y + sy,(int)sizeX,(int)sizeZ, null);
     }
 
     @Override

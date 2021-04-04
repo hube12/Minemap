@@ -14,9 +14,15 @@ import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Icons {
 
@@ -51,35 +57,71 @@ public class Icons {
 
         register(SpawnPoint.class, "spawn");
 
-        register(Ruler.class,"ruler");
-        register(Area.class,"area");
-        register(Circle.class,"circle");
+        register(Ruler.class, "ruler");
+        register(Area.class, "area");
+        register(Circle.class, "circle");
 
 
-        register(CloseButton.class,"close");
-        register(CopyButton.class,"copy");
-        register(JumpButton.class,"jump");
-        register(InfoButton.class,"info");
+        register(CloseButton.class, "close");
+        register(CopyButton.class, "copy");
+        register(JumpButton.class, "jump");
+        register(InfoButton.class, "info");
     }
 
     public static <T> void register(Class<T> clazz, String name) {
         REGISTRY.put(clazz, getIcon(name));
     }
-    
+
     public static BufferedImage getIcon(String name) {
         try {
-            URL url = Icons.class.getResource("/icon/" + name + ".png");
-            System.out.println("Found icon " + name + ".");
-            return ImageIO.read(url);
-        } catch(Exception e) {
+            URI uri = getURI(name);
+            if (uri == null) {
+                throw new FileNotFoundException();
+            }
+            System.out.println("Found icon "+name+".");
+            return ImageIO.read(uri.toURL());
+        } catch (Exception e) {
             System.err.println("Didn't find icon " + name + ".");
         }
 
         return null;
     }
 
-    public static URL getURI(String name){
-        return Icons.class.getResource("/icon/" + name + ".png");
+    public static URI getURI(String name) {
+        File dir = getFileFromURL("/icon");
+        if (dir == null) {
+            return null;
+        }
+        List<File> matches=collectAllFiles(dir, file -> file.getName().equals(name + ".png")).collect(Collectors.toList());
+        if (matches.size() == 0) {
+            return null;
+        }
+        return matches.get(0).toURI();
     }
+
+    public static Stream<File> collectAllFiles(File path, Predicate<File> predicate) {
+        Stream<File> fileStream = Stream.empty();
+        for (File file : Objects.requireNonNull(path.listFiles())) {
+            if (predicate != null && predicate.test(file)) {
+                fileStream = Stream.concat(fileStream, Stream.of(file));
+            }
+            if (file.isDirectory()) {
+                fileStream = Stream.concat(fileStream, collectAllFiles(file, predicate));
+            }
+        }
+        return fileStream;
+    }
+
+    public static File getFileFromURL(String path) {
+        URL url = Icons.class.getResource(path);
+        File file;
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            file = new File(url.getPath());
+        }
+        return file;
+    }
+
 
 }
