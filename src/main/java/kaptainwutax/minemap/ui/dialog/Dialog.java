@@ -4,6 +4,8 @@ import kaptainwutax.minemap.MineMap;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -20,7 +22,7 @@ public abstract class Dialog extends JDialog {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        this.registerBindings();
         this.pack();
 
         this.setLocation(
@@ -47,4 +49,35 @@ public abstract class Dialog extends JDialog {
         });
         runAtExit=runnable;
     }
+
+    protected abstract void create();
+
+    protected abstract void cancel();
+
+    public void registerBindings() {
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = getRootPane().getActionMap();
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "continue");
+        actionMap.put("continue", new ButtonContinue());
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+        actionMap.put("cancel", new ButtonCancel());
+    }
+
+    public class ButtonContinue extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            create();
+        }
+    }
+
+    public class ButtonCancel extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            cancel();
+        }
+    }
+
+
 }

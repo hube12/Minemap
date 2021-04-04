@@ -8,3 +8,4 @@ screenshots/
 .settings/org.eclipse.buildship.core.prefs
 bin/
 .DS_Store
+src/main/java/kaptainwutax/minemap/Test.java

@@ -58,25 +58,8 @@ public class ShortcutDialog extends Dialog  {
                 }
         );
         this.continueButton = new JButton("Continue");
-        int numberShortcuts=Configs.KEYBOARDS.getKEYBOARDS().size();
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            assert ( numberShortcuts== shortcutActions.size());
-            assert (numberShortcuts == keyShortcuts.size());
-            for (int i = 0; i < numberShortcuts; i++) {
-                Pair<Dropdown<?>[],JTextField> keyShortcut=keyShortcuts.get(i);
-                KeyShortcuts.ShortcutAction action=shortcutActions.get(i);
-                KeyShortcuts.KeyRegister.Type type= (KeyShortcuts.KeyRegister.Type) keyShortcut.getFirst()[0].getSelected();
-                KeyShortcuts.KeyRegister.Modifier modifier= (KeyShortcuts.KeyRegister.Modifier) keyShortcut.getFirst()[1].getSelected();
-                KeyShortcuts.KeyRegister.KeyLocation keylocation= (KeyShortcuts.KeyRegister.KeyLocation) keyShortcut.getFirst()[2].getSelected();
-                Configs.KEYBOARDS.addOverrideEntry(action,new KeyShortcuts.KeyRegister(keyShortcut.getSecond().getText(),type,modifier,keylocation));
-            }
-            Configs.KEYBOARDS.flush();
-            KeyShortcuts.deRegisterShortcuts();
-            KeyShortcuts.registerShortcuts();
-            MineMap.INSTANCE.toolbarPane.doDelayedLabels();
-            this.continueButton.setEnabled(false);
-            this.dispose();
-        }));
+
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
         this.resetButton = new JButton("Reset shortcuts");
 
         this.resetButton.addMouseListener(Events.Mouse.onPressed(e -> {
@@ -95,4 +78,28 @@ public class ShortcutDialog extends Dialog  {
         this.getContentPane().add(new JLabel());
     }
 
+    protected void create() {
+        int numberShortcuts=Configs.KEYBOARDS.getKEYBOARDS().size();
+        assert ( numberShortcuts== shortcutActions.size());
+        assert (numberShortcuts == keyShortcuts.size());
+        for (int i = 0; i < numberShortcuts; i++) {
+            Pair<Dropdown<?>[],JTextField> keyShortcut=keyShortcuts.get(i);
+            KeyShortcuts.ShortcutAction action=shortcutActions.get(i);
+            KeyShortcuts.KeyRegister.Type type= (KeyShortcuts.KeyRegister.Type) keyShortcut.getFirst()[0].getSelected();
+            KeyShortcuts.KeyRegister.Modifier modifier= (KeyShortcuts.KeyRegister.Modifier) keyShortcut.getFirst()[1].getSelected();
+            KeyShortcuts.KeyRegister.KeyLocation keylocation= (KeyShortcuts.KeyRegister.KeyLocation) keyShortcut.getFirst()[2].getSelected();
+            Configs.KEYBOARDS.addOverrideEntry(action,new KeyShortcuts.KeyRegister(keyShortcut.getSecond().getText(),type,modifier,keylocation));
+        }
+        Configs.KEYBOARDS.flush();
+        KeyShortcuts.deRegisterShortcuts();
+        KeyShortcuts.registerShortcuts();
+        MineMap.INSTANCE.toolbarPane.doDelayedLabels();
+        this.continueButton.setEnabled(false);
+        this.dispose();
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
 }

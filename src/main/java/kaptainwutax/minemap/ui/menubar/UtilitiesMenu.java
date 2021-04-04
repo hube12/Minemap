@@ -53,8 +53,15 @@ public class UtilitiesMenu extends Menu {
     public Runnable getNStructure() {
         return () -> {
             if (!this.listStructure.isEnabled()) return;
-            JDialog jumpDialogue = new StructureListDialog();
-            jumpDialogue.setVisible(true);
+            StructureListDialog dialog;
+            try {
+                this.activate.run();
+                dialog = new StructureListDialog(this.deactivate);
+                dialog.setVisible(true);
+            } catch (Exception exception) {
+                this.deactivate.run();
+                exception.printStackTrace();
+            }
         };
     }
 

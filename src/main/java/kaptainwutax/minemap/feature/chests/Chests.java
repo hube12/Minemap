@@ -3,7 +3,6 @@ package kaptainwutax.minemap.feature.chests;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.BuriedTreasure;
 import kaptainwutax.featureutils.structure.DesertPyramid;
-import kaptainwutax.featureutils.structure.RuinedPortal;
 import kaptainwutax.minemap.feature.NERuinedPortal;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.minemap.feature.chests.loot.BurriedTreasureLoot;

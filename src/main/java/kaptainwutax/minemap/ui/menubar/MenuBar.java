@@ -39,7 +39,7 @@ public class MenuBar extends JMenuBar {
     }
 
     public boolean isActive() {
-        return this.fileMenu.isActive() || this.worldMenu.isActive() || this.utilitiesMenu.isActive();
+        return this.fileMenu.isActive() || this.worldMenu.isActive() || this.utilitiesMenu.isActive() || this.settingsMenu.isActive();
     }
 
 

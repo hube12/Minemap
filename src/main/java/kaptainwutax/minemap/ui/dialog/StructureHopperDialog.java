@@ -25,7 +25,11 @@ import java.util.stream.Collectors;
 public class StructureHopperDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;
     public JButton continueButton;
-
+    private MapPanel map;
+    private MapContext context;
+    private MapSettings settings;
+    private MapManager manager;
+    private ChunkRand chunkRand;
 
     public StructureHopperDialog(Runnable onExit) {
         super("Go to Structure Coordinates", new GridLayout(0, 1));
@@ -34,12 +38,12 @@ public class StructureHopperDialog extends Dialog {
 
     @Override
     public void initComponents() {
-        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         if (map == null) return;
-        MapContext context = map.getContext();
-        MapSettings settings = context.getSettings();
-        MapManager manager = map.getManager();
-        ChunkRand chunkRand = new ChunkRand();
+        context = map.getContext();
+        settings = context.getSettings();
+        manager = map.getManager();
+        chunkRand = new ChunkRand();
         List<Feature<?, ?>> features = settings.getAllFeatures();
         List<StructureItem> structureItems = features.stream()
                 .filter(e -> e instanceof RegionStructure)
@@ -50,28 +54,7 @@ public class StructureHopperDialog extends Dialog {
         this.continueButton = new JButton();
         this.continueButton.setText("Continue");
 
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            if (!this.isEnabled()) return;
-            RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
-            BPos centerPos = manager.getCenterPos();
-            BiomeSource biomeSource = context.getBiomeSource();
-            int dimCoeff = 0;
-            if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
-                biomeSource = context.getBiomeSource(Dimension.NETHER);
-                dimCoeff = 3;
-            }
-            List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
-                    .sequential()
-                    .limit(1)
-                    .collect(Collectors.toList());
-            if (!bPosList.isEmpty()) {
-                BPos bPos = bPosList.get(0);
-                manager.setCenterPos(bPos.getX(), bPos.getZ());
-            } else {
-                System.out.println("Not found");
-            }
-            this.dispose();
-        }));
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
 
         this.getContentPane().add(this.structureItemDropdown);
         this.getContentPane().add(this.continueButton);
@@ -95,4 +78,33 @@ public class StructureHopperDialog extends Dialog {
             return feature.getName();
         }
     }
+
+    protected void create() {
+        if (!this.continueButton.isEnabled()) return;
+        RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        BPos centerPos = manager.getCenterPos();
+        BiomeSource biomeSource = context.getBiomeSource();
+        int dimCoeff = 0;
+        if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
+            biomeSource = context.getBiomeSource(Dimension.NETHER);
+            dimCoeff = 3;
+        }
+        List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
+                .sequential()
+                .limit(1)
+                .collect(Collectors.toList());
+        if (!bPosList.isEmpty()) {
+            BPos bPos = bPosList.get(0);
+            manager.setCenterPos(bPos.getX(), bPos.getZ());
+        } else {
+            System.out.println("Not found");
+        }
+        this.dispose();
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
+
 }

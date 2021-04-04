@@ -10,8 +10,6 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
@@ -65,22 +63,9 @@ public class EnterSeedDialog extends Dialog {
         this.getContentPane().add(checkBoxes[Dimension.NETHER.ordinal()]);
         this.getContentPane().add(splitPanel2);
         this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
-
-        this.registerBindings();
     }
 
-    public void registerBindings() {
-        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionMap = getRootPane().getActionMap();
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "continue");
-        actionMap.put("continue", new ButtonContinue());
-
-        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-        actionMap.put("cancel", new ButtonCancel());
-    }
-
-    private void create() {
+    protected void create() {
         continueButton.setEnabled(false);
         MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
                 threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
@@ -90,22 +75,8 @@ public class EnterSeedDialog extends Dialog {
         dispose();
     }
 
-    private void cancel() {
+    protected void cancel() {
         continueButton.setEnabled(false);
         dispose();
-    }
-
-    public class ButtonContinue extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            create();
-        }
-    }
-
-    public class ButtonCancel extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            cancel();
-        }
     }
 }

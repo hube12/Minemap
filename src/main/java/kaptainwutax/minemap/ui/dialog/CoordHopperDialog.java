@@ -53,24 +53,7 @@ public class CoordHopperDialog extends Dialog {
         this.continueButton = new JButton();
         this.continueButton.setText("Continue");
 
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            if(!this.isEnabled())return;
-
-            int x, z;
-
-            try {
-                x = Integer.parseInt(this.enterX.getText().trim());
-                z = Integer.parseInt(this.enterZ.getText().trim());
-            } catch(NumberFormatException _e) {
-                return;
-            }
-
-            x = this.typeDropdown.getSelected().transform(x);
-            z = this.typeDropdown.getSelected().transform(z);
-            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            if(map != null)map.getManager().setCenterPos(x, z);
-            this.dispose();
-        }));
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
 
         JSplitPane duo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.enterX, this.enterZ);
         this.getContentPane().add(duo);
@@ -98,6 +81,29 @@ public class CoordHopperDialog extends Dialog {
         public int transform(int i) {
             return this.transformation.applyAsInt(i);
         }
+    }
+
+    protected void create() {
+        if(!this.continueButton.isEnabled())return;
+        int x, z;
+
+        try {
+            x = Integer.parseInt(this.enterX.getText().trim());
+            z = Integer.parseInt(this.enterZ.getText().trim());
+        } catch(NumberFormatException _e) {
+            return;
+        }
+
+        x = this.typeDropdown.getSelected().transform(x);
+        z = this.typeDropdown.getSelected().transform(z);
+        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        if(map != null)map.getManager().setCenterPos(x, z);
+        this.dispose();
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
     }
 
 }

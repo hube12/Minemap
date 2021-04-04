@@ -17,12 +17,14 @@ public class SaltDialog extends Dialog {
     public ArrayList<JLabel> saltsNames;
     public JButton continueButton;
     public JButton resetButton;
+    private MCVersion version;
+    private int numberSalts;
     // those are cursed but what could I do? Inject myself between super and initcomponent?
-    public static Callable<MCVersion> version = () -> MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0];
-    public static Callable<Integer> numberSalts = () -> Configs.SALTS.getSalts(version.call()).size();
+    public static Callable<MCVersion> versionCallable = () -> MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0];
+    public static Callable<Integer> numberSaltsCallable = () -> Configs.SALTS.getSalts(versionCallable.call()).size();
 
     public SaltDialog(Runnable onExit) throws Exception {
-        super("Change salts", new GridLayout(numberSalts.call() + 1, 1));
+        super("Change salts", new GridLayout(numberSaltsCallable.call() + 1, 1));
         this.addExitProcedure(onExit);
     }
 
@@ -35,11 +37,11 @@ public class SaltDialog extends Dialog {
     public void initComponents() {
         this.salts = new ArrayList<>();
         this.saltsNames = new ArrayList<>();
-        int numberSalts = 0;
-        MCVersion version = MCVersion.values()[0];
+        numberSalts = 0;
+        version = MCVersion.values()[0];
         try {
-            numberSalts = SaltDialog.numberSalts.call();
-            version = SaltDialog.version.call();
+            numberSalts = SaltDialog.numberSaltsCallable.call();
+            version = SaltDialog.versionCallable.call();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -62,36 +64,11 @@ public class SaltDialog extends Dialog {
 
 
         this.continueButton = new JButton("Continue");
-
-        int finalNumberSalts = numberSalts;
-        MCVersion finalVersion = version;
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            assert (finalNumberSalts == salts.size());
-            assert (finalNumberSalts == saltsNames.size());
-            for (int i = 0; i < finalNumberSalts; i++) {
-                String name = saltsNames.get(i).getText().split(" salt")[0];
-                try {
-                    String previous = ((JSpinner.NumberEditor) salts.get(i).getEditor()).getTextField().getText();
-                    salts.get(i).commitEdit();
-                    if (!previous.equals(salts.get(i).getValue().toString())) {
-                        JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should " +
-                                "only use valid numbers we changed " + "from " + previous + " to " + salts.get(i).getValue().toString());
-                    }
-                } catch (ParseException parseException) {
-                    JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use numbers");
-                }
-                Integer value = (Integer) salts.get(i).getModel().getValue();
-                Configs.SALTS.addOverrideEntry(finalVersion, name, value);
-            }
-            Configs.SALTS.flush();
-            MineMap.INSTANCE.worldTabs.invalidateAll();
-            this.continueButton.setEnabled(false);
-            this.dispose();
-        }));
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
         this.resetButton = new JButton("Reset salts to current version");
 
         this.resetButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            Configs.SALTS.resetOverrides(finalVersion);
+            Configs.SALTS.resetOverrides(version);
             Configs.SALTS.flush();
             MineMap.INSTANCE.worldTabs.invalidateAll();
             this.resetButton.setEnabled(false);
@@ -101,4 +78,32 @@ public class SaltDialog extends Dialog {
         this.getContentPane().add(this.resetButton);
     }
 
+    protected void create() {
+        assert (numberSalts == salts.size());
+        assert (numberSalts == saltsNames.size());
+        for (int i = 0; i < numberSalts; i++) {
+            String name = saltsNames.get(i).getText().split(" salt")[0];
+            try {
+                String previous = ((JSpinner.NumberEditor) salts.get(i).getEditor()).getTextField().getText();
+                salts.get(i).commitEdit();
+                if (!previous.equals(salts.get(i).getValue().toString())) {
+                    JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should " +
+                            "only use valid numbers we changed " + "from " + previous + " to " + salts.get(i).getValue().toString());
+                }
+            } catch (ParseException parseException) {
+                JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use numbers");
+            }
+            Integer value = (Integer) salts.get(i).getModel().getValue();
+            Configs.SALTS.addOverrideEntry(version, name, value);
+        }
+        Configs.SALTS.flush();
+        MineMap.INSTANCE.worldTabs.invalidateAll();
+        this.continueButton.setEnabled(false);
+        this.dispose();
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
 }

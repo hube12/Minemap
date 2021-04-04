@@ -2,11 +2,11 @@ package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
-import kaptainwutax.terrainutils.ChunkGenerator;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.util.UnsupportedVersion;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 import java.util.HashMap;
 import java.util.Map;

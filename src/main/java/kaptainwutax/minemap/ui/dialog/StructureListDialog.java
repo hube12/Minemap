@@ -36,20 +36,26 @@ public class StructureListDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;
     public JButton continueButton;
     public JTextField enterN;
+    private MapPanel map;
+    private MapContext context;
+    private MapSettings settings;
+    private MapManager manager;
+    private ChunkRand chunkRand;
 
-    public StructureListDialog() {
+    public StructureListDialog(Runnable onExit) {
         super("List N closest structures", new GridLayout(0, 1));
+        this.addExitProcedure(onExit);
     }
 
     @Override
     public void initComponents() {
-        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         if (map == null) return;
 
-        MapContext context = map.getContext();
-        MapSettings settings = context.getSettings();
-        MapManager manager = map.getManager();
-        ChunkRand chunkRand = new ChunkRand();
+        context = map.getContext();
+        settings = context.getSettings();
+        manager = map.getManager();
+        chunkRand = new ChunkRand();
         List<Feature<?, ?>> features = settings.getAllFeatures();
 
         List<StructureItem> structureItems = features.stream()
@@ -73,43 +79,7 @@ public class StructureListDialog extends Dialog {
 
         this.continueButton = new JButton();
         this.continueButton.setText("Continue");
-
-        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> {
-            if (!this.isEnabled()) return;
-
-            int n;
-            try {
-                n = Integer.parseInt(this.enterN.getText().trim());
-            } catch (NumberFormatException _e) {
-                JOptionPane.showMessageDialog(this, String.format("This is not a number: %s", this.enterN.getText().trim()));
-                return;
-            }
-
-            if (n > 300 || n <= 0) {
-                JOptionPane.showMessageDialog(this, String.format("You have chosen a number (%d) outside of the permitted range [1;300]", n));
-                return;
-            }
-
-            RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
-            BPos centerPos = manager.getCenterPos();
-            BiomeSource biomeSource = context.getBiomeSource();
-            int dimCoeff = 0;
-            if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
-                biomeSource = context.getBiomeSource(Dimension.NETHER);
-                dimCoeff = 3;
-            }
-
-            List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
-                    .sequential()
-                    .limit(n)
-                    .collect(Collectors.toList());
-
-            // destroy the current container
-            this.dispose();
-
-            this.makeFrame(bPosList,feature,n);
-
-        }));
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
 
         this.getContentPane().add(this.enterN);
         this.getContentPane().add(this.structureItemDropdown);
@@ -117,7 +87,7 @@ public class StructureListDialog extends Dialog {
     }
 
 
-    private void makeFrame(List<BPos> bPosList,RegionStructure<?, ?> feature,int n){
+    private void makeFrame(List<BPos> bPosList, RegionStructure<?, ?> feature, int n) {
         // create a new frame
         JFrame frame = new JFrame(String.format("List of %d %s", n, feature.getName()));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -129,9 +99,9 @@ public class StructureListDialog extends Dialog {
         listPanel.removeLastBorder();
 
         JButton copyTPs = new JButton("Copy all TPs");
-        copyTPs.addActionListener(event->{
-            StringBuilder copyString=new StringBuilder();
-            bPosList.forEach(bPos -> copyString.append(String.format("/tp @p %d ~ %d", bPos.getX(),bPos.getZ())).append("\n"));
+        copyTPs.addActionListener(event -> {
+            StringBuilder copyString = new StringBuilder();
+            bPosList.forEach(bPos -> copyString.append(String.format("/tp @p %d ~ %d", bPos.getX(), bPos.getZ())).append("\n"));
             StringSelection stringSelection = new StringSelection(copyString.toString());
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
@@ -140,9 +110,9 @@ public class StructureListDialog extends Dialog {
         });
 
         JButton copyLocations = new JButton("Copy all locations");
-        copyLocations.addActionListener(event->{
-            StringBuilder copyString=new StringBuilder(String.format("%s\nposX,posZ\n", feature.getName()));
-            bPosList.forEach(bPos -> copyString.append(String.format("%d,%d", bPos.getX(),bPos.getZ())).append("\n"));
+        copyLocations.addActionListener(event -> {
+            StringBuilder copyString = new StringBuilder(String.format("%s\nposX,posZ\n", feature.getName()));
+            bPosList.forEach(bPos -> copyString.append(String.format("%d,%d", bPos.getX(), bPos.getZ())).append("\n"));
             StringSelection stringSelection = new StringSelection(copyString.toString());
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(stringSelection, null);
@@ -150,7 +120,7 @@ public class StructureListDialog extends Dialog {
             copyLocations.setForeground(Color.WHITE);
         });
 
-        JSplitPane copyPane=new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,copyTPs,copyLocations);
+        JSplitPane copyPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, copyTPs, copyLocations);
         copyPane.setResizeWeight(1.0);
         listPanel.add(copyPane, BorderLayout.SOUTH);
 
@@ -222,20 +192,20 @@ public class StructureListDialog extends Dialog {
             this.positionText.setOpaque(true);
             this.positionText.setForeground(Color.WHITE);
 
-            this.copyCoordinate = new CopyButton(16, 6, 1.0F,true,Color.DARK_GRAY);
-            this.copyCoordinate.addActionListener(e->{
-                String myString = String.format("/tp @p %d ~ %d", pos.getX(),pos.getZ());
+            this.copyCoordinate = new CopyButton(16, 6, 1.0F, true, Color.DARK_GRAY);
+            this.copyCoordinate.addActionListener(e -> {
+                String myString = String.format("/tp @p %d ~ %d", pos.getX(), pos.getZ());
                 StringSelection stringSelection = new StringSelection(myString);
                 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
                 clipboard.setContents(stringSelection, null);
-                ListPanel.toggleParentChildren(2,this, component -> component.copyCoordinate.changeBColor(Color.DARK_GRAY));
+                ListPanel.toggleParentChildren(2, this, component -> component.copyCoordinate.changeBColor(Color.DARK_GRAY));
                 this.copyCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
-            this.jumpCoordinate = new JumpButton(16, 6, 1.0F,true,Color.DARK_GRAY);
-            this.jumpCoordinate.addActionListener(e->{
+            this.jumpCoordinate = new JumpButton(16, 6, 1.0F, true, Color.DARK_GRAY);
+            this.jumpCoordinate.addActionListener(e -> {
                 MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.setCenterPos(pos.getX(), pos.getZ());
-                ListPanel.toggleParentChildren(2,this, component -> component.jumpCoordinate.changeBColor(Color.DARK_GRAY));
+                ListPanel.toggleParentChildren(2, this, component -> component.jumpCoordinate.changeBColor(Color.DARK_GRAY));
                 this.jumpCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
@@ -246,8 +216,48 @@ public class StructureListDialog extends Dialog {
 
             this.setBackground(new Color(0, 0, 0, 180));
         }
+    }
 
 
+    protected void create() {
+        if (!this.continueButton.isEnabled()) return;
+
+        int n;
+        try {
+            n = Integer.parseInt(this.enterN.getText().trim());
+        } catch (NumberFormatException _e) {
+            JOptionPane.showMessageDialog(this, String.format("This is not a number: %s", this.enterN.getText().trim()));
+            return;
+        }
+
+        if (n > 300 || n <= 0) {
+            JOptionPane.showMessageDialog(this, String.format("You have chosen a number (%d) outside of the permitted range [1;300]", n));
+            return;
+        }
+
+        RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        BPos centerPos = manager.getCenterPos();
+        BiomeSource biomeSource = context.getBiomeSource();
+        int dimCoeff = 0;
+        if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
+            biomeSource = context.getBiomeSource(Dimension.NETHER);
+            dimCoeff = 3;
+        }
+
+        List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
+                .sequential()
+                .limit(n)
+                .collect(Collectors.toList());
+
+        // destroy the current container
+        this.dispose();
+
+        this.makeFrame(bPosList, feature, n);
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
     }
 
 
