@@ -90,7 +90,7 @@ public class TooltipTools extends JPanel {
             this.positionText.setOpaque(true);
             this.positionText.setForeground(Color.WHITE);
 
-            this.infoButton = new InfoButton();
+            this.infoButton = new InfoButton(16,-1,1.9f);
             this.infoButton.addActionListener(e -> {
                 MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                 if (map == null) return;
@@ -125,7 +125,7 @@ public class TooltipTools extends JPanel {
                 frame.setVisible(true);
             });
 
-            this.closeButton = new CloseButton();
+            this.closeButton = new CloseButton(16,0,1.8f);
             this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
 
             this.add(this.iconView, gbc);
