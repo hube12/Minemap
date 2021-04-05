@@ -43,7 +43,7 @@ public class IconsConfig extends Config {
         this.ICON_SIZES.clear();
 
         addDefaultEntry(BastionRemnant.class, 1.0);
-        addDefaultEntry(BuriedTreasure.class, 0.4);
+        addDefaultEntry(BuriedTreasure.class, 0.6);
         addDefaultEntry(DesertPyramid.class, 1.0);
         addDefaultEntry(EndCity.class, 1.0);
         addDefaultEntry(Fortress.class, 1.0);

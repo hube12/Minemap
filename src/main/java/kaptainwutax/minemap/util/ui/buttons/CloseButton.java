@@ -4,7 +4,9 @@ import java.awt.*;
 
 public class CloseButton extends ButtonIcon {
 
-
+    public CloseButton(int size, int inset, float factor, boolean background, Color backgroundColor,boolean border) {
+        super(size, inset, factor, background, backgroundColor,border);
+    }
     public CloseButton(int size, int inset, float factor, boolean background, Color backgroundColor) {
         super(size, inset, factor, background, backgroundColor);
     }

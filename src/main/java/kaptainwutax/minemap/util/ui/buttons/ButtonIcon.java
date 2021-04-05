@@ -12,13 +12,19 @@ public abstract class ButtonIcon extends JButton {
     public final int inset;
     public final float factor;
     public final boolean background;
+    public final boolean border;
     public Color backgroundColor;
 
     public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor) {
+        this(size,inset,factor,background,backgroundColor,true);
+    }
+
+    public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor, boolean border) {
         super();
         this.size = size;
         this.inset = inset;
         this.factor = factor;
+        this.border=border;
         this.background = background;
         this.backgroundColor = backgroundColor;
     }
@@ -50,7 +56,7 @@ public abstract class ButtonIcon extends JButton {
 
         this.setOpaque(false);
         this.setContentAreaFilled(false);
-        this.setBorder(new RoundedBorder(size - 2, 30)); //10 is the radius
+        if (border) this.setBorder(new RoundedBorder(size - 2, 30));
         this.setForeground(Color.DARK_GRAY);
 
         Graphics2D g2d = (Graphics2D) g;

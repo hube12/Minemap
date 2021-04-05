@@ -125,7 +125,7 @@ public class TooltipTools extends JPanel {
                 frame.setVisible(true);
             });
 
-            this.closeButton = new CloseButton();
+            this.closeButton = new CloseButton(16,6,1.0F,false,Color.WHITE,false);;
             this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
 
             this.add(this.iconView, gbc);
