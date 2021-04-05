@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.init;
 
 import kaptainwutax.featureutils.decorator.EndGateway;
+import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.MineMap;
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
 public class Icons {
 
     private static final Map<Class<?>, BufferedImage> REGISTRY = new HashMap<>();
+    private static final Map<Item, BufferedImage> REGISTRY_ITEM = new HashMap<>();
 
     public static void registerIcons() {
         register(BastionRemnant.class, Structure.getName(BastionRemnant.class));
@@ -69,16 +71,30 @@ public class Icons {
         register(JumpButton.class, "jump");
         register(InfoButton.class, "info");
 
-        register(Chest.class, "chest");
+        register(Chest.class, "treasure_chest");
         register(MineMap.class, "logo");
+
+    }
+
+    public static void registerItems(){
+        registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
+        registerItem(Item.GOLDEN_APPLE,"apple_golden");
     }
 
     public static <T> void register(Class<T> clazz, String name) {
         REGISTRY.put(clazz, getIcon(name));
     }
 
+    public static <T> void registerItem(Item item, String name) {
+        REGISTRY_ITEM.put(item, getIcon(name));
+    }
+
     public static <T> BufferedImage get(Class<T> clazz){
         return REGISTRY.get(clazz);
+    }
+
+    public static BufferedImage getItem(Item item){
+        return REGISTRY_ITEM.get(item);
     }
 
     private static BufferedImage getIcon(String name) {

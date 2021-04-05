@@ -1,18 +1,23 @@
 package kaptainwutax.minemap.ui.map.interactive;
 
+import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Chest extends JFrame {
     private CPos pos;
@@ -38,11 +43,6 @@ public class Chest extends JFrame {
     }
 
     @Override
-    public String getTitle() {
-        return this.getName();
-    }
-
-    @Override
     public String getName() {
         return "Chest Content";
     }
@@ -59,7 +59,7 @@ public class Chest extends JFrame {
 
     public void setFeature(RegionStructure<?, ?> feature) {
         this.feature = feature;
-        this.setTitle(this.getName()+" of "+this.feature.getName());
+        this.setTitle(this.getName()+" of "+ Arrays.stream(this.feature.getName().split("_")).map(Str::capitalize).collect(Collectors.joining(" ")));
     }
 
     public void setPos(CPos pos) {
@@ -120,6 +120,7 @@ public class Chest extends JFrame {
         }
 
         public int update(RegionStructure<?, ?> feature, CPos pos) {
+            this.clean();
             Loot.LootFactory<?> lootFactory = Chests.get(feature.getClass());
             if (lootFactory != null) {
                 Loot loot = lootFactory.create();
@@ -129,7 +130,19 @@ public class Chest extends JFrame {
                     List<JButton> rowButton = this.list.get(row);
                     for (int col = 0; col < COL_NUMBER; col++) {
                         if (!currentIterator.hasNext()) break;
-                        rowButton.get(col).setText(currentIterator.next().getItem().getName());
+                        Item item=currentIterator.next().getItem();
+                        BufferedImage icon=Icons.getItem(item);
+                        JButton current=rowButton.get(col);
+                        current.setMargin(new Insets(0, 0, 0, 0));
+                        if (icon==null) {
+                            current.setText(String.join(" ",item.getName().split("_")));
+                        }
+                        else {
+                            ImageIcon imageIcon=new ImageIcon(icon);
+                            imageIcon.setImage(imageIcon.getImage().getScaledInstance(current.getWidth(),current.getWidth(), Image.SCALE_SMOOTH));
+                            current.setIcon(imageIcon);
+                        }
+
                     }
                 }
                 return listItems.size();
@@ -142,6 +155,16 @@ public class Chest extends JFrame {
                 }
             }
             return 0;
+        }
+
+        public void clean(){
+            for (int row = 0; row < ROW_NUMBER; row++) {
+                List<JButton> rowButton = this.list.get(row);
+                for (int col = 0; col < COL_NUMBER; col++) {
+                    rowButton.get(col).setText("");
+                    rowButton.get(col).setIcon(null);
+                }
+            }
         }
 
         @Override

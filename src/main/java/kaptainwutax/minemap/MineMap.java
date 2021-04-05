@@ -24,6 +24,7 @@ public class MineMap extends JFrame {
     public static void main(String[] args) {
         Features.registerFeatures();
         Icons.registerIcons();
+        Icons.registerItems();
         Chests.registerChests();
         Configs.registerConfigs();
 
