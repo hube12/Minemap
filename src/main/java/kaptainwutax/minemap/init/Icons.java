@@ -3,7 +3,9 @@ package kaptainwutax.minemap.init;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.*;
+import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
@@ -66,6 +68,9 @@ public class Icons {
         register(CopyButton.class, "copy");
         register(JumpButton.class, "jump");
         register(InfoButton.class, "info");
+
+        register(Chest.class, "chest");
+        register(MineMap.class, "logo");
     }
 
     public static <T> void register(Class<T> clazz, String name) {

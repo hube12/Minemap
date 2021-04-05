@@ -45,6 +45,7 @@ public class MineMap extends JFrame {
         this.setSize(screenSize.width / 2, screenSize.height / 2);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setTitle("MineMap");
+        this.setIconImage(Icons.get(this.getClass()));
         System.out.println("Hello, its me");
         System.out.println("General Kenobi");
     }

@@ -4,6 +4,7 @@ import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.feature.chests.Loot;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
@@ -28,6 +29,7 @@ public class Chest extends JFrame {
         this.setSize(this.getSize());
         this.setLocationRelativeTo(null); // center
         this.setVisible(false);
+        this.setIconImage(Icons.get(this.getClass()));
     }
 
     @Override
