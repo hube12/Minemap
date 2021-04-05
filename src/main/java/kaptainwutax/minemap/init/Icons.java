@@ -77,8 +77,8 @@ public class Icons {
     }
 
     public static void registerItems(){
-        registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
-        registerItem(Item.GOLDEN_APPLE,"apple_golden");
+        //registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
+        //registerItem(Item.GOLDEN_APPLE,"apple_golden");
     }
 
     public static <T> void register(Class<T> clazz, String name) {
