@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 public class Icons {
 
-    public static final Map<Class<?>, BufferedImage> REGISTRY = new HashMap<>();
+    private static final Map<Class<?>, BufferedImage> REGISTRY = new HashMap<>();
 
     public static void registerIcons() {
         register(BastionRemnant.class, Structure.getName(BastionRemnant.class));
@@ -72,7 +72,11 @@ public class Icons {
         REGISTRY.put(clazz, getIcon(name));
     }
 
-    public static BufferedImage getIcon(String name) {
+    public static <T> BufferedImage get(Class<T> clazz){
+        return REGISTRY.get(clazz);
+    }
+
+    private static BufferedImage getIcon(String name) {
         try {
             URI uri = getFileHierarchical("/icon",name);
             if (uri == null) {

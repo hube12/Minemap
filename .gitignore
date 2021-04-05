@@ -9,3 +9,5 @@ screenshots/
 bin/
 .DS_Store
 src/main/java/kaptainwutax/minemap/Test.java
+
+error.log

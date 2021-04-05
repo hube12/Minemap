@@ -170,7 +170,7 @@ public class StructureListDialog extends Dialog {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    BufferedImage icon = Icons.REGISTRY.get(feature.getClass());
+                    BufferedImage icon = Icons.get(feature.getClass());
                     int iconSizeX, iconSizeZ;
                     int defaultValue = 20;
                     float factor = 1.5F;

@@ -32,7 +32,7 @@ public abstract class IconRenderer {
 
     public abstract void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered);
 
-    public abstract boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height);
+    public abstract boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height, Feature<?, ?> feature);
 
     public float getZoomScaleFactor(){
         double pxFrag= MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager().pixelsPerFragment;

@@ -39,7 +39,7 @@ public class SlimeIcon extends DynamicIcon {
     }
 
     @Override
-    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height) {
+    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height, Feature<?,?> feature) {
         return false;
     }
 

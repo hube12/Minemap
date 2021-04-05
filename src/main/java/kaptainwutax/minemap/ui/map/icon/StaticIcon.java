@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
@@ -28,7 +29,8 @@ public abstract class StaticIcon extends IconRenderer {
 
     @Override
     public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
-        BufferedImage icon = Icons.REGISTRY.get(feature.getClass());
+        BufferedImage icon = Icons.get(feature.getClass());
+        if (icon == null) return;
         if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
             this.iconSizeX = DEFAULT_VALUE;
             this.iconSizeZ = (int) (DEFAULT_VALUE * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
@@ -51,17 +53,20 @@ public abstract class StaticIcon extends IconRenderer {
 
         float sizeX = hovered ? this.iconSizeX * this.getHoverScaleFactor() : this.iconSizeX;
         float sizeZ = hovered ? this.iconSizeZ * this.getHoverScaleFactor() : this.iconSizeZ;
+        double scaleFactor = getZoomScaleFactor() * Configs.ICONS.getSize(feature.getClass());
+        sizeX *= scaleFactor;
+        sizeZ *= scaleFactor;
 
         int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width - sizeX / 2.0F);
         int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height - sizeZ / 2.0F);
 
-        g2d.drawImage(icon, info.x + sx, info.y + sy, (int) (sizeX * getZoomScaleFactor()), (int) (sizeZ * getZoomScaleFactor()), null);
+        g2d.drawImage(icon, info.x + sx, info.y + sy, (int) sizeX, (int) sizeZ, null);
     }
 
 
     @Override
-    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height) {
-        double scaleFactor = this.getHoverScaleFactor() * this.getZoomScaleFactor() / 2.0D;
+    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height, Feature<?, ?> feature) {
+        double scaleFactor = this.getHoverScaleFactor() * this.getZoomScaleFactor() * Configs.ICONS.getSize(feature.getClass()) / 2.0D;
         double distanceX = (fragment.getSize() / (double) width) * this.iconSizeX * scaleFactor;
         double distanceZ = (fragment.getSize() / (double) height) * this.iconSizeZ * scaleFactor;
         int dx = Math.abs(hoveredPos.getX() - featurePos.getX());

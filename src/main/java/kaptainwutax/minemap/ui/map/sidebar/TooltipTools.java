@@ -63,7 +63,7 @@ public class TooltipTools extends JPanel {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    BufferedImage icon = Icons.REGISTRY.get(tool.getClass());
+                    BufferedImage icon = Icons.get(tool.getClass());
                     int iconSizeX, iconSizeZ;
                     int defaultValue = 20;
                     float factor = 1.5F;

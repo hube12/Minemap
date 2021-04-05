@@ -73,7 +73,7 @@ public abstract class ButtonIcon extends JButton {
             g.setColor(old);
         }
 
-        BufferedImage icon = Icons.REGISTRY.get(this.getClass());
+        BufferedImage icon = Icons.get(this.getClass());
         int iconSizeX, iconSizeZ;
         int defaultValue = size;
         if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {

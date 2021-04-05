@@ -177,7 +177,7 @@ public class Fragment {
             if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
             IconRenderer renderer = this.context.getIconManager().getFor(entry.getKey());
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
-            newList.removeIf(pos -> !renderer.isHovered(this, checkPos, pos, width, height));
+            newList.removeIf(pos -> !renderer.isHovered(this, checkPos, pos, width, height,entry.getKey()));
             map.put(entry.getKey(), newList);
         }
 
