@@ -21,7 +21,10 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -76,7 +79,7 @@ public class Icons {
 
     }
 
-    public static void registerItems(){
+    public static void registerItems() {
         //registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
         //registerItem(Item.GOLDEN_APPLE,"apple_golden");
     }
@@ -89,29 +92,31 @@ public class Icons {
         REGISTRY_ITEM.put(item, getIcon(name));
     }
 
-    public static <T> BufferedImage get(Class<T> clazz){
+    public static <T> BufferedImage get(Class<T> clazz) {
         return REGISTRY.get(clazz);
     }
 
-    public static BufferedImage getItem(Item item){
+    public static BufferedImage getItem(Item item) {
         return REGISTRY_ITEM.get(item);
     }
 
     private static BufferedImage getIcon(String name) {
         try {
-            URI uri = getFileHierarchical("/icon",name);
-            if (uri == null) {
+            InputStream inputStream = getFileHierarchical("/icon", name);
+            if (inputStream == null) {
                 throw new FileNotFoundException();
             }
             System.out.println("Found icon " + name + ".");
-            return ImageIO.read(uri.toURL());
+            return ImageIO.read(inputStream);
         } catch (Exception e) {
             try {
                 FileWriter fstream = new FileWriter("error.log", true); //true tells to append data.
-                BufferedWriter  out = new BufferedWriter(fstream);
-                out.write(e.toString());
+                BufferedWriter out = new BufferedWriter(fstream);
+                out.write(e.toString() + "\n");
+                out.write(name + "\n");
+                out.flush();
                 fstream.close();
-            }catch (Exception ee){
+            } catch (Exception ee) {
                 ee.printStackTrace();
             }
 
@@ -135,13 +140,14 @@ public class Icons {
         return fileStream;
     }
 
-    public static URI getFileHierarchical(String mainPath, String fileName) throws URISyntaxException, IOException {
+    public static InputStream getFileHierarchical(String mainPath, String fileName) throws URISyntaxException, IOException {
         Path dir;
-        FileSystem fileSystem=null;
+        FileSystem fileSystem = null;
         URL url = Icons.class.getResource(mainPath);
         if (url == null) return null;
         URI uri = url.toURI();
-        if ("jar".equals(uri.getScheme())) {
+        boolean isJar = "jar".equals(uri.getScheme());
+        if (isJar) {
             try {
                 fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap(), null);
             } catch (IOException e) {
@@ -150,25 +156,26 @@ public class Icons {
             }
 
             try {
-                dir=fileSystem.getPath(mainPath);
-            }catch (Exception e ){
+                dir = fileSystem.getPath(mainPath);
+            } catch (Exception e) {
                 e.printStackTrace();
                 fileSystem.close();
                 return null;
             }
 
         } else {
-            dir= new File(uri).toPath();
+            dir = new File(uri).toPath();
         }
         List<Path> matches = Files.walk(dir).
-                filter(file-> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName+".png")).
+                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + ".png")).
                 collect(Collectors.toList());
-        if (fileSystem!=null){
+        if (fileSystem != null) {
             fileSystem.close();
         }
         if (matches.size() == 0) {
             return null;
         }
-        return matches.get(0).toUri();
+        Path path = matches.get(0);
+        return isJar ? Icons.class.getResourceAsStream(String.valueOf(path)) : new FileInputStream(path.toFile());
     }
 }
