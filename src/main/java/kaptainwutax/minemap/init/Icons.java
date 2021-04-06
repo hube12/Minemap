@@ -1,7 +1,6 @@
 package kaptainwutax.minemap.init;
 
 import kaptainwutax.featureutils.decorator.EndGateway;
-import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.MineMap;
@@ -10,6 +9,7 @@ import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
+import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
@@ -17,7 +17,10 @@ import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -30,101 +33,164 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static kaptainwutax.minemap.init.Logger.LOGGER;
+
 public class Icons {
 
-    private static final Map<Class<?>, BufferedImage> REGISTRY = new HashMap<>();
-    private static final Map<Item, BufferedImage> REGISTRY_ITEM = new HashMap<>();
+    private static final Map<Class<?>, List<Pair<String, BufferedImage>>> CLASS_REGISTRY = new HashMap<>();
+    private static final Map<Object, List<Pair<String, BufferedImage>>> REGISTRY_OBJECT = new HashMap<>();
+
 
     public static void registerIcons() {
-        register(BastionRemnant.class, Structure.getName(BastionRemnant.class));
-        register(BuriedTreasure.class, Structure.getName(BuriedTreasure.class));
-        register(DesertPyramid.class, Structure.getName(DesertPyramid.class));
-        register(EndCity.class, Structure.getName(EndCity.class));
-        register(Fortress.class, Structure.getName(Fortress.class));
-        register(Igloo.class, Structure.getName(Igloo.class));
-        register(JunglePyramid.class, Structure.getName(JunglePyramid.class));
-        register(Mansion.class, Structure.getName(Mansion.class));
-        register(Mineshaft.class, Structure.getName(Mineshaft.class));
-        register(Monument.class, Structure.getName(Monument.class));
-        register(NetherFossil.class, Structure.getName(NetherFossil.class));
-        register(OceanRuin.class, Structure.getName(OceanRuin.class));
-        register(PillagerOutpost.class, Structure.getName(PillagerOutpost.class));
-        register(OWRuinedPortal.class, Structure.getName(RuinedPortal.class));
-        register(NERuinedPortal.class, Structure.getName(RuinedPortal.class));
-        register(Shipwreck.class, Structure.getName(Shipwreck.class));
-        register(SwampHut.class, Structure.getName(SwampHut.class));
-        register(Village.class, Structure.getName(Village.class));
-        register(Stronghold.class, Structure.getName(Stronghold.class));
+        String mainPath = "/icon";
+        URL url = Icons.class.getResource(mainPath);
+        if (url == null) {
+            LOGGER.severe(String.format("Url not found for path %s", mainPath));
+            return;
+        }
+        URI uri;
+        try {
+            uri = url.toURI();
+        } catch (URISyntaxException e) {
+            LOGGER.severe(String.format("Uri was not able to be converted for url %s with error : %s", url, e.toString()));
+            return;
+        }
+        boolean isJar = "jar".equals(uri.getScheme());
+        FileSystem fileSystem = null;
+        Path dir;
+        if (isJar) {
+            try {
+                fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap(), null);
+            } catch (IOException e) {
+                LOGGER.severe(String.format("Filesystem was not opened correctly for %s with error : %s", uri, e.toString()));
+                return;
+            }
+            dir = fileSystem.getPath(mainPath);
+        } else {
+            dir = new File(uri).toPath();
+        }
+        registerJARIcons(dir, isJar);
+        if (fileSystem != null) {
+            try {
+                fileSystem.close();
+            } catch (IOException e) {
+                LOGGER.severe(String.format("Filesystem was not cloed correctly for %s with error : %s", uri, e.toString()));
+                return;
+            }
+        }
+        registerInternetIcons();
+    }
 
-        register(OWBastionRemnant.class, Structure.getName(BastionRemnant.class));
-        register(OWFortress.class, Structure.getName(Fortress.class));
+    private static void registerJARIcons(Path dir, boolean isJar) {
+        register(BastionRemnant.class, dir, isJar, Structure.getName(BastionRemnant.class));
+        register(BuriedTreasure.class, dir, isJar, Structure.getName(BuriedTreasure.class));
+        register(DesertPyramid.class, dir, isJar, Structure.getName(DesertPyramid.class));
+        register(EndCity.class, dir, isJar, Structure.getName(EndCity.class));
+        register(Fortress.class, dir, isJar, Structure.getName(Fortress.class));
+        register(Igloo.class, dir, isJar, Structure.getName(Igloo.class));
+        register(JunglePyramid.class, dir, isJar, Structure.getName(JunglePyramid.class));
+        register(Mansion.class, dir, isJar, Structure.getName(Mansion.class));
+        register(Mineshaft.class, dir, isJar, Structure.getName(Mineshaft.class));
+        register(Monument.class, dir, isJar, Structure.getName(Monument.class));
+        register(OceanRuin.class, dir, isJar, Structure.getName(OceanRuin.class));
+        register(PillagerOutpost.class, dir, isJar, Structure.getName(PillagerOutpost.class));
+        register(Shipwreck.class, dir, isJar, Structure.getName(Shipwreck.class));
+        register(SwampHut.class, dir, isJar, Structure.getName(SwampHut.class));
+        register(Village.class, dir, isJar, Structure.getName(Village.class));
+        register(Stronghold.class, dir, isJar, Structure.getName(Stronghold.class));
 
-        register(EndGateway.class, "end_gateway");
-        register(SlimeChunk.class, "slime");
+        // special cases
+        register(OWRuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
+        register(NERuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
 
-        register(SpawnPoint.class, "spawn");
+        register(OWBastionRemnant.class, dir, isJar, Structure.getName(BastionRemnant.class));
+        register(OWFortress.class, dir, isJar, Structure.getName(Fortress.class));
 
-        register(Ruler.class, "ruler");
-        register(Area.class, "area");
-        register(Circle.class, "circle");
+        // features
+        register(Chest.class, dir, isJar, "treasure_chest");
+        register(EndGateway.class, dir, isJar, "end_gateway");
+        register(SlimeChunk.class, dir, isJar, "slime");
+        register(SpawnPoint.class, dir, isJar, "spawn");
+        register(NetherFossil.class, dir, isJar, Structure.getName(NetherFossil.class));
+
+        register(Ruler.class, dir, isJar, "ruler");
+        register(Area.class, dir, isJar, "area");
+        register(Circle.class, dir, isJar, "circle");
 
 
-        register(CloseButton.class, "close");
-        register(CopyButton.class, "copy");
-        register(JumpButton.class, "jump");
-        register(InfoButton.class, "info");
+        register(CloseButton.class, dir, isJar, "close");
+        register(CopyButton.class, dir, isJar, "copy");
+        register(JumpButton.class, dir, isJar, "jump");
+        register(InfoButton.class, dir, isJar, "info");
 
-        register(Chest.class, "treasure_chest");
-        register(MineMap.class, "logo");
+        register(MineMap.class, dir, isJar, "logo");
 
     }
 
-    public static void registerItems() {
+    private static void registerInternetIcons() {
         //registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
         //registerItem(Item.GOLDEN_APPLE,"apple_golden");
     }
 
-    public static <T> void register(Class<T> clazz, String name) {
-        REGISTRY.put(clazz, getIcon(name));
+    private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
+        CLASS_REGISTRY.put(clazz, getIcon(dir, isJar, name, extension));
     }
 
-    public static <T> void registerItem(Item item, String name) {
-        REGISTRY_ITEM.put(item, getIcon(name));
+    private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name) {
+        register(clazz, dir, isJar, name, ".png");
+    }
+
+    private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
+        REGISTRY_OBJECT.put(object, getIcon(dir, isJar, name, extension));
+    }
+
+    private static <T> void registerObject(Object object, Path dir, boolean isJar, String name) {
+        registerObject(object, dir, isJar, name, ".png");
     }
 
     public static <T> BufferedImage get(Class<T> clazz) {
-        return REGISTRY.get(clazz);
+        List<Pair<String, BufferedImage>> entry=CLASS_REGISTRY.get(clazz);
+        if (entry==null) return null;
+        if (entry.isEmpty()) return null;
+        // TODO make me config dependant
+        return entry.get(entry.size()-1).getSecond();
     }
 
-    public static BufferedImage getItem(Item item) {
-        return REGISTRY_ITEM.get(item);
+    public static BufferedImage getObject(Object object) {
+        List<Pair<String, BufferedImage>> entry=REGISTRY_OBJECT.get(object);
+        if (entry==null) return null;
+        if (entry.isEmpty()) return null;
+        // TODO make me config dependant
+        return entry.get(0).getSecond();
     }
 
-    private static BufferedImage getIcon(String name) {
+    private static List<Pair<String, BufferedImage>> getIcon(Path dir, boolean isJar, String name, String extension) {
+        List<Path> paths;
+        List<Pair<String, BufferedImage>> list = new ArrayList<>();
         try {
-            InputStream inputStream = getFileHierarchical("/icon", name);
-            if (inputStream == null) {
-                throw new FileNotFoundException();
-            }
-            System.out.println("Found icon " + name + ".");
-            return ImageIO.read(inputStream);
-        } catch (Exception e) {
-            try {
-                FileWriter fstream = new FileWriter("error.log", true); //true tells to append data.
-                BufferedWriter out = new BufferedWriter(fstream);
-                out.write(e.toString() + "\n");
-                out.write(name + "\n");
-                out.flush();
-                fstream.close();
-            } catch (Exception ee) {
-                ee.printStackTrace();
-            }
-
-            e.printStackTrace();
+            paths = getFileHierarchical(dir, name, extension);
+        } catch (IOException e) {
+            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name,extension, dir.toString(), e.toString()));
             System.err.println("Didn't find icon " + name + ".");
+            return list;
+        }
+        for (Path path : paths) {
+            try {
+                InputStream inputStream = isJar ? Icons.class.getResourceAsStream(path.toString()) : new FileInputStream(path.toString());
+                list.add(new Pair<>(path.toAbsolutePath().toString().split("icon")[1], ImageIO.read(inputStream)));
+            } catch (IOException e) {
+                LOGGER.severe(String.format("Exception while reading the input stream or getting " +
+                        "the file input for %s at %s with error %s", name, dir.toString(), e.toString()));
+            }
+        }
+        if (list.isEmpty()) {
+            System.err.println("Didn't find icon " + name + ".");
+            LOGGER.severe(String.format("File not found for %s", name));
+        } else {
+            System.out.println("Found icon " + name + ".");
         }
 
-        return null;
+        return list;
     }
 
     public static Stream<File> collectAllFiles(File path, Predicate<File> predicate) {
@@ -140,42 +206,9 @@ public class Icons {
         return fileStream;
     }
 
-    public static InputStream getFileHierarchical(String mainPath, String fileName) throws URISyntaxException, IOException {
-        Path dir;
-        FileSystem fileSystem = null;
-        URL url = Icons.class.getResource(mainPath);
-        if (url == null) return null;
-        URI uri = url.toURI();
-        boolean isJar = "jar".equals(uri.getScheme());
-        if (isJar) {
-            try {
-                fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap(), null);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            try {
-                dir = fileSystem.getPath(mainPath);
-            } catch (Exception e) {
-                e.printStackTrace();
-                fileSystem.close();
-                return null;
-            }
-
-        } else {
-            dir = new File(uri).toPath();
-        }
-        List<Path> matches = Files.walk(dir).
-                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + ".png")).
+    public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
+        return Files.walk(dir).
+                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + extension)).
                 collect(Collectors.toList());
-        if (fileSystem != null) {
-            fileSystem.close();
-        }
-        if (matches.size() == 0) {
-            return null;
-        }
-        Path path = matches.get(0);
-        return isJar ? Icons.class.getResourceAsStream(String.valueOf(path)) : new FileInputStream(path.toFile());
     }
 }

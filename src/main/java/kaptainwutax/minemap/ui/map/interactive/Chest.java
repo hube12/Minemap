@@ -131,7 +131,7 @@ public class Chest extends JFrame {
                     for (int col = 0; col < COL_NUMBER; col++) {
                         if (!currentIterator.hasNext()) break;
                         Item item=currentIterator.next().getItem();
-                        BufferedImage icon=Icons.getItem(item);
+                        BufferedImage icon=Icons.getObject(item);
                         JButton current=rowButton.get(col);
                         current.setMargin(new Insets(0, 0, 0, 0));
                         if (icon==null) {

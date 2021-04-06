@@ -51,6 +51,7 @@ public class TooltipPanel extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(feature.getClass());
+                    if (icon==null) return;
                     int iconSizeX,iconSizeZ;
                     int defaultValue=20;
                     float factor=1.5F;

@@ -5,53 +5,55 @@ import com.google.gson.GsonBuilder;
 
 import java.io.*;
 
+import static kaptainwutax.minemap.MineMap.SETTINGS_DIR;
+
 public abstract class Config {
 
-	private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT).setPrettyPrinting().create();
-	protected String root = "configs/";
-	protected String extension = ".json";
+    private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT).setPrettyPrinting().create();
+    protected String root = SETTINGS_DIR;
+    protected String extension = ".json";
 
-	public void generateConfig() {
-		this.resetConfig();
+    public void generateConfig() {
+        this.resetConfig();
 
-		try {
-			this.writeConfig();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            this.writeConfig();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	private File getConfigFile() {
-		return new File(this.root + this.getName() + this.extension);
-	}
+    private File getConfigFile() {
+        return new File(this.root + File.separator + this.getName() + this.extension);
+    }
 
-	public abstract String getName();
+    public abstract String getName();
 
-	public Config readConfig() {
-		try {
-			return GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
-		} catch (FileNotFoundException e) {
-			this.generateConfig();
-		}
+    public Config readConfig() {
+        try {
+            return GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
+        } catch (FileNotFoundException e) {
+            this.generateConfig();
+        }
 
-		return this;
-	}
+        return this;
+    }
 
-	public Config forceGenerateConfig() {
-		this.generateConfig();
-		return this;
-	}
+    public Config forceGenerateConfig() {
+        this.generateConfig();
+        return this;
+    }
 
-	protected abstract void resetConfig();
+    protected abstract void resetConfig();
 
-	public void writeConfig() throws IOException {
-		File dir = new File(this.root);
-		if(!dir.exists() && !dir.mkdirs())return;
-		if(!this.getConfigFile().exists() && !this.getConfigFile().createNewFile())return;
-		FileWriter writer = new FileWriter(this.getConfigFile());
-		GSON.toJson(this, writer);
-		writer.flush();
-		writer.close();
-	}
+    public void writeConfig() throws IOException {
+        File dir = new File(this.root);
+        if (!dir.exists() && !dir.mkdirs()) return;
+        if (!this.getConfigFile().exists() && !this.getConfigFile().createNewFile()) return;
+        FileWriter writer = new FileWriter(this.getConfigFile());
+        GSON.toJson(this, writer);
+        writer.flush();
+        writer.close();
+    }
 
 }
