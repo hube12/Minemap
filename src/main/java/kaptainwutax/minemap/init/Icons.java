@@ -9,11 +9,14 @@ import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
+import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.Pair;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
+import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -29,6 +32,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -38,7 +43,7 @@ import static kaptainwutax.minemap.init.Logger.LOGGER;
 public class Icons {
 
     private static final Map<Class<?>, List<Pair<String, BufferedImage>>> CLASS_REGISTRY = new HashMap<>();
-    private static final Map<Object, List<Pair<String, BufferedImage>>> REGISTRY_OBJECT = new HashMap<>();
+    private static final Map<Object, List<Pair<String, BufferedImage>>> OBJECT_REGISTRY = new HashMap<>();
 
 
     public static void registerIcons() {
@@ -78,7 +83,26 @@ public class Icons {
                 return;
             }
         }
+        if (Assets.downloadManifest(null)){
+            MCVersion version=Assets.getLatestVersion();
+            if (version!=null){
+                if (Assets.downloadVersionManifest(version)){
+                    String assetName=Assets.downloadVersionAssets(version);
+                    if (assetName!=null){
+                        System.out.println(assetName);
+                    }else{
+                        Logger.LOGGER.warning("Assets index could not be downloaded");
+                    }
+                }else{
+                    Logger.LOGGER.warning("Version manifest could not be downloaded");
+                }
+            }else{
+                Logger.LOGGER.warning("Manifest does not contain a valid latest release");
+            }
+        }
+
         registerInternetIcons();
+        cleanDuplicates();
     }
 
     private static void registerJARIcons(Path dir, boolean isJar) {
@@ -127,13 +151,31 @@ public class Icons {
 
     }
 
+    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
+        Set<Object> seen = ConcurrentHashMap.newKeySet();
+        return t -> seen.add(keyExtractor.apply(t));
+    }
+
+    private static void cleanDuplicates() {
+        for (Map.Entry<Class<?>, List<Pair<String, BufferedImage>>> pairs : CLASS_REGISTRY.entrySet()) {
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
+        }
+        for (Map.Entry<Object, List<Pair<String, BufferedImage>>> pairs : OBJECT_REGISTRY.entrySet()) {
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
+        }
+    }
+
     private static void registerInternetIcons() {
         //registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
         //registerItem(Item.GOLDEN_APPLE,"apple_golden");
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
-        CLASS_REGISTRY.put(clazz, getIcon(dir, isJar, name, extension));
+        if (CLASS_REGISTRY.containsKey(clazz)){
+            CLASS_REGISTRY.get(clazz).addAll(getIcon(dir, isJar, name, extension));
+        }else{
+            CLASS_REGISTRY.put(clazz,getIcon(dir, isJar, name, extension));
+        }
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name) {
@@ -141,7 +183,11 @@ public class Icons {
     }
 
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
-        REGISTRY_OBJECT.put(object, getIcon(dir, isJar, name, extension));
+        if (OBJECT_REGISTRY.containsKey(object)){
+            OBJECT_REGISTRY.get(object).addAll(getIcon(dir, isJar, name, extension));
+        }else{
+            OBJECT_REGISTRY.put(object,getIcon(dir, isJar, name, extension));
+        }
     }
 
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name) {
@@ -149,16 +195,16 @@ public class Icons {
     }
 
     public static <T> BufferedImage get(Class<T> clazz) {
-        List<Pair<String, BufferedImage>> entry=CLASS_REGISTRY.get(clazz);
-        if (entry==null) return null;
+        List<Pair<String, BufferedImage>> entry = CLASS_REGISTRY.get(clazz);
+        if (entry == null) return null;
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
-        return entry.get(entry.size()-1).getSecond();
+        return entry.get(entry.size() - 1).getSecond();
     }
 
     public static BufferedImage getObject(Object object) {
-        List<Pair<String, BufferedImage>> entry=REGISTRY_OBJECT.get(object);
-        if (entry==null) return null;
+        List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
+        if (entry == null) return null;
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
         return entry.get(0).getSecond();
@@ -170,7 +216,7 @@ public class Icons {
         try {
             paths = getFileHierarchical(dir, name, extension);
         } catch (IOException e) {
-            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name,extension, dir.toString(), e.toString()));
+            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e.toString()));
             System.err.println("Didn't find icon " + name + ".");
             return list;
         }

@@ -5,6 +5,7 @@ import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
+import kaptainwutax.minemap.util.data.Assets;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +23,7 @@ public class MineMap extends JFrame {
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
+    public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
 
@@ -34,11 +36,11 @@ public class MineMap extends JFrame {
     }
 
     public static void createDirs() throws IOException {
-        Path path;
-        path = Paths.get(LOG_DIR);
-        Files.createDirectories(path);
-        path = Paths.get(SETTINGS_DIR);
-        Files.createDirectories(path);
+        String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR};
+        for (String dir : dirs) {
+            Files.createDirectories(Paths.get(dir));
+        }
+        Assets.createDirs();
     }
 
     public static void doRegister() {
