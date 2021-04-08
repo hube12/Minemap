@@ -89,7 +89,7 @@ public class Icons {
                 if (Assets.downloadVersionManifest(version)){
                     String assetName=Assets.downloadVersionAssets(version);
                     if (assetName!=null){
-                        System.out.println(assetName);
+//                        System.out.println(assetName);
                     }else{
                         Logger.LOGGER.warning("Assets index could not be downloaded");
                     }

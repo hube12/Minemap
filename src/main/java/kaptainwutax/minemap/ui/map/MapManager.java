@@ -56,6 +56,7 @@ public class MapManager {
         this.pixelsPerFragment = (int) (256.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
+            if (this.mousePointer==null) return;
             if (SwingUtilities.isLeftMouseButton(e)) {
                 int dx = e.getX() - this.mousePointer.x;
                 int dy = e.getY() - this.mousePointer.y;

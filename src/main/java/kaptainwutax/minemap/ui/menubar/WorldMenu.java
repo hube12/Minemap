@@ -66,6 +66,8 @@ public class WorldMenu extends Menu {
 
     public Runnable goToCoords() {
         return () -> {
+            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            this.goToCoords.setEnabled(map != null);
             if (!this.goToCoords.isEnabled()) return;
             this.activate.run();
             JDialog jumpDialogue = new CoordHopperDialog(this.deactivate);
@@ -75,6 +77,8 @@ public class WorldMenu extends Menu {
 
     public Runnable goToSpawn() {
         return () -> {
+            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            this.goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
             if (!this.goToSpawn.isEnabled()) return;
             BPos pos = this.getActiveSpawn();
             if (pos != null) {
@@ -85,8 +89,9 @@ public class WorldMenu extends Menu {
 
     public Runnable loadShadowSeed() {
         return () -> {
-            if (!this.loadShadowSeed.isEnabled()) return;
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            this.loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
+            if (!this.loadShadowSeed.isEnabled() || map==null) return;
             MineMap.INSTANCE.worldTabs.load(
                     map.getContext().version,
                     String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
@@ -96,6 +101,8 @@ public class WorldMenu extends Menu {
 
     public Runnable goToStructure() {
         return () -> {
+            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            this.goToStructure.setEnabled(map != null);
             if (!this.goToStructure.isEnabled()) return;
             this.activate.run();
             JDialog jumpDialogue = new StructureHopperDialog(this.deactivate);
