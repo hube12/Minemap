@@ -25,10 +25,10 @@ tasks.withType(JavaCompile) {
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') {transitive = false}
     implementation('com.github.KaptainWutax:SeedUtils:40b5cc6f369afb0a10dd735f5bc3342fd338c4e3') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:0c47a63adf') {transitive = false}
-    implementation('com.github.KaptainWutax:TerrainUtils:75d2f5ec84') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:c6125aeb4b485a8faebb1d27c9574f0587e4b83c') {transitive = false}
+    implementation('com.github.KaptainWutax:TerrainUtils:febc93ea378dc54c1570b0ac3d142f3b6a9b7b61') {transitive = false}
     implementation('com.github.KaptainWutax:NoiseUtils:5919e438dc1cda50bf8e2ba0a99b4618349ac085') {transitive = false}
-    implementation('com.github.KaptainWutax:BiomeUtils:c26546f9ba5d2bc50f2d4ed4c1e5e4ccf2348b36') {transitive = false}
+    implementation('com.github.KaptainWutax:BiomeUtils:acd3d43031933d7a18b881e3536fe0149d1f118b') {transitive = false}
     implementation('com.github.KaptainWutax:ChunkRandomReversal:8174cd55b8ee492b54fbc860fbafc83726bac846') {transitive = false}
     implementation('com.github.KaptainWutax:LattiCG:cc39ed32419881bd4dc080ac77b7a5c72a3fd36d') {transitive = false}
 

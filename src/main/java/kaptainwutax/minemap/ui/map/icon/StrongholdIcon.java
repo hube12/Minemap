@@ -33,7 +33,7 @@ public class StrongholdIcon extends StaticIcon {
         if(this.starts == null)return;
 
         for(CPos start: this.starts) {
-            positions.add(start.toBlockPos().add(9, 0, 9));
+            positions.add(start.toBlockPos().add(8, 0, 8)); // TODO check for old version 1.15+ ok
         }
     }
 
