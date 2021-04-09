@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
+
 public class Chest extends JFrame {
     private CPos pos;
     private RegionStructure<?, ?> feature;
@@ -59,7 +61,7 @@ public class Chest extends JFrame {
 
     public void setFeature(RegionStructure<?, ?> feature) {
         this.feature = feature;
-        this.setTitle(this.getName()+" of "+ Arrays.stream(this.feature.getName().split("_")).map(Str::capitalize).collect(Collectors.joining(" ")));
+        this.setTitle(this.getName()+" of "+ prettifyDashed(this.feature.getName()));
     }
 
     public void setPos(CPos pos) {

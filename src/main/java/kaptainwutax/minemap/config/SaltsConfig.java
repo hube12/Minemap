@@ -3,7 +3,10 @@ package kaptainwutax.minemap.config;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.NERuinedPortal;
+import kaptainwutax.minemap.feature.OWBastionRemnant;
+import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
@@ -86,6 +89,11 @@ public class SaltsConfig extends Config {
     }
 
     @Override
+    public void maintainConfig() {
+        this.resetConfig();
+    }
+
+    @Override
     protected void resetConfig() {
         for (MCVersion version : MCVersion.values()) {
             this.resetConfig(version);
@@ -94,10 +102,12 @@ public class SaltsConfig extends Config {
 
     private void resetConfig(MCVersion version) {
         this.addDefaultEntry(version, Structure.getName(BastionRemnant.class), BastionRemnant.CONFIGS.getAsOf(version) == null ? null : BastionRemnant.CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, OWBastionRemnant.name(), BastionRemnant.CONFIGS.getAsOf(version) == null ? null : BastionRemnant.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(BuriedTreasure.class), BuriedTreasure.CONFIGS.getAsOf(version) == null ? null : BuriedTreasure.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(DesertPyramid.class), DesertPyramid.CONFIGS.getAsOf(version) == null ? null : DesertPyramid.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(EndCity.class), EndCity.CONFIGS.getAsOf(version) == null ? null : EndCity.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Fortress.class), Fortress.CONFIGS.getAsOf(version) == null ? null : Fortress.CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, OWFortress.name(), Fortress.CONFIGS.getAsOf(version) == null ? null : Fortress.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Igloo.class), Igloo.CONFIGS.getAsOf(version) == null ? null : Igloo.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(JunglePyramid.class), JunglePyramid.CONFIGS.getAsOf(version) == null ? null : JunglePyramid.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Mansion.class), Mansion.CONFIGS.getAsOf(version) == null ? null : Mansion.CONFIGS.getAsOf(version).salt);
@@ -105,8 +115,8 @@ public class SaltsConfig extends Config {
         this.addDefaultEntry(version, Structure.getName(NetherFossil.class), NetherFossil.CONFIGS.getAsOf(version) == null ? null : NetherFossil.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(OceanRuin.class), OceanRuin.CONFIGS.getAsOf(version) == null ? null : OceanRuin.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(PillagerOutpost.class), PillagerOutpost.CONFIGS.getAsOf(version) == null ? null : PillagerOutpost.CONFIGS.getAsOf(version).salt);
-        this.addDefaultEntry(version, Structure.getName(OWRuinedPortal.class), RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version).salt);
-        this.addDefaultEntry(version, Structure.getName(NERuinedPortal.class), RuinedPortal.NETHER_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.NETHER_CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, OWRuinedPortal.name(), RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.OVERWORLD_CONFIGS.getAsOf(version).salt);
+        this.addDefaultEntry(version, NERuinedPortal.name(), RuinedPortal.NETHER_CONFIGS.getAsOf(version) == null ? null : RuinedPortal.NETHER_CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Shipwreck.class), Shipwreck.CONFIGS.getAsOf(version) == null ? null : Shipwreck.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(SwampHut.class), SwampHut.CONFIGS.getAsOf(version) == null ? null : SwampHut.CONFIGS.getAsOf(version).salt);
         this.addDefaultEntry(version, Structure.getName(Village.class), Village.CONFIGS.getAsOf(version) == null ? null : Village.CONFIGS.getAsOf(version).salt);
@@ -130,6 +140,7 @@ public class SaltsConfig extends Config {
         try {
             this.writeConfig();
         } catch (IOException e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
     }

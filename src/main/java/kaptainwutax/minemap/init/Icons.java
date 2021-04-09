@@ -4,6 +4,7 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
@@ -83,13 +84,13 @@ public class Icons {
                 return;
             }
         }
-        if (Assets.downloadManifest(null)){
+        if (Assets.downloadManifest(Configs.USER_PROFILE.getAssetVersion())){
             MCVersion version=Assets.getLatestVersion();
             if (version!=null){
-                if (Assets.downloadVersionManifest(version)){
-                    String assetName=Assets.downloadVersionAssets(version);
+                if (Assets.downloadVersionManifest(version,false)){
+                    String assetName=Assets.downloadVersionAssets(version,false);
                     if (assetName!=null){
-//                        System.out.println(assetName);
+                        System.out.println(assetName);
                     }else{
                         Logger.LOGGER.warning("Assets index could not be downloaded");
                     }

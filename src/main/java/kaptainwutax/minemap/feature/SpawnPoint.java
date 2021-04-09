@@ -15,6 +15,10 @@ public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 
     @Override
     public String getName() {
+        return name();
+    }
+
+    public static String name() {
         return "spawn";
     }
 

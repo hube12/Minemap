@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.KeyShortcuts;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.EnterSeedDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
@@ -66,6 +67,7 @@ public class FileMenu extends Menu {
             try {
                 ImageIO.write(image, "png", file);
             } catch (IOException e) {
+                Logger.LOGGER.severe(e.toString());
                 e.printStackTrace();
             }
         };

@@ -16,6 +16,10 @@ public class OWFortress extends Fortress {
 
 	@Override
 	public String getName() {
+		return name();
+	}
+
+	public static String name() {
 		return "OW_fortress";
 	}
 

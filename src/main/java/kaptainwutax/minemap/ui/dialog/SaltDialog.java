@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.seedutils.mc.MCVersion;
 
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+
+import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class SaltDialog extends Dialog {
 
@@ -30,7 +33,7 @@ public class SaltDialog extends Dialog {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(400, (Configs.SALTS.getSalts(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0]).size() + 1) * 30);
+        return new Dimension(600, (Configs.SALTS.getSalts(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0]).size() + 1) * 30);
     }
 
     @Override
@@ -43,12 +46,13 @@ public class SaltDialog extends Dialog {
             numberSalts = SaltDialog.numberSaltsCallable.call();
             version = SaltDialog.versionCallable.call();
         } catch (Exception e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
 
         Configs.SALTS.getSalts(version).forEach((name, value) -> {
                     if (value != null) {
-                        JLabel saltName = new JLabel(name + " salt");
+                        JLabel saltName = new JLabel(prettifyDashed(name) + " salt");
                         saltName.setHorizontalAlignment(JLabel.CENTER);
                         SpinnerModel saltModel = new SpinnerNumberModel(value.intValue(), Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
                         JSpinner saltSpinner = new JSpinner(saltModel);
@@ -65,7 +69,7 @@ public class SaltDialog extends Dialog {
 
         this.continueButton = new JButton("Continue");
         this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
-        this.resetButton = new JButton("Reset salts to current version");
+        this.resetButton = new JButton("Reset salts for current version");
 
         this.resetButton.addMouseListener(Events.Mouse.onPressed(e -> {
             Configs.SALTS.resetOverrides(version);

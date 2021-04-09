@@ -1,6 +1,7 @@
 package kaptainwutax.minemap;
 
 import com.formdev.flatlaf.*;
+import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
@@ -17,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 public class MineMap extends JFrame {
-
+    public static final String version="1.31";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
@@ -46,9 +47,9 @@ public class MineMap extends JFrame {
     public static void doRegister() {
         Logger.registerLogger();
         Features.registerFeatures();
-        Icons.registerIcons();
         Chests.registerChests();
         Configs.registerConfigs();
+        Icons.registerIcons(); // this depends on config
     }
 
     public static void doDelayedRegister() {
@@ -93,6 +94,7 @@ public class MineMap extends JFrame {
             try {
                 lookType.setLookAndFeel();
             } catch (Exception impossibleError) {
+                Logger.LOGGER.severe(impossibleError.toString());
                 impossibleError.printStackTrace();
             }
         }

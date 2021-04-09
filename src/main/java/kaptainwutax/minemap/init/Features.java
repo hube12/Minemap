@@ -62,6 +62,7 @@ public class Features {
                     System.out.println(feature.getName()+" was ignored due to no Config available.");
                 }
             } catch (NullPointerException ignored) {
+                Logger.LOGGER.severe(ignored.toString());
                 //ignored.printStackTrace();
             }
         }

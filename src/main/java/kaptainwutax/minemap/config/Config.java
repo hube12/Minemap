@@ -2,6 +2,7 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import kaptainwutax.minemap.init.Logger;
 
 import java.io.*;
 
@@ -9,7 +10,12 @@ import static kaptainwutax.minemap.MineMap.SETTINGS_DIR;
 
 public abstract class Config {
 
-    private static final Gson GSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT).setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT)
+            .setPrettyPrinting()
+            .enableComplexMapKeySerialization()
+            .create();
     protected String root = SETTINGS_DIR;
     protected String extension = ".json";
 
@@ -19,6 +25,7 @@ public abstract class Config {
         try {
             this.writeConfig();
         } catch (IOException e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
     }
@@ -43,6 +50,19 @@ public abstract class Config {
         this.generateConfig();
         return this;
     }
+
+    public void updateConfig(){
+        this.maintainConfig();
+
+        try {
+            this.writeConfig();
+        } catch (IOException e) {
+            Logger.LOGGER.severe(e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    public abstract void maintainConfig();
 
     protected abstract void resetConfig();
 

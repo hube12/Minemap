@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +21,7 @@ public abstract class Dialog extends JDialog {
         try {
             this.initComponents();
         } catch (Exception e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
         this.registerBindings();

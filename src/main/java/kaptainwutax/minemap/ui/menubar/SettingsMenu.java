@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.menubar;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.minemap.ui.map.MapManager;
@@ -214,6 +215,7 @@ public class SettingsMenu extends Menu {
                 dialog.setVisible(true);
             } catch (Exception exception) {
                 this.deactivate.run();
+                Logger.LOGGER.severe(exception.toString());
                 exception.printStackTrace();
             }
         };

@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.menubar;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.KeyShortcuts;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.CoordHopperDialog;
 import kaptainwutax.minemap.ui.dialog.SaltDialog;
@@ -118,6 +119,7 @@ public class WorldMenu extends Menu {
                 dialog = new SaltDialog(this.deactivate);
                 dialog.setVisible(true);
             } catch (Exception exception) {
+                Logger.LOGGER.severe(exception.toString());
                 this.deactivate.run();
                 exception.printStackTrace();
             }

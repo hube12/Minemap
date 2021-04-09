@@ -57,6 +57,7 @@ public class Logger {
                 ));
             }
         } catch (IOException e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
     }

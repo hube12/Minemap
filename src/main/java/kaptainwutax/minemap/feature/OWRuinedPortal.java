@@ -16,7 +16,11 @@ public class OWRuinedPortal extends RuinedPortal {
 
 	@Override
 	public String getName() {
-		return "OW_RuinedPortal";
+		return name();
+	}
+
+	public static String name() {
+		return "OW_ruined_portal";
 	}
 
 	@Override

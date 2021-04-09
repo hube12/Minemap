@@ -16,7 +16,11 @@ public class NERuinedPortal extends RuinedPortal {
 
 	@Override
 	public String getName() {
-		return "NE_RuinedPortal";
+		return name();
+	}
+
+	public static String name() {
+		return "NE_ruined_portal";
 	}
 
 	@Override

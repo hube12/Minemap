@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.seedutils.mc.pos.BPos;
@@ -41,7 +42,10 @@ public class FragmentScheduler {
 
 				if(nearest == null) {
 					try {Thread.sleep(10);}
-					catch(InterruptedException e) {e.printStackTrace();}
+					catch(InterruptedException e) {
+						Logger.LOGGER.severe(e.toString());
+						e.printStackTrace();
+					}
 					continue;
 				} else if(!this.isInBounds(nearest)) {
 					this.fragments.remove(nearest);

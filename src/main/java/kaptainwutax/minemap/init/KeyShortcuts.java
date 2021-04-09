@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.init;
 
+import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Str;
@@ -8,19 +9,31 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
+
 public class KeyShortcuts {
     public static MenuBar menuBar = MineMap.INSTANCE.toolbarPane;
     public static final ArrayList<KeyEventDispatcher> currentDispatchers=new ArrayList<>();
     public enum ShortcutAction {
+        @SerializedName("NEW_SEED")
         NEW_SEED(menuBar.fileMenu.newSeed()),
+        @SerializedName("SCREENSHOT")
         SCREENSHOT(menuBar.fileMenu.screenshot()),
+        @SerializedName("CLOSE")
         CLOSE(menuBar.fileMenu.close(true)),
+        @SerializedName("GO_TO_COORDS")
         GO_TO_COORDS(menuBar.worldMenu.goToCoords()),
+        @SerializedName("GO_TO_SPAWN")
         GO_TO_SPAWN(menuBar.worldMenu.goToSpawn()),
+        @SerializedName("LOAD_SHADOW_SEED")
         LOAD_SHADOW_SEED(menuBar.worldMenu.loadShadowSeed()),
+        @SerializedName("GO_TO_STRUCTURE")
         GO_TO_STRUCTURE(menuBar.worldMenu.goToStructure()),
+        @SerializedName("CHANGE_SALTS")
         CHANGE_SALTS(menuBar.worldMenu.changeSalts()),
+        @SerializedName("TOGGLE_STS_MODE")
         TOGGLE_STS_MODE(menuBar.utilitiesMenu.toggleStructureMode(true)),
+        @SerializedName("SHORTCUTS")
         SHORTCUTS(menuBar.settingsMenu.changeShortcuts()),
         ;
 
@@ -32,7 +45,7 @@ public class KeyShortcuts {
 
         @Override
         public String toString() {
-            return Str.capitalize(this.name().toLowerCase().replace("_"," "));
+            return prettifyDashed(this.name());
         }
     }
 

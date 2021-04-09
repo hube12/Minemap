@@ -6,8 +6,6 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -73,13 +71,17 @@ public class Assets {
      * @param version a specific version (must not be null)
      * @return a boolean specifying if the version manifest was indeed downloaded
      */
-    public static boolean downloadVersionManifest(MCVersion version) {
+    public static boolean downloadVersionManifest(MCVersion version,boolean force) {
         String versionManifestUrl = getVersionManifestUrl(version);
         if (versionManifestUrl == null) {
             Logger.LOGGER.severe(String.format("URL was not found for %s", version));
             return false;
         }
-        return download(versionManifestUrl, new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + ".json"), null);
+        File versionManifest=new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + ".json");
+        if (!force && versionManifest.exists()){
+            return true;
+        }
+        return download(versionManifestUrl,versionManifest , null);
     }
 
     /**
@@ -101,7 +103,7 @@ public class Assets {
         return true;
     }
 
-    public static String downloadVersionAssets(MCVersion version) {
+    public static String downloadVersionAssets(MCVersion version,boolean force) {
         JsonReader jsonReader = openJSON(MANIFEST_FILE);
         if (jsonReader == null) {
             return null;
@@ -117,13 +119,17 @@ public class Assets {
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
-
-        return download(assetIndexURL.getFirst(),new File(DOWNLOAD_DIR_ASSETS+File.separator+name),assetIndexURL.getSecond() )?name:null;
+        File assetManifest=new File(DOWNLOAD_DIR_ASSETS+File.separator+name);
+        if (!force && assetManifest.exists() && compareSha1(assetManifest,assetIndexURL.getSecond())){
+            return name;
+        }
+        return download(assetIndexURL.getFirst(),assetManifest,assetIndexURL.getSecond() )?name:null;
 
     }
 
 
     private static boolean download(String url, File out, String sha1) {
+        Logger.LOGGER.info(String.format("Downloading %s for file %s",url,out.getName()));
         ReadableByteChannel rbc;
         try {
             rbc = Channels.newChannel(new URL(url).openStream());
@@ -137,14 +143,7 @@ public class Assets {
             Logger.LOGGER.severe(String.format("Could not download from channel to url %s for file %s, error: %s", url, out.getAbsolutePath(), e.toString()));
             return false;
         }
-        if (sha1!=null){
-            try{
-                return getFileChecksum(MessageDigest.getInstance("SHA-1"), out).equals(sha1);
-            }catch (NoSuchAlgorithmException e){
-                Logger.LOGGER.severe("Could not compute sha1 since algorithm does not exists");
-            }
-        }
-        return true;
+        return sha1 == null || compareSha1(out, sha1);
     }
 
 
@@ -228,6 +227,17 @@ public class Assets {
         if (map.containsKey("versions")) {
             ArrayList<Map<String, String>> versions = (ArrayList<Map<String, String>>) map.get("versions");
             return versions.stream().anyMatch(v -> v.containsKey("id") && v.get("id").equals(version.name));
+        }
+        return false;
+    }
+
+    private static boolean compareSha1(File file,String sha1){
+        if (sha1!=null && file!=null){
+            try{
+                return getFileChecksum(MessageDigest.getInstance("SHA-1"), file).equals(sha1);
+            }catch (NoSuchAlgorithmException e){
+                Logger.LOGGER.severe("Could not compute sha1 since algorithm does not exists");
+            }
         }
         return false;
     }

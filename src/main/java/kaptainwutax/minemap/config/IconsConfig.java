@@ -5,6 +5,7 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.*;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
@@ -45,6 +46,11 @@ public class IconsConfig extends Config {
     @Override
     public String getName() {
         return "icons";
+    }
+
+    @Override
+    public void maintainConfig() {
+        this.resetSizeConfig();
     }
 
     @Override
@@ -110,6 +116,7 @@ public class IconsConfig extends Config {
         try {
             this.writeConfig();
         } catch (IOException e) {
+            Logger.LOGGER.severe(e.toString());
             e.printStackTrace();
         }
     }
