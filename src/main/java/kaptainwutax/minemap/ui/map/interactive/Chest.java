@@ -10,8 +10,12 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,17 +136,40 @@ public class Chest extends JFrame {
                     List<JButton> rowButton = this.list.get(row);
                     for (int col = 0; col < COL_NUMBER; col++) {
                         if (!currentIterator.hasNext()) break;
-                        Item item=currentIterator.next().getItem();
+                        ItemStack itemStack=currentIterator.next();
+                        Item item=itemStack.getItem();
                         BufferedImage icon=Icons.getObject(item);
                         JButton current=rowButton.get(col);
                         current.setMargin(new Insets(0, 0, 0, 0));
                         if (icon==null) {
-                            current.setText(String.join(" ",item.getName().split("_")));
+                            current.setText("<html>"+Str.prettifyDashed(item.getName())+"<br>"+itemStack.getCount()+"</html>");
                         }
                         else {
-                            ImageIcon imageIcon=new ImageIcon(icon);
-                            imageIcon.setImage(imageIcon.getImage().getScaledInstance(current.getWidth(),current.getWidth(), Image.SCALE_SMOOTH));
-                            current.setIcon(imageIcon);
+                            int w = icon.getWidth();
+                            int h = icon.getHeight();
+                            double scaleFactor=64.0/Math.max(w,h);
+
+                            BufferedImage scaledIcon = new BufferedImage((int) (w*scaleFactor), (int) (h*scaleFactor), BufferedImage.TYPE_INT_ARGB);
+                            AffineTransform at = new AffineTransform();
+                            at.scale(scaleFactor, scaleFactor);
+                            AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                            scaledIcon = scaleOp.filter(icon, scaledIcon);
+                            Graphics2D g2d= (Graphics2D) scaledIcon.getGraphics();
+                            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                            g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+                            g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+                            g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+                            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                            g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+                            g2d.setColor(Color.GRAY);
+                            g2d.setStroke(new BasicStroke(2));
+                            g2d.fillOval(40,40,20,20);
+                            char[] charArray=Integer.toString(itemStack.getCount()).toCharArray();
+                            g2d.setColor(Color.WHITE);
+                            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
+                            g2d.drawChars(charArray,0,charArray.length,charArray.length==1?47:43,55);
+                            current.setIcon(new ImageIcon(scaledIcon));
                         }
 
                     }

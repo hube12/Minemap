@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.init;
 
 import kaptainwutax.featureutils.decorator.EndGateway;
+import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.MineMap;
@@ -11,34 +12,30 @@ import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.Pair;
+import kaptainwutax.minemap.util.ui.ModalPopup;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 import kaptainwutax.seedutils.mc.MCVersion;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static kaptainwutax.minemap.init.Logger.LOGGER;
 
@@ -76,6 +73,7 @@ public class Icons {
             dir = new File(uri).toPath();
         }
         registerJARIcons(dir, isJar);
+        registerOwnAssets(dir,isJar);
         if (fileSystem != null) {
             try {
                 fileSystem.close();
@@ -85,20 +83,41 @@ public class Icons {
         }
     }
 
-    public static void registerDelayedIcons(JFrame parent){
-        final JDialog loading = new JDialog(parent);
-        JPanel p1 = new JPanel(new BorderLayout());
-        p1.add(new JLabel("<html><div style='text-align: center;'>Downloading assets<br>Please wait...</div></html>"), BorderLayout.CENTER);
-        loading.setUndecorated(true);
-        loading.getContentPane().add(p1);
-        loading.pack();
-        loading.setLocationRelativeTo(parent);
-        loading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        loading.setModal(true);
+    public static void registerDelayedIcons(JFrame parent) {
+        try {
+            boolean r=downloadIcons(parent);
+        } catch (Exception e) {
+            LOGGER.severe(e.toString());
+        }
+        registerInternetAssets();
+        cleanDuplicates();
+    }
 
-        SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+    private static boolean downloadIcons(JFrame parent) throws ExecutionException, InterruptedException {
+        JDialog downloadPopup = new ModalPopup(parent, "Downloading Assets");
+        SwingWorker<Pair<MCVersion, String>, Void> downloadWorker = getDownloadWorker(downloadPopup);
+        downloadWorker.execute();
+        downloadPopup.setVisible(true);
+        Pair<MCVersion, String> clientJarVersion = downloadWorker.get(); // blocking wait (intended)
+        downloadPopup.setVisible(false);
+        downloadPopup.dispose();
+        if (clientJarVersion == null) return false;
+        System.out.println("Assets downloaded");
+        JDialog extractPopup = new ModalPopup(parent, "Extracting Assets");
+        SwingWorker<Boolean, Void> extractWorker = getExtractWorker(clientJarVersion,extractPopup);
+        extractWorker.execute();
+        extractPopup.setVisible(true);
+        Boolean result = extractWorker.get(); // blocking wait (intended)
+        extractPopup.setVisible(false);
+        extractPopup.dispose();
+        Configs.USER_PROFILE.setAssetsVersion(clientJarVersion.getFirst());
+        return result;
+    }
+
+    private static SwingWorker<Pair<MCVersion, String>, Void> getDownloadWorker(JDialog parent) {
+        return new SwingWorker<Pair<MCVersion, String>, Void>() {
             @Override
-            protected Boolean doInBackground() {
+            protected Pair<MCVersion, String> doInBackground() {
                 if (Assets.downloadManifest(Configs.USER_PROFILE.getAssetVersion())) {
                     MCVersion version = Assets.getLatestVersion();
                     if (version != null) {
@@ -109,7 +128,11 @@ public class Icons {
                                 if (assetVersion != null) {
                                     if (Assets.downloadVersionManifest(assetVersion, false)) {
                                         String clientName = Assets.downloadClientJar(assetVersion, false);
-                                        return true;
+                                        if (clientName != null) {
+                                            return new Pair<>(assetVersion, clientName);
+                                        } else {
+                                            Logger.LOGGER.warning("Client jar could not be downloaded");
+                                        }
                                     } else {
                                         Logger.LOGGER.warning("Version manifest could not be downloaded");
                                     }
@@ -126,28 +149,30 @@ public class Icons {
                         Logger.LOGGER.warning("Manifest does not contain a valid latest release");
                     }
                 }
-                return false;
+                return null;
             }
 
             @Override
             protected void done() {
-                loading.dispose();
+                super.done();
+                parent.dispose();
             }
         };
-        worker.execute(); //here the process thread initiates
-        loading.setVisible(true);
-        try {
-            Boolean result=worker.get(); //here the parent thread waits for completion
-            if (result){
-                System.out.println("Assets downloaded");
+    }
+
+    private static SwingWorker<Boolean, Void> getExtractWorker(Pair<MCVersion, String> result,JDialog parent) {
+        return new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() {
+                // it's ok to use / since jarentry aren't platform dependant
+                return Assets.extractJar(result.getFirst(), result.getSecond(), jarEntry -> jarEntry.getName().startsWith("assets/minecraft/textures/item") || jarEntry.getName().startsWith("assets/minecraft/textures/block"),false);
             }
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-
-
-        registerInternetIcons();
-        cleanDuplicates();
+            @Override
+            protected void done() {
+                super.done();
+                parent.dispose();
+            }
+        };
     }
 
     private static void registerJARIcons(Path dir, boolean isJar) {
@@ -210,16 +235,19 @@ public class Icons {
         }
     }
 
-    private static void registerInternetIcons() {
-        //registerItem(Item.ENCHANTED_GOLDEN_APPLE,"apple_golden");
-        //registerItem(Item.GOLDEN_APPLE,"apple_golden");
+    private static void registerOwnAssets(Path dir, boolean isJar) {
+        registerObject(Item.ENCHANTED_GOLDEN_APPLE,dir,isJar,Item.ENCHANTED_GOLDEN_APPLE.getName(),".jpg");
+    }
+
+    private static void registerInternetAssets() {
+        registerObject(Item.TNT,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"tnt_side",".png");
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
         if (CLASS_REGISTRY.containsKey(clazz)) {
-            CLASS_REGISTRY.get(clazz).addAll(getIcon(dir, isJar, name, extension));
+            CLASS_REGISTRY.get(clazz).addAll(Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("icon")[1]));
         } else {
-            CLASS_REGISTRY.put(clazz, getIcon(dir, isJar, name, extension));
+            CLASS_REGISTRY.put(clazz, Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("icon")[1]));
         }
     }
 
@@ -229,9 +257,9 @@ public class Icons {
 
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
         if (OBJECT_REGISTRY.containsKey(object)) {
-            OBJECT_REGISTRY.get(object).addAll(getIcon(dir, isJar, name, extension));
+            OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("assets")[1]));
         } else {
-            OBJECT_REGISTRY.put(object, getIcon(dir, isJar, name, extension));
+            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("assets")[1]));
         }
     }
 
@@ -249,57 +277,18 @@ public class Icons {
 
     public static BufferedImage getObject(Object object) {
         List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
-        if (entry == null) return null;
+        if (entry == null) {
+            if (object instanceof Item){
+                registerObject(object,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,((Item) object).getName(),".png");
+                List<Pair<String, BufferedImage>> entry2 = OBJECT_REGISTRY.get(object);
+                if (entry2 == null) return null;
+                entry=entry2;
+            }else{
+                return null;
+            }
+        }
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
         return entry.get(0).getSecond();
-    }
-
-    private static List<Pair<String, BufferedImage>> getIcon(Path dir, boolean isJar, String name, String extension) {
-        List<Path> paths;
-        List<Pair<String, BufferedImage>> list = new ArrayList<>();
-        try {
-            paths = getFileHierarchical(dir, name, extension);
-        } catch (IOException e) {
-            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e.toString()));
-            System.err.println("Didn't find icon " + name + ".");
-            return list;
-        }
-        for (Path path : paths) {
-            try {
-                InputStream inputStream = isJar ? Icons.class.getResourceAsStream(path.toString()) : new FileInputStream(path.toString());
-                list.add(new Pair<>(path.toAbsolutePath().toString().split("icon")[1], ImageIO.read(inputStream)));
-            } catch (IOException e) {
-                LOGGER.severe(String.format("Exception while reading the input stream or getting " +
-                        "the file input for %s at %s with error %s", name, dir.toString(), e.toString()));
-            }
-        }
-        if (list.isEmpty()) {
-            System.err.println("Didn't find icon " + name + ".");
-            LOGGER.severe(String.format("File not found for %s", name));
-        } else {
-            System.out.println("Found icon " + name + ".");
-        }
-
-        return list;
-    }
-
-    public static Stream<File> collectAllFiles(File path, Predicate<File> predicate) {
-        Stream<File> fileStream = Stream.empty();
-        for (File file : Objects.requireNonNull(path.listFiles())) {
-            if (predicate != null && predicate.test(file)) {
-                fileStream = Stream.concat(fileStream, Stream.of(file));
-            }
-            if (file.isDirectory()) {
-                fileStream = Stream.concat(fileStream, collectAllFiles(file, predicate));
-            }
-        }
-        return fileStream;
-    }
-
-    public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
-        return Files.walk(dir).
-                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + extension)).
-                collect(Collectors.toList());
     }
 }

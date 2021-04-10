@@ -2,22 +2,31 @@ package kaptainwutax.minemap.util.data;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static kaptainwutax.minemap.MineMap.DOWNLOAD_DIR;
+import static kaptainwutax.minemap.init.Logger.LOGGER;
 
 public class Assets {
     private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
@@ -69,20 +78,20 @@ public class Assets {
      * Download a specific version manifest, will return false if the global manifest does not exists
      *
      * @param version a specific version (must not be null)
-     * @param force if force is true then it will download it again even if the file exists
+     * @param force   if force is true then it will download it again even if the file exists
      * @return a boolean specifying if the version manifest was indeed downloaded
      */
-    public static boolean downloadVersionManifest(MCVersion version,boolean force) {
+    public static boolean downloadVersionManifest(MCVersion version, boolean force) {
         String versionManifestUrl = getVersionManifestUrl(version);
         if (versionManifestUrl == null) {
             Logger.LOGGER.severe(String.format("URL was not found for %s", version));
             return false;
         }
-        File versionManifest=new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + ".json");
-        if (!force && versionManifest.exists()){
+        File versionManifest = new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + ".json");
+        if (!force && versionManifest.exists()) {
             return true;
         }
-        return download(versionManifestUrl,versionManifest , null);
+        return download(versionManifestUrl, versionManifest, null);
     }
 
     /**
@@ -93,7 +102,7 @@ public class Assets {
      */
     public static boolean downloadManifest(MCVersion version) {
         if (!manifestExists(version)) {
-            if (!download(MANIFEST_URL, MANIFEST_FILE,null)) {
+            if (!download(MANIFEST_URL, MANIFEST_FILE, null)) {
                 return false;
             }
             if (version != null && !manifestExists(version)) {
@@ -106,12 +115,13 @@ public class Assets {
 
     /**
      * Download the assets hash file depending of a version
+     *
      * @param version the specific targeted version
-     * @param force if force is true then it will download it again even if the file exists
+     * @param force   if force is true then it will download it again even if the file exists
      * @return the name of the asset as version.json
      */
-    public static String downloadVersionAssets(MCVersion version,boolean force) {
-        Pair<String,String> assetIndexURL = getAssetIndexURL(version);
+    public static String downloadVersionAssets(MCVersion version, boolean force) {
+        Pair<String, String> assetIndexURL = getAssetIndexURL(version);
         if (assetIndexURL == null) {
             Logger.LOGGER.severe(String.format("Could not get asset url for version %s", version.toString()));
             return null;
@@ -122,21 +132,22 @@ public class Assets {
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
-        File assetManifest=new File(DOWNLOAD_DIR_ASSETS+File.separator+name);
-        if (!force && assetManifest.exists() && compareSha1(assetManifest,assetIndexURL.getSecond())){
+        File assetManifest = new File(DOWNLOAD_DIR_ASSETS + File.separator + name);
+        if (!force && assetManifest.exists() && compareSha1(assetManifest, assetIndexURL.getSecond())) {
             return name;
         }
-        return download(assetIndexURL.getFirst(),assetManifest,assetIndexURL.getSecond() )?name:null;
+        return download(assetIndexURL.getFirst(), assetManifest, assetIndexURL.getSecond()) ? name : null;
     }
 
     /**
      * Download the client jar file depending of a version
+     *
      * @param version the specific targeted version
-     * @param force if force is true then it will download it again even if the file exists
+     * @param force   if force is true then it will download it again even if the file exists
      * @return the name of the client jar as version.json
      */
-    public static String downloadClientJar(MCVersion version,boolean force) {
-        Pair<String,String> clientURL = getClientURL(version);
+    public static String downloadClientJar(MCVersion version, boolean force) {
+        Pair<String, String> clientURL = getClientURL(version);
         if (clientURL == null) {
             Logger.LOGGER.severe(String.format("Could not get client url for version %s", version.toString()));
             return null;
@@ -147,16 +158,61 @@ public class Assets {
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
-        File assetManifest=new File(DOWNLOAD_DIR_VERSIONS+File.separator+name);
-        if (!force && assetManifest.exists() && compareSha1(assetManifest,clientURL.getSecond())){
+        String versionDir=DOWNLOAD_DIR_VERSIONS + File.separator + version.name;
+        try {
+            Files.createDirectories(Paths.get(versionDir));
+        }catch (IOException e){
+            Logger.LOGGER.severe(String.format("Could not make the directory for the client.jar for version %s", version.toString()));
+            return null;
+        }
+        File clientJar = new File( versionDir + File.separator + name);
+        if (!force && clientJar.exists() && compareSha1(clientJar, clientURL.getSecond())) {
             return name;
         }
-        return download(clientURL.getFirst(),assetManifest,clientURL.getSecond() )?name:null;
+        return download(clientURL.getFirst(), clientJar, clientURL.getSecond()) ? name : null;
+    }
+
+    public static boolean extractJar(MCVersion version, String filename, Predicate<JarEntry> jarEntryPredicate, boolean force) {
+        File clientJar = new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + File.separator + filename);
+        if (!clientJar.exists()) {
+            Logger.LOGGER.severe(String.format("Could not get client jar file for version %s", version.toString()));
+            return false;
+        }
+        try {
+            extractFromJar(clientJar, DOWNLOAD_DIR_ASSETS + File.separator + version.name,jarEntryPredicate, force);
+        } catch (IOException e) {
+            Logger.LOGGER.severe(String.format("Could not extract from jar file for version %s", version.toString()));
+            return false;
+        }
+        return true;
+    }
+
+    private static void extractFromJar(File jarFile, String pathPrefix,Predicate<JarEntry> jarEntryPredicate, boolean force) throws IOException {
+        JarFile jar = new JarFile(jarFile);
+        Enumeration<JarEntry> enumEntries = jar.entries();
+        while (enumEntries.hasMoreElements()) {
+            JarEntry entry = enumEntries.nextElement();
+            File extractedFile = new java.io.File(pathPrefix + File.separator + entry.getName());
+            if (extractedFile.exists() && !force || !jarEntryPredicate.test(entry)) continue;
+            if (entry.isDirectory()) { // if its a directory, create it
+                boolean ignored = extractedFile.mkdir();
+                continue;
+            }
+            Files.createDirectories(extractedFile.toPath().getParent());
+            InputStream is = jar.getInputStream(entry); // get the input stream
+            FileOutputStream fos = new FileOutputStream(extractedFile);
+            while (is.available() > 0) {  // write contents of 'is' to 'fos'
+                fos.write(is.read());
+            }
+            fos.close();
+            is.close();
+        }
+        jar.close();
     }
 
 
     private static boolean download(String url, File out, String sha1) {
-        Logger.LOGGER.info(String.format("Downloading %s for file %s",url,out.getName()));
+        Logger.LOGGER.info(String.format("Downloading %s for file %s", url, out.getName()));
         ReadableByteChannel rbc;
         try {
             rbc = Channels.newChannel(new URL(url).openStream());
@@ -165,7 +221,9 @@ public class Assets {
             return false;
         }
         try {
-            new FileOutputStream(out).getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            FileOutputStream fileOutputStream = new FileOutputStream(out);
+            fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
+            fileOutputStream.close();
         } catch (IOException e) {
             Logger.LOGGER.severe(String.format("Could not download from channel to url %s for file %s, error: %s", url, out.getAbsolutePath(), e.toString()));
             return false;
@@ -201,14 +259,14 @@ public class Assets {
         }
         Map<String, Object> map = new Gson().fromJson(jsonReader, Map.class);
         if (map.containsKey("downloads")) {
-            Map<String, Map<String,String>> downloads = (Map<String, Map<String,String>>) map.get("downloads");
-            if (downloads.containsKey("client")){
-                Map<String,String> client=downloads.get("client");
+            Map<String, Map<String, String>> downloads = (Map<String, Map<String, String>>) map.get("downloads");
+            if (downloads.containsKey("client")) {
+                Map<String, String> client = downloads.get("client");
                 if (client.containsKey("url") && client.containsKey("sha1")) {
                     return new Pair<>(client.get("url"), client.get("sha1"));
                 }
                 Logger.LOGGER.warning(String.format("Version manifest does not contain a client url/sha1 key for %s", version));
-            }else{
+            } else {
                 Logger.LOGGER.warning(String.format("Version manifest does not contain a client key for %s", version));
             }
         } else {
@@ -282,18 +340,18 @@ public class Assets {
         return false;
     }
 
-    private static boolean compareSha1(File file,String sha1){
-        if (sha1!=null && file!=null){
-            try{
+    private static boolean compareSha1(File file, String sha1) {
+        if (sha1 != null && file != null) {
+            try {
                 return getFileChecksum(MessageDigest.getInstance("SHA-1"), file).equals(sha1);
-            }catch (NoSuchAlgorithmException e){
+            } catch (NoSuchAlgorithmException e) {
                 Logger.LOGGER.severe("Could not compute sha1 since algorithm does not exists");
             }
         }
         return false;
     }
 
-    private static String getFileChecksum(MessageDigest digest, File file){
+    private static String getFileChecksum(MessageDigest digest, File file) {
         try {
             FileInputStream fis = new FileInputStream(file);
 
@@ -303,8 +361,8 @@ public class Assets {
                 digest.update(byteArray, 0, bytesCount);
             }
             fis.close();
-        }catch (IOException e){
-            Logger.LOGGER.severe(String.format("Failed to read file for checksum, error : %s",e));
+        } catch (IOException e) {
+            Logger.LOGGER.severe(String.format("Failed to read file for checksum, error : %s", e));
             return "";
         }
         byte[] bytes = digest.digest();
@@ -313,5 +371,53 @@ public class Assets {
             sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
+    }
+
+    public static Stream<File> collectAllFiles(File path, Predicate<File> predicate) {
+        Stream<File> fileStream = Stream.empty();
+        for (File file : Objects.requireNonNull(path.listFiles())) {
+            if (predicate != null && predicate.test(file)) {
+                fileStream = Stream.concat(fileStream, Stream.of(file));
+            }
+            if (file.isDirectory()) {
+                fileStream = Stream.concat(fileStream, collectAllFiles(file, predicate));
+            }
+        }
+        return fileStream;
+    }
+
+    public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
+        return Files.walk(dir).
+                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + extension)).
+                collect(Collectors.toList());
+    }
+
+    public static List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path,String> fnObjectStorage) {
+        List<Path> paths;
+        List<Pair<String, BufferedImage>> list = new ArrayList<>();
+        try {
+            paths = Assets.getFileHierarchical(dir, name, extension);
+        } catch (IOException e) {
+            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e.toString()));
+            System.err.println("Didn't find icon " + name + ".");
+            return list;
+        }
+        for (Path path : paths) {
+            try {
+                InputStream inputStream = isJar ? Icons.class.getResourceAsStream(path.toString()) : new FileInputStream(path.toString());
+                list.add(new Pair<>(fnObjectStorage.apply(path), ImageIO.read(inputStream)));
+            } catch (IOException e) {
+                LOGGER.severe(String.format("Exception while reading the input stream or getting " +
+                        "the file input for %s at %s with error %s", name, dir.toString(), e.toString()));
+            }
+        }
+        if (list.isEmpty()) {
+            System.err.println("Didn't find icon " + name + ".");
+            LOGGER.severe(String.format("File not found for %s", name));
+        } else {
+            System.out.println("Found icon " + name + ".");
+        }
+
+        return list;
     }
 }

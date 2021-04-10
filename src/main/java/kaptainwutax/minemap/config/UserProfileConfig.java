@@ -25,7 +25,7 @@ public class UserProfileConfig extends Config {
     @Expose
     protected MCVersion MC_VERSION;
     @Expose
-    protected MCVersion ASSET_VERSION;
+    protected MCVersion ASSETS_VERSION;
     @Expose
     protected String MINEMAP_VERSION;
     @Expose
@@ -55,7 +55,7 @@ public class UserProfileConfig extends Config {
     }
 
     public MCVersion getAssetVersion() {
-        return this.ASSET_VERSION;
+        return this.ASSETS_VERSION;
     }
 
     public UserSettings getUserSettings() {
@@ -82,6 +82,11 @@ public class UserProfileConfig extends Config {
 
     public void setMinemapVersion(String version) {
         this.MINEMAP_VERSION = version;
+        this.flush();
+    }
+
+    public void setAssetsVersion(MCVersion version) {
+        this.ASSETS_VERSION = version;
         this.flush();
     }
 
@@ -115,7 +120,7 @@ public class UserProfileConfig extends Config {
         this.MC_VERSION = MCVersion.values()[0];
         this.USER_SETTINGS = new UserSettings();
         this.MINEMAP_VERSION = MineMap.version;
-        this.ASSET_VERSION = null; // allowed since I use null as an invalid version
+        this.ASSETS_VERSION = null; // allowed since I use null as an invalid version
 
         for (Dimension dimension : Dimension.values()) {
             this.DIMENSIONS.put(dimension.getName(), true);

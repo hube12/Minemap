@@ -39,7 +39,7 @@ public abstract class Config {
     public Config readConfig() {
         try {
             return GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             this.generateConfig();
         }
 
