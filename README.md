@@ -2,7 +2,7 @@
 
 ![Minemap logo](logo.png?raw=true "Minemap")
 
-To download it got in [Releases](https://github.com/hube12/MineMap/releases/latest)
+To download it head to the [Releases section](https://github.com/hube12/MineMap/releases/latest).
 
 This is a program to replace the old amidst with a non Minecraft based one (meaning you can run it without Minecraft
 installed), it is also way more efficient since it is fully multithreaded.
