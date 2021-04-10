@@ -241,6 +241,7 @@ public class Icons {
 
     private static void registerInternetAssets() {
         registerObject(Item.TNT,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"tnt_side",".png");
+        registerObject(Item.CLOCK,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"clock_00",".png");
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
