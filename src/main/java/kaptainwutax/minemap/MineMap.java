@@ -18,7 +18,7 @@ import java.nio.file.Paths;
 import java.util.function.Supplier;
 
 public class MineMap extends JFrame {
-    public static final String version="1.32";
+    public static final String version="1.33";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
