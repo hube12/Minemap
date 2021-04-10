@@ -236,11 +236,13 @@ public class Icons {
     }
 
     private static void registerOwnAssets(Path dir, boolean isJar) {
-        registerObject(Item.ENCHANTED_GOLDEN_APPLE,dir,isJar,Item.ENCHANTED_GOLDEN_APPLE.getName(),".jpg");
+//        registerObject(Item.ENCHANTED_GOLDEN_APPLE,dir,isJar,Item.ENCHANTED_GOLDEN_APPLE.getName(),".jpg");
     }
 
     private static void registerInternetAssets() {
         registerObject(Item.TNT,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"tnt_side",".png");
+        registerObject(Item.ENCHANTED_GOLDEN_APPLE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Item.GOLDEN_APPLE.getName(),".png");
+        registerObject(Item.LIGHT_WEIGHTED_PRESSURE_PLATE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Item.GOLD_BLOCK.getName(),".png");
         registerObject(Item.CLOCK,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"clock_00",".png");
     }
 

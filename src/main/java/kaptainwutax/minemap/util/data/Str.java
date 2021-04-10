@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.util.data;
 
 import java.util.Arrays;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public final class Str {
@@ -29,11 +30,37 @@ public final class Str {
     }
 
     public static String prettifyDashed(String s) {
-        String[] words=s.toLowerCase().split("_");
-        if ((s.startsWith("NE") || s.startsWith("OW"))){
-            words[0]=capitalize(words[0],2);
+        String[] words = s.toLowerCase().split("_");
+        if ((s.startsWith("NE") || s.startsWith("OW"))) {
+            words[0] = capitalize(words[0], 2);
         }
         return Arrays.stream(words).map(Str::capitalize).collect(Collectors.joining(" "));
     }
 
+    private final static TreeMap<Integer, String> map = new TreeMap<>();
+
+    static {
+        map.put(1000, "M");
+        map.put(900, "CM");
+        map.put(500, "D");
+        map.put(400, "CD");
+        map.put(100, "C");
+        map.put(90, "XC");
+        map.put(50, "L");
+        map.put(40, "XL");
+        map.put(10, "X");
+        map.put(9, "IX");
+        map.put(5, "V");
+        map.put(4, "IV");
+        map.put(1, "I");
+    }
+
+    public static String toRomanNumeral(Integer number) {
+        if (number == null) return null;
+        int l = map.floorKey(number);
+        if (number == l) {
+            return map.get(number);
+        }
+        return map.get(l) + toRomanNumeral(number - l);
+    }
 }

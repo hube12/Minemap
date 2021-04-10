@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.map.interactive;
 
+
 import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
@@ -9,9 +10,8 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.CPos;
+import org.jdesktop.swingx.image.ColorTintFilter;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
@@ -65,7 +64,6 @@ public class Chest extends JFrame {
 
     public void setFeature(RegionStructure<?, ?> feature) {
         this.feature = feature;
-        this.setTitle(this.getName()+" of "+ prettifyDashed(this.feature.getName()));
     }
 
     public void setPos(CPos pos) {
@@ -73,6 +71,7 @@ public class Chest extends JFrame {
     }
 
     public void updateContent() {
+        this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(this.feature.getName()), this.pos.getX() * 16 + 9, this.pos.getZ() * 16 + 9));
         int numberChest = this.content.update(feature, pos);
         this.topBar.setNumberChest(numberChest);
     }
@@ -136,25 +135,36 @@ public class Chest extends JFrame {
                     List<JButton> rowButton = this.list.get(row);
                     for (int col = 0; col < COL_NUMBER; col++) {
                         if (!currentIterator.hasNext()) break;
-                        ItemStack itemStack=currentIterator.next();
-                        Item item=itemStack.getItem();
-                        BufferedImage icon=Icons.getObject(item);
-                        JButton current=rowButton.get(col);
+                        ItemStack itemStack = currentIterator.next();
+                        Item item = itemStack.getItem();
+                        boolean isEnchanted = item.getName().startsWith("enchanted_") || !item.getEnchantment().isEmpty();
+                        boolean isPlate = item.getName().endsWith("_plate");
+                        BufferedImage icon = Icons.getObject(item);
+                        JButton current = rowButton.get(col);
                         current.setMargin(new Insets(0, 0, 0, 0));
-                        if (icon==null) {
-                            current.setText("<html>"+Str.prettifyDashed(item.getName())+"<br>"+itemStack.getCount()+"</html>");
+                        if (!item.getEnchantment().isEmpty()){
+                            StringBuilder sb = new StringBuilder("<html>");
+                            ArrayList<String> enchantments=item.getEnchantment();
+                            ArrayList<Integer> levels=item.getLevel();
+                            for (int idx = 0; idx < item.getEnchantment().size(); idx++) {
+                                sb.append(Str.capitalize(enchantments.get(idx))).append(" ").append(Str.toRomanNumeral(levels.get(idx))).append("<br>");
+                            }
+                            sb.append("</html>");
+                            current.setToolTipText(sb.toString());
                         }
-                        else {
+                        if (icon == null) {
+                            current.setText("<html>" + Str.prettifyDashed(item.getName()) + "<br>" + itemStack.getCount() + "</html>");
+                        } else {
                             int w = icon.getWidth();
                             int h = icon.getHeight();
-                            double scaleFactor=64.0/Math.max(w,h);
+                            double scaleFactor = 64.0 / Math.max(w, h);
 
-                            BufferedImage scaledIcon = new BufferedImage((int) (w*scaleFactor), (int) (h*scaleFactor), BufferedImage.TYPE_INT_ARGB);
+                            BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
                             AffineTransform at = new AffineTransform();
                             at.scale(scaleFactor, scaleFactor);
                             AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
                             scaledIcon = scaleOp.filter(icon, scaledIcon);
-                            Graphics2D g2d= (Graphics2D) scaledIcon.getGraphics();
+                            Graphics2D g2d = (Graphics2D) scaledIcon.getGraphics();
                             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                             g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
                             g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -164,12 +174,25 @@ public class Chest extends JFrame {
                             g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
                             g2d.setColor(Color.GRAY);
                             g2d.setStroke(new BasicStroke(2));
-                            g2d.fillOval(40,40,20,20);
-                            char[] charArray=Integer.toString(itemStack.getCount()).toCharArray();
+                            g2d.fillOval(40, 40, 20, 20);
+                            char[] charArray = Integer.toString(itemStack.getCount()).toCharArray();
                             g2d.setColor(Color.WHITE);
                             g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
-                            g2d.drawChars(charArray,0,charArray.length,charArray.length==1?47:43,55);
+                            g2d.drawChars(charArray, 0, charArray.length, charArray.length == 1 ? 47 : 43, 55);
+                            if (isEnchanted) {
+                                ColorTintFilter colorTintFilter = new ColorTintFilter(Color.PINK, 0.4f);
+                                colorTintFilter.filter(scaledIcon, scaledIcon);
+                            }
+                            if (isPlate) {
+                                g2d.setColor(Color.DARK_GRAY);
+                                g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                                g2d.drawRect(0, 0, scaledIcon.getWidth(), scaledIcon.getHeight());
+                            }
                             current.setIcon(new ImageIcon(scaledIcon));
+
+                            //current.addMouseListener(Events.Mouse.onEntered(e->current.getto));
+
+
                         }
 
                     }
@@ -186,12 +209,14 @@ public class Chest extends JFrame {
             return 0;
         }
 
-        public void clean(){
+        public void clean() {
             for (int row = 0; row < ROW_NUMBER; row++) {
                 List<JButton> rowButton = this.list.get(row);
                 for (int col = 0; col < COL_NUMBER; col++) {
                     rowButton.get(col).setText("");
+                    rowButton.get(col).setToolTipText(null);
                     rowButton.get(col).setIcon(null);
+
                 }
             }
         }

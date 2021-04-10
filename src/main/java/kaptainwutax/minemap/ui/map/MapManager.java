@@ -199,8 +199,8 @@ public class MapManager {
                                                    Pair<Feature<?, ?>, List<BPos>> featureListPair=features.get(0);
                                                    Feature<?, ?> feature=featureListPair.getFirst();
                                                    BPos bPos=featureListPair.getSecond().get(0);
-                                                   chestMenu.setFeature((RegionStructure<?, ?>) feature);
                                                    chestMenu.setPos(bPos.toChunkPos());
+                                                   chestMenu.setFeature((RegionStructure<?, ?>) feature);
                                                    chestMenu.updateContent();
                                                }
                                            });
