@@ -69,6 +69,7 @@ public class Assets {
      * Download a specific version manifest, will return false if the global manifest does not exists
      *
      * @param version a specific version (must not be null)
+     * @param force if force is true then it will download it again even if the file exists
      * @return a boolean specifying if the version manifest was indeed downloaded
      */
     public static boolean downloadVersionManifest(MCVersion version,boolean force) {
@@ -87,7 +88,7 @@ public class Assets {
     /**
      * Download the manifest from the mojang servers
      *
-     * @param version can be null or a specific version to check if the manifest is up to date (aka if the version is not present the manifest is downloaded again
+     * @param version can be null or a specific version to check if the manifest is up to date (aka if the version is not present the manifest is downloaded again)
      * @return boolean to say if the manifest is present and up to date
      */
     public static boolean downloadManifest(MCVersion version) {
@@ -103,11 +104,13 @@ public class Assets {
         return true;
     }
 
+    /**
+     * Download the assets hash file depending of a version
+     * @param version the specific targeted version
+     * @param force if force is true then it will download it again even if the file exists
+     * @return the name of the asset as version.json
+     */
     public static String downloadVersionAssets(MCVersion version,boolean force) {
-        JsonReader jsonReader = openJSON(MANIFEST_FILE);
-        if (jsonReader == null) {
-            return null;
-        }
         Pair<String,String> assetIndexURL = getAssetIndexURL(version);
         if (assetIndexURL == null) {
             Logger.LOGGER.severe(String.format("Could not get asset url for version %s", version.toString()));
@@ -124,7 +127,31 @@ public class Assets {
             return name;
         }
         return download(assetIndexURL.getFirst(),assetManifest,assetIndexURL.getSecond() )?name:null;
+    }
 
+    /**
+     * Download the client jar file depending of a version
+     * @param version the specific targeted version
+     * @param force if force is true then it will download it again even if the file exists
+     * @return the name of the client jar as version.json
+     */
+    public static String downloadClientJar(MCVersion version,boolean force) {
+        Pair<String,String> clientURL = getClientURL(version);
+        if (clientURL == null) {
+            Logger.LOGGER.severe(String.format("Could not get client url for version %s", version.toString()));
+            return null;
+        }
+        String[] urlSplit = clientURL.getFirst().split("/");
+        if (urlSplit.length < 2) {
+            Logger.LOGGER.severe(String.format("Could not get name of client from url %s for version %s", clientURL, version.toString()));
+            return null;
+        }
+        String name = urlSplit[urlSplit.length - 1];
+        File assetManifest=new File(DOWNLOAD_DIR_VERSIONS+File.separator+name);
+        if (!force && assetManifest.exists() && compareSha1(assetManifest,clientURL.getSecond())){
+            return name;
+        }
+        return download(clientURL.getFirst(),assetManifest,clientURL.getSecond() )?name:null;
     }
 
 
@@ -159,9 +186,33 @@ public class Assets {
             if (assets.containsKey("url") && assets.containsKey("sha1")) {
                 return new Pair<>(assets.get("url"), assets.get("sha1"));
             }
-            Logger.LOGGER.warning(String.format("Version manifest does not contain a url/sha1 key for %s", version));
+            Logger.LOGGER.warning(String.format("Version manifest does not contain a asset url/sha1 key for %s", version));
         } else {
             Logger.LOGGER.warning(String.format("Version manifest does not contain a assetIndex key for %s", version));
+        }
+        return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Pair<String, String> getClientURL(MCVersion version) {
+        JsonReader jsonReader = openJSON(new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + ".json"));
+        if (jsonReader == null) {
+            return null;
+        }
+        Map<String, Object> map = new Gson().fromJson(jsonReader, Map.class);
+        if (map.containsKey("downloads")) {
+            Map<String, Map<String,String>> downloads = (Map<String, Map<String,String>>) map.get("downloads");
+            if (downloads.containsKey("client")){
+                Map<String,String> client=downloads.get("client");
+                if (client.containsKey("url") && client.containsKey("sha1")) {
+                    return new Pair<>(client.get("url"), client.get("sha1"));
+                }
+                Logger.LOGGER.warning(String.format("Version manifest does not contain a client url/sha1 key for %s", version));
+            }else{
+                Logger.LOGGER.warning(String.format("Version manifest does not contain a client key for %s", version));
+            }
+        } else {
+            Logger.LOGGER.warning(String.format("Version manifest does not contain a downloads key for %s", version));
         }
         return null;
     }

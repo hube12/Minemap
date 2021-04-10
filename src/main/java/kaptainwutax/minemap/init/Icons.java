@@ -4,7 +4,6 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
@@ -12,7 +11,6 @@ import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.Pair;
-import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
@@ -20,6 +18,8 @@ import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +33,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -45,7 +46,6 @@ public class Icons {
 
     private static final Map<Class<?>, List<Pair<String, BufferedImage>>> CLASS_REGISTRY = new HashMap<>();
     private static final Map<Object, List<Pair<String, BufferedImage>>> OBJECT_REGISTRY = new HashMap<>();
-
 
     public static void registerIcons() {
         String mainPath = "/icon";
@@ -80,27 +80,71 @@ public class Icons {
             try {
                 fileSystem.close();
             } catch (IOException e) {
-                LOGGER.severe(String.format("Filesystem was not cloed correctly for %s with error : %s", uri, e.toString()));
-                return;
+                LOGGER.severe(String.format("Filesystem was not closed correctly for %s with error : %s", uri, e.toString()));
             }
         }
-        if (Assets.downloadManifest(Configs.USER_PROFILE.getAssetVersion())){
-            MCVersion version=Assets.getLatestVersion();
-            if (version!=null){
-                if (Assets.downloadVersionManifest(version,false)){
-                    String assetName=Assets.downloadVersionAssets(version,false);
-                    if (assetName!=null){
-                        System.out.println(assetName);
-                    }else{
-                        Logger.LOGGER.warning("Assets index could not be downloaded");
+    }
+
+    public static void registerDelayedIcons(JFrame parent){
+        final JDialog loading = new JDialog(parent);
+        JPanel p1 = new JPanel(new BorderLayout());
+        p1.add(new JLabel("<html><div style='text-align: center;'>Downloading assets<br>Please wait...</div></html>"), BorderLayout.CENTER);
+        loading.setUndecorated(true);
+        loading.getContentPane().add(p1);
+        loading.pack();
+        loading.setLocationRelativeTo(parent);
+        loading.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        loading.setModal(true);
+
+        SwingWorker<Boolean, Void> worker = new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() {
+                if (Assets.downloadManifest(Configs.USER_PROFILE.getAssetVersion())) {
+                    MCVersion version = Assets.getLatestVersion();
+                    if (version != null) {
+                        if (Assets.downloadVersionManifest(version, false)) {
+                            String assetName = Assets.downloadVersionAssets(version, false);
+                            if (assetName != null) {
+                                MCVersion assetVersion = MCVersion.fromString(assetName.replace(".json", ""));
+                                if (assetVersion != null) {
+                                    if (Assets.downloadVersionManifest(assetVersion, false)) {
+                                        String clientName = Assets.downloadClientJar(assetVersion, false);
+                                        return true;
+                                    } else {
+                                        Logger.LOGGER.warning("Version manifest could not be downloaded");
+                                    }
+                                } else {
+                                    Logger.LOGGER.warning(String.format("Assets version could not be converted to a viable version for %s", assetName));
+                                }
+                            } else {
+                                Logger.LOGGER.warning("Assets index could not be downloaded");
+                            }
+                        } else {
+                            Logger.LOGGER.warning(String.format("Version manifest could not be downloaded for %s", version));
+                        }
+                    } else {
+                        Logger.LOGGER.warning("Manifest does not contain a valid latest release");
                     }
-                }else{
-                    Logger.LOGGER.warning("Version manifest could not be downloaded");
                 }
-            }else{
-                Logger.LOGGER.warning("Manifest does not contain a valid latest release");
+                return false;
             }
+
+            @Override
+            protected void done() {
+                loading.dispose();
+            }
+        };
+        worker.execute(); //here the process thread initiates
+        loading.setVisible(true);
+        try {
+            Boolean result=worker.get(); //here the parent thread waits for completion
+            if (result){
+                System.out.println("Assets downloaded");
+            }
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
+
 
         registerInternetIcons();
         cleanDuplicates();
@@ -172,10 +216,10 @@ public class Icons {
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
-        if (CLASS_REGISTRY.containsKey(clazz)){
+        if (CLASS_REGISTRY.containsKey(clazz)) {
             CLASS_REGISTRY.get(clazz).addAll(getIcon(dir, isJar, name, extension));
-        }else{
-            CLASS_REGISTRY.put(clazz,getIcon(dir, isJar, name, extension));
+        } else {
+            CLASS_REGISTRY.put(clazz, getIcon(dir, isJar, name, extension));
         }
     }
 
@@ -184,10 +228,10 @@ public class Icons {
     }
 
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
-        if (OBJECT_REGISTRY.containsKey(object)){
+        if (OBJECT_REGISTRY.containsKey(object)) {
             OBJECT_REGISTRY.get(object).addAll(getIcon(dir, isJar, name, extension));
-        }else{
-            OBJECT_REGISTRY.put(object,getIcon(dir, isJar, name, extension));
+        } else {
+            OBJECT_REGISTRY.put(object, getIcon(dir, isJar, name, extension));
         }
     }
 

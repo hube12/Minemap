@@ -57,6 +57,7 @@ public class MineMap extends JFrame {
         Configs.registerDelayedConfigs();
         KeyShortcuts.registerShortcuts();
         INSTANCE.doDelayedInitTasks();
+        Icons.registerDelayedIcons(INSTANCE);
     }
 
     public MineMap() {
