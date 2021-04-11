@@ -12,6 +12,7 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class SaltsConfig extends Config {
     // can't use the enum as the key as it is not correctly deserialized by GSON
@@ -54,10 +55,10 @@ public class SaltsConfig extends Config {
             if (OVERRIDES.containsKey(version)) {
                 Map<String, Integer> overrides = OVERRIDES.get(version);
                 for (String s : overrides.keySet()) {
-                    salts.put(s.toLowerCase().replace(" ","_"), overrides.get(s));
+                    result.put(s.toLowerCase().replace(" ","_"), overrides.get(s));
                 }
             }
-            return salts;
+            return result;
         }
         return null;
     }
@@ -95,10 +96,23 @@ public class SaltsConfig extends Config {
     @Override
     public void maintainConfig() {
         this.resetConfig();
+        this.cleanOverrides();
+    }
+
+    private void cleanOverrides(){
+        for (String key:OVERRIDES.keySet()){
+            Map<String,Integer> versionOverrides=OVERRIDES.get(key);
+            Map<String,Integer> newVersionOverrides=new LinkedHashMap<>();
+            for (Map.Entry<String,Integer> entry:versionOverrides.entrySet()){
+                newVersionOverrides.put(entry.getKey().toLowerCase().replace(" ","_"),entry.getValue());
+            }
+            OVERRIDES.put(key,newVersionOverrides);
+        }
     }
 
     @Override
     protected void resetConfig() {
+        this.SALTS.clear();
         for (MCVersion version : MCVersion.values()) {
             this.resetConfig(version);
         }
