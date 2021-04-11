@@ -13,6 +13,16 @@ area and use a ruler.
 
 Supports all Minecraft release starting from 1.0+
 
+## Development
+
+You just need to have the Java JDK installed then do:
+`git clone https://github.com/hube12/MineMap`
+
+Go in the directory and run `./gradlew run` to run Minemap (we enable the no-update option)
+
+Run `./gradlew shadowJar` to generate the release jar (modify Minemap.version and gradle.properties MinemapVersion variables accordingly)
+
+To use vulkan with debug and validation layers please install the vulkan Lunar SDK.
 
 ## Contributors
 - KaptainWutax : Core part of the map system and libs setup
