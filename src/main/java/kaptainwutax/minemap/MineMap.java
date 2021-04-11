@@ -1,19 +1,27 @@
 package kaptainwutax.minemap;
 
 import com.formdev.flatlaf.*;
+import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.minemap.config.Config;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
+import kaptainwutax.minemap.ui.map.MapContext;
+import kaptainwutax.minemap.ui.map.MapSettings;
+import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
+import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.minemap.util.ui.ModalPopup;
 import kaptainwutax.seedutils.mc.MCVersion;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +29,16 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static kaptainwutax.seedutils.mc.Dimension.OVERWORLD;
+
 public class MineMap extends JFrame {
-    public static final String version="1.34";
+    public static final String version="b1.34";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
@@ -37,14 +48,108 @@ public class MineMap extends JFrame {
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Logger.registerLogger();
-        updateMinemap();
+        if (!Arrays.asList(args).contains("--screenshot") && !Arrays.asList(args).contains("--no-update")){
+            updateMinemap();
+        }
         createDirs();
         doRegister();
+        if (Arrays.asList(args).contains("--screenshot")){
+            doScreenshot(args);
+            return;
+        }
         INSTANCE = new MineMap();
         INSTANCE.setVisible(true);
         doDelayedRegister();
+    }
+
+    private static void doScreenshot(String[] args)throws IOException{
+        // FIXME prettify
+        long seed;
+        MCVersion version;
+        int blockX;
+        int blockZ;
+        int size;
+        if (Arrays.asList(args).contains("--seed")){
+            int idx=Arrays.asList(args).indexOf("--seed");
+            if (idx+1>=args.length){
+                System.err.println("Error no seed provided");
+                return;
+            }
+            try{
+                seed=Long.parseLong(args[idx+1]);
+            }catch (NumberFormatException ignored){
+                System.err.println("Invalid seed provided, should be numeric only for now");
+                return;
+            }
+        }else{
+            System.out.println("No seed argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            return;
+        }
+        if (Arrays.asList(args).contains("--version")){
+            int idx=Arrays.asList(args).indexOf("--version");
+            if (idx+1>=args.length){
+                System.err.println("Error no version provided");
+                return;
+            }
+            version=MCVersion.fromString(args[idx+1]);
+            if (version==null){
+                System.err.println("Invalid version provided");
+                return;
+            }
+        }else{
+            System.out.println("No version argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            return;
+        }
+        if (Arrays.asList(args).contains("--pos")){
+            int idx=Arrays.asList(args).indexOf("--pos");
+            if (idx+2>args.length){
+                System.err.println("Error no pos provided");
+                return;
+            }
+            try{
+                blockX=Integer.parseInt(args[idx+1]);
+                blockZ=Integer.parseInt(args[idx+2]);
+            }catch (NumberFormatException ignored){
+                System.err.println("Invalid pos provided, should be numeric");
+                return;
+            }
+        }else{
+            System.out.println("No pos argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            return;
+        }
+        if (Arrays.asList(args).contains("--size")){
+            int idx=Arrays.asList(args).indexOf("--size");
+            if (idx+1>args.length){
+                System.err.println("Error no size provided");
+                return;
+            }
+            try{
+                size=Integer.parseInt(args[idx+1]);
+            }catch (NumberFormatException ignored){
+                System.err.println("Invalid size provided, should be numeric");
+                return;
+            }
+        }else{
+            System.out.println("No size argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            return;
+        }
+        MapSettings settings = new MapSettings(version, OVERWORLD).refresh();
+        MapContext context = new MapContext(seed, settings);
+        settings.hide(SlimeChunk.class, Mineshaft.class);
+        Fragment fragment = new Fragment(blockX,blockZ, size, context);
+        BufferedImage screenshot = getScreenShot(fragment, size, size);
+        ImageIO.write(screenshot, "png", new File(context.worldSeed + ".png"));
+        System.out.println("Done!");
+    }
+
+    private static BufferedImage getScreenShot(Fragment fragment, int width, int height) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        DrawInfo info = new DrawInfo(0, 0, width, height);
+        fragment.drawBiomes(image.getGraphics(), info);
+        fragment.drawFeatures(image.getGraphics(), info);
+        return image;
     }
 
     private static void updateMinemap(){
@@ -66,7 +171,7 @@ public class MineMap extends JFrame {
         if (newVersion!=null){
             Process ps;
             try{
-                ps =Runtime.getRuntime().exec(new String[]{"java","-jar",newVersion});
+                ps =Runtime.getRuntime().exec(new String[]{"java","-jar",newVersion,"--no-update"});
                 ps.waitFor();
             }catch (Exception e){
                 Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s",e));

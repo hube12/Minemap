@@ -426,7 +426,7 @@ public class Assets {
 
     public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
         return Files.walk(dir).
-                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().toString().endsWith(fileName + extension)).
+                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().getFileName().toString().equals(fileName + extension)).
                 collect(Collectors.toList());
     }
 

@@ -26,6 +26,10 @@ tasks.withType(JavaCompile) {
     options.compilerArgs += ['-Xlint:deprecation','-Xlint:unchecked']
 }
 
+run{
+    args "--no-update"
+}
+
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') {transitive = false}
     implementation('com.github.KaptainWutax:SeedUtils:40b5cc6f369afb0a10dd735f5bc3342fd338c4e3') {transitive = false}
