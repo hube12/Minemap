@@ -7,18 +7,27 @@ import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
+import kaptainwutax.minemap.util.data.Pair;
+import kaptainwutax.minemap.util.ui.ModalPopup;
+import kaptainwutax.seedutils.mc.MCVersion;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class MineMap extends JFrame {
-    public static final String version="1.33";
+    public static final String version="1.32";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
@@ -28,7 +37,9 @@ public class MineMap extends JFrame {
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        Logger.registerLogger();
+        updateMinemap();
         createDirs();
         doRegister();
         INSTANCE = new MineMap();
@@ -36,16 +47,70 @@ public class MineMap extends JFrame {
         doDelayedRegister();
     }
 
-    public static void createDirs() throws IOException {
-        String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR};
-        for (String dir : dirs) {
-            Files.createDirectories(Paths.get(dir));
+    private static void updateMinemap(){
+        JDialog downloadPopup = new ModalPopup(null, "Downloading new MineMap version");
+        downloadPopup.setSize(new Dimension(300,50));
+        downloadPopup.setShape(new RoundRectangle2D.Double(0,0,300,50,50,50));
+        applyStyle();
+        SwingWorker<String, Void> downloadWorker = getDownloadWorker(downloadPopup);
+        downloadWorker.execute();
+        downloadPopup.setVisible(true);
+        String newVersion=null;
+        try {
+            newVersion = downloadWorker.get(); // blocking wait (intended)
+        }catch (Exception e){
+            Logger.LOGGER.severe(String.format("Failed to use the download worker, error %s",e));
         }
-        Assets.createDirs();
+        downloadPopup.setVisible(false);
+        downloadPopup.dispose();
+        if (newVersion!=null){
+            Process ps;
+            try{
+                ps =Runtime.getRuntime().exec(new String[]{"java","-jar",newVersion});
+                ps.waitFor();
+            }catch (Exception e){
+                Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s",e));
+                return;
+            }
+            int exitVal = ps.exitValue();
+            if (exitVal != 0) {
+                Logger.LOGGER.severe("Failed to execute jar, " + Arrays.toString(new BufferedReader(new InputStreamReader(ps.getErrorStream())).lines().toArray()));
+            }else{
+                Logger.LOGGER.warning(String.format("UPDATING TO %s",newVersion));
+                System.exit(0);
+            }
+        }
+    }
+
+    private static SwingWorker<String, Void> getDownloadWorker(JDialog parent) {
+        return new SwingWorker<String, Void>() {
+            @Override
+            protected String doInBackground() {
+                return Assets.downloadLatestMinemap();
+            }
+
+            @Override
+            protected void done() {
+                super.done();
+                parent.dispose();
+            }
+        };
+    }
+
+    public static void createDirs() {
+        try {
+            String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR};
+            for (String dir : dirs) {
+                Files.createDirectories(Paths.get(dir));
+            }
+            Assets.createDirs();
+        }catch (IOException e){
+            Logger.LOGGER.severe(String.format("Failed to create a directory, error: %s",e));
+        }
+
     }
 
     public static void doRegister() {
-        Logger.registerLogger();
         Features.registerFeatures();
         Chests.registerChests();
         Configs.registerConfigs();

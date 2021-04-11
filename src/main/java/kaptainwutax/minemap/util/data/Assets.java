@@ -2,6 +2,7 @@ package kaptainwutax.minemap.util.data;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -9,6 +10,7 @@ import kaptainwutax.seedutils.mc.MCVersion;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
@@ -47,6 +49,42 @@ public class Assets {
         for (String dir : dirs) {
             Files.createDirectories(Paths.get(dir));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String downloadLatestMinemap(){
+        String data=getDataRestAPI("https://api.github.com/repos/hube12/MineMap/releases/latest");
+        if (data==null){
+            return null;
+        }
+        Map<String, Object> map = new Gson().fromJson(data, Map.class);
+        if (map.containsKey("tag_name")) {
+            String tagName = (String) map.get("tag_name");
+            if (!tagName.equals(MineMap.version)){
+                if (map.containsKey("assets")) {
+                    ArrayList<Map<String, Object>> assets = (ArrayList<Map<String, Object>>) map.get("assets");
+                    for (Map<String, Object> asset:assets){
+                        if (asset.containsKey("browser_download_url") && asset.containsKey("name") && ((String)asset.get("name")).startsWith("MineMap-")){
+                            String url=(String)asset.get("browser_download_url");
+                            String filename=(String)asset.get("name");
+                            if (download(url,new File(filename),null)){
+                                return filename;
+                            }else{
+                                Logger.LOGGER.warning(String.format("Failed to download jar from url %s with filename %s",url,filename));
+                            }
+                        }
+                    }
+                    Logger.LOGGER.warning("Github release does not contain a correct release.");
+                }else{
+                    Logger.LOGGER.warning("Github release does not contain a assets key.");
+                }
+            }else{
+                Logger.LOGGER.info(String.format("Version match so we are not updating current :%s, github :%s", MineMap.version,tagName));
+            }
+        } else {
+            Logger.LOGGER.warning("Github release does not contain a tag_name key.");
+        }
+        return null;
     }
 
     /**
@@ -420,4 +458,30 @@ public class Assets {
 
         return list;
     }
+
+    private static String getDataRestAPI(String apiUrl){
+        try {
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+            if (responseCode != 200) {
+                LOGGER.severe(String.format("Failed to fetched URL %s, errorcode : %s",apiUrl, responseCode));
+            } else {
+
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(url.openStream());
+                while (scanner.hasNext()) {
+                    inline.append(scanner.nextLine());
+                }
+                scanner.close();
+                return inline.toString();
+            }
+        }catch (Exception e){
+            LOGGER.severe(String.format("Failed to fetched URL %s, error : %s",apiUrl, e));
+        }
+        return null;
+    }
+
 }

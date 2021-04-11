@@ -8,6 +8,8 @@ import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.RPos;
+import org.lwjgl.opengl.awt.AWTGLCanvas;
+import org.lwjgl.opengl.awt.GLData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +27,7 @@ public class MapPanel extends JPanel {
     public final MapRightSideBar rightBar;
     public final int threadCount;
     public FragmentScheduler scheduler;
+    private  AWTGLCanvas canvas;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
@@ -34,6 +37,10 @@ public class MapPanel extends JPanel {
         this.manager = new MapManager(this);
         this.leftBar = new MapLeftSideBar(this);
         this.rightBar = new MapRightSideBar(this);
+        GLData data = new GLData();
+        data.samples = 4;
+        data.swapInterval = 0;
+        AWTGLCanvas canvas;
 
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
         this.add(this.leftBar, BorderLayout.WEST);
