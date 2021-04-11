@@ -16,6 +16,10 @@ repositories {
     maven {
         url "https://jitpack.io"
     }
+
+    maven{
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 tasks.withType(JavaCompile) {
@@ -38,6 +42,32 @@ dependencies {
     implementation "com.formdev:flatlaf:0.38"
     implementation "org.swinglabs.swingx:swingx-core:1.6.5-1"
     implementation "com.intellij:forms_rt:7.0.3"
+
+    implementation "org.joml:joml:${jomlVersion}"
+    // LWJGL core
+    implementation "org.lwjgl:lwjgl:${lwjglVersion}"
+    // LWJGL natives
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
+
+    // OPENGL
+    implementation "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    // OPENGL NATIVES
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
+
+    // GLFW (natives?)
+//    implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    // STB (natives?)
+//    implementation "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+
+    // VULKAN only (no need of natives
+    implementation "org.lwjgl:lwjgl-vulkan:${lwjglVersion}"
+    // Our awt simplification
+    //https://oss.sonatype.org/content/repositories/snapshots/org/lwjglx/lwjgl3-awt/0.1.9-SNAPSHOT/lwjgl3-awt-0.1.9-20210121.080449-2.jar
+    implementation ("org.lwjglx:lwjgl3-awt:${lwjglAwtVersion}")
 }
 
 application {

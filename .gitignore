@@ -15,3 +15,5 @@ error.log
 src/main/resources/icon/items/
 
 src/test/java/Test2.java
+
+*.log
