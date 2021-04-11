@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class MineMap extends JFrame {
-    public static final String version="1.32";
+    public static final String version="1.34";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";

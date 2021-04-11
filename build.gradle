@@ -31,9 +31,9 @@ dependencies {
     implementation('com.github.KaptainWutax:SeedUtils:40b5cc6f369afb0a10dd735f5bc3342fd338c4e3') {transitive = false}
     implementation('com.github.KaptainWutax:NoiseUtils:5919e438dc1cda50bf8e2ba0a99b4618349ac085') {transitive = false}
 
-    implementation('com.github.KaptainWutax:BiomeUtils:d3e707210bd14883836ee61b6a043d3ec4f76f51') {transitive = false}
-    implementation('com.github.KaptainWutax:TerrainUtils:792221519e2f55c404f7df81e371fffd396635e3') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:87b7cac2e995a11c890617dc00259530d57bd90b') {transitive = false}
+    implementation('com.github.KaptainWutax:BiomeUtils:094d354cdaa0b161443dd3d3d3f10b2e6457250d') {transitive = false}
+    implementation('com.github.KaptainWutax:TerrainUtils:f6fbdced4a') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:1c258d3699') {transitive = false}
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:8174cd55b8ee492b54fbc860fbafc83726bac846') {transitive = false}
     implementation('com.github.KaptainWutax:LattiCG:cc39ed32419881bd4dc080ac77b7a5c72a3fd36d') {transitive = false}
