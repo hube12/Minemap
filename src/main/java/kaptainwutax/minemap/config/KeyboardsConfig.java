@@ -89,6 +89,10 @@ public class KeyboardsConfig extends Config {
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.CHANGE_SALTS, KeyShortcuts.KeyRegister.registerAltKey("C"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE, KeyShortcuts.KeyRegister.registerAltKey("A"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.SHORTCUTS, KeyShortcuts.KeyRegister.registerAltKey("K"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.ZOOM_IN, KeyShortcuts.KeyRegister.registerCtrlKey("NumPad +"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.ZOOM_OUT, KeyShortcuts.KeyRegister.registerCtrlKey("NumPad -"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.LAYER_ZOOM_IN, KeyShortcuts.KeyRegister.registerAltKey("NumPad +"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.LAYER_ZOOM_OUT, KeyShortcuts.KeyRegister.registerAltKey("NumPad -"));
     }
 
     public void resetOverrides() {

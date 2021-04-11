@@ -2,6 +2,7 @@ package kaptainwutax.minemap.init;
 
 import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Str;
 
@@ -9,6 +10,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import static kaptainwutax.minemap.ui.map.MapManager.zoom;
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class KeyShortcuts {
@@ -35,6 +37,14 @@ public class KeyShortcuts {
         TOGGLE_STS_MODE(menuBar.utilitiesMenu.toggleStructureMode(true)),
         @SerializedName("SHORTCUTS")
         SHORTCUTS(menuBar.settingsMenu.changeShortcuts()),
+        @SerializedName("ZOOM_IN")
+        ZOOM_IN(zoom(false,false)),
+        @SerializedName("ZOOM_OUT")
+        ZOOM_OUT(zoom(true,false)),
+        @SerializedName("LAYER_ZOOM_IN")
+        LAYER_ZOOM_IN(zoom(false,true)),
+        @SerializedName("LAYER_ZOOM_OUT")
+        LAYER_ZOOM_OUT(zoom(true,true)),
         ;
 
         public Runnable action;
@@ -61,7 +71,7 @@ public class KeyShortcuts {
 
     public static void register(ShortcutAction shortcutAction,KeyRegister keyRegister) {
         KeyEventDispatcher keyEventDispatcher=keyEvent -> {
-            if (keyRegister.check(keyEvent)) {
+             if (keyRegister.check(keyEvent)) {
                 if (!menuBar.isActive()) {
                     shortcutAction.action.run();
                 } else {

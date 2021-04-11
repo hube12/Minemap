@@ -109,41 +109,9 @@ public class MapManager {
         }));
 
         this.panel.addMouseWheelListener(e -> {
-            if (!Configs.USER_PROFILE.getUserSettings().modifierDown.getModifier().apply(e)) {
-                double newPixelsPerFragment = this.pixelsPerFragment;
-
-                if (e.getUnitsToScroll() > 0) {
-                    newPixelsPerFragment /= 2.0D;
-                } else {
-                    newPixelsPerFragment *= 2.0D;
-                }
-
-                // restrict min zoom to 4096 chunks per fragment
-                if (newPixelsPerFragment > 4096.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 4096.0D * (this.blocksPerFragment / 512.0D);
-                }
-
-                // restrict max zoom to 32 chunks per fragment
-                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) this.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 32.0D * (this.blocksPerFragment / 512.0D);
-                }
-
-                double scaleFactor = newPixelsPerFragment / this.pixelsPerFragment;
-                this.centerX *= scaleFactor;
-                this.centerY *= scaleFactor;
-                this.pixelsPerFragment = newPixelsPerFragment;
-                this.panel.repaint();
-            } else {
-                int layerId = this.panel.getContext().getLayerId();
-                layerId += e.getUnitsToScroll() < 0 ? 1 : -1;
-                layerId = Mth.clamp(layerId, 0, this.panel.getContext().getBiomeSource().getLayerCount() - 1);
-
-                if (this.panel.getContext().getLayerId() != layerId) {
-                    this.panel.getContext().setLayerId(layerId);
-                    this.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
-                    this.panel.restart();
-                }
-            }
+            boolean isModifier=Configs.USER_PROFILE.getUserSettings().modifierDown.getModifier().apply(e);
+            boolean zoomIn=e.getUnitsToScroll()>0;
+            zoom(zoomIn,isModifier).run();
         });
 
         this.popup = new JPopupMenu();
@@ -325,5 +293,50 @@ public class MapManager {
         }
     }
 
+
+    public static Runnable zoom(boolean zoomOut,boolean isModifier){
+        return ()->{
+            if (MineMap.INSTANCE==null) return;
+            if (MineMap.INSTANCE.worldTabs==null) return;
+            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel()==null) return;
+            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager==null) return;
+            MapManager manager=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager;
+            if (!isModifier) {
+                double newPixelsPerFragment = manager.pixelsPerFragment;
+
+                if (zoomOut) {
+                    newPixelsPerFragment /= 2.0D;
+                } else {
+                    newPixelsPerFragment *= 2.0D;
+                }
+
+                // restrict min zoom to 4096 chunks per fragment
+                if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 4096.0D * (manager.blocksPerFragment / 512.0D);
+                }
+
+                // restrict max zoom to 32 chunks per fragment
+                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 32.0D * (manager.blocksPerFragment / 512.0D);
+                }
+
+                double scaleFactor = newPixelsPerFragment / manager.pixelsPerFragment;
+                manager.centerX *= scaleFactor;
+                manager.centerY *= scaleFactor;
+                manager.pixelsPerFragment = newPixelsPerFragment;
+                manager.panel.repaint();
+            } else {
+                int layerId = manager.panel.getContext().getLayerId();
+                layerId += zoomOut ? -1 : 1;
+                layerId = Mth.clamp(layerId, 0, manager.panel.getContext().getBiomeSource().getLayerCount() - 1);
+
+                if (manager.panel.getContext().getLayerId() != layerId) {
+                    manager.panel.getContext().setLayerId(layerId);
+                    manager.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
+                    manager.panel.restart();
+                }
+            }
+        };
+    }
 
 }
