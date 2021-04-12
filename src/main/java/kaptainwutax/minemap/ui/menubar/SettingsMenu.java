@@ -7,10 +7,18 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.minemap.ui.map.MapManager;
+import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
+import sun.rmi.runtime.Log;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
 
@@ -21,14 +29,15 @@ public class SettingsMenu extends Menu {
     private final JMenu modifierKey;
     private final JCheckBoxMenuItem zoom;
     private final JMenuItem shortcuts;
+    private final JMenuItem about;
 
     public SettingsMenu() {
-        this.menu= new JMenu("Settings");
+        this.menu = new JMenu("Settings");
 
         this.lookMenu = new JMenu("UI Look");
         this.addLookGroup();
 
-        this.styleMenu= new JMenu("Biome Style");
+        this.styleMenu = new JMenu("Biome Style");
         this.addBiomeGroup();
 
         this.metric = new JMenu("Fragment Metric");
@@ -49,15 +58,52 @@ public class SettingsMenu extends Menu {
         this.shortcuts = new JMenuItem("Shortcuts");
         this.shortcuts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(changeShortcuts())));
 
+        this.about = new JMenuItem("About Minemap");
+        this.about.addMouseListener(Events.Mouse.onPressed(e -> {
+            JFrame frame = new JFrame("About Minemap " + MineMap.version);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setPreferredSize(new Dimension(500, 400));
+            JTextPane textArea = new JTextPane();
+            textArea.setContentType("text/html");
+            textArea.setEditable(false);
+            textArea.setText(getAbout());
+            textArea.setFont(new Font("Times", Font.PLAIN, 16));
+            textArea.addHyperlinkListener(linkEvent -> {
+                if(linkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    if(Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().browse(linkEvent.getURL().toURI());
+                        }
+                        catch (IOException | URISyntaxException error) {
+                            Logger.LOGGER.warning(String.format("URL could not be opened for %s, error: %s",linkEvent.getURL(),error));
+                        }
+                    }
+                }
+            });
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setPreferredSize(new Dimension(500, 400));
+
+            frame.add(scrollPane);
+            frame.pack();
+            frame.setLocationRelativeTo(null); // center
+            frame.setVisible(true);
+
+        }));
+
+
         this.menu.add(this.lookMenu);
         this.menu.add(this.styleMenu);
         this.menu.add(this.metric);
         this.menu.add(this.modifierKey);
         this.menu.add(this.zoom);
         this.menu.add(this.shortcuts);
+        this.menu.add(this.about);
     }
 
-    private void addLookGroup(){
+    private void addLookGroup() {
         ButtonGroup lookButtons = new ButtonGroup();
 
         for (MineMap.LookType look : MineMap.LookType.values()) {
@@ -84,7 +130,7 @@ public class SettingsMenu extends Menu {
         }
     }
 
-    private void addBiomeGroup(){
+    private void addBiomeGroup() {
         ButtonGroup styleButtons = new ButtonGroup();
 
         for (String style : Configs.BIOME_COLORS.getStyles()) {
@@ -111,7 +157,8 @@ public class SettingsMenu extends Menu {
             this.styleMenu.add(button);
         }
     }
-    private void addMetricGroup(){
+
+    private void addMetricGroup() {
         ButtonGroup group = new ButtonGroup();
         JRadioButtonMenuItem metric1 = new JRadioButtonMenuItem("Euclidean");
         JRadioButtonMenuItem metric2 = new JRadioButtonMenuItem("Manhattan");
@@ -145,7 +192,7 @@ public class SettingsMenu extends Menu {
     }
 
 
-    private void addModifierKeyGroup(){
+    private void addModifierKeyGroup() {
         ButtonGroup group = new ButtonGroup();
         JRadioButtonMenuItem ctrl = new JRadioButtonMenuItem("Ctrl");
         JRadioButtonMenuItem shift = new JRadioButtonMenuItem("Shift");
@@ -164,7 +211,7 @@ public class SettingsMenu extends Menu {
         group.add(meta);
 
         MapManager.ModifierDown m = Configs.USER_PROFILE.getUserSettings().modifierDown;
-        switch (m){
+        switch (m) {
             case ALT_DOWN:
                 alt.setSelected(true);
                 break;
@@ -188,7 +235,7 @@ public class SettingsMenu extends Menu {
         }));
 
         ctrl.addMouseListener(Events.Mouse.onPressed(mouseEvent -> {
-            Configs.USER_PROFILE.getUserSettings().modifierDown =MapManager.ModifierDown.CTRL_DOWN;
+            Configs.USER_PROFILE.getUserSettings().modifierDown = MapManager.ModifierDown.CTRL_DOWN;
             Configs.USER_PROFILE.flush();
         }));
 
@@ -224,5 +271,30 @@ public class SettingsMenu extends Menu {
     @Override
     public void doDelayedLabels() {
         this.shortcuts.setText(String.format("Shortcuts (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.SHORTCUTS)));
+    }
+
+    public static String getAbout() {
+        StringBuilder sb = new StringBuilder("<html><body>");
+        sb.append("This is a program to replace the old amidst with a non Minecraft based one (meaning you can run it without Minecraft installed), ")
+                .append("it is also way more efficient since it is fully multithreaded.")
+                .append("<br>")
+                .append("Minemap supports all official releases of Minecraft from 1.0 to ").append(MCVersion.values()[0].toString())
+                .append("<br>")
+                .append("The main core part was done by KaptainWutax.")
+                .append("<br>")
+                .append("The utilities and a lot of the improvements was done by Neil")
+                .append("<br>")
+                .append("<br>")
+                .append("Contributors :<br>")
+                .append("<ul>")
+                .append("<li>KaptainWutax : Core part of the map system and libs setup</li>")
+                .append("<li>Neil : libs enrichment + utilities in Minemap + rich icons</li>")
+                .append("<li>Uniquepotatoes : Flat icons design</li>")
+                .append("<li>Speedrunning and monkeys discord ppl : input on feature for Minemap</li>")
+                .append("</ul>")
+                .append("<br>")
+                .append("<div style='text-align:center'><a href=\"https://github.com/hube12/Minemap\">Github Link</a></div>");
+
+        return sb.append("</body></html>").toString();
     }
 }

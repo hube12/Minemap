@@ -38,12 +38,6 @@ public class Assets {
     public final static String DOWNLOAD_DIR_VERSIONS = DOWNLOAD_DIR + File.separatorChar + "versions";
     public final static String DOWNLOAD_DIR_ASSETS = DOWNLOAD_DIR + File.separatorChar + "assets";
 
-    private URL url;
-
-    public Assets(MCVersion version) {
-
-    }
-
     public static void createDirs() throws IOException {
         String[] dirs = {DOWNLOAD_DIR_ICONS, DOWNLOAD_DIR_VERSIONS, DOWNLOAD_DIR_ASSETS};
         for (String dir : dirs) {
@@ -52,38 +46,42 @@ public class Assets {
     }
 
     @SuppressWarnings("unchecked")
-    public static String downloadLatestMinemap(){
-        String data=getDataRestAPI("https://api.github.com/repos/hube12/MineMap/releases/latest");
-        if (data==null){
+    public static Pair<Pair<String,String>, String> shouldUpdate() {
+        String data = getDataRestAPI("https://api.github.com/repos/hube12/MineMap/releases/latest");
+        if (data == null) {
             return null;
         }
         Map<String, Object> map = new Gson().fromJson(data, Map.class);
         if (map.containsKey("tag_name")) {
             String tagName = (String) map.get("tag_name");
-            if (!tagName.equals(MineMap.version)){
+            if (!tagName.equals(MineMap.version)) {
                 if (map.containsKey("assets")) {
                     ArrayList<Map<String, Object>> assets = (ArrayList<Map<String, Object>>) map.get("assets");
-                    for (Map<String, Object> asset:assets){
-                        if (asset.containsKey("browser_download_url") && asset.containsKey("name") && ((String)asset.get("name")).startsWith("MineMap-")){
-                            String url=(String)asset.get("browser_download_url");
-                            String filename=(String)asset.get("name");
-                            if (download(url,new File(filename),null)){
-                                return filename;
-                            }else{
-                                Logger.LOGGER.warning(String.format("Failed to download jar from url %s with filename %s",url,filename));
-                            }
+                    for (Map<String, Object> asset : assets) {
+                        if (asset.containsKey("browser_download_url") && asset.containsKey("name") && ((String) asset.get("name")).startsWith("MineMap-")) {
+                            String url = (String) asset.get("browser_download_url");
+                            String filename = (String) asset.get("name");
+                            return new Pair<>(new Pair<>(url,filename),tagName);
                         }
                     }
                     Logger.LOGGER.warning("Github release does not contain a correct release.");
-                }else{
+                } else {
                     Logger.LOGGER.warning("Github release does not contain a assets key.");
                 }
-            }else{
-                Logger.LOGGER.info(String.format("Version match so we are not updating current :%s, github :%s", MineMap.version,tagName));
+            } else {
+                Logger.LOGGER.info(String.format("Version match so we are not updating current :%s, github :%s", MineMap.version, tagName));
             }
         } else {
             Logger.LOGGER.warning("Github release does not contain a tag_name key.");
         }
+        return null;
+    }
+
+    public static String downloadLatestMinemap(String url, String filename){
+        if (download(url, new File(filename), null)) {
+            return filename;
+        }
+        Logger.LOGGER.warning(String.format("Failed to download jar from url %s with filename %s", url, filename));
         return null;
     }
 
@@ -196,14 +194,14 @@ public class Assets {
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
-        String versionDir=DOWNLOAD_DIR_VERSIONS + File.separator + version.name;
+        String versionDir = DOWNLOAD_DIR_VERSIONS + File.separator + version.name;
         try {
             Files.createDirectories(Paths.get(versionDir));
-        }catch (IOException e){
+        } catch (IOException e) {
             Logger.LOGGER.severe(String.format("Could not make the directory for the client.jar for version %s", version.toString()));
             return null;
         }
-        File clientJar = new File( versionDir + File.separator + name);
+        File clientJar = new File(versionDir + File.separator + name);
         if (!force && clientJar.exists() && compareSha1(clientJar, clientURL.getSecond())) {
             return name;
         }
@@ -217,7 +215,7 @@ public class Assets {
             return false;
         }
         try {
-            extractFromJar(clientJar, DOWNLOAD_DIR_ASSETS + File.separator + version.name,jarEntryPredicate, force);
+            extractFromJar(clientJar, DOWNLOAD_DIR_ASSETS + File.separator + version.name, jarEntryPredicate, force);
         } catch (IOException e) {
             Logger.LOGGER.severe(String.format("Could not extract from jar file for version %s", version.toString()));
             return false;
@@ -225,7 +223,7 @@ public class Assets {
         return true;
     }
 
-    private static void extractFromJar(File jarFile, String pathPrefix,Predicate<JarEntry> jarEntryPredicate, boolean force) throws IOException {
+    private static void extractFromJar(File jarFile, String pathPrefix, Predicate<JarEntry> jarEntryPredicate, boolean force) throws IOException {
         JarFile jar = new JarFile(jarFile);
         Enumeration<JarEntry> enumEntries = jar.entries();
         while (enumEntries.hasMoreElements()) {
@@ -430,7 +428,7 @@ public class Assets {
                 collect(Collectors.toList());
     }
 
-    public static List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path,String> fnObjectStorage) {
+    public static List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
         List<Path> paths;
         List<Pair<String, BufferedImage>> list = new ArrayList<>();
         try {
@@ -459,7 +457,7 @@ public class Assets {
         return list;
     }
 
-    private static String getDataRestAPI(String apiUrl){
+    private static String getDataRestAPI(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -467,7 +465,7 @@ public class Assets {
             conn.connect();
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
-                LOGGER.severe(String.format("Failed to fetched URL %s, errorcode : %s",apiUrl, responseCode));
+                LOGGER.severe(String.format("Failed to fetched URL %s, errorcode : %s", apiUrl, responseCode));
             } else {
 
                 StringBuilder inline = new StringBuilder();
@@ -478,8 +476,8 @@ public class Assets {
                 scanner.close();
                 return inline.toString();
             }
-        }catch (Exception e){
-            LOGGER.severe(String.format("Failed to fetched URL %s, error : %s",apiUrl, e));
+        } catch (Exception e) {
+            LOGGER.severe(String.format("Failed to fetched URL %s, error : %s", apiUrl, e));
         }
         return null;
     }

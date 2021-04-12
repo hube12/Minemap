@@ -12,6 +12,7 @@ import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.DrawInfo;
+import kaptainwutax.minemap.util.data.Pair;
 import kaptainwutax.minemap.util.ui.ModalPopup;
 import kaptainwutax.seedutils.mc.MCVersion;
 
@@ -32,7 +33,7 @@ import java.util.function.Supplier;
 import static kaptainwutax.seedutils.mc.Dimension.OVERWORLD;
 
 public class MineMap extends JFrame {
-    public static final String version="b1.34";
+    public static final String version = "1.34";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
@@ -44,12 +45,14 @@ public class MineMap extends JFrame {
 
     public static void main(String[] args) throws IOException {
         Logger.registerLogger();
-        if (!Arrays.asList(args).contains("--screenshot") && !Arrays.asList(args).contains("--no-update")){
-            updateMinemap();
+        Pair<Pair<String, String>, String> updateInfo = Assets.shouldUpdate();
+        System.out.println(updateInfo);
+        if (!Arrays.asList(args).contains("--screenshot") && updateInfo != null && !Arrays.asList(args).contains("--no-update")) {
+            updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !Arrays.asList(args).contains("--update"));
         }
         createDirs();
         doRegister();
-        if (Arrays.asList(args).contains("--screenshot")){
+        if (Arrays.asList(args).contains("--screenshot")) {
             doScreenshot(args);
             return;
         }
@@ -58,81 +61,81 @@ public class MineMap extends JFrame {
         doDelayedRegister();
     }
 
-    private static void doScreenshot(String[] args)throws IOException{
+    private static void doScreenshot(String[] args) throws IOException {
         // FIXME prettify
         long seed;
         MCVersion version;
         int blockX;
         int blockZ;
         int size;
-        if (Arrays.asList(args).contains("--seed")){
-            int idx=Arrays.asList(args).indexOf("--seed");
-            if (idx+1>=args.length){
+        if (Arrays.asList(args).contains("--seed")) {
+            int idx = Arrays.asList(args).indexOf("--seed");
+            if (idx + 1 >= args.length) {
                 System.err.println("Error no seed provided");
                 return;
             }
-            try{
-                seed=Long.parseLong(args[idx+1]);
-            }catch (NumberFormatException ignored){
+            try {
+                seed = Long.parseLong(args[idx + 1]);
+            } catch (NumberFormatException ignored) {
                 System.err.println("Invalid seed provided, should be numeric only for now");
                 return;
             }
-        }else{
+        } else {
             System.out.println("No seed argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
-        if (Arrays.asList(args).contains("--version")){
-            int idx=Arrays.asList(args).indexOf("--version");
-            if (idx+1>=args.length){
+        if (Arrays.asList(args).contains("--version")) {
+            int idx = Arrays.asList(args).indexOf("--version");
+            if (idx + 1 >= args.length) {
                 System.err.println("Error no version provided");
                 return;
             }
-            version=MCVersion.fromString(args[idx+1]);
-            if (version==null){
+            version = MCVersion.fromString(args[idx + 1]);
+            if (version == null) {
                 System.err.println("Invalid version provided");
                 return;
             }
-        }else{
+        } else {
             System.out.println("No version argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
-        if (Arrays.asList(args).contains("--pos")){
-            int idx=Arrays.asList(args).indexOf("--pos");
-            if (idx+2>args.length){
+        if (Arrays.asList(args).contains("--pos")) {
+            int idx = Arrays.asList(args).indexOf("--pos");
+            if (idx + 2 > args.length) {
                 System.err.println("Error no pos provided");
                 return;
             }
-            try{
-                blockX=Integer.parseInt(args[idx+1]);
-                blockZ=Integer.parseInt(args[idx+2]);
-            }catch (NumberFormatException ignored){
+            try {
+                blockX = Integer.parseInt(args[idx + 1]);
+                blockZ = Integer.parseInt(args[idx + 2]);
+            } catch (NumberFormatException ignored) {
                 System.err.println("Invalid pos provided, should be numeric");
                 return;
             }
-        }else{
+        } else {
             System.out.println("No pos argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
-        if (Arrays.asList(args).contains("--size")){
-            int idx=Arrays.asList(args).indexOf("--size");
-            if (idx+1>args.length){
+        if (Arrays.asList(args).contains("--size")) {
+            int idx = Arrays.asList(args).indexOf("--size");
+            if (idx + 1 > args.length) {
                 System.err.println("Error no size provided");
                 return;
             }
-            try{
-                size=Integer.parseInt(args[idx+1]);
-            }catch (NumberFormatException ignored){
+            try {
+                size = Integer.parseInt(args[idx + 1]);
+            } catch (NumberFormatException ignored) {
                 System.err.println("Invalid size provided, should be numeric");
                 return;
             }
-        }else{
+        } else {
             System.out.println("No size argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
         MapSettings settings = new MapSettings(version, OVERWORLD).refresh();
         MapContext context = new MapContext(seed, settings);
         settings.hide(SlimeChunk.class, Mineshaft.class);
-        Fragment fragment = new Fragment(blockX,blockZ, size, context);
+        Fragment fragment = new Fragment(blockX, blockZ, size, context);
         BufferedImage screenshot = getScreenShot(fragment, size, size);
         ImageIO.write(screenshot, "png", new File(context.worldSeed + ".png"));
         System.out.println("Done!");
@@ -146,46 +149,57 @@ public class MineMap extends JFrame {
         return image;
     }
 
-    private static void updateMinemap(){
+    private static void updateMinemap(Pair<String, String> versionUrlFilename, String tagName, boolean shouldAsk) {
+        if (shouldAsk) {
+            int dialogResult = JOptionPane.showConfirmDialog(
+                    null,
+                    String.format("Would you like to update to the version %s of Minemap?", tagName),
+                    "Update available for Minemap " + MineMap.version,
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (dialogResult != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
         JDialog downloadPopup = new ModalPopup(null, "Downloading new MineMap version");
-        downloadPopup.setSize(new Dimension(300,50));
-        downloadPopup.setShape(new RoundRectangle2D.Double(0,0,300,50,50,50));
+        downloadPopup.setSize(new Dimension(300, 50));
+        downloadPopup.setShape(new RoundRectangle2D.Double(0, 0, 300, 50, 50, 50));
         applyStyle();
-        SwingWorker<String, Void> downloadWorker = getDownloadWorker(downloadPopup);
+        SwingWorker<String, Void> downloadWorker = getDownloadWorker(downloadPopup, versionUrlFilename);
         downloadWorker.execute();
         downloadPopup.setVisible(true);
-        String newVersion=null;
+        String newVersion = null;
         try {
             newVersion = downloadWorker.get(); // blocking wait (intended)
-        }catch (Exception e){
-            Logger.LOGGER.severe(String.format("Failed to use the download worker, error %s",e));
+        } catch (Exception e) {
+            Logger.LOGGER.severe(String.format("Failed to use the download worker, error %s", e));
         }
         downloadPopup.setVisible(false);
         downloadPopup.dispose();
-        if (newVersion!=null){
+        if (newVersion != null) {
             Process ps;
-            try{
-                ps =Runtime.getRuntime().exec(new String[]{"java","-jar",newVersion,"--no-update"});
+            try {
+                ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
                 ps.waitFor();
-            }catch (Exception e){
-                Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s",e));
+            } catch (Exception e) {
+                Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s", e));
                 return;
             }
             int exitVal = ps.exitValue();
             if (exitVal != 0) {
                 Logger.LOGGER.severe("Failed to execute jar, " + Arrays.toString(new BufferedReader(new InputStreamReader(ps.getErrorStream())).lines().toArray()));
-            }else{
-                Logger.LOGGER.warning(String.format("UPDATING TO %s",newVersion));
+            } else {
+                Logger.LOGGER.warning(String.format("UPDATING TO %s", newVersion));
                 System.exit(0);
             }
         }
     }
 
-    private static SwingWorker<String, Void> getDownloadWorker(JDialog parent) {
+    private static SwingWorker<String, Void> getDownloadWorker(JDialog parent, Pair<String, String> newVersion) {
         return new SwingWorker<String, Void>() {
             @Override
             protected String doInBackground() {
-                return Assets.downloadLatestMinemap();
+                return Assets.downloadLatestMinemap(newVersion.getFirst(), newVersion.getSecond());
             }
 
             @Override
@@ -203,8 +217,8 @@ public class MineMap extends JFrame {
                 Files.createDirectories(Paths.get(dir));
             }
             Assets.createDirs();
-        }catch (IOException e){
-            Logger.LOGGER.severe(String.format("Failed to create a directory, error: %s",e));
+        } catch (IOException e) {
+            Logger.LOGGER.severe(String.format("Failed to create a directory, error: %s", e));
         }
 
     }
@@ -233,10 +247,8 @@ public class MineMap extends JFrame {
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setSize(screenSize.width / 2, screenSize.height / 2);
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setTitle("MineMap");
+        this.setTitle("MineMap "+MineMap.version);
         this.setIconImage(Icons.get(this.getClass()));
-        System.out.println("Hello, its me");
-        System.out.println("General Kenobi");
     }
 
     private void initComponents() {
