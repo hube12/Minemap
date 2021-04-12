@@ -3,6 +3,7 @@ package kaptainwutax.minemap;
 import com.formdev.flatlaf.*;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
+import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
@@ -44,12 +45,12 @@ public class MineMap extends JFrame {
     public WorldTabs worldTabs;
 
     public static void main(String[] args) throws IOException {
+        createDirs();
         Logger.registerLogger();
         Pair<Pair<String, String>, String> updateInfo = Assets.shouldUpdate();
         if (!Arrays.asList(args).contains("--screenshot") && updateInfo != null && !Arrays.asList(args).contains("--no-update")) {
             updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !Arrays.asList(args).contains("--update"));
         }
-        createDirs();
         doRegister();
         if (Arrays.asList(args).contains("--screenshot")) {
             doScreenshot(args);

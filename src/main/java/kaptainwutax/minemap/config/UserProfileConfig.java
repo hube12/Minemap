@@ -5,6 +5,7 @@ import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.init.Logger;
@@ -125,7 +126,7 @@ public class UserProfileConfig extends Config {
         for (Dimension dimension : Dimension.values()) {
             this.DIMENSIONS.put(dimension.getName(), true);
             MapSettings settings = new MapSettings(dimension).refresh();
-            settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class);
+            settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class, NEStronghold.class);
             this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings);
         }
     }
@@ -135,17 +136,18 @@ public class UserProfileConfig extends Config {
         this.THREAD_COUNT = this.THREAD_COUNT == 0 ? 1 : this.THREAD_COUNT;
         this.MC_VERSION = this.MC_VERSION == null ? MCVersion.values()[0] : this.MC_VERSION;
         this.USER_SETTINGS = this.USER_SETTINGS == null ? new UserSettings() : this.USER_SETTINGS;
-        this.MINEMAP_VERSION =this.MINEMAP_VERSION==null? MineMap.version:this.MINEMAP_VERSION;
+        this.MINEMAP_VERSION = this.MINEMAP_VERSION == null ? MineMap.version : this.MINEMAP_VERSION;
         //this.ASSET_VERSION=this.ASSET_VERSION; // allowed since I use null as an invalid version
         for (Dimension dimension : Dimension.values()) {
-            if (!this.DIMENSIONS.containsKey(dimension.getName())){
+            if (!this.DIMENSIONS.containsKey(dimension.getName())) {
                 this.DIMENSIONS.put(dimension.getName(), true);
             }
-            if (!this.DEFAULT_MAP_SETTINGS.containsKey(dimension.getName())){
+            if (!this.DEFAULT_MAP_SETTINGS.containsKey(dimension.getName())) {
                 MapSettings settings = new MapSettings(dimension).refresh();
-                settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class);
+                settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class, NEStronghold.class);
                 this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings);
             }
+            // TODO hide NEStronghold by default (need versionned config ordered)
         }
     }
 
