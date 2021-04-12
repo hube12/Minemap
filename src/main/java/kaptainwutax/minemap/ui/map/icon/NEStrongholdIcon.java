@@ -6,35 +6,35 @@ import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.seedutils.lcg.rand.JRand;
+import kaptainwutax.seedutils.mc.Dimension;
 import kaptainwutax.seedutils.mc.pos.BPos;
 import kaptainwutax.seedutils.mc.pos.CPos;
 
 import java.util.List;
 
-public class StrongholdIcon extends StaticIcon {
+public class NEStrongholdIcon extends StaticIcon {
 
     private CPos[] starts;
 
-    public StrongholdIcon(MapContext context, int count) {
+    public NEStrongholdIcon(MapContext context, int count) {
         super(context);
-        Stronghold stronghold = context.getSettings().getFeatureOfType(Stronghold.class);
+        NEStronghold stronghold = context.getSettings().getFeatureOfType(NEStronghold.class);
 
         if(stronghold != null) {
-            starts = stronghold.getStarts(this.getContext().getBiomeSource(), count, new JRand(0L));
+            starts = stronghold.getStarts(this.getContext().getBiomeSource(Dimension.OVERWORLD), count, new JRand(0L));
         }
     }
 
     @Override
     public boolean isValidFeature(Feature<?, ?> feature) {
-        return feature instanceof Stronghold && !(feature instanceof NEStronghold);
+        return feature instanceof NEStronghold;
     }
 
     @Override
     public void addPositions(Feature<?, ?> feature, Fragment fragment, List<BPos> positions) {
         if(this.starts == null)return;
-
         for(CPos start: this.starts) {
-            positions.add(start.toBlockPos().add(8, 0, 8)); // TODO check for old version 1.15+ ok
+            positions.add(new BPos(start.toBlockPos().getX()>>3,start.toBlockPos().getY(),start.toBlockPos().getZ()>>3));
         }
     }
 

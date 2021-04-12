@@ -31,6 +31,8 @@ public class IconManager {
                 SlimeIcon::new,
                 EndGatewayIcon::new,
                 OWNetherIcon::new,
+                NEOverworldIcon::new,
+                c -> new NEStrongholdIcon(c, 128),
                 c -> new StrongholdIcon(c, 128)
         );
     }

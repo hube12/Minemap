@@ -84,6 +84,8 @@ public class IconsConfig extends Config {
         addDefaultEntry(OWBastionRemnant.class, 1.0);
         addDefaultEntry(OWFortress.class, 1.0);
 
+        addDefaultEntry(NEStronghold.class, 1.0);
+
         addDefaultEntry(EndGateway.class, 1.0);
         addDefaultEntry(SlimeChunk.class, 1.0);
 

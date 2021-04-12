@@ -200,6 +200,8 @@ public class Icons {
         register(OWBastionRemnant.class, dir, isJar, Structure.getName(BastionRemnant.class));
         register(OWFortress.class, dir, isJar, Structure.getName(Fortress.class));
 
+        register(NEStronghold.class, dir, isJar, Structure.getName(Stronghold.class));
+
         // features
         register(Chest.class, dir, isJar, "treasure_chest");
         register(EndGateway.class, dir, isJar, "end_gateway");

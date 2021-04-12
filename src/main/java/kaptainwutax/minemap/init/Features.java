@@ -40,6 +40,8 @@ public class Features {
         register(OWBastionRemnant.class, OWBastionRemnant::new);
         register(OWFortress.class, OWFortress::new);
 
+        register(NEStronghold.class, NEStronghold::new);
+
         register(EndGateway.class, EndGateway::new);
         register(SlimeChunk.class, SlimeChunk::new);
 

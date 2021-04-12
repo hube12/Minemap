@@ -33,7 +33,7 @@ import java.util.function.Supplier;
 import static kaptainwutax.seedutils.mc.Dimension.OVERWORLD;
 
 public class MineMap extends JFrame {
-    public static final String version = "1.34";
+    public static final String version = "c1.34";
     public static MineMap INSTANCE;
     public static LookType lookType = LookType.DARCULA;
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";

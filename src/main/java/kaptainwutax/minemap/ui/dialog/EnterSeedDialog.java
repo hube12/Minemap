@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -47,7 +48,7 @@ public class EnterSeedDialog extends Dialog {
         this.cancelButton = new JButton("Cancel");
         this.cancelButton.addMouseListener(Events.Mouse.onPressed(e -> this.cancel()));
 
-		JSplitPane splitPanel2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.continueButton, this.cancelButton);
+        JSplitPane splitPanel2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.continueButton, this.cancelButton);
 
         JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
             String s = Character.toUpperCase(dimension.getName().charAt(0)) + dimension.getName().substring(1);
@@ -67,12 +68,22 @@ public class EnterSeedDialog extends Dialog {
 
     protected void create() {
         continueButton.setEnabled(false);
-        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-                threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+        continueButton.setText("Loading...");
 
-        Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
-        Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
-        dispose();
+       // Thread t = new Thread(() -> { // not a good idea overall
+            MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+            Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
+            Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
+            dispose();
+       // },"Joe");
+       // t.start();
+//        try{
+//            t.join();
+//        }catch (Exception e){
+//            Logger.LOGGER.severe(String.format("Failed to load seed with error %s",e));
+//        }
+
     }
 
     protected void cancel() {

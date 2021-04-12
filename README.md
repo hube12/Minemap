@@ -13,6 +13,26 @@ area and use a ruler.
 
 Supports all Minecraft release starting from 1.0+
 
+## Features
+TODO : List them all here
+
+### Shortcuts
+TODO : List defaults
+- Ctrl + `Numpad +` : Zoom in
+- Ctrl + `Numpad -` : Zoom out
+- Alt + `Numpad +` : Layer +
+- Alt + `Numpad -` : Layer -
+
+### Command line 
+- Take a screenshot :
+`java -jar Minemap-<version>.jar --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>`
+
+- Don't show any update popup even if there is a update available
+`java -jar Minemap-<version>.jar --no-update`
+  
+- Update Minemap without a popup
+`java -jar Minemap-<version>.jar --update`
+
 ## Development
 
 You just need to have the Java JDK installed then do:

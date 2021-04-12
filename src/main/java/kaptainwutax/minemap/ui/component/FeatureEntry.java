@@ -25,6 +25,7 @@ public class FeatureEntry extends JPanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 BufferedImage icon = Icons.get(feature.getClass());
+                if (icon==null) return;
                 int iconSizeX,iconSizeZ;
                 int defaultValue=20;
                 if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {

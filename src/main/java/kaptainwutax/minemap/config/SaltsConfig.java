@@ -2,10 +2,7 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.structure.*;
-import kaptainwutax.minemap.feature.NERuinedPortal;
-import kaptainwutax.minemap.feature.OWBastionRemnant;
-import kaptainwutax.minemap.feature.OWFortress;
-import kaptainwutax.minemap.feature.OWRuinedPortal;
+import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
 

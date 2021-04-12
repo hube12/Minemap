@@ -465,7 +465,7 @@ public class Assets {
             conn.connect();
             int responseCode = conn.getResponseCode();
             if (responseCode != 200) {
-                LOGGER.severe(String.format("Failed to fetched URL %s, errorcode : %s", apiUrl, responseCode));
+                LOGGER.severe(String.format("Failed to fetch URL %s, errorcode : %s", apiUrl, responseCode));
             } else {
 
                 StringBuilder inline = new StringBuilder();
@@ -477,7 +477,7 @@ public class Assets {
                 return inline.toString();
             }
         } catch (Exception e) {
-            LOGGER.severe(String.format("Failed to fetched URL %s, error : %s", apiUrl, e));
+            LOGGER.severe(String.format("Failed to fetch URL %s, error : %s", apiUrl, e));
         }
         return null;
     }
