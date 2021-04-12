@@ -46,7 +46,6 @@ public class MineMap extends JFrame {
     public static void main(String[] args) throws IOException {
         Logger.registerLogger();
         Pair<Pair<String, String>, String> updateInfo = Assets.shouldUpdate();
-        System.out.println(updateInfo);
         if (!Arrays.asList(args).contains("--screenshot") && updateInfo != null && !Arrays.asList(args).contains("--no-update")) {
             updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !Arrays.asList(args).contains("--update"));
         }
