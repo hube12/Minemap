@@ -20,6 +20,8 @@ public class MapSettings {
     @Expose
     public boolean showGrid = false;
     @Expose
+    public boolean showExtraInfos = false;
+    @Expose
     private Map<String, Boolean> features;
     @Expose
     private Map<String, Boolean> biomes;
@@ -205,6 +207,7 @@ public class MapSettings {
         this.showBiomes = other.showBiomes;
         this.showFeatures = other.showFeatures;
         this.showGrid = other.showGrid;
+        this.showExtraInfos=other.showExtraInfos;
         this.getAllFeatures().forEach(this::hide);
         this.getAllBiomes().forEach(this::hide);
         other.getActiveBiomes().forEach(this::show);
@@ -221,6 +224,7 @@ public class MapSettings {
         copy.showBiomes = this.showBiomes;
         copy.showFeatures = this.showFeatures;
         copy.showGrid = this.showGrid;
+        copy.showExtraInfos = this.showExtraInfos;
         copy.biomes = new HashMap<>(this.biomes);
         copy.features = new HashMap<>(this.features);
         return copy.refresh();

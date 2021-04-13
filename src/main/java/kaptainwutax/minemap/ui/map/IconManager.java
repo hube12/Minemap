@@ -32,7 +32,6 @@ public class IconManager {
                 EndGatewayIcon::new,
                 OWNetherIcon::new,
                 NEOverworldIcon::new,
-                c -> new NEStrongholdIcon(c, 128),
                 c -> new StrongholdIcon(c, 128)
         );
     }
@@ -57,7 +56,7 @@ public class IconManager {
     public final IconManager override(Function<MapContext, IconRenderer>... renderers) {
         for(Function<MapContext, IconRenderer> factory: renderers) {
             IconRenderer renderer = factory.apply(this.getContext());
-
+            if (renderer instanceof StrongholdIcon)  System.out.println(context.dimension+" "+Thread.currentThread().getName());
             for(Feature<?, ?> feature: new ArrayList<>(this.renderers.keySet())) {
                 if(!renderer.isValidFeature(feature))continue;
                 this.renderers.replace(feature, renderer);

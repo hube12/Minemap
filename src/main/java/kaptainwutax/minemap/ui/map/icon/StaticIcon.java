@@ -10,6 +10,7 @@ import kaptainwutax.seedutils.mc.pos.BPos;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.function.Function;
 
 public abstract class StaticIcon extends IconRenderer {
 
@@ -25,6 +26,14 @@ public abstract class StaticIcon extends IconRenderer {
         super(context);
         this.iconSizeX = iconSizeX;
         this.iconSizeZ = iconSizeZ;
+    }
+
+    public Function<Object, String> getExtraInfo() {
+        return null;
+    }
+
+    public Function<Object, String> getExtraIcon() {
+        return null;
     }
 
     @Override
@@ -61,6 +70,23 @@ public abstract class StaticIcon extends IconRenderer {
         int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height - sizeZ / 2.0F);
 
         g2d.drawImage(icon, info.x + sx, info.y + sy, (int) sizeX, (int) sizeZ, null);
+        if (getExtraInfo() != null && this.getContext().getSettings().showExtraInfos) {
+            String stringInfo = getExtraInfo().apply(pos);
+            if (stringInfo != null) {
+                Color old = g2d.getColor();
+//                g2d.setColor(Color.GRAY);
+//                g2d.setStroke(new BasicStroke(2));
+//                g2d.fillOval(info.x + sx + 15, info.y + sy+15, 10, 10);
+                char[] charArray = stringInfo.toCharArray();
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (14 * scaleFactor)));
+                g2d.drawChars(charArray, 0, charArray.length, info.x + sx +(charArray.length==1?1:0)* ((int)sizeX/2-5)-1, info.y + sy+(int)sizeZ-5-1);
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (13 * scaleFactor)));
+                g2d.drawChars(charArray, 0, charArray.length, info.x + sx +(charArray.length==1?1:0)* ((int)sizeX/2-5), info.y + sy+(int)sizeZ-5);
+                g2d.setColor(old);
+            }
+        }
     }
 
 
