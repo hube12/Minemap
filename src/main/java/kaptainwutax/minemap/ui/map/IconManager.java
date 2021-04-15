@@ -56,7 +56,6 @@ public class IconManager {
     public final IconManager override(Function<MapContext, IconRenderer>... renderers) {
         for(Function<MapContext, IconRenderer> factory: renderers) {
             IconRenderer renderer = factory.apply(this.getContext());
-            if (renderer instanceof StrongholdIcon)  System.out.println(context.dimension+" "+Thread.currentThread().getName());
             for(Feature<?, ?> feature: new ArrayList<>(this.renderers.keySet())) {
                 if(!renderer.isValidFeature(feature))continue;
                 this.renderers.replace(feature, renderer);

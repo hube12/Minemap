@@ -9,13 +9,9 @@ import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.seedutils.mc.MCVersion;
 import kaptainwutax.seedutils.util.math.DistanceMetric;
-import sun.rmi.runtime.Log;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
-import javax.swing.text.Document;
-import javax.swing.text.html.HTMLDocument;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -69,13 +65,12 @@ public class SettingsMenu extends Menu {
             textArea.setText(getAbout());
             textArea.setFont(new Font("Times", Font.PLAIN, 16));
             textArea.addHyperlinkListener(linkEvent -> {
-                if(linkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    if(Desktop.isDesktopSupported()) {
+                if (linkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    if (Desktop.isDesktopSupported()) {
                         try {
                             Desktop.getDesktop().browse(linkEvent.getURL().toURI());
-                        }
-                        catch (IOException | URISyntaxException error) {
-                            Logger.LOGGER.warning(String.format("URL could not be opened for %s, error: %s",linkEvent.getURL(),error));
+                        } catch (IOException | URISyntaxException error) {
+                            Logger.LOGGER.warning(String.format("URL could not be opened for %s, error: %s", linkEvent.getURL(), error));
                         }
                     }
                 }

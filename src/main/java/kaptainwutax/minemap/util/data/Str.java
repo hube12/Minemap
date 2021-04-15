@@ -30,8 +30,9 @@ public final class Str {
     }
 
     public static String prettifyDashed(String s) {
+        if (s==null) return null;
         String[] words = s.toLowerCase().split("_");
-        if ((s.startsWith("NE") || s.startsWith("OW"))) {
+        if ((words[0].equals("NE") || words[0].equals("OW"))) {
             words[0] = capitalize(words[0], 2);
         }
         return Arrays.stream(words).map(Str::capitalize).collect(Collectors.joining(" "));
