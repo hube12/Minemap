@@ -179,7 +179,7 @@ public class Chest extends JFrame {
                                 for (Pair<Effect, Integer> effect:effects){
                                     sb.append(effect.getFirst().getDescription())
                                             .append(" ")
-                                            .append((effect.getFirst().isInstantenous() ? effect.getSecond() / 20 : effect.getSecond().toString()));
+                                            .append((!effect.getFirst().isInstantenous() ? effect.getSecond() / 20 : effect.getSecond().toString()));
                                 }
                                 sb.append("</html>");
                                 current.setToolTipText(sb.toString());
