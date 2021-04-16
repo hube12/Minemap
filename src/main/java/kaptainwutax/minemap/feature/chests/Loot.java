@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.feature.chests;
 
-import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
+import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.seedutils.mc.ChunkRand;
 import kaptainwutax.seedutils.mc.MCVersion;
@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public abstract class Loot {
 
-    public static final Predicate<ItemStack> ENCHANTED_GAPPLES_PRED=e->e.getItem().equals(Item.ENCHANTED_GOLDEN_APPLE);
+    public static final Predicate<ItemStack> ENCHANTED_GAPPLES_PRED=e->e.getItem().equals(Items.ENCHANTED_GOLDEN_APPLE);
     public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, RegionStructure<?,?> structure,boolean indexed, MCVersion version) {
         return getLootAt(worldSeed, new CPos(chunkX, chunkZ),structure,indexed, version);
     }

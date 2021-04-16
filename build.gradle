@@ -38,7 +38,7 @@ dependencies {
 
     implementation('com.github.KaptainWutax:BiomeUtils:49fac65c1b') {transitive = false}
     implementation('com.github.KaptainWutax:TerrainUtils:f6fbdced4a') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:7a4529250ce89edee4f618df4178ea69126e05ff') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:5143e97ea4f115831f0b3ba7b10319650112ad7e') {transitive = false}
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:8174cd55b8ee492b54fbc860fbafc83726bac846') {transitive = false}
     implementation('com.github.KaptainWutax:LattiCG:cc39ed32419881bd4dc080ac77b7a5c72a3fd36d') {transitive = false}

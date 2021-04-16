@@ -8,6 +8,9 @@ import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.ui.component.TabGroup;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.CPos;
@@ -22,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
@@ -75,10 +79,20 @@ public class Chest extends JFrame {
     public void updateContent() {
         this.updateContent(false);
     }
+
+    public void update(){
+        this.topBar.update();
+    }
+
+    public Pair<RegionStructure<?,?>,CPos> getInformations(){
+        return new Pair<>(this.feature,this.pos);
+    }
+
     public void updateContent(boolean indexed) {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(this.feature.getName()), this.pos.getX() * 16 + 9, this.pos.getZ() * 16 + 9));
-        int numberChest = this.content.update(feature, pos,indexed);
-        this.topBar.setNumberChest(numberChest);
+        this.topBar.setIndexed(indexed);
+        this.topBar.setIndexContent(0);
+        this.update();
     }
 
     @Override
@@ -91,6 +105,9 @@ public class Chest extends JFrame {
         private final Content content;
         private final Chest chest;
         private final JButton indexedButton;
+        private final JMenu chestMenu;
+        private final JMenuBar menuBar;
+        private final JLabel currentChest;
         private boolean indexed=false;
 
         public TopBar(Content content,Chest chest) {
@@ -99,21 +116,44 @@ public class Chest extends JFrame {
             this.indexedButton =new JButton("Spread");
             this.indexedButton.addActionListener(e->{
                 setIndexed(!indexed);
+                update();
             });
+            this.chestMenu=new JMenu("Select chest");
+            this.menuBar=new JMenuBar();
+            this.menuBar.add(this.chestMenu);
+            this.currentChest=new JLabel("Viewing chest "+ this.content.index);
             this.add(this.indexedButton);
+            this.add(this.menuBar);
+            this.add(this.currentChest);
         }
 
         private void setIndexed(boolean indexed){
             this.indexed=indexed;
-            this.chest.updateContent(indexed);
+        }
+
+        private void update(){
+            Pair<RegionStructure<?,?>,CPos> informations=this.chest.getInformations();
+            int numberChests= this.content.update(informations.getFirst(), informations.getSecond(),indexed);
+            this.setNumberChest(numberChests);
         }
 
         private void setIndexContent(int index) {
             this.content.setIndex(index);
+            this.currentChest.setText("Viewing chest "+ this.content.index);
         }
 
         public void setNumberChest(int numberChest) {
             this.numberChest = numberChest;
+            this.chestMenu.removeAll();
+            for (int i = 0; i < numberChest; i++) {
+                int currentIndex = i;
+                JMenuItem menuItem=new JMenuItem("Chest "+currentIndex);
+                menuItem.addMouseListener(Events.Mouse.onReleased(e -> {
+                    this.setIndexContent(currentIndex);
+                    this.update();
+                }));
+                this.chestMenu.add(menuItem);
+            }
         }
     }
 
@@ -158,17 +198,15 @@ public class Chest extends JFrame {
                             ItemStack itemStack = currentIterator.next();
                             if (itemStack.isEmpty()) continue;
                             Item item = itemStack.getItem();
-                            boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantment().isEmpty() || !item.getEffects().isEmpty();
+                            boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantments().isEmpty() || !item.getEffects().isEmpty();
                             boolean isPlate = item.getName().endsWith("_plate");
                             BufferedImage icon = Icons.getObject(item);
                             JButton current = rowButton.get(col);
                             current.setMargin(new Insets(0, 0, 0, 0));
-                            if (!item.getEnchantment().isEmpty()) {
+                            if (!item.getEnchantments().isEmpty()) {
                                 StringBuilder sb = new StringBuilder("<html>");
-                                ArrayList<String> enchantments = item.getEnchantment();
-                                ArrayList<Integer> levels = item.getLevel();
-                                for (int idx = 0; idx < item.getEnchantment().size(); idx++) {
-                                    sb.append(Str.capitalize(enchantments.get(idx))).append(" ").append(Str.toRomanNumeral(levels.get(idx))).append("<br>");
+                                for (Pair<String,Integer> enchantment:item.getEnchantments()){
+                                    sb.append(Str.capitalize(enchantment.getFirst())).append(" ").append(Str.toRomanNumeral(enchantment.getSecond())).append("<br>");
                                 }
                                 sb.append("</html>");
                                 current.setToolTipText(sb.toString());
@@ -238,6 +276,7 @@ public class Chest extends JFrame {
                     rowButton.get(col).setText("U");
                 }
             }
+            this.repaint();
             return 0;
         }
 
