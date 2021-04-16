@@ -246,6 +246,7 @@ public class Icons {
         registerObject(Item.ENCHANTED_GOLDEN_APPLE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Item.GOLDEN_APPLE.getName(),".png");
         registerObject(Item.LIGHT_WEIGHTED_PRESSURE_PLATE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Item.GOLD_BLOCK.getName(),".png");
         registerObject(Item.CLOCK,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"clock_00",".png");
+        registerObject(Item.COMPASS,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"compass_00",".png");
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
