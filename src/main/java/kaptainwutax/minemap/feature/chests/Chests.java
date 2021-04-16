@@ -29,7 +29,7 @@ public class Chests {
         REGISTRY.put(clazz, lootFactory);
     }
 
-    public static <T extends Feature<?, ?>>  Loot.LootFactory<?> get(Class<T> clazz){
+    public static <T extends Feature<?, ?>> Loot.LootFactory<?> get(Class<T> clazz) {
         return REGISTRY.get(clazz);
     }
 }

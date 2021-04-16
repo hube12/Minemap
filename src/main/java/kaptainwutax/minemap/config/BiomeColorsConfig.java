@@ -10,109 +10,8 @@ import java.util.*;
 public class BiomeColorsConfig extends Config {
 
     public static final String DEFAULT_STYLE_NAME = "Default";
-
-    @Expose
-    protected Map<String, String> DEFAULT_BIOME_COLORS = new LinkedHashMap<>();
-    @Expose
-    protected Map<String, Map<String, String>> OVERRIDES = new LinkedHashMap<>();
-
-    protected Map<Integer, Color> defaultBiomeColorCache;
-    protected Map<String, Map<Integer, Color>> biomeColorCache;
     public final static HashMap<Biome, String> BIOME_COLORS = new LinkedHashMap<>();
     public final static HashMap<Biome, String> BIOME_COLORS_VIBRANT = new LinkedHashMap<>();
-
-    @Override
-    public String getName() {
-        return "biome_colors";
-    }
-
-
-    public Color get(String style, Biome biome) {
-        return this.get(style, biome.getId());
-    }
-
-    public synchronized Color get(String style, int biome) {
-        if (this.biomeColorCache == null) {
-            this.generateCache();
-        }
-
-        return this.biomeColorCache.getOrDefault(style, this.defaultBiomeColorCache)
-                .getOrDefault(biome, this.defaultBiomeColorCache.get(biome));
-    }
-
-    private void generateCache() {
-        this.defaultBiomeColorCache = new HashMap<>();
-        this.biomeColorCache = new HashMap<>();
-
-        DEFAULT_BIOME_COLORS.forEach((biomeEntry, colorEntry) -> {
-            for (Biome b : Biome.REGISTRY.values()) {
-                if (!b.getName().equalsIgnoreCase(biomeEntry.trim())) continue;
-                this.defaultBiomeColorCache.put(b.getId(), Color.decode(colorEntry));
-                break;
-            }
-        });
-
-        OVERRIDES.forEach((styleEntry, mapEntry) -> {
-            Map<Integer, Color> map = new HashMap<>();
-            this.biomeColorCache.put(styleEntry, map);
-
-            mapEntry.forEach((biomeEntry, colorEntry) -> {
-                for (Biome b : Biome.REGISTRY.values()) {
-                    if (!b.getName().equalsIgnoreCase(biomeEntry.trim())) continue;
-                    map.put(b.getId(), Color.decode(colorEntry));
-                    break;
-                }
-            });
-        });
-    }
-
-    public List<String> getStyles() {
-        List<String> styles = new ArrayList<>();
-        styles.add(BiomeColorsConfig.DEFAULT_STYLE_NAME);
-        styles.addAll(new ArrayList<>(this.OVERRIDES.keySet()));
-        return styles;
-    }
-
-
-    @Override
-    protected void resetConfig() {
-        for (Map.Entry<Biome,String> entry:BIOME_COLORS.entrySet()){
-            this.addDefaultEntry(entry.getKey(),entry.getValue());
-        }
-        String[] shippedMaps={"Vibrant"};
-        for (String shippedMap:shippedMaps){
-            for (Map.Entry<Biome,String> entry:BIOME_COLORS_VIBRANT.entrySet()){
-                this.addOverrideEntry(shippedMap,entry.getKey(),entry.getValue());
-            }
-        }
-    }
-
-    @Override
-    public void maintainConfig() {
-        for (Map.Entry<Biome,String> entry:BIOME_COLORS.entrySet()){
-            if (!this.DEFAULT_BIOME_COLORS.containsKey(entry.getKey().getName().toUpperCase())){
-                this.addDefaultEntry(entry.getKey(),entry.getValue());
-            }
-        }
-        String[] shippedMaps={"Vibrant"};
-        for (String shippedMap:shippedMaps){
-            Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(shippedMap, s -> new LinkedHashMap<>());
-            for (Map.Entry<Biome,String> entry:BIOME_COLORS_VIBRANT.entrySet()){
-                if (!typeMap.containsKey(entry.getKey().getName().toUpperCase())){
-                    this.addOverrideEntry(shippedMap,entry.getKey(),entry.getValue());
-                }
-            }
-        }
-    }
-
-    protected void addDefaultEntry(Biome biome, String color) {
-        this.DEFAULT_BIOME_COLORS.put(biome.getName().toUpperCase(), color.toUpperCase());
-    }
-
-    protected void addOverrideEntry(String type, Biome biome, String color) {
-        Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(type, s -> new LinkedHashMap<>());
-        typeMap.put(biome.getName().toUpperCase(), color.toUpperCase());
-    }
 
     static {
         BIOME_COLORS.put(Biome.OCEAN, "#000070");
@@ -200,5 +99,103 @@ public class BiomeColorsConfig extends Config {
         BIOME_COLORS_VIBRANT.put(Biome.NETHER_WASTES, "#FF7700");
         BIOME_COLORS_VIBRANT.put(Biome.WARPED_FOREST, "#49907B");
         BIOME_COLORS_VIBRANT.put(Biome.SOUL_SAND_VALLEY, "#5E3830");
+    }
+
+    @Expose
+    protected Map<String, String> DEFAULT_BIOME_COLORS = new LinkedHashMap<>();
+    @Expose
+    protected Map<String, Map<String, String>> OVERRIDES = new LinkedHashMap<>();
+    protected Map<Integer, Color> defaultBiomeColorCache;
+    protected Map<String, Map<Integer, Color>> biomeColorCache;
+
+    @Override
+    public String getName() {
+        return "biome_colors";
+    }
+
+    public Color get(String style, Biome biome) {
+        return this.get(style, biome.getId());
+    }
+
+    public synchronized Color get(String style, int biome) {
+        if (this.biomeColorCache == null) {
+            this.generateCache();
+        }
+
+        return this.biomeColorCache.getOrDefault(style, this.defaultBiomeColorCache)
+                .getOrDefault(biome, this.defaultBiomeColorCache.get(biome));
+    }
+
+    private void generateCache() {
+        this.defaultBiomeColorCache = new HashMap<>();
+        this.biomeColorCache = new HashMap<>();
+
+        DEFAULT_BIOME_COLORS.forEach((biomeEntry, colorEntry) -> {
+            for (Biome b : Biome.REGISTRY.values()) {
+                if (!b.getName().equalsIgnoreCase(biomeEntry.trim())) continue;
+                this.defaultBiomeColorCache.put(b.getId(), Color.decode(colorEntry));
+                break;
+            }
+        });
+
+        OVERRIDES.forEach((styleEntry, mapEntry) -> {
+            Map<Integer, Color> map = new HashMap<>();
+            this.biomeColorCache.put(styleEntry, map);
+
+            mapEntry.forEach((biomeEntry, colorEntry) -> {
+                for (Biome b : Biome.REGISTRY.values()) {
+                    if (!b.getName().equalsIgnoreCase(biomeEntry.trim())) continue;
+                    map.put(b.getId(), Color.decode(colorEntry));
+                    break;
+                }
+            });
+        });
+    }
+
+    public List<String> getStyles() {
+        List<String> styles = new ArrayList<>();
+        styles.add(BiomeColorsConfig.DEFAULT_STYLE_NAME);
+        styles.addAll(new ArrayList<>(this.OVERRIDES.keySet()));
+        return styles;
+    }
+
+    @Override
+    protected void resetConfig() {
+        for (Map.Entry<Biome, String> entry : BIOME_COLORS.entrySet()) {
+            this.addDefaultEntry(entry.getKey(), entry.getValue());
+        }
+        String[] shippedMaps = {"Vibrant"};
+        for (String shippedMap : shippedMaps) {
+            for (Map.Entry<Biome, String> entry : BIOME_COLORS_VIBRANT.entrySet()) {
+                this.addOverrideEntry(shippedMap, entry.getKey(), entry.getValue());
+            }
+        }
+    }
+
+    @Override
+    public void maintainConfig() {
+        for (Map.Entry<Biome, String> entry : BIOME_COLORS.entrySet()) {
+            if (!this.DEFAULT_BIOME_COLORS.containsKey(entry.getKey().getName().toUpperCase())) {
+                this.addDefaultEntry(entry.getKey(), entry.getValue());
+            }
+        }
+        String[] shippedMaps = {"Vibrant"};
+        for (String shippedMap : shippedMaps) {
+            Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(shippedMap, s -> new LinkedHashMap<>());
+            for (Map.Entry<Biome, String> entry : BIOME_COLORS_VIBRANT.entrySet()) {
+                if (!typeMap.containsKey(entry.getKey().getName().toUpperCase())) {
+                    this.addOverrideEntry(shippedMap, entry.getKey(), entry.getValue());
+                }
+            }
+        }
+    }
+
+    protected void addDefaultEntry(Biome biome, String color) {
+        this.DEFAULT_BIOME_COLORS.put(biome.getName().toUpperCase(), color.toUpperCase());
+    }
+
+    protected void addOverrideEntry(String type, Biome biome, String color) {
+        Map<String, String> typeMap = this.OVERRIDES.computeIfAbsent(type, s -> new LinkedHashMap<>());
+        typeMap.put(biome.getName().toUpperCase(), color.toUpperCase());
     }
 }

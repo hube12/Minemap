@@ -42,7 +42,7 @@ public class Dropdown<E> extends JComboBox<String> {
         this.elements = new Object[elements.size()];
         int i = 0;
 
-        for(Iterator<E> it = elements.iterator(); it.hasNext(); i++) {
+        for (Iterator<E> it = elements.iterator(); it.hasNext(); i++) {
             this.elements[i] = it.next();
         }
         this.setOpaque(true);
@@ -52,14 +52,14 @@ public class Dropdown<E> extends JComboBox<String> {
         this.setRenderer(listRenderer);
     }
 
-    public void setDefault(E element){
+    public void setDefault(E element) {
         this.setSelectedItem(mapper.map(element));
     }
 
 
     @SuppressWarnings("unchecked")
     public E getElement(int index) {
-        return (E)this.elements[index];
+        return (E) this.elements[index];
     }
 
     public E getSelected() {
@@ -75,8 +75,8 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public boolean selectIfPresent(E element, BiPredicate<E, E> equals) {
-        for(int i = 0; i < this.elements.length; i++) {
-            if(equals.test(this.getElement(i), element)) {
+        for (int i = 0; i < this.elements.length; i++) {
+            if (equals.test(this.getElement(i), element)) {
                 this.setSelectedIndex(i);
                 return true;
             }

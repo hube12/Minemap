@@ -57,7 +57,7 @@ public class MenuBar extends JMenuBar {
     }
 
 
-    public void doDelayedLabels(){
+    public void doDelayedLabels() {
         this.fileMenu.doDelayedLabels();
         this.worldMenu.doDelayedLabels();
         this.utilitiesMenu.doDelayedLabels();

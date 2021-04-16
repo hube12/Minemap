@@ -10,7 +10,7 @@ public class Configs {
     public static KeyboardsConfig KEYBOARDS;
     public static IconsConfig ICONS;
     public static UserProfileConfig USER_PROFILE;
-    private static boolean shouldDelayedUpdate=false;
+    private static boolean shouldDelayedUpdate = false;
 
     public static void registerConfigs() {
         USER_PROFILE = (UserProfileConfig) new UserProfileConfig().readConfig();
@@ -26,24 +26,24 @@ public class Configs {
     }
 
     public static void updateConfigs() {
-        if (USER_PROFILE==null) USER_PROFILE=(UserProfileConfig)new UserProfileConfig().forceGenerateConfig();
-        if (BIOME_COLORS==null) BIOME_COLORS=(BiomeColorsConfig)new BiomeColorsConfig().forceGenerateConfig();
-        if (SALTS==null) SALTS=(SaltsConfig)new SaltsConfig().forceGenerateConfig();
-        if (ICONS==null) ICONS=(IconsConfig)new IconsConfig().forceGenerateConfig();
+        if (USER_PROFILE == null) USER_PROFILE = (UserProfileConfig) new UserProfileConfig().forceGenerateConfig();
+        if (BIOME_COLORS == null) BIOME_COLORS = (BiomeColorsConfig) new BiomeColorsConfig().forceGenerateConfig();
+        if (SALTS == null) SALTS = (SaltsConfig) new SaltsConfig().forceGenerateConfig();
+        if (ICONS == null) ICONS = (IconsConfig) new IconsConfig().forceGenerateConfig();
 
         if (USER_PROFILE.getMinemapVersion() == null || !USER_PROFILE.getMinemapVersion().equals(MineMap.version)) {
             USER_PROFILE.updateConfig();
             BIOME_COLORS.updateConfig();
             SALTS.updateConfig();
             ICONS.updateConfig();
-            shouldDelayedUpdate=true;
+            shouldDelayedUpdate = true;
         }
     }
 
     public static void updateDelayedConfigs() {
         if (shouldDelayedUpdate) {
             KEYBOARDS.updateConfig();
-            shouldDelayedUpdate=false;
+            shouldDelayedUpdate = false;
         }
     }
 }

@@ -33,12 +33,12 @@ public class MapContext {
 
         this.biomeSource = ThreadLocal.withInitial(() -> {
             Map<Dimension, BiomeSource> map = new HashMap<>();
-            for (Dimension dim : Dimension.values()){
+            for (Dimension dim : Dimension.values()) {
                 try {
-                    BiomeSource biomeSource=BiomeSource.of(dim, this.version, worldSeed);
+                    BiomeSource biomeSource = BiomeSource.of(dim, this.version, worldSeed);
                     map.put(dim, biomeSource);
-                }catch (UnsupportedVersion e){
-                    System.out.printf("Biome source for the %s for version %s could not be initialized%n",dim.getName(),this.version.toString() );
+                } catch (UnsupportedVersion e) {
+                    System.out.printf("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
                     throw e;
                 }
             }
@@ -49,11 +49,11 @@ public class MapContext {
             Map<Dimension, ChunkGenerator> map = new HashMap<>();
             for (Dimension dim : Dimension.values()) {
                 try {
-                    ChunkGenerator chunkGenerator=ChunkGenerator.of(dim, this.biomeSource.get().get(dim));
+                    ChunkGenerator chunkGenerator = ChunkGenerator.of(dim, this.biomeSource.get().get(dim));
                     map.put(dim, chunkGenerator);
-                }catch (UnsupportedVersion e){
-                    System.err.printf("Chunk generator for the %s for version %s could not be initialized%n",dim.getName(),this.version.toString() );
-                    map.put(dim,null);
+                } catch (UnsupportedVersion e) {
+                    System.err.printf("Chunk generator for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
+                    map.put(dim, null);
                 }
             }
             return map;
@@ -80,6 +80,11 @@ public class MapContext {
         return this.layerId;
     }
 
+    public MapContext setLayerId(int layerId) {
+        this.layerId = layerId;
+        return this;
+    }
+
     public ChunkGenerator getChunkGenerator() {
         return this.getChunkGenerator(this.dimension);
     }
@@ -98,11 +103,6 @@ public class MapContext {
 
     public BiomeLayer getBiomeLayer() {
         return this.getBiomeSource().getLayer(this.layerId);
-    }
-
-    public MapContext setLayerId(int layerId) {
-        this.layerId = layerId;
-        return this;
     }
 
 }

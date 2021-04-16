@@ -3,7 +3,6 @@ package kaptainwutax.minemap;
 import com.formdev.flatlaf.*;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
-import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
@@ -34,15 +33,28 @@ import java.util.function.Supplier;
 import static kaptainwutax.seedutils.mc.Dimension.OVERWORLD;
 
 public class MineMap extends JFrame {
-    public static final String version = "b1.35";
-    public static MineMap INSTANCE;
-    public static LookType lookType = LookType.DARCULA;
+    public static final String version = "c1.35";
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
     public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
+    public static MineMap INSTANCE;
+    public static LookType lookType = LookType.DARCULA;
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
+
+    public MineMap() {
+        applyStyle();
+        BorderLayout layout = new BorderLayout();
+        this.setLayout(layout);
+        this.initComponents();
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        this.setSize(screenSize.width / 2, screenSize.height / 2);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.setTitle("MineMap " + MineMap.version);
+        this.setIconImage(Icons.get(this.getClass()));
+    }
 
     public static void main(String[] args) throws IOException {
         createDirs();
@@ -238,31 +250,6 @@ public class MineMap extends JFrame {
         Icons.registerDelayedIcons(INSTANCE);
     }
 
-    public MineMap() {
-        applyStyle();
-        BorderLayout layout = new BorderLayout();
-        this.setLayout(layout);
-        this.initComponents();
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        this.setSize(screenSize.width / 2, screenSize.height / 2);
-        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        this.setTitle("MineMap "+MineMap.version);
-        this.setIconImage(Icons.get(this.getClass()));
-    }
-
-    private void initComponents() {
-        this.toolbarPane = new MenuBar();
-        this.add(this.toolbarPane, BorderLayout.NORTH);
-
-        this.worldTabs = new WorldTabs();
-        this.add(this.worldTabs);
-    }
-
-    public void doDelayedInitTasks() {
-        this.toolbarPane.doDelayedLabels();
-    }
-
     public static void applyStyle() {
         try {
             lookType.setLookAndFeel();
@@ -275,6 +262,18 @@ public class MineMap extends JFrame {
                 impossibleError.printStackTrace();
             }
         }
+    }
+
+    private void initComponents() {
+        this.toolbarPane = new MenuBar();
+        this.add(this.toolbarPane, BorderLayout.NORTH);
+
+        this.worldTabs = new WorldTabs();
+        this.add(this.worldTabs);
+    }
+
+    public void doDelayedInitTasks() {
+        this.toolbarPane.doDelayedLabels();
     }
 
     public enum LookType {

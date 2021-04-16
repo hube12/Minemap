@@ -31,12 +31,11 @@ import static kaptainwutax.minemap.MineMap.DOWNLOAD_DIR;
 import static kaptainwutax.minemap.init.Logger.LOGGER;
 
 public class Assets {
-    private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
-    private static final File MANIFEST_FILE = new File(DOWNLOAD_DIR + File.separator + "version_manifest.json");
-
     public final static String DOWNLOAD_DIR_ICONS = DOWNLOAD_DIR + File.separatorChar + "icons";
     public final static String DOWNLOAD_DIR_VERSIONS = DOWNLOAD_DIR + File.separatorChar + "versions";
     public final static String DOWNLOAD_DIR_ASSETS = DOWNLOAD_DIR + File.separatorChar + "assets";
+    private static final String MANIFEST_URL = "https://launchermeta.mojang.com/mc/game/version_manifest.json";
+    private static final File MANIFEST_FILE = new File(DOWNLOAD_DIR + File.separator + "version_manifest.json");
 
     public static void createDirs() throws IOException {
         String[] dirs = {DOWNLOAD_DIR_ICONS, DOWNLOAD_DIR_VERSIONS, DOWNLOAD_DIR_ASSETS};
@@ -46,7 +45,7 @@ public class Assets {
     }
 
     @SuppressWarnings("unchecked")
-    public static Pair<Pair<String,String>, String> shouldUpdate() {
+    public static Pair<Pair<String, String>, String> shouldUpdate() {
         String data = getDataRestAPI("https://api.github.com/repos/hube12/MineMap/releases/latest");
         if (data == null) {
             return null;
@@ -61,7 +60,7 @@ public class Assets {
                         if (asset.containsKey("browser_download_url") && asset.containsKey("name") && ((String) asset.get("name")).startsWith("MineMap-")) {
                             String url = (String) asset.get("browser_download_url");
                             String filename = (String) asset.get("name");
-                            return new Pair<>(new Pair<>(url,filename),tagName);
+                            return new Pair<>(new Pair<>(url, filename), tagName);
                         }
                     }
                     Logger.LOGGER.warning("Github release does not contain a correct release.");
@@ -77,7 +76,7 @@ public class Assets {
         return null;
     }
 
-    public static String downloadLatestMinemap(String url, String filename){
+    public static String downloadLatestMinemap(String url, String filename) {
         if (download(url, new File(filename), null)) {
             return filename;
         }

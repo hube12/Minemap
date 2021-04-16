@@ -22,7 +22,7 @@ public class StrongholdIcon extends StaticIcon {
 
     public StrongholdIcon(MapContext context, int count) {
         super(context);
-        Stronghold stronghold = context.getSettings().getFeatureOfType(this.getContext().dimension== Dimension.OVERWORLD?Stronghold.class: NEStronghold.class);
+        Stronghold stronghold = context.getSettings().getFeatureOfType(this.getContext().dimension == Dimension.OVERWORLD ? Stronghold.class : NEStronghold.class);
 
         if (stronghold != null) {
             BiomeSource biomeSource = this.getContext().getBiomeSource(Dimension.OVERWORLD);
@@ -42,7 +42,8 @@ public class StrongholdIcon extends StaticIcon {
     public Function<Object, String> getExtraInfo() {
         return (input) -> {
             BPos bPos = (BPos) input;
-            CPos cPos = new CPos(bPos.getX() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1), bPos.getZ() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1)); ;
+            CPos cPos = new CPos(bPos.getX() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1), bPos.getZ() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1));
+            ;
             CPos[] starts = this.getStarts();
             OptionalInt integer = IntStream.range(0, starts.length).filter(idx -> starts[idx].equals(cPos)).findFirst();
             return integer.isPresent() ? String.valueOf(integer.getAsInt()) : null;

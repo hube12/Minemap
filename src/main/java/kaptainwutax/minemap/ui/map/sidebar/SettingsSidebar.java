@@ -24,9 +24,8 @@ public class SettingsSidebar extends JPanel {
 
     private final MapPanel map;
     private final MapSettings settings;
-
-    public Dropdown<Integer> layerDropdown;
     private final JPanel toggles = new JPanel();
+    public Dropdown<Integer> layerDropdown;
     public JButton closeButton;
     public boolean isHiddenForSize = false;
 
@@ -214,7 +213,7 @@ public class SettingsSidebar extends JPanel {
         JPanel duo = new JPanel();
         duo.add(showAll);
         duo.add(hideAll);
-        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        FlowLayout layout = new FlowLayout(FlowLayout.CENTER);
         layout.setVgap(0);
         duo.setLayout(layout);
         this.add(duo);
@@ -237,19 +236,19 @@ public class SettingsSidebar extends JPanel {
         JPanel duo = new JPanel();
         duo.add(set);
         duo.add(reset);
-        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        FlowLayout layout = new FlowLayout(FlowLayout.CENTER);
         layout.setVgap(0);
         duo.setLayout(layout);
         this.add(duo);
     }
 
     private void addCloseButton() {
-        JPanel panel=new JPanel();
+        JPanel panel = new JPanel();
 
         this.closeButton = new JButton("Close Settings");
         panel.add(this.closeButton);
 
-        FlowLayout layout=new FlowLayout(FlowLayout.CENTER);
+        FlowLayout layout = new FlowLayout(FlowLayout.CENTER);
         panel.setLayout(layout);
 
         this.add(panel);

@@ -25,6 +25,7 @@ public abstract class Tool {
     public abstract String[] getMetricString();
 
     public abstract boolean shouldFill();
+
     // allow to use technics to hide the fragment sides
     public abstract boolean shouldHideArtefact();
 

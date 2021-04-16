@@ -16,16 +16,16 @@ import java.util.stream.StreamSupport;
 
 public class StructureHelper {
 
-    public static Stream<BPos> getClosest(RegionStructure<?, ?> structure, BPos currentPos ,long worldseed, ChunkRand chunkRand, BiomeSource source,int dimCoeff) {
+    public static Stream<BPos> getClosest(RegionStructure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, int dimCoeff) {
         int chunkInRegion = structure.getSpacing();
-        int regionSize=chunkInRegion*16;
+        int regionSize = chunkInRegion * 16;
         RPos centerRPos = currentPos.toRegionPos(regionSize);
-        SpiralIterator spiral=new SpiralIterator(centerRPos,regionSize);
+        SpiralIterator spiral = new SpiralIterator(centerRPos, regionSize);
 
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(spiral.iterator(), Spliterator.ORDERED), false)
-                .map(rPos-> StructureHelper.getInRegion(structure,worldseed,chunkRand,rPos))
+                .map(rPos -> StructureHelper.getInRegion(structure, worldseed, chunkRand, rPos))
                 .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
-                .filter(cPos -> StructureHelper.canSpawn(structure,cPos,source))
+                .filter(cPos -> StructureHelper.canSpawn(structure, cPos, source))
                 .map(cPos -> {
                     BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
                     return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
@@ -41,9 +41,9 @@ public class StructureHelper {
     }
 
     static class SpiralIterator implements Iterable<RPos> {
-        private RPos currentPos;
         private final RPos lowerBound;
         private final RPos upperBound;
+        private RPos currentPos;
         private int currentLength = 1;
         private int currentLengthPos = 0;
         private DIRECTION currentDirection = DIRECTION.NORTH;
@@ -62,7 +62,7 @@ public class StructureHelper {
         }
 
         public SpiralIterator(RPos currentRPos) {
-            this(currentRPos,32*16);
+            this(currentRPos, 32 * 16);
         }
 
         @Override
@@ -105,7 +105,7 @@ public class StructureHelper {
                                 this.update();
                                 if (this.hasNext()) {
                                     keepRunning = false;
-                                    currentLengthPos+=1;
+                                    currentLengthPos += 1;
                                     break;
                                 }
                             }

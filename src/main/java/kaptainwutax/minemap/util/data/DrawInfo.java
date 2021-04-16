@@ -15,8 +15,9 @@ public class DrawInfo {
         this.width = width;
         this.height = height;
     }
-    public Rectangle getRectangle(){
-        return new Rectangle(x,y,width,height);
+
+    public Rectangle getRectangle() {
+        return new Rectangle(x, y, width, height);
     }
 
     @Override

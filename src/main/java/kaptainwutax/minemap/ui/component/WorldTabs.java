@@ -102,10 +102,10 @@ public class WorldTabs extends JTabbedPane {
         });
 
 
-        tabHeader.setComponentPopupMenu(createTabMenu(tabGroup,mapPanel));
+        tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
         tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
-            if (e.getSource() instanceof TabHeader){
-                TabHeader source=(TabHeader) e.getSource();
+            if (e.getSource() instanceof TabHeader) {
+                TabHeader source = (TabHeader) e.getSource();
                 this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
             }
         }));
@@ -113,15 +113,15 @@ public class WorldTabs extends JTabbedPane {
         this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), tabHeader);
     }
 
-    public JPopupMenu createTabMenu(TabGroup current,MapPanel mapPanel){
+    public JPopupMenu createTabMenu(TabGroup current, MapPanel mapPanel) {
         JPopupMenu popup = new JPopupMenu();
 
         JMenuItem removeOthers = new JMenuItem("Close Other Tabs");
         removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
-            List<TabGroup> others=this.tabGroups.stream().filter(g->g!=current).collect(Collectors.toList());
-            for (TabGroup other:others){
+            List<TabGroup> others = this.tabGroups.stream().filter(g -> g != current).collect(Collectors.toList());
+            for (TabGroup other : others) {
                 this.remove(other);
             }
         }));
@@ -129,7 +129,7 @@ public class WorldTabs extends JTabbedPane {
         copySeed.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         copySeed.addMouseListener(Events.Mouse.onReleased(e -> {
-            StringSelection content=new StringSelection(String.valueOf(mapPanel.getContext().worldSeed));
+            StringSelection content = new StringSelection(String.valueOf(mapPanel.getContext().worldSeed));
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(content, null);
         }));
 

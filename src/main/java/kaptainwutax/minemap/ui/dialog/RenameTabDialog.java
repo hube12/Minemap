@@ -10,37 +10,38 @@ import java.awt.*;
 
 public class RenameTabDialog extends Dialog {
 
-	public JTextField nameField;
-	public JButton continueButton;
-	private TabHeader header;
-	public RenameTabDialog() {
-		super("Rename Tab", new GridLayout(0, 1));
-	}
+    public JTextField nameField;
+    public JButton continueButton;
+    private TabHeader header;
 
-	@Override
-	public void initComponents() {
-		header = MineMap.INSTANCE.worldTabs.getSelectedHeader();
+    public RenameTabDialog() {
+        super("Rename Tab", new GridLayout(0, 1));
+    }
 
-		this.nameField = new JTextField(header.getName());
-		PromptSupport.setPrompt("Enter the tab name here...", this.nameField);
+    @Override
+    public void initComponents() {
+        header = MineMap.INSTANCE.worldTabs.getSelectedHeader();
 
-		this.continueButton = new JButton("Continue");
+        this.nameField = new JTextField(header.getName());
+        PromptSupport.setPrompt("Enter the tab name here...", this.nameField);
 
-		this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
+        this.continueButton = new JButton("Continue");
 
-		this.getContentPane().add(this.nameField);
-		this.getContentPane().add(this.continueButton);
-	}
+        this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
+
+        this.getContentPane().add(this.nameField);
+        this.getContentPane().add(this.continueButton);
+    }
 
 
-	protected void create() {
-		header.setName(this.nameField.getText());
-		this.dispose();
-	}
+    protected void create() {
+        header.setName(this.nameField.getText());
+        this.dispose();
+    }
 
-	protected void cancel() {
-		continueButton.setEnabled(false);
-		dispose();
-	}
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
 
 }

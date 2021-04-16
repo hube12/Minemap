@@ -60,25 +60,6 @@ public class StructureHopperDialog extends Dialog {
         this.getContentPane().add(this.continueButton);
     }
 
-
-    static class StructureItem {
-
-        private final RegionStructure<?, ?> feature;
-
-        StructureItem(RegionStructure<?, ?> feature) {
-            this.feature = feature;
-        }
-
-        public RegionStructure<?, ?> getFeature() {
-            return feature;
-        }
-
-        @Override
-        public String toString() {
-            return feature.getName();
-        }
-    }
-
     protected void create() {
         if (!this.continueButton.isEnabled()) return;
         RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
@@ -105,6 +86,24 @@ public class StructureHopperDialog extends Dialog {
     protected void cancel() {
         continueButton.setEnabled(false);
         dispose();
+    }
+
+    static class StructureItem {
+
+        private final RegionStructure<?, ?> feature;
+
+        StructureItem(RegionStructure<?, ?> feature) {
+            this.feature = feature;
+        }
+
+        public RegionStructure<?, ?> getFeature() {
+            return feature;
+        }
+
+        @Override
+        public String toString() {
+            return feature.getName();
+        }
     }
 
 }

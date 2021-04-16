@@ -61,7 +61,7 @@ public class Features {
                 if (feature.getConfig() != null) {
                     result.put(entry.getKey(), feature);
                 } else {
-                    System.out.println(feature.getName()+" was ignored due to no Config available.");
+                    System.out.println(feature.getName() + " was ignored due to no Config available.");
                 }
             } catch (NullPointerException ignored) {
                 Logger.LOGGER.severe(ignored.toString());

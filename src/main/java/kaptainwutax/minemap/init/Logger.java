@@ -22,7 +22,7 @@ public class Logger {
 
     public static void registerLogger() {
         try {
-            FileHandler fh = new FileHandler(LOG_DIR + File.separatorChar + "error%u%g.log",1000000 ,10);
+            FileHandler fh = new FileHandler(LOG_DIR + File.separatorChar + "error%u%g.log", 1000000, 10);
             LOGGER.setUseParentHandlers(false);
             LOGGER.addHandler(fh);
             fh.setFormatter(new SimpleFormatter() {

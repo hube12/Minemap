@@ -159,14 +159,14 @@ public class Fragment {
     }
 
     public Map<Feature<?, ?>, List<BPos>> getClickedFeatures(int width, int height) {
-        return getFeatures(width,height,this.clickedPos);
+        return getFeatures(width, height, this.clickedPos);
     }
 
     public Map<Feature<?, ?>, List<BPos>> getHoveredFeatures(int width, int height) {
-        return getFeatures(width,height,this.hoveredPos);
+        return getFeatures(width, height, this.hoveredPos);
     }
 
-    public Map<Feature<?, ?>, List<BPos>> getFeatures(int width, int height,BPos checkPos) {
+    public Map<Feature<?, ?>, List<BPos>> getFeatures(int width, int height, BPos checkPos) {
         if (checkPos == null || this.context == null || !this.context.getSettings().showFeatures) {
             return Collections.emptyMap();
         }
@@ -177,7 +177,7 @@ public class Fragment {
             if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
             IconRenderer renderer = this.context.getIconManager().getFor(entry.getKey());
             ArrayList<BPos> newList = new ArrayList<>(entry.getValue());
-            newList.removeIf(pos -> !renderer.isHovered(this, checkPos, pos, width, height,entry.getKey()));
+            newList.removeIf(pos -> !renderer.isHovered(this, checkPos, pos, width, height, entry.getKey()));
             map.put(entry.getKey(), newList);
         }
 

@@ -16,8 +16,8 @@ public class NetherFossilExact extends NetherFossil {
 
     @Override
     public boolean isValidBiome(Biome biome) {
-        boolean b=super.isValidBiome(biome);
-        if (b){
+        boolean b = super.isValidBiome(biome);
+        if (b) {
 
         }
         return b;

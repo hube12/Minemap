@@ -32,7 +32,7 @@ public class NullIcon extends IconRenderer {
     }
 
     @Override
-    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height, Feature<?,?> feature) {
+    public boolean isHovered(Fragment fragment, BPos hoveredPos, BPos featurePos, int width, int height, Feature<?, ?> feature) {
         return false;
     }
 

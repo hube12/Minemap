@@ -16,15 +16,15 @@ import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class SaltDialog extends Dialog {
 
+    // those are cursed but what could I do? Inject myself between super and initcomponent?
+    public static Callable<MCVersion> versionCallable = () -> MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0];
+    public static Callable<Integer> numberSaltsCallable = () -> Configs.SALTS.getSalts(versionCallable.call()).size();
     public ArrayList<JSpinner> salts;
     public ArrayList<JLabel> saltsNames;
     public JButton continueButton;
     public JButton resetButton;
     private MCVersion version;
     private int numberSalts;
-    // those are cursed but what could I do? Inject myself between super and initcomponent?
-    public static Callable<MCVersion> versionCallable = () -> MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null ? MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context.version : MCVersion.values()[0];
-    public static Callable<Integer> numberSaltsCallable = () -> Configs.SALTS.getSalts(versionCallable.call()).size();
 
     public SaltDialog(Runnable onExit) throws Exception {
         super("Change salts", new GridLayout(numberSaltsCallable.call() + 1, 1));

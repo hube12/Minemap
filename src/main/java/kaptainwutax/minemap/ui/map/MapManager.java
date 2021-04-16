@@ -33,15 +33,14 @@ import java.util.function.Supplier;
 public class MapManager {
 
     public static final int DEFAULT_REGION_SIZE = 512;
+    public final int blocksPerFragment;
+    public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
     private final JPopupMenu popup;
     private final Chest chestMenu;
-    public final int blocksPerFragment;
     public double pixelsPerFragment;
     public double centerX;
     public double centerY;
-
-    public final ArrayList<Tool> toolsList = new ArrayList<>();
     public Tool selectedTool = null;
 
     public Point mousePointer;
@@ -56,7 +55,7 @@ public class MapManager {
         this.pixelsPerFragment = (int) (256.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
-            if (this.mousePointer==null) return;
+            if (this.mousePointer == null) return;
             if (SwingUtilities.isLeftMouseButton(e)) {
                 int dx = e.getX() - this.mousePointer.x;
                 int dy = e.getY() - this.mousePointer.y;
@@ -109,9 +108,9 @@ public class MapManager {
         }));
 
         this.panel.addMouseWheelListener(e -> {
-            boolean isModifier=Configs.USER_PROFILE.getUserSettings().modifierDown.getModifier().apply(e);
-            boolean zoomIn=e.getUnitsToScroll()>0;
-            zoom(zoomIn,isModifier).run();
+            boolean isModifier = Configs.USER_PROFILE.getUserSettings().modifierDown.getModifier().apply(e);
+            boolean zoomIn = e.getUnitsToScroll() > 0;
+            zoom(zoomIn, isModifier).run();
         });
 
         this.popup = new JPopupMenu();
@@ -140,7 +139,7 @@ public class MapManager {
         JMenuItem chest = new JMenuItem("Chest");
         chest.setBorder(new EmptyBorder(5, 15, 5, 15));
         chest.setEnabled(false);
-        chestMenu=new Chest(this.panel);
+        chestMenu = new Chest(this.panel);
         chest.addMouseListener(Events.Mouse.onReleased(e -> this.chestMenu.setVisible(true)));
 
         popup.add(pin);
@@ -152,21 +151,21 @@ public class MapManager {
                                        @Override
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
                                            SwingUtilities.invokeLater(() -> {
-                                               MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                                               MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                                                ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
-                                               int size = (int)map.manager.pixelsPerFragment;
+                                               int size = (int) map.manager.pixelsPerFragment;
                                                map.scheduler.forEachFragment(fragment -> {
                                                    fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
-                                                       if (!positions.isEmpty() && feature instanceof RegionStructure<?,?>) {
+                                                       if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
                                                            features.add(new Pair<>(feature, positions));
                                                        }
                                                    });
                                                });
                                                chest.setEnabled(!features.isEmpty());
-                                               if (!features.isEmpty()){
-                                                   Pair<Feature<?, ?>, List<BPos>> featureListPair=features.get(0);
-                                                   Feature<?, ?> feature=featureListPair.getFirst();
-                                                   BPos bPos=featureListPair.getSecond().get(0);
+                                               if (!features.isEmpty()) {
+                                                   Pair<Feature<?, ?>, List<BPos>> featureListPair = features.get(0);
+                                                   Feature<?, ?> feature = featureListPair.getFirst();
+                                                   BPos bPos = featureListPair.getSecond().get(0);
                                                    chestMenu.setPos(bPos.toChunkPos());
                                                    chestMenu.setFeature((RegionStructure<?, ?>) feature);
                                                    chestMenu.updateContent();
@@ -184,6 +183,51 @@ public class MapManager {
         );
 
         this.panel.setComponentPopupMenu(popup);
+    }
+
+    public static Runnable zoom(boolean zoomOut, boolean isModifier) {
+        return () -> {
+            if (MineMap.INSTANCE == null) return;
+            if (MineMap.INSTANCE.worldTabs == null) return;
+            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel() == null) return;
+            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager == null) return;
+            MapManager manager = MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager;
+            if (!isModifier) {
+                double newPixelsPerFragment = manager.pixelsPerFragment;
+
+                if (zoomOut) {
+                    newPixelsPerFragment /= 2.0D;
+                } else {
+                    newPixelsPerFragment *= 2.0D;
+                }
+
+                // restrict min zoom to 4096 chunks per fragment
+                if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 4096.0D * (manager.blocksPerFragment / 512.0D);
+                }
+
+                // restrict max zoom to 32 chunks per fragment
+                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    newPixelsPerFragment = 32.0D * (manager.blocksPerFragment / 512.0D);
+                }
+
+                double scaleFactor = newPixelsPerFragment / manager.pixelsPerFragment;
+                manager.centerX *= scaleFactor;
+                manager.centerY *= scaleFactor;
+                manager.pixelsPerFragment = newPixelsPerFragment;
+                manager.panel.repaint();
+            } else {
+                int layerId = manager.panel.getContext().getLayerId();
+                layerId += zoomOut ? -1 : 1;
+                layerId = Mth.clamp(layerId, 0, manager.panel.getContext().getBiomeSource().getLayerCount() - 1);
+
+                if (manager.panel.getContext().getLayerId() != layerId) {
+                    manager.panel.getContext().setLayerId(layerId);
+                    manager.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
+                    manager.panel.restart();
+                }
+            }
+        };
     }
 
     public void addTools(JPopupMenu popup, List<Supplier<Tool>> tools) {
@@ -273,6 +317,7 @@ public class MapManager {
         return new BPos(xi, 0, yi);
     }
 
+
     public enum ModifierDown {
         CTRL_DOWN(InputEvent::isControlDown),
         ALT_DOWN(InputEvent::isAltDown),
@@ -291,52 +336,6 @@ public class MapManager {
         public Function<InputEvent, Boolean> getModifier() {
             return modifier;
         }
-    }
-
-
-    public static Runnable zoom(boolean zoomOut,boolean isModifier){
-        return ()->{
-            if (MineMap.INSTANCE==null) return;
-            if (MineMap.INSTANCE.worldTabs==null) return;
-            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel()==null) return;
-            if (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager==null) return;
-            MapManager manager=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager;
-            if (!isModifier) {
-                double newPixelsPerFragment = manager.pixelsPerFragment;
-
-                if (zoomOut) {
-                    newPixelsPerFragment /= 2.0D;
-                } else {
-                    newPixelsPerFragment *= 2.0D;
-                }
-
-                // restrict min zoom to 4096 chunks per fragment
-                if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 4096.0D * (manager.blocksPerFragment / 512.0D);
-                }
-
-                // restrict max zoom to 32 chunks per fragment
-                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
-                    newPixelsPerFragment = 32.0D * (manager.blocksPerFragment / 512.0D);
-                }
-
-                double scaleFactor = newPixelsPerFragment / manager.pixelsPerFragment;
-                manager.centerX *= scaleFactor;
-                manager.centerY *= scaleFactor;
-                manager.pixelsPerFragment = newPixelsPerFragment;
-                manager.panel.repaint();
-            } else {
-                int layerId = manager.panel.getContext().getLayerId();
-                layerId += zoomOut ? -1 : 1;
-                layerId = Mth.clamp(layerId, 0, manager.panel.getContext().getBiomeSource().getLayerCount() - 1);
-
-                if (manager.panel.getContext().getLayerId() != layerId) {
-                    manager.panel.getContext().setLayerId(layerId);
-                    manager.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
-                    manager.panel.restart();
-                }
-            }
-        };
     }
 
 }

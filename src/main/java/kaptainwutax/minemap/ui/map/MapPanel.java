@@ -27,7 +27,7 @@ public class MapPanel extends JPanel {
     public final MapRightSideBar rightBar;
     public final int threadCount;
     public FragmentScheduler scheduler;
-    private  AWTGLCanvas canvas;
+    private AWTGLCanvas canvas;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;

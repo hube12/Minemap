@@ -4,41 +4,58 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RoundedPanel extends JPanel {
-    /** Stroke size. it is recommended to set it to 1 for better view */
+    /**
+     * Stroke size. it is recommended to set it to 1 for better view
+     */
     protected int strokeSize = 1;
-    /** Color of shadow */
+    /**
+     * Color of shadow
+     */
     protected Color shadowColor = Color.black;
-    /** Sets if it drops shadow */
+    /**
+     * Sets if it drops shadow
+     */
     protected boolean shady = true;
-    /** Sets if it has an High Quality view */
+    /**
+     * Sets if it has an High Quality view
+     */
     protected boolean highQuality = true;
-    /** Double values for Horizontal and Vertical radius of corner arcs */
+    /**
+     * Double values for Horizontal and Vertical radius of corner arcs
+     */
     protected Dimension arcs = new Dimension(20, 20);
-    /** Distance between shadow border and opaque panel border */
+    /**
+     * Distance between shadow border and opaque panel border
+     */
     protected int shadowGap = 5;
-    /** The offset of shadow.  */
+    /**
+     * The offset of shadow.
+     */
     protected int shadowOffset = 4;
-    /** The transparency value of shadow. ( 0 - 255) */
+    /**
+     * The transparency value of shadow. ( 0 - 255)
+     */
     protected int shadowAlpha = 150;
 
-    private int width=-1;
+    private int width = -1;
 
-    private int height=-1;
+    private int height = -1;
 
     public RoundedPanel() {
         super();
         setOpaque(false);
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (width==-1){
-            width=(int) (getWidth()*1.1);
+        if (width == -1) {
+            width = (int) (getWidth() * 1.1);
         }
-        if (height==-1){
-            height= getHeight()+15;
+        if (height == -1) {
+            height = getHeight() + 15;
         }
-        this.setPreferredSize(new Dimension(width,height));
+        this.setPreferredSize(new Dimension(width, height));
         int shadowGap = this.shadowGap;
         Color shadowColorA = new Color(shadowColor.getRed(), shadowColor.getGreen(), shadowColor.getBlue(), shadowAlpha);
         Graphics2D graphics = (Graphics2D) g;

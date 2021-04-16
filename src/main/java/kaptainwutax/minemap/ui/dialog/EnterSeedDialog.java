@@ -2,7 +2,6 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
 import kaptainwutax.seedutils.mc.Dimension;
@@ -70,14 +69,14 @@ public class EnterSeedDialog extends Dialog {
         continueButton.setEnabled(false);
         continueButton.setText("Loading...");
 
-       // Thread t = new Thread(() -> { // not a good idea overall
-            MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
-            Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
-            Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
-            dispose();
-       // },"Joe");
-       // t.start();
+        // Thread t = new Thread(() -> { // not a good idea overall
+        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+                threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+        Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
+        Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
+        dispose();
+        // },"Joe");
+        // t.start();
 //        try{
 //            t.join();
 //        }catch (Exception e){

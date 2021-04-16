@@ -14,15 +14,14 @@ import java.util.List;
 
 public class BurriedTreasureLoot extends Loot {
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure,boolean indexed, ChunkRand rand, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, MCVersion version) {
         rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 30001, version);
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);
-        List<ItemStack> loot1 = indexed?MCLootTables.BURIED_TREASURE_CHEST.generateIndexed(context):MCLootTables.BURIED_TREASURE_CHEST.generate(context);
+        List<ItemStack> loot1 = indexed ? MCLootTables.BURIED_TREASURE_CHEST.generateIndexed(context) : MCLootTables.BURIED_TREASURE_CHEST.generate(context);
 
         return Collections.singletonList(loot1);
     }
-
 
 
 }

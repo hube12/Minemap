@@ -16,6 +16,25 @@ public class KeyboardsConfig extends Config {
     @Expose
     protected Map<KeyShortcuts.ShortcutAction, String> OVERRIDES = new LinkedHashMap<>();
 
+    public static KeyShortcuts.KeyRegister getKeyCombo(KeyShortcuts.ShortcutAction shortcutAction) {
+        return Configs.KEYBOARDS.OVERRIDES.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
+                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
+                .orElse(
+                        Configs.KEYBOARDS.KEYBOARDS.entrySet()
+                                .stream()
+                                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
+                                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
+                                .orElse(null)
+                );
+
+    }
+
+    public static String getKeyComboString(KeyShortcuts.ShortcutAction shortcutAction) {
+        return KeyShortcuts.KeyRegister.getDisplayRepresentation(getKeyCombo(shortcutAction));
+    }
+
     public Map<KeyShortcuts.ShortcutAction, KeyShortcuts.KeyRegister> getKEYBOARDS() {
         return KEYBOARDS.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
@@ -45,25 +64,6 @@ public class KeyboardsConfig extends Config {
             shortcuts.put(s, this.OVERRIDES.get(s));
         }
         return shortcuts;
-    }
-
-    public static KeyShortcuts.KeyRegister getKeyCombo(KeyShortcuts.ShortcutAction shortcutAction) {
-        return Configs.KEYBOARDS.OVERRIDES.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
-                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
-                .orElse(
-                        Configs.KEYBOARDS.KEYBOARDS.entrySet()
-                                .stream()
-                                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
-                                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
-                                .orElse(null)
-                );
-
-    }
-
-    public static String getKeyComboString(KeyShortcuts.ShortcutAction shortcutAction) {
-        return KeyShortcuts.KeyRegister.getDisplayRepresentation(getKeyCombo(shortcutAction));
     }
 
     @Override

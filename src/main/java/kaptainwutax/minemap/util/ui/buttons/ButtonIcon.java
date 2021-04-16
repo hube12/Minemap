@@ -16,7 +16,7 @@ public abstract class ButtonIcon extends JButton {
     public Color backgroundColor;
 
     public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor) {
-        this(size,inset,factor,background,backgroundColor,true);
+        this(size, inset, factor, background, backgroundColor, true);
     }
 
     public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor, boolean border) {
@@ -24,7 +24,7 @@ public abstract class ButtonIcon extends JButton {
         this.size = size;
         this.inset = inset;
         this.factor = factor;
-        this.border=border;
+        this.border = border;
         this.background = background;
         this.backgroundColor = backgroundColor;
     }
@@ -97,8 +97,8 @@ public abstract class ButtonIcon extends JButton {
         g.drawImage(icon, (defaultValue - iconSizeX) / 2 + inset, (defaultValue - iconSizeZ) / 2 + inset, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
     }
 
-    public void changeBColor(Color color){
-        this.backgroundColor=color;
+    public void changeBColor(Color color) {
+        this.backgroundColor = color;
         this.revalidate();
         this.repaint();
     }

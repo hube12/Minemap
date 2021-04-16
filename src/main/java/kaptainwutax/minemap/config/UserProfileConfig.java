@@ -51,8 +51,18 @@ public class UserProfileConfig extends Config {
         return MINEMAP_VERSION;
     }
 
+    public void setMinemapVersion(String version) {
+        this.MINEMAP_VERSION = version;
+        this.flush();
+    }
+
     public MCVersion getVersion() {
         return this.MC_VERSION;
+    }
+
+    public void setVersion(MCVersion version) {
+        this.MC_VERSION = version;
+        this.flush();
     }
 
     public MCVersion getAssetVersion() {
@@ -81,18 +91,8 @@ public class UserProfileConfig extends Config {
         this.flush();
     }
 
-    public void setMinemapVersion(String version) {
-        this.MINEMAP_VERSION = version;
-        this.flush();
-    }
-
     public void setAssetsVersion(MCVersion version) {
         this.ASSETS_VERSION = version;
-        this.flush();
-    }
-
-    public void setVersion(MCVersion version) {
-        this.MC_VERSION = version;
         this.flush();
     }
 

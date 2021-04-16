@@ -17,7 +17,7 @@ public class SpawnIcon extends StaticIcon {
     public SpawnIcon(MapContext context) {
         super(context);
         BiomeSource source = this.getContext().getBiomeSource();
-        this.pos = source instanceof OverworldBiomeSource ? ((OverworldBiomeSource)source).getSpawnPoint() : null;
+        this.pos = source instanceof OverworldBiomeSource ? ((OverworldBiomeSource) source).getSpawnPoint() : null;
     }
 
     public BPos getPos() {
@@ -31,7 +31,7 @@ public class SpawnIcon extends StaticIcon {
 
     @Override
     public void addPositions(Feature<?, ?> feature, Fragment fragment, List<BPos> positions) {
-        if(this.getPos() != null) {
+        if (this.getPos() != null) {
             positions.add(this.getPos());
         }
     }

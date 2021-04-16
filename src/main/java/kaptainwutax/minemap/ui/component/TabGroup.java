@@ -10,9 +10,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class TabGroup {
 
     private final MCVersion version;
-    private long worldSeed;
-
     protected Map<Dimension, MapPanel> mapPanels = new LinkedHashMap<>();
+    private long worldSeed;
 
     public TabGroup(MCVersion version, String worldSeed, int threadCount) {
         this(version, worldSeed, threadCount, Arrays.asList(Dimension.values()));
@@ -25,11 +24,10 @@ public class TabGroup {
     public TabGroup(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.version = version;
 
-        if(worldSeed.isEmpty()) {
+        if (worldSeed.isEmpty()) {
             this.loadSeed(new Random().nextLong(), threadCount, dimensions);
         } else {
-            try {this.loadSeed(Long.parseLong(worldSeed), threadCount, dimensions);}
-            catch(NumberFormatException e) {this.loadSeed(worldSeed.hashCode(), threadCount, dimensions);}
+            try {this.loadSeed(Long.parseLong(worldSeed), threadCount, dimensions);} catch (NumberFormatException e) {this.loadSeed(worldSeed.hashCode(), threadCount, dimensions);}
         }
     }
 
@@ -48,7 +46,7 @@ public class TabGroup {
     private void loadSeed(long worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.worldSeed = worldSeed;
 
-        for(Dimension dimension: dimensions) {
+        for (Dimension dimension : dimensions) {
             MapPanel mapPanel = new MapPanel(this.getVersion(), dimension, this.worldSeed, threadCount);
             this.mapPanels.put(dimension, mapPanel);
         }
@@ -62,7 +60,7 @@ public class TabGroup {
             String s = dimension.getName().substring(0, 1).toUpperCase() + dimension.getName().substring(1);
             tabs.addMapTab(prefix + s + " " + this.worldSeed, this, mapPanel);
 
-            if(first.get()) {
+            if (first.get()) {
                 tabs.setSelectedIndex(tabs.getTabCount() - 1);
                 first.set(false);
             }

@@ -21,21 +21,22 @@ public class FeatureEntry extends JPanel {
             public Dimension getPreferredSize() {
                 return new Dimension(20, 20);
             }
+
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 BufferedImage icon = Icons.get(feature.getClass());
-                if (icon==null) return;
-                int iconSizeX,iconSizeZ;
-                int defaultValue=20;
+                if (icon == null) return;
+                int iconSizeX, iconSizeZ;
+                int defaultValue = 20;
                 if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
                     iconSizeX = defaultValue;
-                    iconSizeZ=(int)(defaultValue*(float)icon.getRaster().getHeight()/icon.getRaster().getWidth());
-                }else{
+                    iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
+                } else {
                     iconSizeZ = defaultValue;
-                    iconSizeX=(int)(defaultValue*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
+                    iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
                 }
-                g.drawImage(icon, (defaultValue-iconSizeX)/2, (defaultValue-iconSizeZ)/2, iconSizeX, iconSizeZ, null);
+                g.drawImage(icon, (defaultValue - iconSizeX) / 2, (defaultValue - iconSizeZ) / 2, iconSizeX, iconSizeZ, null);
             }
         };
 

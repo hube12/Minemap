@@ -6,6 +6,24 @@ import java.util.stream.Collectors;
 
 public final class Str {
 
+    private final static TreeMap<Integer, String> map = new TreeMap<>();
+
+    static {
+        map.put(1000, "M");
+        map.put(900, "CM");
+        map.put(500, "D");
+        map.put(400, "CD");
+        map.put(100, "C");
+        map.put(90, "XC");
+        map.put(50, "L");
+        map.put(40, "XL");
+        map.put(10, "X");
+        map.put(9, "IX");
+        map.put(5, "V");
+        map.put(4, "IV");
+        map.put(1, "I");
+    }
+
     public static String formatName(String name) {
         char[] chars = name.toCharArray();
         chars[0] = Character.toUpperCase(chars[0]);
@@ -30,30 +48,12 @@ public final class Str {
     }
 
     public static String prettifyDashed(String s) {
-        if (s==null) return null;
+        if (s == null) return null;
         String[] words = s.toLowerCase().split("_");
         if ((words[0].equals("NE") || words[0].equals("OW"))) {
             words[0] = capitalize(words[0], 2);
         }
         return Arrays.stream(words).map(Str::capitalize).collect(Collectors.joining(" "));
-    }
-
-    private final static TreeMap<Integer, String> map = new TreeMap<>();
-
-    static {
-        map.put(1000, "M");
-        map.put(900, "CM");
-        map.put(500, "D");
-        map.put(400, "CD");
-        map.put(100, "C");
-        map.put(90, "XC");
-        map.put(50, "L");
-        map.put(40, "XL");
-        map.put(10, "X");
-        map.put(9, "IX");
-        map.put(5, "V");
-        map.put(4, "IV");
-        map.put(1, "I");
     }
 
     public static String toRomanNumeral(Integer number) {

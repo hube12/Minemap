@@ -31,7 +31,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -74,7 +73,7 @@ public class Icons {
             dir = new File(uri).toPath();
         }
         registerJARIcons(dir, isJar);
-        registerOwnAssets(dir,isJar);
+        registerOwnAssets(dir, isJar);
         if (fileSystem != null) {
             try {
                 fileSystem.close();
@@ -86,7 +85,7 @@ public class Icons {
 
     public static void registerDelayedIcons(JFrame parent) {
         try {
-            boolean r=downloadIcons(parent);
+            boolean r = downloadIcons(parent);
         } catch (Exception e) {
             LOGGER.severe(e.toString());
         }
@@ -105,7 +104,7 @@ public class Icons {
         if (clientJarVersion == null) return false;
         System.out.println("Assets downloaded");
         JDialog extractPopup = new ModalPopup(parent, "Extracting Assets");
-        SwingWorker<Boolean, Void> extractWorker = getExtractWorker(clientJarVersion,extractPopup);
+        SwingWorker<Boolean, Void> extractWorker = getExtractWorker(clientJarVersion, extractPopup);
         extractWorker.execute();
         extractPopup.setVisible(true);
         Boolean result = extractWorker.get(); // blocking wait (intended)
@@ -161,13 +160,14 @@ public class Icons {
         };
     }
 
-    private static SwingWorker<Boolean, Void> getExtractWorker(Pair<MCVersion, String> result,JDialog parent) {
+    private static SwingWorker<Boolean, Void> getExtractWorker(Pair<MCVersion, String> result, JDialog parent) {
         return new SwingWorker<Boolean, Void>() {
             @Override
             protected Boolean doInBackground() {
                 // it's ok to use / since jarentry aren't platform dependant
-                return Assets.extractJar(result.getFirst(), result.getSecond(), jarEntry -> jarEntry.getName().startsWith("assets/minecraft/textures/item") || jarEntry.getName().startsWith("assets/minecraft/textures/block"),false);
+                return Assets.extractJar(result.getFirst(), result.getSecond(), jarEntry -> jarEntry.getName().startsWith("assets/minecraft/textures/item") || jarEntry.getName().startsWith("assets/minecraft/textures/block"), false);
             }
+
             @Override
             protected void done() {
                 super.done();
@@ -243,18 +243,18 @@ public class Icons {
     }
 
     private static void registerInternetAssets() {
-        registerObject(Items.TNT,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"tnt_side",".png");
-        registerObject(Items.ENCHANTED_GOLDEN_APPLE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Items.GOLDEN_APPLE.getName(),".png");
-        registerObject(Items.LIGHT_WEIGHTED_PRESSURE_PLATE,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,Items.GOLD_BLOCK.getName(),".png");
-        registerObject(Items.CLOCK,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"clock_00",".png");
-        registerObject(Items.COMPASS,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,"compass_00",".png");
+        registerObject(Items.TNT, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, "tnt_side", ".png");
+        registerObject(Items.ENCHANTED_GOLDEN_APPLE, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, Items.GOLDEN_APPLE.getName(), ".png");
+        registerObject(Items.LIGHT_WEIGHTED_PRESSURE_PLATE, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, Items.GOLD_BLOCK.getName(), ".png");
+        registerObject(Items.CLOCK, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, "clock_00", ".png");
+        registerObject(Items.COMPASS, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, "compass_00", ".png");
     }
 
     private static <T> void register(Class<T> clazz, Path dir, boolean isJar, String name, String extension) {
         if (CLASS_REGISTRY.containsKey(clazz)) {
-            CLASS_REGISTRY.get(clazz).addAll(Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("icon")[1]));
+            CLASS_REGISTRY.get(clazz).addAll(Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("icon")[1]));
         } else {
-            CLASS_REGISTRY.put(clazz, Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("icon")[1]));
+            CLASS_REGISTRY.put(clazz, Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("icon")[1]));
         }
     }
 
@@ -264,9 +264,9 @@ public class Icons {
 
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
         if (OBJECT_REGISTRY.containsKey(object)) {
-            OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("assets")[1]));
+            OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("assets")[1]));
         } else {
-            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension,path -> path.toAbsolutePath().toString().split("assets")[1]));
+            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("assets")[1]));
         }
     }
 
@@ -285,12 +285,12 @@ public class Icons {
     public static BufferedImage getObject(Object object) {
         List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
         if (entry == null) {
-            if (object instanceof Item){
-                registerObject(object,new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false,((Item) object).getName(),".png");
+            if (object instanceof Item) {
+                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, ((Item) object).getName(), ".png");
                 List<Pair<String, BufferedImage>> entry2 = OBJECT_REGISTRY.get(object);
                 if (entry2 == null) return null;
-                entry=entry2;
-            }else{
+                entry = entry2;
+            } else {
                 return null;
             }
         }

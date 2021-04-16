@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import kaptainwutax.minemap.init.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static kaptainwutax.minemap.MineMap.SETTINGS_DIR;
 
@@ -51,7 +54,7 @@ public abstract class Config {
         return this;
     }
 
-    public void updateConfig(){
+    public void updateConfig() {
         this.maintainConfig();
 
         try {

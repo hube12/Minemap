@@ -2,14 +2,16 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.structure.*;
-import kaptainwutax.minemap.feature.*;
+import kaptainwutax.minemap.feature.NERuinedPortal;
+import kaptainwutax.minemap.feature.OWBastionRemnant;
+import kaptainwutax.minemap.feature.OWFortress;
+import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.seedutils.mc.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class SaltsConfig extends Config {
     // can't use the enum as the key as it is not correctly deserialized by GSON
@@ -25,7 +27,7 @@ public class SaltsConfig extends Config {
     public Map<String, Map<String, Integer>> getAllSalts() {
         Map<String, Map<String, Integer>> salts = new LinkedHashMap<>();
         for (String s : SALTS.keySet()) {
-            salts.put(s.toLowerCase().replace(" ","_"), getSalts(s));
+            salts.put(s.toLowerCase().replace(" ", "_"), getSalts(s));
         }
         return salts;
     }
@@ -44,15 +46,15 @@ public class SaltsConfig extends Config {
 
     private Map<String, Integer> getSalts(String version) {
         if (SALTS.containsKey(version)) {
-            Map<String, Integer> result=new LinkedHashMap<>();
+            Map<String, Integer> result = new LinkedHashMap<>();
             Map<String, Integer> salts = SALTS.get(version);
-            for (String s:salts.keySet()){
-                result.put(s.toLowerCase().replace(" ","_"),salts.get(s));
+            for (String s : salts.keySet()) {
+                result.put(s.toLowerCase().replace(" ", "_"), salts.get(s));
             }
             if (OVERRIDES.containsKey(version)) {
                 Map<String, Integer> overrides = OVERRIDES.get(version);
                 for (String s : overrides.keySet()) {
-                    result.put(s.toLowerCase().replace(" ","_"), overrides.get(s));
+                    result.put(s.toLowerCase().replace(" ", "_"), overrides.get(s));
                 }
             }
             return result;
@@ -66,23 +68,23 @@ public class SaltsConfig extends Config {
 
     /* user generated salts */
     public Integer getSalt(MCVersion version, String name) {
-        if (OVERRIDES.containsKey(version.toString()) && OVERRIDES.get(version.toString()).containsKey(name.toLowerCase().replace(" ","_"))) {
-            return OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ","_"));
+        if (OVERRIDES.containsKey(version.toString()) && OVERRIDES.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) {
+            return OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ", "_"));
         }
-        if (SALTS.containsKey(version.toString()) && SALTS.get(version.toString()).containsKey(name.toLowerCase().replace(" ","_"))) {
-            return SALTS.get(version.toString()).get(name.toLowerCase().replace(" ","_"));
+        if (SALTS.containsKey(version.toString()) && SALTS.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) {
+            return SALTS.get(version.toString()).get(name.toLowerCase().replace(" ", "_"));
         }
         return null;
     }
 
     public Integer getDefaultSalt(MCVersion version, String name) {
-        return (SALTS.containsKey(version.toString()) && SALTS.get(version.toString()).containsKey(name.toLowerCase().replace(" ","_"))) ?
-                SALTS.get(version.toString()).get(name.toLowerCase().replace(" ","_")) : null;
+        return (SALTS.containsKey(version.toString()) && SALTS.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) ?
+                SALTS.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
     }
 
     public Integer getOverride(MCVersion version, String name) {
-        return (OVERRIDES.containsKey(version.toString()) && OVERRIDES.get(version.toString()).containsKey(name.toLowerCase().replace(" ","_"))) ?
-                OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ","_")) : null;
+        return (OVERRIDES.containsKey(version.toString()) && OVERRIDES.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) ?
+                OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
     }
 
     @Override
@@ -96,14 +98,14 @@ public class SaltsConfig extends Config {
         this.cleanOverrides();
     }
 
-    private void cleanOverrides(){
-        for (String key:OVERRIDES.keySet()){
-            Map<String,Integer> versionOverrides=OVERRIDES.get(key);
-            Map<String,Integer> newVersionOverrides=new LinkedHashMap<>();
-            for (Map.Entry<String,Integer> entry:versionOverrides.entrySet()){
-                newVersionOverrides.put(entry.getKey().toLowerCase().replace(" ","_"),entry.getValue());
+    private void cleanOverrides() {
+        for (String key : OVERRIDES.keySet()) {
+            Map<String, Integer> versionOverrides = OVERRIDES.get(key);
+            Map<String, Integer> newVersionOverrides = new LinkedHashMap<>();
+            for (Map.Entry<String, Integer> entry : versionOverrides.entrySet()) {
+                newVersionOverrides.put(entry.getKey().toLowerCase().replace(" ", "_"), entry.getValue());
             }
-            OVERRIDES.put(key,newVersionOverrides);
+            OVERRIDES.put(key, newVersionOverrides);
         }
     }
 
@@ -137,8 +139,8 @@ public class SaltsConfig extends Config {
         this.addDefaultEntry(version, Structure.getName(Village.class), Village.CONFIGS.getAsOf(version) == null ? null : Village.CONFIGS.getAsOf(version).salt);
     }
 
-    public void resetOverrides(MCVersion version){
-        if (this.OVERRIDES.containsKey(version.toString())){
+    public void resetOverrides(MCVersion version) {
+        if (this.OVERRIDES.containsKey(version.toString())) {
             this.OVERRIDES.get(version.toString()).clear();
             this.OVERRIDES.remove(version.toString());
         }
@@ -147,7 +149,7 @@ public class SaltsConfig extends Config {
     private void addDefaultEntry(MCVersion version, String name, Integer salt) {
         Map<String, Integer> saltMap = this.SALTS.computeIfAbsent(version.toString(), s -> new LinkedHashMap<>());
         if (salt != null) {
-            saltMap.put(name.toLowerCase().replace(" ","_"), salt);
+            saltMap.put(name.toLowerCase().replace(" ", "_"), salt);
         }
     }
 
@@ -163,7 +165,7 @@ public class SaltsConfig extends Config {
     public void addOverrideEntry(MCVersion version, String name, Integer salt) {
         Map<String, Integer> saltMap = this.OVERRIDES.computeIfAbsent(version.toString(), s -> new LinkedHashMap<>());
         if (salt != null) {
-            saltMap.put(name.toLowerCase().replace(" ","_"), salt);
+            saltMap.put(name.toLowerCase().replace(" ", "_"), salt);
         }
     }
 }

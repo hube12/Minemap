@@ -15,7 +15,6 @@ import kaptainwutax.minemap.util.ui.buttons.InfoButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -33,11 +32,11 @@ public class IconsConfig extends Config {
     @Expose
     protected Map<String, String> USER_OBJECT_ICON_PATH = new LinkedHashMap<>();
 
-    public <T> Double getSize(Class<T> clazz){
-        if (OVERRIDES.containsKey(clazz.toGenericString())){
+    public <T> Double getSize(Class<T> clazz) {
+        if (OVERRIDES.containsKey(clazz.toGenericString())) {
             return OVERRIDES.get(clazz.toGenericString());
         }
-        if (ICON_SIZES.containsKey(clazz.toGenericString())){
+        if (ICON_SIZES.containsKey(clazz.toGenericString())) {
             return ICON_SIZES.get(clazz.toGenericString());
         }
         return 1.0D;
@@ -58,7 +57,7 @@ public class IconsConfig extends Config {
         resetSizeConfig();
     }
 
-    private void resetSizeConfig(){
+    private void resetSizeConfig() {
         this.ICON_SIZES.clear();
 
         addDefaultEntry(BastionRemnant.class, 1.0);

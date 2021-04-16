@@ -37,7 +37,7 @@ public abstract class Dialog extends JDialog {
 
     public abstract void initComponents() throws Exception;
 
-    public void dispose(){
+    public void dispose() {
         super.dispose();
         runAtExit.run();
     }
@@ -49,7 +49,7 @@ public abstract class Dialog extends JDialog {
                 runnable.run();
             }
         });
-        runAtExit=runnable;
+        runAtExit = runnable;
     }
 
     protected abstract void create();

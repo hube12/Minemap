@@ -132,6 +132,47 @@ public class StructureListDialog extends Dialog {
         frame.setVisible(true);
     }
 
+    protected void create() {
+        if (!this.continueButton.isEnabled()) return;
+
+        int n;
+        try {
+            n = Integer.parseInt(this.enterN.getText().trim());
+        } catch (NumberFormatException _e) {
+            JOptionPane.showMessageDialog(this, String.format("This is not a number: %s", this.enterN.getText().trim()));
+            return;
+        }
+
+        if (n > 300 || n <= 0) {
+            JOptionPane.showMessageDialog(this, String.format("You have chosen a number (%d) outside of the permitted range [1;300]", n));
+            return;
+        }
+
+        RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        BPos centerPos = manager.getCenterPos();
+        BiomeSource biomeSource = context.getBiomeSource();
+        int dimCoeff = 0;
+        if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
+            biomeSource = context.getBiomeSource(Dimension.NETHER);
+            dimCoeff = 3;
+        }
+
+        List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
+                .sequential()
+                .limit(n)
+                .collect(Collectors.toList());
+
+        // destroy the current container
+        this.dispose();
+
+        this.makeFrame(bPosList, feature, n);
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
+    }
+
     static class StructureItem {
 
         private final RegionStructure<?, ?> feature;
@@ -216,48 +257,6 @@ public class StructureListDialog extends Dialog {
 
             this.setBackground(new Color(0, 0, 0, 180));
         }
-    }
-
-
-    protected void create() {
-        if (!this.continueButton.isEnabled()) return;
-
-        int n;
-        try {
-            n = Integer.parseInt(this.enterN.getText().trim());
-        } catch (NumberFormatException _e) {
-            JOptionPane.showMessageDialog(this, String.format("This is not a number: %s", this.enterN.getText().trim()));
-            return;
-        }
-
-        if (n > 300 || n <= 0) {
-            JOptionPane.showMessageDialog(this, String.format("You have chosen a number (%d) outside of the permitted range [1;300]", n));
-            return;
-        }
-
-        RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
-        BPos centerPos = manager.getCenterPos();
-        BiomeSource biomeSource = context.getBiomeSource();
-        int dimCoeff = 0;
-        if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
-            biomeSource = context.getBiomeSource(Dimension.NETHER);
-            dimCoeff = 3;
-        }
-
-        List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
-                .sequential()
-                .limit(n)
-                .collect(Collectors.toList());
-
-        // destroy the current container
-        this.dispose();
-
-        this.makeFrame(bPosList, feature, n);
-    }
-
-    protected void cancel() {
-        continueButton.setEnabled(false);
-        dispose();
     }
 
 

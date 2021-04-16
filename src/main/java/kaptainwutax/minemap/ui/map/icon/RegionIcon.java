@@ -24,23 +24,23 @@ public class RegionIcon extends StaticIcon {
 
     @Override
     public void addPositions(Feature<?, ?> feature, Fragment fragment, List<BPos> positions) {
-        RegionStructure<?, ?> structure = (RegionStructure<?, ?>)feature;
+        RegionStructure<?, ?> structure = (RegionStructure<?, ?>) feature;
         int increment = 16 * structure.getSpacing();
         ChunkRand rand = new ChunkRand();
 
-        long worldSeedWithSalt=this.getContext().worldSeed;
-        if (Configs.SALTS.getSalt(this.getContext().version,feature.getName())!=null){
-            worldSeedWithSalt-=Configs.SALTS.getDefaultSalt(this.getContext().version,feature.getName());
-            worldSeedWithSalt+=Configs.SALTS.getSalt(this.getContext().version,feature.getName());
+        long worldSeedWithSalt = this.getContext().worldSeed;
+        if (Configs.SALTS.getSalt(this.getContext().version, feature.getName()) != null) {
+            worldSeedWithSalt -= Configs.SALTS.getDefaultSalt(this.getContext().version, feature.getName());
+            worldSeedWithSalt += Configs.SALTS.getSalt(this.getContext().version, feature.getName());
         }
-        for(int x = fragment.getX() - increment; x < fragment.getX() + fragment.getSize() + increment; x += increment) {
-            for(int z = fragment.getZ() - increment; z < fragment.getZ() + fragment.getSize() + increment; z += increment) {
+        for (int x = fragment.getX() - increment; x < fragment.getX() + fragment.getSize() + increment; x += increment) {
+            for (int z = fragment.getZ() - increment; z < fragment.getZ() + fragment.getSize() + increment; z += increment) {
                 RegionStructure.Data<?> data = structure.at(x >> 4, z >> 4);
                 CPos pos = structure.getInRegion(worldSeedWithSalt, data.regionX, data.regionZ, rand);
-                if(pos != null){
+                if (pos != null) {
                     if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource())) {
                         positions.add(pos.toBlockPos().add(9, 0, 9));
-                    }else if(Configs.USER_PROFILE.getUserSettings().structureMode){
+                    } else if (Configs.USER_PROFILE.getUserSettings().structureMode) {
                         positions.add(pos.toBlockPos().add(9, 0, 9));
                     }
                 }

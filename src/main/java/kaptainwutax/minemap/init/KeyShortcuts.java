@@ -2,9 +2,7 @@ package kaptainwutax.minemap.init;
 
 import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
-import kaptainwutax.minemap.util.data.Str;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -14,8 +12,34 @@ import static kaptainwutax.minemap.ui.map.MapManager.zoom;
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class KeyShortcuts {
+    public static final ArrayList<KeyEventDispatcher> currentDispatchers = new ArrayList<>();
     public static MenuBar menuBar = MineMap.INSTANCE.toolbarPane;
-    public static final ArrayList<KeyEventDispatcher> currentDispatchers=new ArrayList<>();
+
+    public static void registerShortcuts() {
+        Configs.KEYBOARDS.getRegisters().forEach(KeyShortcuts::register);
+    }
+
+    public static void deRegisterShortcuts() {
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        currentDispatchers.forEach(manager::removeKeyEventDispatcher);
+        currentDispatchers.clear();
+    }
+
+    public static void register(ShortcutAction shortcutAction, KeyRegister keyRegister) {
+        KeyEventDispatcher keyEventDispatcher = keyEvent -> {
+            if (keyRegister.check(keyEvent)) {
+                if (!menuBar.isActive()) {
+                    shortcutAction.action.run();
+                } else {
+                    System.out.println("You can not open a new popup like that");
+                }
+            }
+            return false;
+        };
+        currentDispatchers.add(keyEventDispatcher);
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
+    }
+
     public enum ShortcutAction {
         @SerializedName("NEW_SEED")
         NEW_SEED(menuBar.fileMenu.newSeed()),
@@ -38,13 +62,13 @@ public class KeyShortcuts {
         @SerializedName("SHORTCUTS")
         SHORTCUTS(menuBar.settingsMenu.changeShortcuts()),
         @SerializedName("ZOOM_IN")
-        ZOOM_IN(zoom(false,false)),
+        ZOOM_IN(zoom(false, false)),
         @SerializedName("ZOOM_OUT")
-        ZOOM_OUT(zoom(true,false)),
+        ZOOM_OUT(zoom(true, false)),
         @SerializedName("LAYER_ZOOM_IN")
-        LAYER_ZOOM_IN(zoom(false,true)),
+        LAYER_ZOOM_IN(zoom(false, true)),
         @SerializedName("LAYER_ZOOM_OUT")
-        LAYER_ZOOM_OUT(zoom(true,true)),
+        LAYER_ZOOM_OUT(zoom(true, true)),
         ;
 
         public Runnable action;
@@ -59,36 +83,11 @@ public class KeyShortcuts {
         }
     }
 
-    public static void registerShortcuts() {
-        Configs.KEYBOARDS.getRegisters().forEach(KeyShortcuts::register);
-    }
-
-    public static void deRegisterShortcuts(){
-       KeyboardFocusManager manager= KeyboardFocusManager.getCurrentKeyboardFocusManager();
-       currentDispatchers.forEach(manager::removeKeyEventDispatcher);
-       currentDispatchers.clear();
-    }
-
-    public static void register(ShortcutAction shortcutAction,KeyRegister keyRegister) {
-        KeyEventDispatcher keyEventDispatcher=keyEvent -> {
-             if (keyRegister.check(keyEvent)) {
-                if (!menuBar.isActive()) {
-                    shortcutAction.action.run();
-                } else {
-                    System.out.println("You can not open a new popup like that");
-                }
-            }
-            return false;
-        };
-        currentDispatchers.add(keyEventDispatcher);
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher);
-    }
-
     public static class KeyRegister {
-       private final String keyText;
-       private final Type type;
-       private final Modifier modifier;
-       private final KeyLocation keyLocation;
+        private final String keyText;
+        private final Type type;
+        private final Modifier modifier;
+        private final KeyLocation keyLocation;
 
         public KeyRegister(int keyCode) {
             this(KeyEvent.getKeyText(keyCode));
@@ -129,26 +128,10 @@ public class KeyShortcuts {
             this.keyLocation = keyLocation;
         }
 
-        public KeyLocation getKeyLocation() {
-            return keyLocation;
-        }
-
-        public Modifier getModifier() {
-            return modifier;
-        }
-
-        public String getKeyText() {
-            return keyText;
-        }
-
-        public Type getType() {
-            return type;
-        }
-
         public static KeyRegister initFromString(String json) {
             String[] parts = json.split("\\|\\|\\|");
             String keyText = parts[0];
-            if (parts.length!=4){
+            if (parts.length != 4) {
                 return new KeyRegister(keyText);
             }
             Type type;
@@ -193,6 +176,61 @@ public class KeyShortcuts {
 
         public static KeyRegister registerAltKey(String keyText) {
             return new KeyRegister(keyText, Type.KEY_PRESSED, Modifier.ALT, KeyLocation.ANY);
+        }
+
+        public static String getDisplayRepresentation(KeyRegister key) {
+            if (key == null) return "None";
+            StringBuilder stringBuilder = new StringBuilder();
+            switch (key.keyLocation) {
+                case KEY_LOCATION_LEFT:
+                    stringBuilder.append("Left_");
+                    break;
+                case KEY_LOCATION_RIGHT:
+                    stringBuilder.append("Right_");
+                    break;
+                case KEY_LOCATION_NUMPAD:
+                    stringBuilder.append("Num_");
+                    break;
+            }
+            switch (key.modifier) {
+                case CTRL:
+                    stringBuilder.append("Ctrl");
+                    break;
+                case META:
+                    stringBuilder.append("Meta");
+                    break;
+                case SHIFT:
+                    stringBuilder.append("Shift");
+                    break;
+                case ALT:
+                    stringBuilder.append("Alt");
+                    break;
+                case ALT_GR:
+                    stringBuilder.append("AltGr");
+                    break;
+                default:
+                    break;
+            }
+            if (!key.keyText.isEmpty()) {
+                stringBuilder.append("+").append(key.keyText);
+            }
+            return stringBuilder.toString();
+        }
+
+        public KeyLocation getKeyLocation() {
+            return keyLocation;
+        }
+
+        public Modifier getModifier() {
+            return modifier;
+        }
+
+        public String getKeyText() {
+            return keyText;
+        }
+
+        public Type getType() {
+            return type;
         }
 
         public boolean check(KeyEvent keyEvent) {
@@ -240,6 +278,11 @@ public class KeyShortcuts {
             return isTextOk && isTypeOk && isModifierOk && isKeyLocationOk;
         }
 
+        @Override
+        public String toString() {
+            return String.format("%s|||%d|||%d|||%d", keyText, type.ordinal(), modifier.ordinal(), keyLocation.ordinal());
+        }
+
         public enum Type {
             KEY_PRESSED(KeyEvent.KEY_PRESSED),
             KEY_RELEASED(KeyEvent.KEY_RELEASED),
@@ -252,6 +295,7 @@ public class KeyShortcuts {
 
             public int getValue() { return id; }
         }
+
 
         public enum KeyLocation {
             KEY_LOCATION_UNKNOWN(KeyEvent.KEY_LOCATION_UNKNOWN),
@@ -280,51 +324,6 @@ public class KeyShortcuts {
             Modifier(int id) { this.id = id; }
 
             public int getValue() { return id; }
-        }
-
-
-        public static String getDisplayRepresentation(KeyRegister key) {
-            if (key==null) return "None";
-            StringBuilder stringBuilder = new StringBuilder();
-            switch (key.keyLocation) {
-                case KEY_LOCATION_LEFT:
-                    stringBuilder.append("Left_");
-                    break;
-                case KEY_LOCATION_RIGHT:
-                    stringBuilder.append("Right_");
-                    break;
-                case KEY_LOCATION_NUMPAD:
-                    stringBuilder.append("Num_");
-                    break;
-            }
-            switch (key.modifier) {
-                case CTRL:
-                    stringBuilder.append("Ctrl");
-                    break;
-                case META:
-                    stringBuilder.append("Meta");
-                    break;
-                case SHIFT:
-                    stringBuilder.append("Shift");
-                    break;
-                case ALT:
-                    stringBuilder.append("Alt");
-                    break;
-                case ALT_GR:
-                    stringBuilder.append("AltGr");
-                    break;
-                default:
-                    break;
-            }
-            if (!key.keyText.isEmpty()) {
-                stringBuilder.append("+").append(key.keyText);
-            }
-            return stringBuilder.toString();
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s|||%d|||%d|||%d", keyText, type.ordinal(), modifier.ordinal(), keyLocation.ordinal());
         }
     }
 }

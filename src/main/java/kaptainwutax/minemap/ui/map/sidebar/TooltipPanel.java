@@ -19,14 +19,14 @@ public class TooltipPanel extends JPanel {
         this.setLayout(new GridLayout(0, 1, 2, 2));
         this.setBackground(new Color(0, 0, 0, 0));
         this.setOpaque(false);
-   }
+    }
 
     @Override
     public void repaint() {
-        if(this.map != null && this.map.scheduler != null) {
+        if (this.map != null && this.map.scheduler != null) {
             this.removeAll();
 
-            int size = (int)this.map.getManager().pixelsPerFragment;
+            int size = (int) this.map.getManager().pixelsPerFragment;
 
             this.map.scheduler.forEachFragment(fragment -> {
                 fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
@@ -51,18 +51,18 @@ public class TooltipPanel extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(feature.getClass());
-                    if (icon==null) return;
-                    int iconSizeX,iconSizeZ;
-                    int defaultValue=20;
-                    float factor=1.5F;
+                    if (icon == null) return;
+                    int iconSizeX, iconSizeZ;
+                    int defaultValue = 20;
+                    float factor = 1.5F;
                     if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
                         iconSizeX = defaultValue;
-                        iconSizeZ=(int)(defaultValue*(float)icon.getRaster().getHeight()/icon.getRaster().getWidth());
-                    }else{
+                        iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
+                    } else {
                         iconSizeZ = defaultValue;
-                        iconSizeX=(int)(defaultValue*(float)icon.getRaster().getWidth()/icon.getRaster().getHeight());
+                        iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
                     }
-                    g.drawImage(icon, (defaultValue-iconSizeX)/2, (defaultValue-iconSizeZ)/2, (int) (iconSizeX*factor),  (int) (iconSizeZ*factor), null);
+                    g.drawImage(icon, (defaultValue - iconSizeX) / 2, (defaultValue - iconSizeZ) / 2, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
                 }
             };
 

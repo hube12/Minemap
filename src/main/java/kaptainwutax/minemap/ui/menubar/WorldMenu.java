@@ -92,7 +92,7 @@ public class WorldMenu extends Menu {
         return () -> {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             this.loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
-            if (!this.loadShadowSeed.isEnabled() || map==null) return;
+            if (!this.loadShadowSeed.isEnabled() || map == null) return;
             MineMap.INSTANCE.worldTabs.load(
                     map.getContext().version,
                     String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),

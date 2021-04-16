@@ -28,7 +28,7 @@ public class RoundedBorder implements Border {
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setStroke(new BasicStroke(2));
-        g.drawRoundRect(x + diff, y + diff, width - 2 - size +radius*2, height - 2 - size +radius*2, size, size);
+        g.drawRoundRect(x + diff, y + diff, width - 2 - size + radius * 2, height - 2 - size + radius * 2, size, size);
 
     }
 }

@@ -6,26 +6,26 @@ import kaptainwutax.seedutils.mc.MCVersion;
 
 public class OWRuinedPortal extends RuinedPortal {
 
-	public OWRuinedPortal(MCVersion version) {
-		super(Dimension.OVERWORLD,version);
-	}
+    public OWRuinedPortal(MCVersion version) {
+        super(Dimension.OVERWORLD, version);
+    }
 
-	public OWRuinedPortal(Config config, MCVersion version) {
-		super(Dimension.OVERWORLD,config, version);
-	}
+    public OWRuinedPortal(Config config, MCVersion version) {
+        super(Dimension.OVERWORLD, config, version);
+    }
 
-	@Override
-	public String getName() {
-		return name();
-	}
+    public static String name() {
+        return "OW_ruined_portal";
+    }
 
-	public static String name() {
-		return "OW_ruined_portal";
-	}
+    @Override
+    public String getName() {
+        return name();
+    }
 
-	@Override
-	public boolean isValidDimension(Dimension dimension) {
-		return dimension == Dimension.OVERWORLD;
-	}
+    @Override
+    public boolean isValidDimension(Dimension dimension) {
+        return dimension == Dimension.OVERWORLD;
+    }
 
 }

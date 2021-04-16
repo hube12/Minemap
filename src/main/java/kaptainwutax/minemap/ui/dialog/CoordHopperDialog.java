@@ -31,7 +31,7 @@ public class CoordHopperDialog extends Dialog {
             try {
                 Integer.parseInt(this.enterX.getText().trim());
                 this.continueButton.setEnabled(true);
-            } catch(Exception _e) {
+            } catch (Exception _e) {
                 this.continueButton.setEnabled(false);
             }
         }));
@@ -43,7 +43,7 @@ public class CoordHopperDialog extends Dialog {
             try {
                 Integer.parseInt(this.enterX.getText().trim());
                 this.continueButton.setEnabled(true);
-            } catch(Exception _e) {
+            } catch (Exception _e) {
                 this.continueButton.setEnabled(false);
             }
         }));
@@ -59,6 +59,29 @@ public class CoordHopperDialog extends Dialog {
         this.getContentPane().add(duo);
         this.getContentPane().add(this.typeDropdown);
         this.getContentPane().add(this.continueButton);
+    }
+
+    protected void create() {
+        if (!this.continueButton.isEnabled()) return;
+        int x, z;
+
+        try {
+            x = Integer.parseInt(this.enterX.getText().trim());
+            z = Integer.parseInt(this.enterZ.getText().trim());
+        } catch (NumberFormatException _e) {
+            return;
+        }
+
+        x = this.typeDropdown.getSelected().transform(x);
+        z = this.typeDropdown.getSelected().transform(z);
+        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        if (map != null) map.getManager().setCenterPos(x, z);
+        this.dispose();
+    }
+
+    protected void cancel() {
+        continueButton.setEnabled(false);
+        dispose();
     }
 
     protected enum Type {
@@ -81,29 +104,6 @@ public class CoordHopperDialog extends Dialog {
         public int transform(int i) {
             return this.transformation.applyAsInt(i);
         }
-    }
-
-    protected void create() {
-        if(!this.continueButton.isEnabled())return;
-        int x, z;
-
-        try {
-            x = Integer.parseInt(this.enterX.getText().trim());
-            z = Integer.parseInt(this.enterZ.getText().trim());
-        } catch(NumberFormatException _e) {
-            return;
-        }
-
-        x = this.typeDropdown.getSelected().transform(x);
-        z = this.typeDropdown.getSelected().transform(z);
-        MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        if(map != null)map.getManager().setCenterPos(x, z);
-        this.dispose();
-    }
-
-    protected void cancel() {
-        continueButton.setEnabled(false);
-        dispose();
     }
 
 }

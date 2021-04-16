@@ -54,10 +54,10 @@ public class IconManager {
 
     @SafeVarargs
     public final IconManager override(Function<MapContext, IconRenderer>... renderers) {
-        for(Function<MapContext, IconRenderer> factory: renderers) {
+        for (Function<MapContext, IconRenderer> factory : renderers) {
             IconRenderer renderer = factory.apply(this.getContext());
-            for(Feature<?, ?> feature: new ArrayList<>(this.renderers.keySet())) {
-                if(!renderer.isValidFeature(feature))continue;
+            for (Feature<?, ?> feature : new ArrayList<>(this.renderers.keySet())) {
+                if (!renderer.isValidFeature(feature)) continue;
                 this.renderers.replace(feature, renderer);
             }
         }

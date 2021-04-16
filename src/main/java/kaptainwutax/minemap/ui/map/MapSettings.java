@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 public class MapSettings {
 
+    private final MCVersion version;
+    private final Dimension dimension;
     @Expose
     public boolean showBiomes = true;
     @Expose
@@ -25,13 +27,9 @@ public class MapSettings {
     private Map<String, Boolean> features;
     @Expose
     private Map<String, Boolean> biomes;
-
     private Map<Class<? extends Feature<?, ?>>, Feature<?, ?>> featureTypes;
     private Map<Class<? extends Feature<?, ?>>, Boolean> featureStates;
     private Map<Biome, Boolean> biomeStates;
-
-    private final MCVersion version;
-    private final Dimension dimension;
 
     public MapSettings(Dimension dimension) {
         this(MCVersion.values()[0], dimension);
@@ -207,7 +205,7 @@ public class MapSettings {
         this.showBiomes = other.showBiomes;
         this.showFeatures = other.showFeatures;
         this.showGrid = other.showGrid;
-        this.showExtraInfos=other.showExtraInfos;
+        this.showExtraInfos = other.showExtraInfos;
         this.getAllFeatures().forEach(this::hide);
         this.getAllBiomes().forEach(this::hide);
         other.getActiveBiomes().forEach(this::show);

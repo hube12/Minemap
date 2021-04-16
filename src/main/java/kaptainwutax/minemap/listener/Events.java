@@ -46,37 +46,37 @@ public class Events {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            if(this.type == Type.CLICKED)this.event.accept(e);
+            if (this.type == Type.CLICKED) this.event.accept(e);
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if(this.type == Type.PRESSED)this.event.accept(e);
+            if (this.type == Type.PRESSED) this.event.accept(e);
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            if(this.type == Type.RELEASED)this.event.accept(e);
+            if (this.type == Type.RELEASED) this.event.accept(e);
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            if(this.type == Type.ENTERED)this.event.accept(e);
+            if (this.type == Type.ENTERED) this.event.accept(e);
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            if(this.type == Type.EXITED)this.event.accept(e);
+            if (this.type == Type.EXITED) this.event.accept(e);
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            if(this.type == Type.DRAGGED)this.event.accept(e);
+            if (this.type == Type.DRAGGED) this.event.accept(e);
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
-            if(this.type == Type.MOVED)this.event.accept(e);
+            if (this.type == Type.MOVED) this.event.accept(e);
         }
 
         public enum Type {
@@ -107,17 +107,17 @@ public class Events {
 
         @Override
         public void keyTyped(KeyEvent e) {
-            if(this.type == Type.TYPED)this.event.accept(e);
+            if (this.type == Type.TYPED) this.event.accept(e);
         }
 
         @Override
         public void keyPressed(KeyEvent e) {
-            if(this.type == Type.PRESSED)this.event.accept(e);
+            if (this.type == Type.PRESSED) this.event.accept(e);
         }
 
         @Override
         public void keyReleased(KeyEvent e) {
-            if(this.type == Type.RELEASED)this.event.accept(e);
+            if (this.type == Type.RELEASED) this.event.accept(e);
         }
 
         public enum Type {
@@ -148,17 +148,17 @@ public class Events {
 
         @Override
         public void menuSelected(MenuEvent e) {
-            if(this.type == Type.SELECTED)this.event.accept(e);
+            if (this.type == Type.SELECTED) this.event.accept(e);
         }
 
         @Override
         public void menuDeselected(MenuEvent e) {
-            if(this.type == Type.DESELECTED)this.event.accept(e);
+            if (this.type == Type.DESELECTED) this.event.accept(e);
         }
 
         @Override
         public void menuCanceled(MenuEvent e) {
-            if(this.type == Type.CANCELED)this.event.accept(e);
+            if (this.type == Type.CANCELED) this.event.accept(e);
         }
 
         public enum Type {

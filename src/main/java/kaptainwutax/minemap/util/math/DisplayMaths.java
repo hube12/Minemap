@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DisplayMaths {
+    public static final BiPredicate<CPos, List<BPos>> DEFAULT_CPOS_BPOS = (c, l) -> l.contains(c.toBlockPos().add(9, 0, 9));
+
     public static double getAngle(Pair<BPos, BPos> pair) {
         double deltaY = pair.getFirst().getZ() - pair.getSecond().getZ();
         double deltaX = pair.getFirst().getX() - pair.getSecond().getX();
@@ -166,13 +168,13 @@ public class DisplayMaths {
     }
 
     public static Ellipse2D getCircle(BPos pos1, BPos pos2) {
-        Ellipse2D ellipse=new Ellipse2D.Double();
-        double radius=getDistance2D(pos1,pos2);
-        ellipse.setFrameFromCenter(pos1.getX(),pos1.getZ(), pos1.getX()+radius,pos1.getZ()+radius);
+        Ellipse2D ellipse = new Ellipse2D.Double();
+        double radius = getDistance2D(pos1, pos2);
+        ellipse.setFrameFromCenter(pos1.getX(), pos1.getZ(), pos1.getX() + radius, pos1.getZ() + radius);
         return ellipse;
     }
 
-    public static Color getRandomColor(){
+    public static Color getRandomColor() {
         Random rand = new Random();
         float r = rand.nextFloat();
         float g = rand.nextFloat();
@@ -180,28 +182,26 @@ public class DisplayMaths {
         return new Color(r, g, b);
     }
 
-    public static List<BPos> getPointsInArea(Area area){
+    public static List<BPos> getPointsInArea(Area area) {
         // TODO actually increase speed by using a proper method, fill flood, raycast or winding number
-        Rectangle rectangle=area.getBounds();
-        List<BPos> bPosList=new ArrayList<>();
+        Rectangle rectangle = area.getBounds();
+        List<BPos> bPosList = new ArrayList<>();
         for (int x = 0; x < rectangle.width; x++) {
             for (int y = 0; y < rectangle.height; y++) {
-                int X=rectangle.x+x;
-                int Y=rectangle.y+x;
-                if (area.contains(X,Y)){
-                    bPosList.add(new BPos(X,0,Y));
+                int X = rectangle.x + x;
+                int Y = rectangle.y + x;
+                if (area.contains(X, Y)) {
+                    bPosList.add(new BPos(X, 0, Y));
                 }
             }
         }
         return bPosList;
     }
 
-    public static final BiPredicate<CPos,List<BPos>> DEFAULT_CPOS_BPOS=(c,l)-> l.contains(c.toBlockPos().add(9,0,9));
-
-    public static List<CPos> getChunkInArea(Area area, BiPredicate<CPos,List<BPos>> predicate){
-        List<BPos> bPosList=getPointsInArea(area);
-        Stream<CPos> cPosStream=bPosList.stream().map(BPos::toChunkPos).distinct();
-        return  cPosStream.filter(c->predicate.test(c,bPosList)).collect(Collectors.toList());
+    public static List<CPos> getChunkInArea(Area area, BiPredicate<CPos, List<BPos>> predicate) {
+        List<BPos> bPosList = getPointsInArea(area);
+        Stream<CPos> cPosStream = bPosList.stream().map(BPos::toChunkPos).distinct();
+        return cPosStream.filter(c -> predicate.test(c, bPosList)).collect(Collectors.toList());
     }
 
 

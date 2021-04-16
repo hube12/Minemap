@@ -42,58 +42,6 @@ public class ListPanel extends JPanel {
         panels.forEach(panel -> this.addPanel(panel, insets));
     }
 
-    public void addPanel(JPanel p) {
-        addPanel(p, new Insets(2, 0, 2, 0));
-    }
-
-    public void addPanel(JPanel p, Insets insets) {
-        JPanel panel = new JPanel();
-        panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridwidth = GridBagConstraints.REMAINDER;
-        gbc.weightx = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = insets;
-        panel.add(p);
-
-        this.panels.add(p);
-        this.mainList.add(panel, gbc, -1);
-        this.internalPanels.add(panel);
-
-        this.validate();
-        this.repaint();
-    }
-
-    public void removeLastBorder() {
-        JPanel last = internalPanels.get(internalPanels.size() - 1);
-        if (last==null) return;
-        last.setBorder(BorderFactory.createEmptyBorder());
-        this.revalidate();
-        this.repaint();
-    }
-
-    public void removePanel(JPanel p) {
-        removePanel(panels.indexOf(p));
-    }
-
-    public void removePanel(int i) {
-        super.remove(i);
-        panels.remove(i);
-        internalPanels.remove(i);
-        revalidate();
-        invalidate();
-        repaint();
-    }
-
-    public List<JPanel> getPanels() {
-        return this.panels;
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(500, 350);
-    }
-
     public static List<Component> findAllMatchingChildren(Container container, Predicate<Component> predicate, int step) {
         if (step < 0 || container == null) {
             return new ArrayList<>();
@@ -125,5 +73,57 @@ public class ListPanel extends JPanel {
                 .map(c -> findAllMatchingChildren((Container) c, comp -> component.getClass().equals(comp.getClass()), nParents - 1))
                 .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
                 .forEach(e -> action.accept((T) e));
+    }
+
+    public void addPanel(JPanel p) {
+        addPanel(p, new Insets(2, 0, 2, 0));
+    }
+
+    public void addPanel(JPanel p, Insets insets) {
+        JPanel panel = new JPanel();
+        panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.weightx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = insets;
+        panel.add(p);
+
+        this.panels.add(p);
+        this.mainList.add(panel, gbc, -1);
+        this.internalPanels.add(panel);
+
+        this.validate();
+        this.repaint();
+    }
+
+    public void removeLastBorder() {
+        JPanel last = internalPanels.get(internalPanels.size() - 1);
+        if (last == null) return;
+        last.setBorder(BorderFactory.createEmptyBorder());
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void removePanel(JPanel p) {
+        removePanel(panels.indexOf(p));
+    }
+
+    public void removePanel(int i) {
+        super.remove(i);
+        panels.remove(i);
+        internalPanels.remove(i);
+        revalidate();
+        invalidate();
+        repaint();
+    }
+
+    public List<JPanel> getPanels() {
+        return this.panels;
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(500, 350);
     }
 }

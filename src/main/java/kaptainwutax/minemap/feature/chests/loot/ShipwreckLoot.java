@@ -13,10 +13,10 @@ import java.util.List;
 
 public class ShipwreckLoot extends Loot {
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure,boolean indexed, ChunkRand rand, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, MCVersion version) {
         if (structure instanceof Shipwreck) {
             Shipwreck shipwreck = (Shipwreck) structure;
-            return new ArrayList<>(shipwreck.getLoot(cPos, worldSeed, rand,indexed).values());
+            return new ArrayList<>(shipwreck.getLoot(cPos, worldSeed, rand, indexed).values());
         }
         return null;
     }

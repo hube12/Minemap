@@ -14,9 +14,9 @@ import java.util.function.Function;
 
 public abstract class StaticIcon extends IconRenderer {
 
+    private static final int DEFAULT_VALUE = 24;
     private int iconSizeX;
     private int iconSizeZ;
-    private static final int DEFAULT_VALUE = 24;
 
     public StaticIcon(MapContext context) {
         this(context, DEFAULT_VALUE, DEFAULT_VALUE);
@@ -80,10 +80,10 @@ public abstract class StaticIcon extends IconRenderer {
                 char[] charArray = stringInfo.toCharArray();
                 g2d.setColor(Color.BLACK);
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (14 * scaleFactor)));
-                g2d.drawChars(charArray, 0, charArray.length, info.x + sx +(charArray.length==1?1:0)* ((int)sizeX/2-5)-1, info.y + sy+(int)sizeZ-5-1);
+                g2d.drawChars(charArray, 0, charArray.length, info.x + sx + (charArray.length == 1 ? 1 : 0) * ((int) sizeX / 2 - 5) - 1, info.y + sy + (int) sizeZ - 5 - 1);
                 g2d.setColor(Color.WHITE);
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (13 * scaleFactor)));
-                g2d.drawChars(charArray, 0, charArray.length, info.x + sx +(charArray.length==1?1:0)* ((int)sizeX/2-5), info.y + sy+(int)sizeZ-5);
+                g2d.drawChars(charArray, 0, charArray.length, info.x + sx + (charArray.length == 1 ? 1 : 0) * ((int) sizeX / 2 - 5), info.y + sy + (int) sizeZ - 5);
                 g2d.setColor(old);
             }
         }

@@ -14,27 +14,26 @@ import java.util.List;
 
 public class DesertPyramidLoot extends Loot {
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure,boolean indexed, ChunkRand rand, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, MCVersion version) {
         rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 40003, version);
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);
-        List<ItemStack> loot1 = indexed?MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context):MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
+        List<ItemStack> loot1 = indexed ? MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context) : MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
 
         lootTableSeed = rand.nextLong();
         context = new LootContext(lootTableSeed);
-        List<ItemStack> loot2 = indexed?MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context):MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
+        List<ItemStack> loot2 = indexed ? MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context) : MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
 
         lootTableSeed = rand.nextLong();
         context = new LootContext(lootTableSeed);
-        List<ItemStack> loot3 = indexed?MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context):MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
+        List<ItemStack> loot3 = indexed ? MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context) : MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
 
         lootTableSeed = rand.nextLong();
         context = new LootContext(lootTableSeed);
-        List<ItemStack> loot4 = indexed?MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context):MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
+        List<ItemStack> loot4 = indexed ? MCLootTables.DESERT_PYRAMID_CHEST.generateIndexed(context) : MCLootTables.DESERT_PYRAMID_CHEST.generate(context);
 
         return Arrays.asList(loot1, loot2, loot3, loot4);
     }
-
 
 
 }

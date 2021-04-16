@@ -9,10 +9,9 @@ import java.awt.*;
 
 public class MapLeftSideBar extends JPanel {
 
-    private final MapPanel map;
-
     public final TooltipSidebar tooltip;
     public final SettingsSidebar settings;
+    private final MapPanel map;
 
     public MapLeftSideBar(MapPanel map) {
         this.map = map;

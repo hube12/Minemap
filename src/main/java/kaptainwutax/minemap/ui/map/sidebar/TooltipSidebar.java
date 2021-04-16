@@ -14,9 +14,8 @@ import java.awt.*;
 public class TooltipSidebar extends JPanel {
 
     private final MapPanel map;
-
-    private JLabel biomeDisplay;
     public TooltipPanel tooltip;
+    private JLabel biomeDisplay;
 
     public TooltipSidebar(MapPanel map) {
         this.map = map;
@@ -25,6 +24,12 @@ public class TooltipSidebar extends JPanel {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
         this.setOpaque(false);
+    }
+
+    public static int getBiome(MapPanel map, int blockX, int blockZ) {
+        BiomeLayer layer = map.getContext().getBiomeLayer();
+        RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
+        return layer.get(pos.getX(), 0, pos.getZ());
     }
 
     private void addBiomeDisplay() {
@@ -51,19 +56,13 @@ public class TooltipSidebar extends JPanel {
     }
 
     public void updateBiomeDisplay(int blockX, int blockZ) {
-        int biomeId = getBiome(this.map,blockX, blockZ);
+        int biomeId = getBiome(this.map, blockX, blockZ);
         Biome biome = Biome.REGISTRY.get(biomeId);
         String name = biome == null ? "Unknown" : Str.formatName(biome.getName());
 
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
                 biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
-    }
-
-    public static int getBiome(MapPanel map, int blockX, int blockZ) {
-        BiomeLayer layer = map.getContext().getBiomeLayer();
-        RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
-        return layer.get(pos.getX(), 0, pos.getZ());
     }
 
 }
