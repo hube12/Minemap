@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.interactive;
 
 
+import kaptainwutax.featureutils.loot.effect.Effect;
 import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
@@ -10,6 +11,7 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.seedutils.util.Pair;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;
@@ -33,7 +35,7 @@ public class Chest extends JFrame {
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
         content = new Content(map);
-        topBar = new TopBar(content);
+        topBar = new TopBar(content,this);
         this.add(topBar,BorderLayout.NORTH);
         this.add(content,BorderLayout.CENTER);
         this.setSize(this.getSize());
@@ -71,8 +73,11 @@ public class Chest extends JFrame {
     }
 
     public void updateContent() {
+        this.updateContent(false);
+    }
+    public void updateContent(boolean indexed) {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(this.feature.getName()), this.pos.getX() * 16 + 9, this.pos.getZ() * 16 + 9));
-        int numberChest = this.content.update(feature, pos);
+        int numberChest = this.content.update(feature, pos,indexed);
         this.topBar.setNumberChest(numberChest);
     }
 
@@ -84,9 +89,23 @@ public class Chest extends JFrame {
     public static class TopBar extends JPanel {
         private int numberChest;
         private final Content content;
+        private final Chest chest;
+        private final JButton indexedButton;
+        private boolean indexed=false;
 
-        public TopBar(Content content) {
+        public TopBar(Content content,Chest chest) {
             this.content = content;
+            this.chest=chest;
+            this.indexedButton =new JButton("Spread");
+            this.indexedButton.addActionListener(e->{
+                setIndexed(!indexed);
+            });
+            this.add(this.indexedButton);
+        }
+
+        private void setIndexed(boolean indexed){
+            this.indexed=indexed;
+            this.chest.updateContent(indexed);
         }
 
         private void setIndexContent(int index) {
@@ -124,12 +143,12 @@ public class Chest extends JFrame {
             this.index = index;
         }
 
-        public int update(RegionStructure<?, ?> feature, CPos pos) {
+        public int update(RegionStructure<?, ?> feature, CPos pos,boolean indexed) {
             this.clean();
             Loot.LootFactory<?> lootFactory = Chests.get(feature.getClass());
             if (lootFactory != null) {
                 Loot loot = lootFactory.create();
-                List<List<ItemStack>> listItems = loot.getLootAt(this.mapPanel.context.worldSeed, pos, feature, this.mapPanel.context.version);
+                List<List<ItemStack>> listItems = loot.getLootAt(this.mapPanel.context.worldSeed, pos, feature, indexed,this.mapPanel.context.version);
                 if (listItems != null) {
                     Iterator<ItemStack> currentIterator = listItems.get(index).iterator();
                     for (int row = 0; row < ROW_NUMBER; row++) {
@@ -137,8 +156,9 @@ public class Chest extends JFrame {
                         for (int col = 0; col < COL_NUMBER; col++) {
                             if (!currentIterator.hasNext()) break;
                             ItemStack itemStack = currentIterator.next();
+                            if (itemStack.isEmpty()) continue;
                             Item item = itemStack.getItem();
-                            boolean isEnchanted = item.getName().startsWith("enchanted_") || !item.getEnchantment().isEmpty();
+                            boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantment().isEmpty() || !item.getEffects().isEmpty();
                             boolean isPlate = item.getName().endsWith("_plate");
                             BufferedImage icon = Icons.getObject(item);
                             JButton current = rowButton.get(col);
@@ -149,6 +169,17 @@ public class Chest extends JFrame {
                                 ArrayList<Integer> levels = item.getLevel();
                                 for (int idx = 0; idx < item.getEnchantment().size(); idx++) {
                                     sb.append(Str.capitalize(enchantments.get(idx))).append(" ").append(Str.toRomanNumeral(levels.get(idx))).append("<br>");
+                                }
+                                sb.append("</html>");
+                                current.setToolTipText(sb.toString());
+                            }
+                            if (!item.getEffects().isEmpty()){
+                                StringBuilder sb = new StringBuilder("<html>");
+                                ArrayList<Pair<Effect, Integer>> effects = item.getEffects();
+                                for (Pair<Effect, Integer> effect:effects){
+                                    sb.append(effect.getFirst().getDescription())
+                                            .append(" ")
+                                            .append((effect.getFirst().isInstantenous() ? effect.getSecond() / 20 : effect.getSecond().toString()));
                                 }
                                 sb.append("</html>");
                                 current.setToolTipText(sb.toString());
@@ -180,7 +211,7 @@ public class Chest extends JFrame {
                                 g2d.setColor(Color.WHITE);
                                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
                                 g2d.drawChars(charArray, 0, charArray.length, charArray.length == 1 ? 47 : 43, 55);
-                                if (isEnchanted) {
+                                if (shouldShine) {
                                     ColorTintFilter colorTintFilter = new ColorTintFilter(Color.PINK, 0.4f);
                                     colorTintFilter.filter(scaledIcon, scaledIcon);
                                 }

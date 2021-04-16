@@ -14,11 +14,11 @@ import java.util.List;
 
 public class RuinedPortalLoot extends Loot {
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, ChunkRand rand, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure,boolean indexed, ChunkRand rand, MCVersion version) {
         rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 40005, version);
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);
-        List<ItemStack> loot1 = MCLootTables.RUINED_PORTAL_CHEST.generate(context);
+        List<ItemStack> loot1 = indexed?MCLootTables.RUINED_PORTAL_CHEST.generateIndexed(context):MCLootTables.RUINED_PORTAL_CHEST.generate(context);
         return Collections.singletonList(loot1);
     }
 }

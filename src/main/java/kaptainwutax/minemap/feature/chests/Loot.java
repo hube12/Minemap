@@ -13,18 +13,18 @@ import java.util.function.Predicate;
 public abstract class Loot {
 
     public static final Predicate<ItemStack> ENCHANTED_GAPPLES_PRED=e->e.getItem().equals(Item.ENCHANTED_GOLDEN_APPLE);
-    public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, RegionStructure<?,?> structure, MCVersion version) {
-        return getLootAt(worldSeed, new CPos(chunkX, chunkZ),structure, version);
+    public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, RegionStructure<?,?> structure,boolean indexed, MCVersion version) {
+        return getLootAt(worldSeed, new CPos(chunkX, chunkZ),structure,indexed, version);
     }
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ,RegionStructure<?,?> structure, ChunkRand rand, MCVersion version) {
-        return getLootAt(worldSeed, new CPos(chunkX, chunkZ),structure, rand, version);
+    public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ,RegionStructure<?,?> structure,boolean indexed, ChunkRand rand, MCVersion version) {
+        return getLootAt(worldSeed, new CPos(chunkX, chunkZ),structure,indexed, rand, version);
     }
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos,RegionStructure<?,?> structure, MCVersion version){
-        return getLootAt(worldSeed, cPos, structure,new ChunkRand(), version);
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos,RegionStructure<?,?> structure,boolean indexed, MCVersion version){
+        return getLootAt(worldSeed, cPos, structure,indexed,new ChunkRand(), version);
     }
 
-    public abstract List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, ChunkRand rand, MCVersion version);
+    public abstract List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure,boolean indexed, ChunkRand rand, MCVersion version);
 
     public int getSumWithPredicate(List<List<ItemStack>> lists, Predicate<ItemStack> predicate) {
         return lists.stream().mapToInt(list->list.stream().anyMatch(predicate)?1:0).sum();
