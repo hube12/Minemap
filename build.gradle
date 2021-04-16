@@ -32,12 +32,12 @@ run{
 
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') {transitive = false}
-    implementation('com.github.hube12:SeedUtils:9d4550f63be452571bf201b512f57eb756429690') {transitive = false}
+    implementation('com.github.hube12:SeedUtils:97a92413467f2676a59ac03fbf27038d099ab1df') {transitive = false}
     implementation('com.github.KaptainWutax:NoiseUtils:5919e438dc1cda50bf8e2ba0a99b4618349ac085') {transitive = false}
 
     implementation('com.github.KaptainWutax:BiomeUtils:49fac65c1b') {transitive = false}
     implementation('com.github.KaptainWutax:TerrainUtils:f6fbdced4a') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:80d131f9c8696850d890e24986f1da64ffb1574a') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:9f6855a7014845fd607c9c849470149b16bc07ad') {transitive = false}
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:8174cd55b8ee492b54fbc860fbafc83726bac846') {transitive = false}
     implementation('com.github.KaptainWutax:LattiCG:cc39ed32419881bd4dc080ac77b7a5c72a3fd36d') {transitive = false}

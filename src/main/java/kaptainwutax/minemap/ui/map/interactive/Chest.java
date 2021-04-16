@@ -34,7 +34,8 @@ public class Chest extends JFrame {
         this.setLayout(layout);
         content = new Content(map);
         topBar = new TopBar(content);
-        this.add(content);
+        this.add(topBar,BorderLayout.NORTH);
+        this.add(content,BorderLayout.CENTER);
         this.setSize(this.getSize());
         this.setLocationRelativeTo(null); // center
         this.setVisible(false);
