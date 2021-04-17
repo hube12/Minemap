@@ -12,6 +12,10 @@ circle, area and use a ruler.
 
 Supports all Minecraft release starting from 1.0+
 
+## Demo video
+
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/aQo6H_3MXHc/0.jpg)](http://www.youtube.com/watch?v=aQo6H_3MXHc "Minemap demo video")
+
 ## Features
 
 TODO : List them all here
