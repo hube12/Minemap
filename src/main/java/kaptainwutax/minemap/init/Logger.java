@@ -52,6 +52,7 @@ public class Logger {
             for (String key : keys) {
                 LOGGER.info(String.format("[%s] = %s.", key, systemProperties.get(key).
                         replace(username, "XANONX").
+                        replaceAll("Users\\\\.*?\\\\", "Users\\\\ANONYM\\\\").
                         replace("\r\n", "CRLF").
                         replace("\n", "LF")
                 ));
