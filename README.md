@@ -9,7 +9,7 @@
     <a href="https://github.com/hube12/minemap/graphs/contributors" alt="Contributors">
         <img src="https://img.shields.io/github/contributors/hube12/minemap?style=flat-square"/>
     </a>
-    <a href=https://github.com/hube12/MineMap/graphs/commit-activity" alt="Activity">
+    <a href="https://github.com/hube12/MineMap/graphs/commit-activity" alt="Activity">
         <img src="https://img.shields.io/github/commit-activity/w/hube12/minemap?style=flat-square" /></a>
     <a href="https://github.com/hube12/MineMap/releases/latest"  alt="Release">
         <img src="https://img.shields.io/github/v/release/hube12/minemap?style=flat-square">
