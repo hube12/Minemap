@@ -1,6 +1,26 @@
-# MineMap
-
-![Minemap logo](logo.png?raw=true "Minemap")
+<p align="center">
+    <img src="https://raw.githubusercontent.com/hube12/minemap/master/logo.png?sanitize=true"
+        height="130">
+</p>
+<p align="center">
+    <a href="https://github.com/hube12/MineMap/blob/master/LICENSE" alt="License">
+       <img src="https://img.shields.io/github/license/hube12/Minemap?style=flat-square" />
+    </a>
+    <a href="https://github.com/hube12/minemap/graphs/contributors" alt="Contributors">
+        <img src="https://img.shields.io/github/contributors/hube12/minemap?style=flat-square"/>
+    </a>
+    <a href=https://github.com/hube12/MineMap/graphs/commit-activity" alt="Activity">
+        <img src="https://img.shields.io/github/commit-activity/w/hube12/minemap?style=flat-square" /></a>
+    <a href="https://github.com/hube12/MineMap/releases/latest"  alt="Release">
+        <img src="https://img.shields.io/github/v/release/hube12/minemap?style=flat-square">
+    </a>
+    <a href="https://discord.gg/anHsq24nqt" alt="Discord">
+        <img src="https://img.shields.io/discord/813104049737433189?logo=discord&style=flat-square" alt="chat on Discord">
+    </a>
+    <a href="https://twitter.com/intent/follow?screen_name=NeilSeed" alt="Twitter">
+        <img src="https://img.shields.io/twitter/follow/NeilSeed?style=social&logo=twitter" alt="follow on Twitter">
+    </a>
+</p>
 
 To download it head to the [Releases section](https://github.com/hube12/MineMap/releases/latest).
 
