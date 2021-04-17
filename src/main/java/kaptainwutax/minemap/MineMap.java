@@ -60,11 +60,14 @@ public class MineMap extends JFrame {
         createDirs();
         Logger.registerLogger();
         Pair<Pair<String, String>, String> updateInfo = Assets.shouldUpdate();
-        if (!Arrays.asList(args).contains("--screenshot") && updateInfo != null && !Arrays.asList(args).contains("--no-update")) {
-            updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !Arrays.asList(args).contains("--update"));
+        boolean noUpdate = Arrays.asList(args).contains("--no-update");
+        boolean update = Arrays.asList(args).contains("--update");
+        boolean screenshot = Arrays.asList(args).contains("--screenshot");
+        if (!screenshot && updateInfo != null && !noUpdate) {
+            updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !update);
         }
         doRegister();
-        if (Arrays.asList(args).contains("--screenshot")) {
+        if (screenshot) {
             doScreenshot(args);
             return;
         }
@@ -192,7 +195,7 @@ public class MineMap extends JFrame {
             Process ps;
             try {
                 ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
-                ps.waitFor();
+                Logger.LOGGER.info(String.format("Process exited with %s", ps.waitFor()));
             } catch (Exception e) {
                 Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s", e));
                 return;
