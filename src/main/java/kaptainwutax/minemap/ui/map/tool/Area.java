@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
 import java.util.Arrays;

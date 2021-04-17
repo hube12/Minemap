@@ -1,12 +1,12 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
+import kaptainwutax.mcutils.util.data.ThreadPool;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.pos.RPos;
-import kaptainwutax.seedutils.util.ThreadPool;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 
 import javax.swing.*;
 import java.awt.*;

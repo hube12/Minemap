@@ -12,13 +12,13 @@ import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
-import kaptainwutax.minemap.util.data.Pair;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.util.ui.ModalPopup;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;

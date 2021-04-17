@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
 

@@ -10,8 +10,8 @@ import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

@@ -10,8 +10,8 @@ import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.pos.RPos;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

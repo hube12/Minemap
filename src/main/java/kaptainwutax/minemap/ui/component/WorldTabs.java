@@ -3,8 +3,8 @@ package kaptainwutax.minemap.ui.component;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -21,7 +21,6 @@ public class WorldTabs extends JTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
 
-    @SuppressWarnings("deprecation")
     public WorldTabs() {
         //Copy seed to clipboard.
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {

@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.menubar;
 
+import kaptainwutax.mcutils.rand.seed.WorldSeed;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.KeyShortcuts;
@@ -11,9 +12,9 @@ import kaptainwutax.minemap.ui.dialog.StructureHopperDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.seed.WorldSeed;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
+
 
 import javax.swing.*;
 import java.util.Collections;

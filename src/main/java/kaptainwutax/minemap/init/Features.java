@@ -6,7 +6,7 @@ import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.ui.map.fragment.FeatureFactory;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.util.HashMap;
 import java.util.Map;

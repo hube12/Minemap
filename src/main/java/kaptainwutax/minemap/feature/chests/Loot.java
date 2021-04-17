@@ -3,9 +3,9 @@ package kaptainwutax.minemap.feature.chests;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.RegionStructure;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.mcutils.util.pos.CPos;
 
 import java.util.List;
 import java.util.function.Predicate;

@@ -5,14 +5,14 @@ import kaptainwutax.featureutils.loot.effect.Effect;
 import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.util.Pair;
+import kaptainwutax.mcutils.util.pos.CPos;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;

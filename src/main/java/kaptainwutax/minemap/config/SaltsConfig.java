@@ -7,7 +7,7 @@ import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.minemap.init.Logger;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;

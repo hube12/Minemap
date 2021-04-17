@@ -19,9 +19,9 @@ import kaptainwutax.minemap.util.ui.ListPanel;
 import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;

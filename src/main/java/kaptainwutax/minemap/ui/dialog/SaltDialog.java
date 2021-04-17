@@ -4,7 +4,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import java.awt.*;

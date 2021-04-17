@@ -3,9 +3,9 @@ package kaptainwutax.minemap.feature;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 

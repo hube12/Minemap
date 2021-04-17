@@ -4,9 +4,9 @@ import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.Shipwreck;
 import kaptainwutax.minemap.feature.chests.Loot;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.mc.pos.CPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.mcutils.util.pos.CPos;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,10 +2,11 @@ package kaptainwutax.minemap.util.data;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -12,7 +12,7 @@ import kaptainwutax.minemap.util.ui.ListPanel;
 import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;

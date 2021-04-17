@@ -7,8 +7,8 @@ import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

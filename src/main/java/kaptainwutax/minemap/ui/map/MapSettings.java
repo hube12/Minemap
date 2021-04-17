@@ -4,8 +4,8 @@ import com.google.gson.annotations.Expose;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Features;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.text.Collator;
 import java.util.*;

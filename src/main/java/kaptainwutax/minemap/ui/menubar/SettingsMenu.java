@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.menubar;
 
+import kaptainwutax.mcutils.util.math.DistanceMetric;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
@@ -7,8 +8,7 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.minemap.ui.map.MapManager;
-import kaptainwutax.seedutils.mc.MCVersion;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

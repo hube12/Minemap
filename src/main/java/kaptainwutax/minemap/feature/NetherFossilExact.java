@@ -2,8 +2,8 @@ package kaptainwutax.minemap.feature;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.structure.NetherFossil;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.MCVersion;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 
 public class NetherFossilExact extends NetherFossil {
     public NetherFossilExact(MCVersion version) {

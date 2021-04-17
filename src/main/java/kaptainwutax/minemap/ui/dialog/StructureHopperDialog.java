@@ -13,9 +13,9 @@ import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.Dimension;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;

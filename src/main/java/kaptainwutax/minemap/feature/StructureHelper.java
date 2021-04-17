@@ -2,10 +2,10 @@ package kaptainwutax.minemap.feature;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.structure.RegionStructure;
-import kaptainwutax.seedutils.mc.ChunkRand;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.mc.pos.RPos;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 
 import java.util.Iterator;
 import java.util.Objects;

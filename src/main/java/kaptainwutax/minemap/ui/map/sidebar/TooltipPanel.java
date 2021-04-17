@@ -4,7 +4,7 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;

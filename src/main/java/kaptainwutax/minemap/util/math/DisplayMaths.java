@@ -1,9 +1,10 @@
 package kaptainwutax.minemap.util.math;
 
-import kaptainwutax.minemap.util.data.Pair;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.pos.CPos;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
+
+import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.mcutils.util.math.DistanceMetric;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.CPos;
 
 import java.awt.*;
 import java.awt.geom.Area;

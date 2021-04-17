@@ -1,9 +1,9 @@
 package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
+import kaptainwutax.mcutils.util.math.DistanceMetric;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapManager;
-import kaptainwutax.seedutils.util.math.DistanceMetric;
 
 public class UserSettings {
 

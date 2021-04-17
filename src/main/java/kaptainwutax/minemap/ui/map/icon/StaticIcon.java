@@ -6,7 +6,7 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.seedutils.mc.pos.BPos;
+import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

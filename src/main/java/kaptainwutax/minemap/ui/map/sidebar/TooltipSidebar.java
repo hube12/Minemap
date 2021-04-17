@@ -4,8 +4,8 @@ import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.seedutils.mc.pos.BPos;
-import kaptainwutax.seedutils.mc.pos.RPos;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

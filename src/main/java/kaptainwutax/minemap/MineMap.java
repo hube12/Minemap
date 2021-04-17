@@ -3,6 +3,7 @@ package kaptainwutax.minemap;
 import com.formdev.flatlaf.*;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.WorldTabs;
@@ -12,9 +13,9 @@ import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.minemap.util.data.Pair;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.util.ui.ModalPopup;
-import kaptainwutax.seedutils.mc.MCVersion;
+
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -30,7 +31,8 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-import static kaptainwutax.seedutils.mc.Dimension.OVERWORLD;
+import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
+
 
 public class MineMap extends JFrame {
     public static final String version = "c1.35";
