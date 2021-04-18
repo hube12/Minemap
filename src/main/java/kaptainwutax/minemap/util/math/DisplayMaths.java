@@ -189,13 +189,15 @@ public class DisplayMaths {
     }
 
     public static List<BPos> getPointsInArea(Shape shape) {
+        return getPointsInArea(shape,shape instanceof Polygon? ((Polygon) shape).npoints:0);
+    }
+    public static List<BPos> getPointsInArea(Shape shape,int nPoints) {
         // TODO actually increase speed by using a proper method, fill flood, raycast or winding number
         Rectangle rectangle=shape.getBounds();
         List<BPos> bPosList = new ArrayList<>();
         Function4<Shape,Integer,Integer,Boolean> test= Shape::contains;
         if (shape instanceof Polygon){
-            Polygon polygon=(Polygon) shape;
-            if (polygon.npoints<=2){
+            if (nPoints<=2){
                 test=(s,x,y)->s.intersects(x,y,1,1);
             }
         }

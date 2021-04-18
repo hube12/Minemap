@@ -22,6 +22,7 @@ public class FileMenu extends Menu {
     private final JMenuItem screenshot;
     private final JMenuItem loadSeed;
     private final JMenuItem close;
+    public static boolean isClosing=false;
 
     public FileMenu() {
         this.menu = new JMenu("Home");
@@ -75,11 +76,14 @@ public class FileMenu extends Menu {
 
     public Runnable close(boolean displayMsg) {
         return () -> {
+            if (isClosing) return;
             int input;
             if (displayMsg) {
+                isClosing=true;
                 this.activate.run();
                 input = JOptionPane.showConfirmDialog(null, "Do you want to close MineMap?", "Close MineMap", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 this.deactivate.run();
+                isClosing=false;
             } else {
                 input = 0;
             }

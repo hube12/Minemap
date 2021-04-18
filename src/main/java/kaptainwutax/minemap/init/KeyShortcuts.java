@@ -2,12 +2,15 @@ package kaptainwutax.minemap.init;
 
 import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.menubar.FileMenu;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
+import static javax.swing.JOptionPane.getRootFrame;
 import static kaptainwutax.minemap.ui.map.MapManager.zoom;
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
@@ -28,7 +31,7 @@ public class KeyShortcuts {
     public static void register(ShortcutAction shortcutAction, KeyRegister keyRegister) {
         KeyEventDispatcher keyEventDispatcher = keyEvent -> {
             if (keyRegister.check(keyEvent)) {
-                if (!menuBar.isActive()) {
+                if (!menuBar.isActive() || shortcutAction.name().equals("CLOSE")) {
                     shortcutAction.action.run();
                 } else {
                     System.out.println("You can not open a new popup like that");

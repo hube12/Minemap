@@ -40,20 +40,39 @@ Supports all Minecraft release starting from 1.0+
 ## Features
 
 - View Biome map for Overworld/Nether/End for all version from 1.0 till 1.16.5.
+- Load multiple seeds with a navigation tab to switch between them.
 - View structures, and some features placement on the biome map for version 1.8+.
 - View chest loot for 1.16.5 structures: Desert Pyramid, Buried Treasure, Ruined Portal and Shipwreck.
 - Multithreaded processing
 - List the N closest structure and get tp/location to those.
 - Draw line, polygon and circle as overlay to the map.
-- 
+- View proportion of biome in a pie chart.
+- Structure seed mode to see all the sister seeds (all seeds sharing the same 48 bottom bits and thus structures)
+- Themes, Shortcuts, Biome colors and structure salts are customizable.
+- Possibility to take screenshot in app via a button or shortcut.
+- View different biomes layers
+- View extra infos such as Stronghold portal order, type of structure (Bastion, Shipwreck, Village are currently supported)
+- Fully customized icons for structures and features + Mojang ones downloaded for item in chest loot.
+
 ### Shortcuts
 
-TODO : List defaults
+- Ctrl + `N` : New seed
+- Ctrl + `S` : Screenshot
+- Ctrl + `Q` : Close
+- Alt + `G` : Go to Coordinates
+- Alt + `P` : Go to Spawn
+- Alt + `L` : Load Shadow Seed
+- Alt + `S` : Go to Structure
+- Alt + `C` : Change Salts
+- Alt + `A` : Toggle Structure Seed Mode
+- Alt + `K` : Show Shortcuts Menu
 
 - Ctrl + `Numpad +` : Zoom in
 - Ctrl + `Numpad -` : Zoom out
 - Alt + `Numpad +` : Layer +
 - Alt + `Numpad -` : Layer -
+
+In a dialog type `enter` to activate the continue button or `esc` to close the dialog.
 
 ### Command line
 

@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
@@ -66,6 +67,7 @@ public class TooltipTools extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(tool.getClass());
+                    if (icon==null) return;
                     int iconSizeX, iconSizeZ;
                     int defaultValue = 20;
                     float factor = 1.5F;
@@ -98,7 +100,7 @@ public class TooltipTools extends JPanel {
                 if (map == null) return;
                 Shape shape = tool.getExactShape();
                 if (shape == null) return;
-                List<BPos> coords = DisplayMaths.getPointsInArea(shape);
+                List<BPos> coords = DisplayMaths.getPointsInArea(shape,tool.getPointsTraced());
                 HashMap<Biome, Long> biomesCount = new HashMap<>();
                 for (BPos coord : coords) {
                     int biomeId = TooltipSidebar.getBiome(map, coord.getX(), coord.getZ());
@@ -107,19 +109,22 @@ public class TooltipTools extends JPanel {
                 }
                 long total = biomesCount.values().stream().reduce(0L, Long::sum);
                 HashMap<Color, Long> colorCount = new HashMap<>();
-                HashMap<Color, String> colorToName = new HashMap<>();
+                HashMap<Color, Pair<String,String>> colorToName = new HashMap<>();
                 for (Biome biome : biomesCount.keySet()) {
                     long count = biomesCount.get(biome);
                     Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
                     colorCount.put(color == null ? Color.BLACK : color, count);
-                    colorToName.put(color, String.format("%s : %.2f%%", Str.prettifyDashed(biome.getName()), count / (double) total * 100.0));
+                    colorToName.put(color, new Pair<>(
+                        String.format("%s : %.2f%%", Str.prettifyDashed(biome.getName()), count / (double) total * 100.0),
+                        String.format("%d blocks of %s were found", count, Str.prettifyDashed(biome.getName()))
+                    ));
                 }
 
                 JFrame frame = new JFrame("List of Biomes");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(500, 400));
 
-                PieChart pieChart = new PieChart(colorCount, colorToName, total);
+                PieChart pieChart = new PieChart(colorCount, colorToName,"On a total of %d blocks", total);
                 pieChart.setSize(new Dimension(400, 400));
 
                 frame.add(pieChart);
