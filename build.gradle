@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "application"
-    id "com.github.johnrengelman.shadow" version "5.0.0"
+    id "com.github.johnrengelman.shadow" version "5.2.0"
 }
 
 java {
@@ -84,5 +84,7 @@ application {
 }
 
 shadowJar {
+    // this needs to be removed once https://github.com/johnrengelman/shadow/issues/663 is solved
+    mainClassName="kaptainwutax.minemap.MineMap"
     archiveFileName = "MineMap-${minemap_version}.jar"
 }
