@@ -35,7 +35,7 @@ import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
 
 
 public class MineMap extends JFrame {
-    public static final String version = "c1.35";
+    public static final String version = "d1.35";
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
