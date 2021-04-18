@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
 
@@ -90,7 +90,7 @@ public class Ruler extends Tool {
     @Override
     public String[] getMetricString() {
         return new String[] {
-                String.format("Distance: %.2f blocks", this.getMetric())
+            String.format("Distance: %.2f blocks", this.getMetric())
         };
     }
 
@@ -127,9 +127,9 @@ public class Ruler extends Tool {
     @Override
     public String toString() {
         return "Ruler{" +
-                "pos1=" + pos1 +
-                ", pos2=" + pos2 +
-                ", pointsTraced=" + pointsTraced +
-                '}';
+            "pos1=" + pos1 +
+            ", pos2=" + pos2 +
+            ", pointsTraced=" + pointsTraced +
+            '}';
     }
 }

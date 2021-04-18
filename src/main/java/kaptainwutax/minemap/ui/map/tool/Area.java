@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -112,7 +112,7 @@ public class Area extends Tool {
     @Override
     public String[] getMetricString() {
         return new String[] {
-                String.format("Area: %.2f blocks sq", this.getMetric())
+            String.format("Area: %.2f blocks sq", this.getMetric())
         };
     }
 
@@ -149,12 +149,12 @@ public class Area extends Tool {
     @Override
     public String toString() {
         return "Square{" +
-                "pos1=" + pos1 +
-                ", pos2=" + pos2 +
-                ", pos3=" + pos3 +
-                ", pos4=" + pos4 +
-                ", pointsTraced=" + pointsTraced +
-                ", color=" + color +
-                '}';
+            "pos1=" + pos1 +
+            ", pos2=" + pos2 +
+            ", pos3=" + pos3 +
+            ", pos4=" + pos4 +
+            ", pointsTraced=" + pointsTraced +
+            ", color=" + color +
+            '}';
     }
 }

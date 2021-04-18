@@ -1,11 +1,11 @@
 package kaptainwutax.minemap.ui.dialog;
 
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
-import kaptainwutax.mcutils.util.data.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -33,29 +33,29 @@ public class ShortcutDialog extends Dialog {
         this.shortcutActions = new ArrayList<>();
         this.keyShortcuts = new ArrayList<>();
         Configs.KEYBOARDS.getShortcuts().forEach((action, key) -> {
-                    if (action != null) {
-                        KeyShortcuts.KeyRegister keyRegister = KeyShortcuts.KeyRegister.initFromString(key);
-                        JLabel actionName = new JLabel(action.toString());
-                        actionName.setHorizontalAlignment(JLabel.CENTER);
-                        Dropdown<KeyShortcuts.KeyRegister.Type> typeDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.Type.values());
-                        typeDropdown.setDefault(keyRegister.getType());
-                        Dropdown<KeyShortcuts.KeyRegister.Modifier> modifierDropDown = new Dropdown<>(KeyShortcuts.KeyRegister.Modifier.values());
-                        modifierDropDown.setDefault(keyRegister.getModifier());
-                        Dropdown<KeyShortcuts.KeyRegister.KeyLocation> keyLocationDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.KeyLocation.values());
-                        keyLocationDropdown.setDefault(keyRegister.getKeyLocation());
-                        JTextField keyText = new JTextField(keyRegister.getKeyText());
-                        keyText.setHorizontalAlignment(SwingConstants.CENTER);
+                if (action != null) {
+                    KeyShortcuts.KeyRegister keyRegister = KeyShortcuts.KeyRegister.initFromString(key);
+                    JLabel actionName = new JLabel(action.toString());
+                    actionName.setHorizontalAlignment(JLabel.CENTER);
+                    Dropdown<KeyShortcuts.KeyRegister.Type> typeDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.Type.values());
+                    typeDropdown.setDefault(keyRegister.getType());
+                    Dropdown<KeyShortcuts.KeyRegister.Modifier> modifierDropDown = new Dropdown<>(KeyShortcuts.KeyRegister.Modifier.values());
+                    modifierDropDown.setDefault(keyRegister.getModifier());
+                    Dropdown<KeyShortcuts.KeyRegister.KeyLocation> keyLocationDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.KeyLocation.values());
+                    keyLocationDropdown.setDefault(keyRegister.getKeyLocation());
+                    JTextField keyText = new JTextField(keyRegister.getKeyText());
+                    keyText.setHorizontalAlignment(SwingConstants.CENTER);
 
-                        keyShortcuts.add(new Pair<>(new Dropdown<?>[] {typeDropdown, modifierDropDown, keyLocationDropdown}, keyText));
-                        shortcutActions.add(action);
+                    keyShortcuts.add(new Pair<>(new Dropdown<?>[] {typeDropdown, modifierDropDown, keyLocationDropdown}, keyText));
+                    shortcutActions.add(action);
 
-                        this.getContentPane().add(actionName);
-                        this.getContentPane().add(typeDropdown);
-                        this.getContentPane().add(modifierDropDown);
-                        this.getContentPane().add(keyLocationDropdown);
-                        this.getContentPane().add(keyText);
-                    }
+                    this.getContentPane().add(actionName);
+                    this.getContentPane().add(typeDropdown);
+                    this.getContentPane().add(modifierDropDown);
+                    this.getContentPane().add(keyLocationDropdown);
+                    this.getContentPane().add(keyText);
                 }
+            }
         );
         this.continueButton = new JButton("Continue");
 

@@ -70,9 +70,9 @@ public class ListPanel extends JPanel {
         }
         Component[] components = container.getComponents();
         Arrays.stream(components)
-                .map(c -> findAllMatchingChildren((Container) c, comp -> component.getClass().equals(comp.getClass()), nParents - 1))
-                .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
-                .forEach(e -> action.accept((T) e));
+            .map(c -> findAllMatchingChildren((Container) c, comp -> component.getClass().equals(comp.getClass()), nParents - 1))
+            .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+            .forEach(e -> action.accept((T) e));
     }
 
     public void addPanel(JPanel p) {

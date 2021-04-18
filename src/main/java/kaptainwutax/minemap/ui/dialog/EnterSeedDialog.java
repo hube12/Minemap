@@ -1,11 +1,11 @@
 package kaptainwutax.minemap.ui.dialog;
 
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.Dropdown;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.version.MCVersion;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
@@ -71,7 +71,7 @@ public class EnterSeedDialog extends Dialog {
 
         // Thread t = new Thread(() -> { // not a good idea overall
         MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-                threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+            threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
         Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
         Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
         dispose();

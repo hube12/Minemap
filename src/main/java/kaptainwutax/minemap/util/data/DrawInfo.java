@@ -23,10 +23,10 @@ public class DrawInfo {
     @Override
     public String toString() {
         return "DrawInfo{" +
-                "x=" + x +
-                ", y=" + y +
-                ", width=" + width +
-                ", height=" + height +
-                '}';
+            "x=" + x +
+            ", y=" + y +
+            ", width=" + width +
+            ", height=" + height +
+            '}';
     }
 }

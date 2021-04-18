@@ -3,6 +3,9 @@ package kaptainwutax.minemap.ui.dialog;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
@@ -13,9 +16,6 @@ import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,9 +46,9 @@ public class StructureHopperDialog extends Dialog {
         chunkRand = new ChunkRand();
         List<Feature<?, ?>> features = settings.getAllFeatures();
         List<StructureItem> structureItems = features.stream()
-                .filter(e -> e instanceof RegionStructure)
-                .map(e -> new StructureItem((RegionStructure<?, ?>) e))
-                .collect(Collectors.toList());
+            .filter(e -> e instanceof RegionStructure)
+            .map(e -> new StructureItem((RegionStructure<?, ?>) e))
+            .collect(Collectors.toList());
 
         this.structureItemDropdown = new Dropdown<>(structureItems);
         this.continueButton = new JButton();
@@ -71,9 +71,9 @@ public class StructureHopperDialog extends Dialog {
             dimCoeff = 3;
         }
         List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
-                .sequential()
-                .limit(1)
-                .collect(Collectors.toList());
+            .sequential()
+            .limit(1)
+            .collect(Collectors.toList());
         if (!bPosList.isEmpty()) {
             BPos bPos = bPosList.get(0);
             manager.setCenterPos(bPos.getX(), bPos.getZ());

@@ -2,12 +2,12 @@ package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.structure.*;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.NERuinedPortal;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.minemap.init.Logger;
-import kaptainwutax.mcutils.version.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -79,12 +79,12 @@ public class SaltsConfig extends Config {
 
     public Integer getDefaultSalt(MCVersion version, String name) {
         return (SALTS.containsKey(version.toString()) && SALTS.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) ?
-                SALTS.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
+            SALTS.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
     }
 
     public Integer getOverride(MCVersion version, String name) {
         return (OVERRIDES.containsKey(version.toString()) && OVERRIDES.get(version.toString()).containsKey(name.toLowerCase().replace(" ", "_"))) ?
-                OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
+            OVERRIDES.get(version.toString()).get(name.toLowerCase().replace(" ", "_")) : null;
     }
 
     @Override

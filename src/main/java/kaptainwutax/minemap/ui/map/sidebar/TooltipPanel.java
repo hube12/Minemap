@@ -1,10 +1,10 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;

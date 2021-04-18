@@ -2,10 +2,10 @@ package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
-import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
+import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -61,7 +61,7 @@ public class TooltipSidebar extends JPanel {
         String name = biome == null ? "Unknown" : Str.formatName(biome.getName());
 
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
-                biomeId, Integer.toHexString(biomeId).toUpperCase());
+            biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
     }
 

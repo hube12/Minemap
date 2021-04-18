@@ -191,9 +191,9 @@ public class SettingsSidebar extends JPanel {
             this.settings.getAllFeatures().forEach(this.settings::hide);
 
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
-                    .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
+                .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
-                    .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
+                .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             this.map.restart();
             this.map.repaint();
         }));
@@ -203,9 +203,9 @@ public class SettingsSidebar extends JPanel {
             this.settings.getAllFeatures().forEach(this.settings::show);
 
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof FeatureEntry)
-                    .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
+                .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
-                    .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
+                .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             this.map.restart();
             this.map.repaint();
         }));

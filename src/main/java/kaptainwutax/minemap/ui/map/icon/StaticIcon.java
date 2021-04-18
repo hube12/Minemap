@@ -1,12 +1,13 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.minemap.util.ui.Graphic;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -47,17 +48,7 @@ public abstract class StaticIcon extends IconRenderer {
             this.iconSizeZ = DEFAULT_VALUE;
             this.iconSizeX = (int) (DEFAULT_VALUE * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
         }
-        Graphics2D g2d = (Graphics2D) graphics;
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        // disable stroke change
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        // disable weird floating point since pixel accurate
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-        // Interpolation correctly
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        // disable dithering for full color accuracy
-        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
 
 
         float sizeX = hovered ? this.iconSizeX * this.getHoverScaleFactor() : this.iconSizeX;

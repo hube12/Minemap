@@ -1,6 +1,8 @@
 package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.mcutils.rand.seed.WorldSeed;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.KeyShortcuts;
@@ -12,9 +14,6 @@ import kaptainwutax.minemap.ui.dialog.StructureHopperDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.util.pos.BPos;
-
 
 import javax.swing.*;
 import java.util.Collections;
@@ -95,9 +94,9 @@ public class WorldMenu extends Menu {
             this.loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
             if (!this.loadShadowSeed.isEnabled() || map == null) return;
             MineMap.INSTANCE.worldTabs.load(
-                    map.getContext().version,
-                    String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
-                    map.threadCount, Collections.singletonList(map.getContext().dimension));
+                map.getContext().version,
+                String.valueOf(WorldSeed.getShadowSeed(map.getContext().worldSeed)),
+                map.threadCount, Collections.singletonList(map.getContext().dimension));
         };
     }
 

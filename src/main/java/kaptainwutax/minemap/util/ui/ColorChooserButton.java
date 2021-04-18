@@ -58,7 +58,7 @@ public class ColorChooserButton extends JButton {
         listeners.add(toAdd);
     }
 
-    public static interface ColorChangedListener {
-        public void colorChanged(Color newColor);
+    public interface ColorChangedListener {
+        void colorChanged(Color newColor);
     }
 }

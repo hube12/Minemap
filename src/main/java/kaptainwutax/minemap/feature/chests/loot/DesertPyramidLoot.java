@@ -5,10 +5,10 @@ import kaptainwutax.featureutils.loot.LootContext;
 import kaptainwutax.featureutils.loot.MCLootTables;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
-import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.feature.chests.Loot;
 
 import java.util.Arrays;
 import java.util.List;

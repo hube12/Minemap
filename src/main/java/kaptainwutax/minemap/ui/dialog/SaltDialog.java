@@ -1,10 +1,10 @@
 package kaptainwutax.minemap.ui.dialog;
 
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,19 +51,19 @@ public class SaltDialog extends Dialog {
         }
 
         Configs.SALTS.getSalts(version).forEach((name, value) -> {
-                    if (value != null) {
-                        JLabel saltName = new JLabel(prettifyDashed(name) + " salt");
-                        saltName.setHorizontalAlignment(JLabel.CENTER);
-                        SpinnerModel saltModel = new SpinnerNumberModel(value.intValue(), Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-                        JSpinner saltSpinner = new JSpinner(saltModel);
-                        JComponent saltEditor = new JSpinner.NumberEditor(saltSpinner, "0");
-                        saltSpinner.setEditor(saltEditor);
-                        this.saltsNames.add(saltName);
-                        this.salts.add(saltSpinner);
-                        this.getContentPane().add(saltName);
-                        this.getContentPane().add(saltSpinner);
-                    }
+                if (value != null) {
+                    JLabel saltName = new JLabel(prettifyDashed(name) + " salt");
+                    saltName.setHorizontalAlignment(JLabel.CENTER);
+                    SpinnerModel saltModel = new SpinnerNumberModel(value.intValue(), Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+                    JSpinner saltSpinner = new JSpinner(saltModel);
+                    JComponent saltEditor = new JSpinner.NumberEditor(saltSpinner, "0");
+                    saltSpinner.setEditor(saltEditor);
+                    this.saltsNames.add(saltName);
+                    this.salts.add(saltSpinner);
+                    this.getContentPane().add(saltName);
+                    this.getContentPane().add(saltSpinner);
                 }
+            }
         );
 
 
@@ -92,7 +92,7 @@ public class SaltDialog extends Dialog {
                 salts.get(i).commitEdit();
                 if (!previous.equals(salts.get(i).getValue().toString())) {
                     JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should " +
-                            "only use valid numbers we changed " + "from " + previous + " to " + salts.get(i).getValue().toString());
+                        "only use valid numbers we changed " + "from " + previous + " to " + salts.get(i).getValue().toString());
                 }
             } catch (ParseException parseException) {
                 JOptionPane.showMessageDialog(this, name + " has an incorrect value, you should only use numbers");

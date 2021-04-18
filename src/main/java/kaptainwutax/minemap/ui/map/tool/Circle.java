@@ -1,7 +1,7 @@
 package kaptainwutax.minemap.ui.map.tool;
 
-import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
 
@@ -98,8 +98,8 @@ public class Circle extends Tool {
     @Override
     public String[] getMetricString() {
         return new String[] {
-                String.format("Area: %.2f blocks sq", this.getMetric()),
-                String.format("Radius: %.2f blocks", this.getRadius())
+            String.format("Area: %.2f blocks sq", this.getMetric()),
+            String.format("Radius: %.2f blocks", this.getRadius())
         };
     }
 
@@ -136,10 +136,10 @@ public class Circle extends Tool {
     @Override
     public String toString() {
         return "Circle{" +
-                "pos1=" + pos1 +
-                ", pos2=" + pos2 +
-                ", pointsTraced=" + pointsTraced +
-                ", color=" + color +
-                '}';
+            "pos1=" + pos1 +
+            ", pos2=" + pos2 +
+            ", pointsTraced=" + pointsTraced +
+            ", color=" + color +
+            '}';
     }
 }

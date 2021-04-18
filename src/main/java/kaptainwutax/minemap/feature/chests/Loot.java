@@ -5,8 +5,8 @@ import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -16,15 +16,15 @@ public abstract class Loot {
     public static final Predicate<ItemStack> ENCHANTED_GAPPLES_PRED = e -> e.getItem().equals(Items.ENCHANTED_GOLDEN_APPLE);
 
     public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, RegionStructure<?, ?> structure, boolean indexed, BiomeSource biomeSource, MCVersion version) {
-        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), structure, indexed,biomeSource, version);
+        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), structure, indexed, biomeSource, version);
     }
 
     public List<List<ItemStack>> getLootAt(long worldSeed, int chunkX, int chunkZ, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, BiomeSource biomeSource, MCVersion version) {
-        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), structure, indexed, rand,biomeSource, version);
+        return getLootAt(worldSeed, new CPos(chunkX, chunkZ), structure, indexed, rand, biomeSource, version);
     }
 
     public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, BiomeSource biomeSource, MCVersion version) {
-        return getLootAt(worldSeed, cPos, structure, indexed, new ChunkRand(),biomeSource, version);
+        return getLootAt(worldSeed, cPos, structure, indexed, new ChunkRand(), biomeSource, version);
     }
 
     public abstract List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, BiomeSource biomeSource, MCVersion version);

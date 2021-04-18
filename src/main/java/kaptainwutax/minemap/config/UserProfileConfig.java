@@ -4,14 +4,14 @@ import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.featureutils.structure.NetherFossil;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.version.MCVersion;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -79,7 +79,7 @@ public class UserProfileConfig extends Config {
 
     public List<Dimension> getEnabledDimensions() {
         return this.DIMENSIONS.entrySet().stream().filter(Map.Entry::getValue).map(Map.Entry::getKey)
-                .map(Dimension::fromString).collect(Collectors.toList());
+            .map(Dimension::fromString).collect(Collectors.toList());
     }
 
     public MapSettings getMapSettingsCopy(MCVersion version, Dimension dimension) {

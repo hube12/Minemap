@@ -3,10 +3,10 @@ package kaptainwutax.minemap.util.data;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
-import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -142,7 +142,7 @@ public class Assets {
                 return false;
             }
             if (version != null && !manifestExists(version)) {
-                Logger.LOGGER.severe(String.format("Manifest was incorrectly downloaded or the version does not exists yet %s %s", MANIFEST_FILE.getAbsolutePath(), version.toString()));
+                Logger.LOGGER.severe(String.format("Manifest was incorrectly downloaded or the version does not exists yet %s %s", MANIFEST_FILE.getAbsolutePath(), version));
                 return false;
             }
         }
@@ -159,12 +159,12 @@ public class Assets {
     public static String downloadVersionAssets(MCVersion version, boolean force) {
         Pair<String, String> assetIndexURL = getAssetIndexURL(version);
         if (assetIndexURL == null) {
-            Logger.LOGGER.severe(String.format("Could not get asset url for version %s", version.toString()));
+            Logger.LOGGER.severe(String.format("Could not get asset url for version %s", version));
             return null;
         }
         String[] urlSplit = assetIndexURL.getFirst().split("/");
         if (urlSplit.length < 2) {
-            Logger.LOGGER.severe(String.format("Could not get name of asset from url %s for version %s", assetIndexURL, version.toString()));
+            Logger.LOGGER.severe(String.format("Could not get name of asset from url %s for version %s", assetIndexURL, version));
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
@@ -185,12 +185,12 @@ public class Assets {
     public static String downloadClientJar(MCVersion version, boolean force) {
         Pair<String, String> clientURL = getClientURL(version);
         if (clientURL == null) {
-            Logger.LOGGER.severe(String.format("Could not get client url for version %s", version.toString()));
+            Logger.LOGGER.severe(String.format("Could not get client url for version %s", version));
             return null;
         }
         String[] urlSplit = clientURL.getFirst().split("/");
         if (urlSplit.length < 2) {
-            Logger.LOGGER.severe(String.format("Could not get name of client from url %s for version %s", clientURL, version.toString()));
+            Logger.LOGGER.severe(String.format("Could not get name of client from url %s for version %s", clientURL, version));
             return null;
         }
         String name = urlSplit[urlSplit.length - 1];
@@ -198,7 +198,7 @@ public class Assets {
         try {
             Files.createDirectories(Paths.get(versionDir));
         } catch (IOException e) {
-            Logger.LOGGER.severe(String.format("Could not make the directory for the client.jar for version %s", version.toString()));
+            Logger.LOGGER.severe(String.format("Could not make the directory for the client.jar for version %s", version));
             return null;
         }
         File clientJar = new File(versionDir + File.separator + name);
@@ -211,13 +211,13 @@ public class Assets {
     public static boolean extractJar(MCVersion version, String filename, Predicate<JarEntry> jarEntryPredicate, boolean force) {
         File clientJar = new File(DOWNLOAD_DIR_VERSIONS + File.separator + version.name + File.separator + filename);
         if (!clientJar.exists()) {
-            Logger.LOGGER.severe(String.format("Could not get client jar file for version %s", version.toString()));
+            Logger.LOGGER.severe(String.format("Could not get client jar file for version %s", version));
             return false;
         }
         try {
             extractFromJar(clientJar, DOWNLOAD_DIR_ASSETS + File.separator + version.name, jarEntryPredicate, force);
         } catch (IOException e) {
-            Logger.LOGGER.severe(String.format("Could not extract from jar file for version %s", version.toString()));
+            Logger.LOGGER.severe(String.format("Could not extract from jar file for version %s", version));
             return false;
         }
         return true;
@@ -253,7 +253,7 @@ public class Assets {
         try {
             rbc = Channels.newChannel(new URL(url).openStream());
         } catch (IOException e) {
-            Logger.LOGGER.severe(String.format("Could not open channel to url %s, error: %s", url, e.toString()));
+            Logger.LOGGER.severe(String.format("Could not open channel to url %s, error: %s", url, e));
             return false;
         }
         try {
@@ -261,7 +261,7 @@ public class Assets {
             fileOutputStream.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
             fileOutputStream.close();
         } catch (IOException e) {
-            Logger.LOGGER.severe(String.format("Could not download from channel to url %s for file %s, error: %s", url, out.getAbsolutePath(), e.toString()));
+            Logger.LOGGER.severe(String.format("Could not download from channel to url %s for file %s, error: %s", url, out.getAbsolutePath(), e));
             return false;
         }
         return sha1 == null || compareSha1(out, sha1);
@@ -341,7 +341,7 @@ public class Assets {
         try {
             fileReader = new FileReader(file);
         } catch (FileNotFoundException e) {
-            Logger.LOGGER.severe(String.format("Could not open file at %s, error: %s", file.getAbsolutePath(), e.toString()));
+            Logger.LOGGER.severe(String.format("Could not open file at %s, error: %s", file.getAbsolutePath(), e));
             return null;
         }
         return new JsonReader(fileReader);
@@ -359,7 +359,7 @@ public class Assets {
                     return true;
                 }
             } catch (IOException e) {
-                Logger.LOGGER.severe(String.format("JSON file had an issue %s, error: %s", MANIFEST_FILE.getAbsolutePath(), e.toString()));
+                Logger.LOGGER.severe(String.format("JSON file had an issue %s, error: %s", MANIFEST_FILE.getAbsolutePath(), e));
                 return false;
             }
         }
@@ -424,8 +424,8 @@ public class Assets {
 
     public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
         return Files.walk(dir).
-                filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().getFileName().toString().equals(fileName + extension)).
-                collect(Collectors.toList());
+            filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().getFileName().toString().equals(fileName + extension)).
+            collect(Collectors.toList());
     }
 
     public static List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
@@ -434,7 +434,7 @@ public class Assets {
         try {
             paths = Assets.getFileHierarchical(dir, name, extension);
         } catch (IOException e) {
-            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e.toString()));
+            LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e));
             System.err.println("Didn't find icon " + name + ".");
             return list;
         }
@@ -444,7 +444,7 @@ public class Assets {
                 list.add(new Pair<>(fnObjectStorage.apply(path), ImageIO.read(inputStream)));
             } catch (IOException e) {
                 LOGGER.severe(String.format("Exception while reading the input stream or getting " +
-                        "the file input for %s at %s with error %s", name, dir.toString(), e.toString()));
+                    "the file input for %s at %s with error %s", name, dir.toString(), e));
             }
         }
         if (list.isEmpty()) {

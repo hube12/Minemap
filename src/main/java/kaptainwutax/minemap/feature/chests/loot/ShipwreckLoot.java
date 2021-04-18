@@ -4,10 +4,10 @@ import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.Shipwreck;
-import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.feature.chests.Loot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ShipwreckLoot extends Loot {
         if (structure instanceof Shipwreck) {
             Shipwreck shipwreck = (Shipwreck) structure;
             shipwreck.reset();
-            structure.canSpawn(cPos.getX(),cPos.getZ(),biomeSource);
+            structure.canSpawn(cPos.getX(), cPos.getZ(), biomeSource);
             return new ArrayList<>(shipwreck.getLoot(cPos, worldSeed, rand, indexed).values());
         }
         return null;

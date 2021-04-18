@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.mcutils.util.math.DistanceMetric;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
@@ -8,7 +9,6 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.ShortcutDialog;
 import kaptainwutax.minemap.ui.map.MapManager;
-import kaptainwutax.mcutils.version.MCVersion;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -101,24 +101,24 @@ public class SettingsMenu extends Menu {
     public static String getAbout() {
         StringBuilder sb = new StringBuilder("<html><body>");
         sb.append("This is a program to replace the old amidst with a non Minecraft based one (meaning you can run it without Minecraft installed), ")
-                .append("it is also way more efficient since it is fully multithreaded.")
-                .append("<br>")
-                .append("Minemap supports all official releases of Minecraft from 1.0 to ").append(MCVersion.values()[0].toString())
-                .append("<br>")
-                .append("The main core part was done by KaptainWutax.")
-                .append("<br>")
-                .append("The utilities and a lot of the improvements was done by Neil")
-                .append("<br>")
-                .append("<br>")
-                .append("Contributors :<br>")
-                .append("<ul>")
-                .append("<li>KaptainWutax : Core part of the map system and libs setup</li>")
-                .append("<li>Neil : libs enrichment + utilities in Minemap + rich icons</li>")
-                .append("<li>Uniquepotatoes : Flat icons design</li>")
-                .append("<li>Speedrunning and monkeys discord ppl : input on feature for Minemap</li>")
-                .append("</ul>")
-                .append("<br>")
-                .append("<div style='text-align:center'><a href=\"https://github.com/hube12/Minemap\">Github Link</a></div>");
+            .append("it is also way more efficient since it is fully multithreaded.")
+            .append("<br>")
+            .append("Minemap supports all official releases of Minecraft from 1.0 to ").append(MCVersion.values()[0].toString())
+            .append("<br>")
+            .append("The main core part was done by KaptainWutax.")
+            .append("<br>")
+            .append("The utilities and a lot of the improvements was done by Neil")
+            .append("<br>")
+            .append("<br>")
+            .append("Contributors :<br>")
+            .append("<ul>")
+            .append("<li>KaptainWutax : Core part of the map system and libs setup</li>")
+            .append("<li>Neil : libs enrichment + utilities in Minemap + rich icons</li>")
+            .append("<li>Uniquepotatoes : Flat icons design</li>")
+            .append("<li>Speedrunning and monkeys discord ppl : input on feature for Minemap</li>")
+            .append("</ul>")
+            .append("<br>")
+            .append("<div style='text-align:center'><a href=\"https://github.com/hube12/Minemap\">Github Link</a></div>");
 
         return sb.append("</body></html>").toString();
     }

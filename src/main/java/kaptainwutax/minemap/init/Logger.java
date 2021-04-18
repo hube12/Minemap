@@ -31,15 +31,15 @@ public class Logger {
                 @Override
                 public synchronized String format(LogRecord lr) {
                     return String.format(format,
-                            new Date(lr.getMillis()),
-                            lr.getLevel().getLocalizedName(),
-                            lr.getMessage()
+                        new Date(lr.getMillis()),
+                        lr.getLevel().getLocalizedName(),
+                        lr.getMessage()
                     );
                 }
             });
             LOGGER.info(String.format("Minemap started on %s",
-                    new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z").
-                            format(new Date(System.currentTimeMillis()))));
+                new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z").
+                    format(new Date(System.currentTimeMillis()))));
             RuntimeMXBean runtimeBean = ManagementFactory.getRuntimeMXBean();
 
             Map<String, String> systemProperties = runtimeBean.getSystemProperties();
@@ -51,10 +51,10 @@ public class Logger {
 
             for (String key : keys) {
                 LOGGER.info(String.format("[%s] = %s.", key, systemProperties.get(key).
-                        replace(username, "XANONX").
-                        replaceAll("Users\\\\.*?\\\\", "Users\\\\ANONYM\\\\").
-                        replace("\r\n", "CRLF").
-                        replace("\n", "LF")
+                    replace(username, "XANONX").
+                    replaceAll("Users\\\\.*?\\\\", "Users\\\\ANONYM\\\\").
+                    replace("\r\n", "CRLF").
+                    replace("\n", "LF")
                 ));
             }
         } catch (IOException e) {

@@ -1,10 +1,10 @@
 package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.icon.*;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -22,17 +22,17 @@ public class IconManager {
     public IconManager(MapContext context) {
         this.context = context;
         this.renderers = context.getSettings().getAllFeatures().stream()
-                .collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
+            .collect(Collectors.toMap(f -> f, f -> NullIcon.INSTANCE));
 
         this.override(
-                SpawnIcon::new,
-                RegionIcon::new,
-                MineshaftIcon::new,
-                SlimeIcon::new,
-                EndGatewayIcon::new,
-                OWNetherIcon::new,
-                NEOverworldIcon::new,
-                c -> new StrongholdIcon(c, 128)
+            SpawnIcon::new,
+            RegionIcon::new,
+            MineshaftIcon::new,
+            SlimeIcon::new,
+            EndGatewayIcon::new,
+            OWNetherIcon::new,
+            NEOverworldIcon::new,
+            c -> new StrongholdIcon(c, 128)
         );
     }
 

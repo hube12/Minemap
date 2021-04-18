@@ -23,13 +23,13 @@ public class StructureHelper {
         SpiralIterator spiral = new SpiralIterator(centerRPos, regionSize);
 
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(spiral.iterator(), Spliterator.ORDERED), false)
-                .map(rPos -> StructureHelper.getInRegion(structure, worldseed, chunkRand, rPos))
-                .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
-                .filter(cPos -> StructureHelper.canSpawn(structure, cPos, source))
-                .map(cPos -> {
-                    BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
-                    return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
-                });
+            .map(rPos -> StructureHelper.getInRegion(structure, worldseed, chunkRand, rPos))
+            .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
+            .filter(cPos -> StructureHelper.canSpawn(structure, cPos, source))
+            .map(cPos -> {
+                BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
+                return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+            });
     }
 
     public static CPos getInRegion(RegionStructure<?, ?> structure, long worldseed, ChunkRand chunkRand, RPos rPos) {
@@ -56,8 +56,8 @@ public class StructureHelper {
 
         public SpiralIterator(RPos currentRPos, int regionSize) {
             this(currentRPos,
-                    new BPos(-30_000_000, 0, -30_000_000).toRegionPos(regionSize),
-                    new BPos(30_000_000, 0, 30_000_000).toRegionPos(regionSize)
+                new BPos(-30_000_000, 0, -30_000_000).toRegionPos(regionSize),
+                new BPos(30_000_000, 0, 30_000_000).toRegionPos(regionSize)
             );
         }
 

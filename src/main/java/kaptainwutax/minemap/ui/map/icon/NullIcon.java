@@ -1,9 +1,9 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
 import java.util.List;

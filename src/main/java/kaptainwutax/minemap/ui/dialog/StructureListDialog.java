@@ -3,6 +3,9 @@ package kaptainwutax.minemap.ui.dialog;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
@@ -19,9 +22,6 @@ import kaptainwutax.minemap.util.ui.ListPanel;
 import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
-import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.util.pos.BPos;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
@@ -59,9 +59,9 @@ public class StructureListDialog extends Dialog {
         List<Feature<?, ?>> features = settings.getAllFeatures();
 
         List<StructureItem> structureItems = features.stream()
-                .filter(e -> e instanceof RegionStructure)
-                .map(e -> new StructureItem((RegionStructure<?, ?>) e))
-                .collect(Collectors.toList());
+            .filter(e -> e instanceof RegionStructure)
+            .map(e -> new StructureItem((RegionStructure<?, ?>) e))
+            .collect(Collectors.toList());
 
         this.structureItemDropdown = new Dropdown<>(structureItems);
 
@@ -158,9 +158,9 @@ public class StructureListDialog extends Dialog {
         }
 
         List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
-                .sequential()
-                .limit(n)
-                .collect(Collectors.toList());
+            .sequential()
+            .limit(n)
+            .collect(Collectors.toList());
 
         // destroy the current container
         this.dispose();

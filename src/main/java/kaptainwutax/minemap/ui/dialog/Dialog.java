@@ -28,8 +28,8 @@ public abstract class Dialog extends JDialog {
         this.pack();
 
         this.setLocation(
-                MineMap.INSTANCE.getX() + MineMap.INSTANCE.getWidth() / 2 - this.getWidth() / 2,
-                MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
+            MineMap.INSTANCE.getX() + MineMap.INSTANCE.getWidth() / 2 - this.getWidth() / 2,
+            MineMap.INSTANCE.getY() + MineMap.INSTANCE.getHeight() / 2 - this.getHeight() / 2
         );
 
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);

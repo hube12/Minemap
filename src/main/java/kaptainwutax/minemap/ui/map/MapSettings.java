@@ -3,9 +3,9 @@ package kaptainwutax.minemap.ui.map;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.featureutils.Feature;
-import kaptainwutax.minemap.init.Features;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.init.Features;
 
 import java.text.Collator;
 import java.util.*;
@@ -40,12 +40,12 @@ public class MapSettings {
         this.dimension = dimension;
 
         this.features = Features.getForVersion(this.version).values().stream()
-                .filter(f -> f.isValidDimension(this.dimension))
-                .map(Feature::getName).collect(Collectors.toMap(e -> e, e -> true));
+            .filter(f -> f.isValidDimension(this.dimension))
+            .map(Feature::getName).collect(Collectors.toMap(e -> e, e -> true));
 
         this.biomes = Biome.REGISTRY.values().stream()
-                .filter(b -> b.getDimension() == dimension).map(Biome::getName)
-                .collect(Collectors.toMap(e -> e, e -> true));
+            .filter(b -> b.getDimension() == dimension).map(Biome::getName)
+            .collect(Collectors.toMap(e -> e, e -> true));
     }
 
     public MCVersion getVersion() {
@@ -58,22 +58,22 @@ public class MapSettings {
 
     public MapSettings refresh() {
         this.featureTypes = Features.getForVersion(this.version).entrySet().stream()
-                .filter(e -> this.dimension == null || e.getValue().isValidDimension(this.dimension))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .filter(e -> this.dimension == null || e.getValue().isValidDimension(this.dimension))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         this.featureStates = this.featureTypes.entrySet().stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> this.features.getOrDefault(e.getValue().getName(), true)
-                ));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                e -> this.features.getOrDefault(e.getValue().getName(), true)
+            ));
 
         this.biomeStates = Biome.REGISTRY.values().stream()
-                .filter(b -> b.getDimension() == this.dimension)
-                .filter(b -> b.getVersion().isOlderOrEqualTo(this.version))
-                .collect(Collectors.toMap(
-                        e -> e,
-                        e -> this.biomes.getOrDefault(e.getName(), true)
-                ));
+            .filter(b -> b.getDimension() == this.dimension)
+            .filter(b -> b.getVersion().isOlderOrEqualTo(this.version))
+            .collect(Collectors.toMap(
+                e -> e,
+                e -> this.biomes.getOrDefault(e.getName(), true)
+            ));
 
         return this;
     }
@@ -174,27 +174,27 @@ public class MapSettings {
 
     public Set<Feature<?, ?>> getActiveFeatures() {
         return this.featureStates.entrySet().stream()
-                .filter(Map.Entry::getValue)
-                .map(Map.Entry::getKey)
-                .map(this.featureTypes::get)
-                .collect(Collectors.toSet());
+            .filter(Map.Entry::getValue)
+            .map(Map.Entry::getKey)
+            .map(this.featureTypes::get)
+            .collect(Collectors.toSet());
     }
 
     public Set<Biome> getActiveBiomes() {
         return this.biomeStates.entrySet().stream()
-                .filter(Map.Entry::getValue)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toSet());
+            .filter(Map.Entry::getValue)
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toSet());
     }
 
     public boolean isActive(Feature<?, ?> feature) {
         return this.featureStates.getOrDefault(feature.getClass(), false)
-                && this.featureTypes.containsKey(feature.getClass());
+            && this.featureTypes.containsKey(feature.getClass());
     }
 
     public boolean isActive(Class<? extends Feature<?, ?>> feature) {
         return this.featureStates.getOrDefault(feature, false)
-                && this.featureTypes.containsKey(feature);
+            && this.featureTypes.containsKey(feature);
     }
 
     public boolean isActive(Biome biome) {

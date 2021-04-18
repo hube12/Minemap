@@ -12,6 +12,12 @@ public class BiomeColorsConfig extends Config {
     public static final String DEFAULT_STYLE_NAME = "Default";
     public final static HashMap<Biome, String> BIOME_COLORS = new LinkedHashMap<>();
     public final static HashMap<Biome, String> BIOME_COLORS_VIBRANT = new LinkedHashMap<>();
+    @Expose
+    protected Map<String, String> DEFAULT_BIOME_COLORS = new LinkedHashMap<>();
+    @Expose
+    protected Map<String, Map<String, String>> OVERRIDES = new LinkedHashMap<>();
+    protected Map<Integer, Color> defaultBiomeColorCache;
+    protected Map<String, Map<Integer, Color>> biomeColorCache;
 
     static {
         BIOME_COLORS.put(Biome.OCEAN, "#000070");
@@ -101,13 +107,6 @@ public class BiomeColorsConfig extends Config {
         BIOME_COLORS_VIBRANT.put(Biome.SOUL_SAND_VALLEY, "#5E3830");
     }
 
-    @Expose
-    protected Map<String, String> DEFAULT_BIOME_COLORS = new LinkedHashMap<>();
-    @Expose
-    protected Map<String, Map<String, String>> OVERRIDES = new LinkedHashMap<>();
-    protected Map<Integer, Color> defaultBiomeColorCache;
-    protected Map<String, Map<Integer, Color>> biomeColorCache;
-
     @Override
     public String getName() {
         return "biome_colors";
@@ -123,7 +122,7 @@ public class BiomeColorsConfig extends Config {
         }
 
         return this.biomeColorCache.getOrDefault(style, this.defaultBiomeColorCache)
-                .getOrDefault(biome, this.defaultBiomeColorCache.get(biome));
+            .getOrDefault(biome, this.defaultBiomeColorCache.get(biome));
     }
 
     private void generateCache() {

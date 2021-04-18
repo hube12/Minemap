@@ -18,16 +18,16 @@ public class KeyboardsConfig extends Config {
 
     public static KeyShortcuts.KeyRegister getKeyCombo(KeyShortcuts.ShortcutAction shortcutAction) {
         return Configs.KEYBOARDS.OVERRIDES.entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
-                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
-                .orElse(
-                        Configs.KEYBOARDS.KEYBOARDS.entrySet()
-                                .stream()
-                                .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
-                                .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
-                                .orElse(null)
-                );
+            .stream()
+            .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
+            .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
+            .orElse(
+                Configs.KEYBOARDS.KEYBOARDS.entrySet()
+                    .stream()
+                    .filter(entry -> entry.getKey().equals(shortcutAction)).map(Map.Entry::getValue)
+                    .findFirst().map(KeyShortcuts.KeyRegister::initFromString)
+                    .orElse(null)
+            );
 
     }
 
@@ -37,15 +37,15 @@ public class KeyboardsConfig extends Config {
 
     public Map<KeyShortcuts.ShortcutAction, KeyShortcuts.KeyRegister> getKEYBOARDS() {
         return KEYBOARDS.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
+            Map.Entry::getKey,
+            entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
         ));
     }
 
     public Map<KeyShortcuts.ShortcutAction, KeyShortcuts.KeyRegister> getOVERRIDES() {
         return OVERRIDES.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
+            Map.Entry::getKey,
+            entry -> KeyShortcuts.KeyRegister.initFromString(entry.getValue())
         ));
     }
 

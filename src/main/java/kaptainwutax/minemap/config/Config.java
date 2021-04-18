@@ -14,11 +14,11 @@ import static kaptainwutax.minemap.MineMap.SETTINGS_DIR;
 public abstract class Config {
 
     private static final Gson GSON = new GsonBuilder()
-            .excludeFieldsWithoutExposeAnnotation()
-            .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT)
-            .setPrettyPrinting()
-            .enableComplexMapKeySerialization()
-            .create();
+        .excludeFieldsWithoutExposeAnnotation()
+        .excludeFieldsWithModifiers(java.lang.reflect.Modifier.TRANSIENT)
+        .setPrettyPrinting()
+        .enableComplexMapKeySerialization()
+        .create();
     protected String root = SETTINGS_DIR;
     protected String extension = ".json";
 

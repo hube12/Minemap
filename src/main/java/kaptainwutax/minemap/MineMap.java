@@ -3,6 +3,7 @@ package kaptainwutax.minemap;
 import com.formdev.flatlaf.*;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
@@ -13,9 +14,7 @@ import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.util.ui.ModalPopup;
-
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -169,10 +168,10 @@ public class MineMap extends JFrame {
     private static void updateMinemap(Pair<String, String> versionUrlFilename, String tagName, boolean shouldAsk) {
         if (shouldAsk) {
             int dialogResult = JOptionPane.showConfirmDialog(
-                    null,
-                    String.format("Would you like to update to the version %s of Minemap?", tagName),
-                    "Update available for Minemap " + MineMap.version,
-                    JOptionPane.YES_NO_OPTION
+                null,
+                String.format("Would you like to update to the version %s of Minemap?", tagName),
+                "Update available for Minemap " + MineMap.version,
+                JOptionPane.YES_NO_OPTION
             );
             if (dialogResult != JOptionPane.YES_OPTION) {
                 return;

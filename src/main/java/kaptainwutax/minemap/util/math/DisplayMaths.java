@@ -77,53 +77,53 @@ public class DisplayMaths {
 
     public static double getDistance2D(BPos pos1, BPos pos2) {
         return DistanceMetric.EUCLIDEAN.getDistance(
-                pos1.getX() - pos2.getX(),
-                pos1.getY() - pos2.getY(),
-                pos1.getZ() - pos2.getZ()
+            pos1.getX() - pos2.getX(),
+            pos1.getY() - pos2.getY(),
+            pos1.getZ() - pos2.getZ()
         );
     }
 
     public static double getDistance2DSquared(BPos pos1, BPos pos2) {
         return DistanceMetric.EUCLIDEAN_SQ.getDistance(
-                pos1.getX() - pos2.getX(),
-                pos1.getY() - pos2.getY(),
-                pos1.getZ() - pos2.getZ()
+            pos1.getX() - pos2.getX(),
+            pos1.getY() - pos2.getY(),
+            pos1.getZ() - pos2.getZ()
         );
     }
 
     public static Polygon getPolygon(BPos pos1, BPos pos2, BPos pos3, BPos pos4) {
         return new Polygon(
-                new int[] {
-                        pos1.getX(),
-                        pos2.getX(),
-                        pos3.getX(),
-                        pos4.getX(),
+            new int[] {
+                pos1.getX(),
+                pos2.getX(),
+                pos3.getX(),
+                pos4.getX(),
 
-                        },
-                new int[] {
-                        pos1.getZ(),
-                        pos2.getZ(),
-                        pos3.getZ(),
-                        pos4.getZ(),
-                        },
-                4
+                },
+            new int[] {
+                pos1.getZ(),
+                pos2.getZ(),
+                pos3.getZ(),
+                pos4.getZ(),
+                },
+            4
         );
     }
 
     public static Polygon getPolygon(BPos pos1, BPos pos2, BPos pos3) {
         return new Polygon(
-                new int[] {
-                        pos1.getX(),
-                        pos2.getX(),
-                        pos3.getX(),
+            new int[] {
+                pos1.getX(),
+                pos2.getX(),
+                pos3.getX(),
 
-                        },
-                new int[] {
-                        pos1.getZ(),
-                        pos2.getZ(),
-                        pos3.getZ(),
-                        },
-                3
+                },
+            new int[] {
+                pos1.getZ(),
+                pos2.getZ(),
+                pos3.getZ(),
+                },
+            3
         );
     }
 
@@ -132,39 +132,39 @@ public class DisplayMaths {
         int offsetX = (int) DisplayMaths.getOffset(angle, maxOffset);
         int offsetY = maxOffset - offsetX;
         return new Polygon(
-                new int[] {
-                        pos1.getX() + offsetX,
-                        pos1.getX() - offsetX,
-                        pos2.getX() - offsetX,
-                        pos2.getX() + offsetX,
+            new int[] {
+                pos1.getX() + offsetX,
+                pos1.getX() - offsetX,
+                pos2.getX() - offsetX,
+                pos2.getX() + offsetX,
 
-                        },
-                new int[] {
-                        pos1.getZ() + offsetY,
-                        pos1.getZ() - offsetY,
-                        pos2.getZ() - offsetY,
-                        pos2.getZ() + offsetY,
-                        },
-                4
+                },
+            new int[] {
+                pos1.getZ() + offsetY,
+                pos1.getZ() - offsetY,
+                pos2.getZ() - offsetY,
+                pos2.getZ() + offsetY,
+                },
+            4
         );
     }
 
     public static Polygon getPolygon(BPos pos1, int maxOffset) {
         return new Polygon(
-                new int[] {
-                        pos1.getX() - maxOffset,
-                        pos1.getX() + maxOffset,
-                        pos1.getX() + maxOffset,
-                        pos1.getX() - maxOffset,
+            new int[] {
+                pos1.getX() - maxOffset,
+                pos1.getX() + maxOffset,
+                pos1.getX() + maxOffset,
+                pos1.getX() - maxOffset,
 
-                        },
-                new int[] {
-                        pos1.getZ() - maxOffset,
-                        pos1.getZ() - maxOffset,
-                        pos1.getZ() + maxOffset,
-                        pos1.getZ() + maxOffset,
-                        },
-                4
+                },
+            new int[] {
+                pos1.getZ() - maxOffset,
+                pos1.getZ() - maxOffset,
+                pos1.getZ() + maxOffset,
+                pos1.getZ() + maxOffset,
+                },
+            4
         );
     }
 

@@ -1,8 +1,8 @@
 package kaptainwutax.minemap.ui.component;
 
-import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.ui.map.MapPanel;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;

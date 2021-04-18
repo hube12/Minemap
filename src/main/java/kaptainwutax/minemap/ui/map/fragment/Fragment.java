@@ -3,6 +3,8 @@ package kaptainwutax.minemap.ui.map.fragment;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
@@ -10,8 +12,7 @@ import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.mcutils.util.pos.BPos;
-import kaptainwutax.mcutils.util.pos.RPos;
+import kaptainwutax.minemap.util.ui.Graphic;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -112,14 +113,7 @@ public class Fragment {
                 polygon.intersect(rectangle);
                 if (!polygon.isEmpty()) {
                     Color old = graphics.getColor();
-                    Graphics2D g2d = (Graphics2D) graphics;
-                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-                    g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-                    g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-                    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                    g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+                    Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
                     g2d.setColor(tool.getColor());
 
                     // get the correct polygon in the fragment
@@ -258,16 +252,16 @@ public class Fragment {
     @Override
     public String toString() {
         return "Fragment{" +
-                "blockX=" + blockX +
-                ", blockZ=" + blockZ +
-                ", regionSize=" + regionSize +
-                ", context=" + context +
-                ", layerIdCache=" + layerIdCache +
-                ", biomeCache=" + Arrays.toString(biomeCache) +
-                ", activeBiomesCache=" + activeBiomesCache +
-                ", imageCache=" + imageCache +
-                ", features=" + features +
-                ", hoveredPos=" + hoveredPos +
-                '}';
+            "blockX=" + blockX +
+            ", blockZ=" + blockZ +
+            ", regionSize=" + regionSize +
+            ", context=" + context +
+            ", layerIdCache=" + layerIdCache +
+            ", biomeCache=" + Arrays.toString(biomeCache) +
+            ", activeBiomesCache=" + activeBiomesCache +
+            ", imageCache=" + imageCache +
+            ", features=" + features +
+            ", hoveredPos=" + hoveredPos +
+            '}';
     }
 }

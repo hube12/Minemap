@@ -1,12 +1,12 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
 import kaptainwutax.mcutils.util.data.ThreadPool;
+import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.mcutils.util.pos.BPos;
-import kaptainwutax.mcutils.util.pos.RPos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +19,8 @@ import java.util.function.Consumer;
 
 public class FragmentScheduler {
 
+    protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
+    private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
     public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
         @Override
         public void drawBiomes(Graphics graphics, DrawInfo info) { }
@@ -26,8 +28,6 @@ public class FragmentScheduler {
         @Override
         public void drawFeatures(Graphics graphics, DrawInfo info) { }
     };
-    protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
-    private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
     public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
     protected ThreadPool executor;
     protected MapPanel listener;
@@ -96,8 +96,8 @@ public class FragmentScheduler {
 
     public double distanceToCenter(RPos regionPos) {
         return regionPos.distanceTo(this.listener.getManager().getCenterPos()
-                        .toRegionPos(this.listener.getManager().blocksPerFragment),
-                Configs.USER_PROFILE.getUserSettings().getFragmentMetric());
+                .toRegionPos(this.listener.getManager().blocksPerFragment),
+            Configs.USER_PROFILE.getUserSettings().getFragmentMetric());
     }
 
     public boolean isInBounds(RPos region) {
@@ -106,8 +106,7 @@ public class FragmentScheduler {
         RPos regionMin = min.toRegionPos(this.listener.getManager().blocksPerFragment);
         RPos regionMax = max.toRegionPos(this.listener.getManager().blocksPerFragment);
         if (region.getX() < regionMin.getX() - 40 || region.getX() > regionMax.getX() + 40) return false;
-        if (region.getZ() < regionMin.getZ() - 40 || region.getZ() > regionMax.getZ() + 40) return false;
-        return true;
+        return region.getZ() >= regionMin.getZ() - 40 && region.getZ() <= regionMax.getZ() + 40;
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ) {

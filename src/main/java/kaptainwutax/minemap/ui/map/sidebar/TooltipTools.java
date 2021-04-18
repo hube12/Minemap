@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
@@ -12,7 +13,6 @@ import kaptainwutax.minemap.util.ui.ListPanel;
 import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
-import kaptainwutax.mcutils.util.pos.BPos;
 
 import javax.swing.*;
 import java.awt.*;
@@ -82,7 +82,7 @@ public class TooltipTools extends JPanel {
             this.colorChooser.addColorChangedListener(tool::setColor);
 
             this.positionText = new JTextArea(
-                    String.join("\n", tool.getMetricString())
+                String.join("\n", tool.getMetricString())
             );
             this.positionText.setFont(new Font(this.positionText.getFont().getName(), Font.PLAIN, 18));
             this.positionText.setBackground(new Color(0, 0, 0, 0));
