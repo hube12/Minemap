@@ -42,7 +42,7 @@ dependencies {
 
     implementation('com.github.KaptainWutax:BiomeUtils:f27f6e029b85c8a32371ae62292c6ac7fb121674') {transitive = false}
     implementation('com.github.KaptainWutax:TerrainUtils:5b477c80a266b1fb2241f11a56538fb33b04a478') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:66c56c6e060e646ee71345ee6f137fd01c17e9b8') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:c37afd12ec9127fe7d20477e2b1be2de1f515ef0') {transitive = false}
 
     implementation('com.github.hube12:ChunkRandomReversal:76bc51ef8b05a6366b8080ed8d071ba5d3ba5e82') {transitive = false}
     implementation('com.seedfinding:latticg:1.05')
