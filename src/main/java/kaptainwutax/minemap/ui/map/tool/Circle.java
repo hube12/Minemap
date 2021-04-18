@@ -44,6 +44,18 @@ public class Circle extends Tool {
     }
 
     @Override
+    public Shape getExactShape() {
+        int offset = 0;
+        switch (this.getPointsTraced()) {
+            case 1:
+                return DisplayMaths.getPolygon(pos1, offset);
+            case 2:
+                return DisplayMaths.getCircle(pos1, pos2);
+        }
+        return null;
+    }
+
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }

@@ -59,6 +59,22 @@ public class Area extends Tool {
     }
 
     @Override
+    public Polygon getExactShape() {
+        int offset = 0;
+        switch (this.getPointsTraced()) {
+            case 1:
+                return DisplayMaths.getPolygon(pos1, offset);
+            case 2:
+                return DisplayMaths.getPolygon(pos1, pos2, offset);
+            case 3:
+                return DisplayMaths.getPolygon(pos1, pos2, pos3);
+            case 4:
+                return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
+        }
+        return null;
+    }
+
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }
@@ -102,8 +118,7 @@ public class Area extends Tool {
         double metric = 0;
         if (this.isComplete()) {
             metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3, pos4));
-        }
-        if (this.getPointsTraced() >= 3) {
+        }else if (this.getPointsTraced() >= 3) {
             metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3));
         }
         return DisplayMaths.round(metric, 2);

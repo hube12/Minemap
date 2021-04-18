@@ -3,13 +3,15 @@ package kaptainwutax.minemap.ui.map.sidebar;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.minemap.util.ui.ColorChooserButton;
-import kaptainwutax.minemap.util.ui.ListPanel;
+import kaptainwutax.minemap.util.ui.PieChart;
 import kaptainwutax.minemap.util.ui.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
@@ -94,30 +96,33 @@ public class TooltipTools extends JPanel {
             this.infoButton.addActionListener(e -> {
                 MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                 if (map == null) return;
-                java.awt.geom.Area area = new java.awt.geom.Area(tool.getPartialShape());
-                List<BPos> coords = DisplayMaths.getPointsInArea(area);
-                HashMap<Biome, Integer> biomesCount = new HashMap<>();
+                Shape shape = tool.getExactShape();
+                if (shape == null) return;
+                List<BPos> coords = DisplayMaths.getPointsInArea(shape);
+                HashMap<Biome, Long> biomesCount = new HashMap<>();
                 for (BPos coord : coords) {
                     int biomeId = TooltipSidebar.getBiome(map, coord.getX(), coord.getZ());
                     Biome biome = Biome.REGISTRY.get(biomeId);
-                    biomesCount.merge(biome, 1, Integer::sum);
+                    biomesCount.merge(biome, 1L, Long::sum);
+                }
+                long total = biomesCount.values().stream().reduce(0L, Long::sum);
+                HashMap<Color, Long> colorCount = new HashMap<>();
+                HashMap<Color, String> colorToName = new HashMap<>();
+                for (Biome biome : biomesCount.keySet()) {
+                    long count = biomesCount.get(biome);
+                    Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
+                    colorCount.put(color == null ? Color.BLACK : color, count);
+                    colorToName.put(color, String.format("%s : %.2f%%", Str.prettifyDashed(biome.getName()), count / (double) total * 100.0));
                 }
 
                 JFrame frame = new JFrame("List of Biomes");
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * biomesCount.size())));
+                frame.setPreferredSize(new Dimension(500, 400));
 
-                // create the inner list
-                final ListPanel listPanel = new ListPanel();
-                biomesCount.forEach((biome, count) -> {
-                    JLabel label = new JLabel(String.format("There are %d blocks of %s", count, biome.getName()));
-                    JPanel panel = new JPanel();
-                    panel.add(label);
-                    listPanel.addPanel(panel);
-                });
-                listPanel.removeLastBorder();
+                PieChart pieChart = new PieChart(colorCount, colorToName, total);
+                pieChart.setSize(new Dimension(400, 400));
 
-                frame.add(listPanel);
+                frame.add(pieChart);
 
                 // display it
                 frame.pack();

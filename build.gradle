@@ -80,7 +80,7 @@ dependencies {
 }
 
 application {
-    mainClassName = "kaptainwutax.minemap.MineMap"
+    mainClass.set("kaptainwutax.minemap.MineMap")
 }
 
 shadowJar {

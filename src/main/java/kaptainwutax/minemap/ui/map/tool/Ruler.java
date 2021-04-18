@@ -44,6 +44,18 @@ public class Ruler extends Tool {
     }
 
     @Override
+    public Polygon getExactShape() {
+        int offset = 0;
+        switch (this.getPointsTraced()) {
+            case 1:
+                return DisplayMaths.getPolygon(pos1, offset);
+            case 2:
+                return DisplayMaths.getPolygon(pos1, pos2, offset);
+        }
+        return null;
+    }
+
+    @Override
     public int getPointsTraced() {
         return pointsTraced;
     }

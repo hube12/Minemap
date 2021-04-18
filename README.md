@@ -35,12 +35,17 @@ Supports all Minecraft release starting from 1.0+
 
 ## Demo video
 
-[![IMAGE ALT TEXT](http://img.youtube.com/vi/aQo6H_3MXHc/0.jpg)](http://www.youtube.com/watch?v=aQo6H_3MXHc "Minemap demo video")
+[![Demo Video](http://img.youtube.com/vi/aQo6H_3MXHc/0.jpg)](http://www.youtube.com/watch?v=aQo6H_3MXHc "Minemap demo video")
 
 ## Features
 
-TODO : List them all here
-
+- View Biome map for Overworld/Nether/End for all version from 1.0 till 1.16.5.
+- View structures, and some features placement on the biome map for version 1.8+.
+- View chest loot for 1.16.5 structures: Desert Pyramid, Buried Treasure, Ruined Portal and Shipwreck.
+- Multithreaded processing
+- List the N closest structure and get tp/location to those.
+- Draw line, polygon and circle as overlay to the map.
+- 
 ### Shortcuts
 
 TODO : List defaults
@@ -53,13 +58,20 @@ TODO : List defaults
 ### Command line
 
 - Take a screenshot :
-  `java -jar Minemap-<version>.jar --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>`
+  ```shell
+  java -jar Minemap-<version>.jar --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>
+  ```
 
 - Don't show any update popup even if there is a update available
-  `java -jar Minemap-<version>.jar --no-update`
+  ```shell
+  java -jar Minemap-<version>.jar --no-update
+  ```
+
 
 - Update Minemap without a popup
-  `java -jar Minemap-<version>.jar --update`
+  ```shell
+  java -jar Minemap-<version>.jar --update
+  ```
 
 ## Support and bugs
 

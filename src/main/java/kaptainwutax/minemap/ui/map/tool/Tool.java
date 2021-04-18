@@ -12,6 +12,8 @@ public abstract class Tool {
 
     public abstract Shape getPartialShape();
 
+    public abstract Shape getExactShape();
+
     public abstract boolean isComplete();
 
     public abstract boolean isAcceptable();

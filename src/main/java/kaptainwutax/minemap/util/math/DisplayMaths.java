@@ -9,11 +9,13 @@ import kaptainwutax.mcutils.util.pos.CPos;
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,10 +65,9 @@ public class DisplayMaths {
 
     public static double polygonArea(List<BPos> bPosList) {
         double area = 0.0;
-        int j = bPosList.size() - 1;
         for (int i = 0; i < bPosList.size(); i++) {
-            area += (bPosList.get(j).getX() + bPosList.get(i).getX()) * (bPosList.get(j).getZ() - bPosList.get(i).getZ());
-            j = i;
+            int j=(i+1)%bPosList.size();
+            area += bPosList.get(i).getX() * bPosList.get(j).getZ() - bPosList.get(i).getZ() * bPosList.get(j).getX();
         }
         return Math.abs(area / 2.0);
     }
@@ -182,16 +183,27 @@ public class DisplayMaths {
         float b = rand.nextFloat();
         return new Color(r, g, b);
     }
+    @FunctionalInterface
+    interface Function4<One, Two, Three,Four> {
+        Four apply(One one, Two two, Three three);
+    }
 
-    public static List<BPos> getPointsInArea(Area area) {
+    public static List<BPos> getPointsInArea(Shape shape) {
         // TODO actually increase speed by using a proper method, fill flood, raycast or winding number
-        Rectangle rectangle = area.getBounds();
+        Rectangle rectangle=shape.getBounds();
         List<BPos> bPosList = new ArrayList<>();
-        for (int x = 0; x < rectangle.width; x++) {
-            for (int y = 0; y < rectangle.height; y++) {
-                int X = rectangle.x + x;
-                int Y = rectangle.y + x;
-                if (area.contains(X, Y)) {
+        Function4<Shape,Integer,Integer,Boolean> test= Shape::contains;
+        if (shape instanceof Polygon){
+            Polygon polygon=(Polygon) shape;
+            if (polygon.npoints<=2){
+                test=(s,x,y)->s.intersects(x,y,1,1);
+            }
+        }
+        for (int x = 0; x < rectangle.getWidth(); x++) {
+            int X = (int) (rectangle.getX() + x);
+            for (int y = 0; y < rectangle.getHeight(); y++) {
+                int Y = (int) (rectangle.getY() + y);
+                if (test.apply(shape,X,Y)) {
                     bPosList.add(new BPos(X, 0, Y));
                 }
             }
