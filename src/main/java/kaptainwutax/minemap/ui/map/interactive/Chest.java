@@ -13,6 +13,7 @@ import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.Graphic;
@@ -26,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
 
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
@@ -34,11 +36,13 @@ public class Chest extends JFrame {
     private final TopBar topBar;
     private CPos pos;
     private RegionStructure<?, ?> feature;
+    private final MapPanel map;
 
     public Chest(MapPanel map) {
+        this.map = map;
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
-        content = new Content(map);
+        content = new Content();
         topBar = new TopBar(this);
         this.add(topBar, BorderLayout.NORTH);
         this.add(content, BorderLayout.CENTER);
@@ -46,6 +50,14 @@ public class Chest extends JFrame {
         this.setLocationRelativeTo(null); // center
         this.setVisible(false);
         this.setIconImage(Icons.get(this.getClass()));
+    }
+
+    public MapPanel getMap() {
+        return map;
+    }
+
+    public MapContext getContext() {
+        return map.getContext();
     }
 
     @Override
@@ -76,27 +88,23 @@ public class Chest extends JFrame {
         this.pos = pos;
     }
 
-    public void updateContent() {
-        this.updateContent(false);
+    public void generateContent() {
+        this.generateContent(false);
     }
 
     public Content getContent() {
         return content;
     }
 
-    public void update() {
-        this.topBar.update();
-    }
-
     public Pair<RegionStructure<?, ?>, CPos> getInformations() {
         return new Pair<>(this.feature, this.pos);
     }
 
-    public void updateContent(boolean indexed) {
+    public void generateContent(boolean indexed) {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(this.feature.getName()), this.pos.getX() * 16 + 9, this.pos.getZ() * 16 + 9));
         this.topBar.setIndexed(indexed);
         this.topBar.setIndexContent(0);
-        this.update();
+        this.topBar.generate(true);
     }
 
     @Override
@@ -110,20 +118,22 @@ public class Chest extends JFrame {
         private final JMenu chestMenu;
         private final JMenuBar menuBar;
         private final JLabel currentChest;
+        private int currentChestIndex;
         private int numberChest;
         private boolean indexed = false;
+        private List<List<ItemStack>> listItems;
 
         public TopBar(Chest chest) {
             this.chest = chest;
             this.indexedButton = new JButton("Spread");
             this.indexedButton.addActionListener(e -> {
                 setIndexed(!indexed);
-                update();
+                generate(false);
             });
             this.chestMenu = new JMenu("Select chest");
             this.menuBar = new JMenuBar();
             this.menuBar.add(this.chestMenu);
-            this.currentChest = new JLabel("Viewing chest " + this.chest.getContent().index);
+            this.currentChest = new JLabel("");
             this.add(this.indexedButton);
             this.add(this.menuBar);
             this.add(this.currentChest);
@@ -133,15 +143,35 @@ public class Chest extends JFrame {
             this.indexed = indexed;
         }
 
+        public int getNumberChest() {
+            return numberChest;
+        }
+
         private void update() {
+            this.chest.getContent().update(listItems == null || listItems.size() < 1 ? null : listItems.get(currentChestIndex));
+        }
+
+        private void generate(boolean initial) {
             Pair<RegionStructure<?, ?>, CPos> informations = this.chest.getInformations();
-            int numberChests = this.chest.getContent().update(informations.getFirst(), informations.getSecond(), indexed);
-            this.setNumberChest(numberChests);
+            Loot.LootFactory<?> lootFactory = Chests.get(informations.getFirst().getClass());
+            if (lootFactory != null) {
+                listItems = lootFactory.create().getLootAt(
+                    informations.getSecond(),
+                    informations.getFirst(),
+                    indexed,
+                    this.chest.getContext()
+                );
+            } else {
+                listItems = null;
+            }
+            this.setNumberChest(listItems == null ? 0 : listItems.size());
+            if (initial) this.setIndexContent(0);
+            this.update();
         }
 
         private void setIndexContent(int index) {
-            this.chest.getContent().setIndex(index);
-            this.currentChest.setText("Viewing chest " + this.chest.getContent().index);
+            this.currentChestIndex = index;
+            this.currentChest.setText("Viewing chest " + this.currentChestIndex);
         }
 
         public void setNumberChest(int numberChest) {
@@ -162,11 +192,9 @@ public class Chest extends JFrame {
     public static class Content extends JPanel {
         private static final int ROW_NUMBER = 3;
         private static final int COL_NUMBER = 9;
-        private final java.util.List<java.util.List<JButton>> list;
-        private final MapPanel mapPanel;
-        private int index = 0;
+        private final List<List<JButton>> list;
 
-        public Content(MapPanel mapPanel) {
+        public Content() {
             this.setLayout(new GridLayout(ROW_NUMBER, COL_NUMBER));
             this.list = new ArrayList<>();
             for (int row = 0; row < ROW_NUMBER; row++) {
@@ -178,97 +206,103 @@ public class Chest extends JFrame {
                 }
                 list.add(temp);
             }
-            this.mapPanel = mapPanel;
         }
 
-        public void setIndex(int index) {
-            this.index = index;
-        }
-
-        public int update(RegionStructure<?, ?> feature, CPos pos, boolean indexed) {
+        public void update(List<ItemStack> itemsList) {
             this.clean();
-            Loot.LootFactory<?> lootFactory = Chests.get(feature.getClass());
-            if (lootFactory != null) {
-                Loot loot = lootFactory.create();
-                List<List<ItemStack>> listItems = loot.getLootAt(this.mapPanel.context.worldSeed, pos, feature, indexed, this.mapPanel.context.getBiomeSource(), this.mapPanel.context.version);
-                if (listItems != null) {
-                    Iterator<ItemStack> currentIterator = listItems.get(index).iterator();
-                    for (int row = 0; row < ROW_NUMBER; row++) {
-                        List<JButton> rowButton = this.list.get(row);
-                        for (int col = 0; col < COL_NUMBER; col++) {
-                            if (!currentIterator.hasNext()) break;
-                            ItemStack itemStack = currentIterator.next();
-                            if (itemStack.isEmpty()) continue;
-                            Item item = itemStack.getItem();
-                            boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantments().isEmpty() || !item.getEffects().isEmpty();
-                            boolean isPlate = item.getName().endsWith("_plate");
-                            BufferedImage icon = Icons.getObject(item);
-                            JButton current = rowButton.get(col);
-                            current.setMargin(new Insets(0, 0, 0, 0));
-                            if (!item.getEnchantments().isEmpty()) {
-                                StringBuilder sb = new StringBuilder("<html>");
-                                for (Pair<String, Integer> enchantment : item.getEnchantments()) {
-                                    sb.append(Str.capitalize(enchantment.getFirst())).append(" ").append(Str.toRomanNumeral(enchantment.getSecond())).append("<br>");
-                                }
-                                sb.append("</html>");
-                                current.setToolTipText(sb.toString());
-                            }
-                            if (!item.getEffects().isEmpty()) {
-                                StringBuilder sb = new StringBuilder("<html>");
-                                ArrayList<Pair<Effect, Integer>> effects = item.getEffects();
-                                for (Pair<Effect, Integer> effect : effects) {
-                                    sb.append(effect.getFirst().getDescription())
-                                        .append(" ")
-                                        .append((!effect.getFirst().isInstantenous() ? (effect.getSecond()) / 20 + "s" : effect.getSecond().toString()));
-                                }
-                                sb.append("</html>");
-                                current.setToolTipText(sb.toString());
-                            }
-                            if (icon == null) {
-                                current.setText("<html>" + Str.prettifyDashed(item.getName()) + "<br>" + itemStack.getCount() + "</html>");
-                            } else {
-                                int w = icon.getWidth();
-                                int h = icon.getHeight();
-                                double scaleFactor = 64.0 / Math.max(w, h);
-                                BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
-                                // scale icon
-                                AffineTransform at = new AffineTransform();
-                                at.scale(scaleFactor, scaleFactor);
-                                AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-                                scaledIcon = scaleOp.filter(icon, scaledIcon);
-                                // set hints
-                                Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(scaledIcon.getGraphics()));
-                                // add leather
-                                doLeatherOverlay(item, w, h, scaleFactor, scaledIcon, g2d, scaleOp);
-                                if (isPlate) {
-                                    g2d.setColor(Color.DARK_GRAY);
-                                    g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-                                    g2d.drawRect(0, 0, scaledIcon.getWidth(), scaledIcon.getHeight());
-                                }
-                                if (item.getName().equals(Items.FILLED_MAP.getName())) {
-                                    ColorTintFilter colorTintFilter = new ColorTintFilter(Color.BLUE, 0.4f);
-                                    colorTintFilter.filter(scaledIcon, scaledIcon);
-                                } else if (shouldShine) {
-                                    ColorTintFilter colorTintFilter = new ColorTintFilter(Color.PINK, 0.4f);
-                                    colorTintFilter.filter(scaledIcon, scaledIcon);
-                                }
-                                // add the item count
-                                drawCount(g2d, itemStack);
-                                current.setIcon(new ImageIcon(scaledIcon));
-                            }
-                        }
-                    }
-                    return listItems.size();
-                }
+            if (itemsList == null) {
+                createEmptyChest();
+            } else {
+                createFilledChest(itemsList.iterator());
             }
+            this.repaint();
+        }
+
+        public void createEmptyChest() {
             for (int row = 0; row < ROW_NUMBER; row++) {
                 List<JButton> rowButton = this.list.get(row);
                 for (int col = 0; col < COL_NUMBER; col++) {
                     rowButton.get(col).setText("U");
                 }
             }
-            this.repaint();
-            return 0;
+        }
+
+        public void createFilledChest(Iterator<ItemStack> currentIterator) {
+            this.clean();
+            for (int row = 0; row < ROW_NUMBER; row++) {
+                List<JButton> rowButton = this.list.get(row);
+                for (int col = 0; col < COL_NUMBER; col++) {
+                    if (!currentIterator.hasNext()) break;
+                    ItemStack itemStack = currentIterator.next();
+                    if (itemStack.isEmpty()) continue;
+                    Item item = itemStack.getItem();
+                    boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantments().isEmpty() || !item.getEffects().isEmpty();
+                    boolean isPlate = item.getName().endsWith("_plate");
+                    BufferedImage icon = Icons.getObject(item);
+                    JButton current = rowButton.get(col);
+                    current.setMargin(new Insets(0, 0, 0, 0));
+                    FontMetrics fontMetrics = current.getFontMetrics(current.getFont());
+                    String enchantmentToolTip = getToolTipString(
+                        item.getEnchantments().iterator(),
+                        enchantment -> new Pair<>(
+                            String.format("<font color=%s>%s</font>",
+                                enchantment.getFirst().contains("curse") ? "red" : "#4c66be",
+                                Str.prettifyDashed(enchantment.getFirst())
+                            ),
+                            Str.toRomanNumeral(enchantment.getSecond()).replaceFirst("^I$", "")
+                        ),
+                        fontMetrics
+                    );
+                    String effectTooltip = getToolTipString(
+                        item.getEffects().iterator(),
+                        effect -> new Pair<>(
+                            String.format("<font color=%s>%s</font>",
+                                effect.getFirst().getCategory() == Effect.EffectType.BENEFICIAL ? "green" :
+                                    effect.getFirst().getCategory() == Effect.EffectType.NEUTRAL ? "white" : "red",
+//                                effect.getFirst().getColor(),
+                                Str.prettifyDashed(effect.getFirst().getDescription())
+                            ),
+
+                            (!effect.getFirst().isInstantenous() ? (effect.getSecond()) / 20 + "s" : effect.getSecond().toString())
+                        ),
+                        fontMetrics
+                    );
+                    // only set one of them (by default it's null if none)
+                    current.setToolTipText(enchantmentToolTip != null ? enchantmentToolTip : effectTooltip);
+                    if (icon == null) {
+                        current.setText("<html>" + Str.prettifyDashed(item.getName()) + "<br>" + itemStack.getCount() + "</html>");
+                    } else {
+                        int w = icon.getWidth();
+                        int h = icon.getHeight();
+                        double scaleFactor = 64.0 / Math.max(w, h);
+                        BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
+                        // scale icon
+                        AffineTransform at = new AffineTransform();
+                        at.scale(scaleFactor, scaleFactor);
+                        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                        scaledIcon = scaleOp.filter(icon, scaledIcon);
+                        // set hints
+                        Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(scaledIcon.getGraphics()));
+                        // add leather
+                        doLeatherOverlay(item, w, h, scaleFactor, scaledIcon, g2d, scaleOp);
+                        if (isPlate) {
+                            g2d.setColor(Color.DARK_GRAY);
+                            g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                            g2d.drawRect(0, 0, scaledIcon.getWidth(), scaledIcon.getHeight());
+                        }
+                        if (item.getName().equals(Items.FILLED_MAP.getName())) {
+                            ColorTintFilter colorTintFilter = new ColorTintFilter(Color.BLUE, 0.4f);
+                            colorTintFilter.filter(scaledIcon, scaledIcon);
+                        } else if (shouldShine) {
+                            ColorTintFilter colorTintFilter = new ColorTintFilter(Color.PINK, 0.4f);
+                            colorTintFilter.filter(scaledIcon, scaledIcon);
+                        }
+                        // add the item count
+                        drawCount(g2d, itemStack);
+                        current.setIcon(new ImageIcon(scaledIcon));
+                    }
+                }
+            }
         }
 
         public void clean() {
@@ -312,13 +346,38 @@ public class Chest extends JFrame {
         }
 
         public static void drawCount(Graphics2D g2d, ItemStack itemStack) {
-            g2d.setColor(Color.GRAY);
-            g2d.setStroke(new BasicStroke(2));
-            g2d.fillOval(40, 40, 20, 20);
-            char[] charArray = Integer.toString(itemStack.getCount()).toCharArray();
-            g2d.setColor(Color.WHITE);
-            g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
-            g2d.drawChars(charArray, 0, charArray.length, charArray.length == 1 ? 47 : 43, 55);
+            if (itemStack.getCount()>1){
+                g2d.setColor(Color.GRAY);
+                g2d.setStroke(new BasicStroke(2));
+                g2d.fillOval(40, 40, 20, 20);
+                char[] charArray = Integer.toString(itemStack.getCount()).toCharArray();
+                g2d.setColor(Color.WHITE);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
+                g2d.drawChars(charArray, 0, charArray.length, charArray.length == 1 ? 47 : 43, 55);
+            }
+
+        }
+
+        public static <T> String getToolTipString(Iterator<Pair<T, Integer>> properties, Function<Pair<T, Integer>, Pair<String, String>> display, FontMetrics fontMetrics) {
+            if (properties.hasNext()) {
+                StringBuilder sb = new StringBuilder("<html>");
+                while (properties.hasNext()) {
+                    Pair<T, Integer> property = properties.next();
+                    Pair<String, String> sentence = display.apply(property);
+                    if (sentence.getFirst() == null) continue;
+                    sb.append("<p style=\"text-align:center\" width=\"")
+//                        .append(fontMetrics.stringWidth(sentence.getFirst())+5)
+                        .append(100)
+                        .append("pt\">").append(sentence.getFirst());
+                    if (sentence.getSecond() != null) {
+                        sb.append(" ").append(sentence.getSecond());
+                    }
+                    sb.append("</p>");
+                    if (properties.hasNext()) sb.append("<br>");
+                }
+                return sb.toString();
+            }
+            return null;
         }
 
         @Override

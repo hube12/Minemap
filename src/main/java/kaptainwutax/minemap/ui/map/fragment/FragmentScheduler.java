@@ -41,7 +41,7 @@ public class FragmentScheduler {
                 RPos nearest = this.getNearestScheduled();
 
                 if (nearest == null) {
-                    try {Thread.sleep(10);} catch (InterruptedException e) {
+                    try {Thread.sleep(10);} catch (InterruptedException e) { //tada!
                         Logger.LOGGER.severe(e.toString());
                         e.printStackTrace();
                     }

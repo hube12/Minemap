@@ -85,6 +85,22 @@ public class MapContext {
         return this;
     }
 
+    public long getWorldSeed() {
+        return worldSeed;
+    }
+
+    public Dimension getDimension() {
+        return dimension;
+    }
+
+    public MCVersion getVersion() {
+        return version;
+    }
+
+    public ThreadLocal<Map<Dimension, ChunkGenerator>> getChunkGenerators() {
+        return chunkGenerators;
+    }
+
     public ChunkGenerator getChunkGenerator() {
         return this.getChunkGenerator(this.dimension);
     }
