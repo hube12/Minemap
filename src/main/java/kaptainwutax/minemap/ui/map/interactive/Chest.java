@@ -44,7 +44,7 @@ public class Chest extends JFrame {
         this.map = map;
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
-        GridLayout gridLayout=new GridLayout(-1,2,15,15);
+        GridLayout gridLayout = new GridLayout(-1, 2, 15, 15);
         content = new JPanel();
         content.setLayout(gridLayout);
         for (int i = 0; i < MAX_NUMBER_CHESTS; i++) {
@@ -53,7 +53,7 @@ public class Chest extends JFrame {
         content.add(chestContents.get(0));
         topBar = new TopBar(this);
         this.add(topBar, BorderLayout.NORTH);
-        JScrollPane scrollPane=new JScrollPane(content);
+        JScrollPane scrollPane = new JScrollPane(content);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane, BorderLayout.CENTER);
@@ -136,31 +136,39 @@ public class Chest extends JFrame {
         private int numberChest;
         private boolean indexed = false;
         private boolean showAll = false;
-        private final static String[] indexedString={"Spread","Reassemble"};
-        private final static String[] showString={"Show All","Show One"};
+        private final static String[] indexedString = {"Spread", "Reassemble"};
+        private final static String[] showString = {"Show All", "Show One"};
         private List<List<ItemStack>> listItems;
 
         public TopBar(Chest chest) {
             this.chest = chest;
-            this.indexedButton = new JButton(indexedString[indexed?1:0]);
+            this.indexedButton = new JButton(indexedString[indexed ? 1 : 0]);
             this.indexedButton.addActionListener(e -> {
                 setIndexed(!indexed);
                 generate(false);
-                this.indexedButton.setText(indexedString[indexed?1:0]);
+                this.indexedButton.setText(indexedString[indexed ? 1 : 0]);
             });
-            this.showAllButton = new JButton(showString[showAll?1:0]);
+            this.showAllButton = new JButton(showString[showAll ? 1 : 0]);
             this.showAllButton.addActionListener(e -> {
                 setShowAll(!showAll);
                 update(true);
-                this.showAllButton.setText(showString[showAll?1:0]);
+                this.showAllButton.setText(showString[showAll ? 1 : 0]);
             });
-            this.centerButton=new JButton("Center Chest");
+            this.centerButton = new JButton("Center Chest");
             this.centerButton.addActionListener(e -> {
+                GraphicsConfiguration config = this.chest.getGraphicsConfiguration();
+                if (config != null) {
+                    GraphicsDevice currentScreen = config.getDevice();
+                    if (currentScreen != null) {
+                        JFrame dummy = new JFrame(currentScreen.getDefaultConfiguration());
+                        this.chest.setLocationRelativeTo(dummy);
+                        dummy.dispose();
+                        return;
+                    }
+                }
                 this.chest.setLocationRelativeTo(null);
-                this.chest.revalidate();
-                this.chest.repaint();
             });
-            this.pinButton=new JToggleButton("Always on top");
+            this.pinButton = new JToggleButton("Always on top");
             this.pinButton.addActionListener(e -> {
                 this.chest.setAlwaysOnTop(!this.chest.isAlwaysOnTop());
                 this.chest.revalidate();
@@ -198,27 +206,29 @@ public class Chest extends JFrame {
 
         /**
          * Update the chest content
+         *
          * @param hasChanged tri state, if true then
          */
         private void update(Boolean hasChanged) {
+            if (listItems == null) return;
             List<ChestContent> chestContents = this.chest.getChestContents();
             if (hasChanged) {
-                Dimension dimension=this.chest.getPreferredSize();
-                LayoutManager layoutManager=this.chest.getContent().getLayout();
-                int factor=showAll && listItems.size()>1?2:1;
-                if (layoutManager instanceof GridLayout){
-                    GridLayout gridLayout=(GridLayout) layoutManager;
+                Dimension dimension = this.chest.getPreferredSize();
+                LayoutManager layoutManager = this.chest.getContent().getLayout();
+                int factor = showAll && listItems.size() > 1 ? 2 : 1;
+                if (layoutManager instanceof GridLayout) {
+                    GridLayout gridLayout = (GridLayout) layoutManager;
                     gridLayout.setColumns(factor);
                 }
-                this.chest.setSize(new Dimension(dimension.width*factor,dimension.height*(showAll?(listItems.size()/2+listItems.size()%2):1)));
+                this.chest.setSize(new Dimension(dimension.width * factor, dimension.height * (showAll ? (listItems.size() / 2 + listItems.size() % 2) : 1)));
 
                 for (int i = 1; i < chestContents.size(); i++) {
                     if (!showAll) {
                         this.chest.getContent().remove(chestContents.get(i)); // this will not fail if the component was not there
                     } else {
-                        if (i<listItems.size()){
+                        if (i < listItems.size()) {
                             this.chest.getContent().add(chestContents.get(i));
-                        }else{
+                        } else {
                             this.chest.getContent().remove(chestContents.get(i));
                         }
                     }
@@ -228,7 +238,7 @@ public class Chest extends JFrame {
                 for (int i = 0; i < listItems.size(); i++) {
                     this.chest.getChestContents().get(i).update(listItems == null || listItems.size() < 1 ? null : listItems.get(i));
                 }
-            }else{
+            } else {
                 this.chest.getChestContents().get(0).update(listItems == null || listItems.size() < 1 ? null : listItems.get(currentChestIndex));
             }
             this.chest.getContent().revalidate();
@@ -245,14 +255,15 @@ public class Chest extends JFrame {
                     indexed,
                     this.chest.getContext()
                 );
+                this.setNumberChest(listItems == null ? 0 : listItems.size());
+                if (initial) {
+                    this.setIndexContent(0);
+                }
+                this.update(true);
             } else {
                 listItems = null;
             }
-            this.setNumberChest(listItems == null ? 0 : listItems.size());
-            if (initial){
-                this.setIndexContent(0);
-            }
-            this.update(true);
+
         }
 
         private void setIndexContent(int index) {
