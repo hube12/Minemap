@@ -32,21 +32,32 @@ import java.util.function.Function;
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class Chest extends JFrame {
-    private final Content content;
+    private final JPanel content;
+    private final List<ChestContent> chestContents = new ArrayList<>();
     private final TopBar topBar;
+    private final MapPanel map;
+    private final static int MAX_NUMBER_CHESTS = 4; //TODO find the max we will support
     private CPos pos;
     private RegionStructure<?, ?> feature;
-    private final MapPanel map;
 
     public Chest(MapPanel map) {
         this.map = map;
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
-        content = new Content();
+        GridLayout gridLayout=new GridLayout(-1,2,15,15);
+        content = new JPanel();
+        content.setLayout(gridLayout);
+        for (int i = 0; i < MAX_NUMBER_CHESTS; i++) {
+            chestContents.add(new ChestContent());
+        }
+        content.add(chestContents.get(0));
         topBar = new TopBar(this);
         this.add(topBar, BorderLayout.NORTH);
-        this.add(content, BorderLayout.CENTER);
-        this.setSize(this.getSize());
+        JScrollPane scrollPane=new JScrollPane(content);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        this.add(scrollPane, BorderLayout.CENTER);
+        this.setSize(this.getPreferredSize());
         this.setLocationRelativeTo(null); // center
         this.setVisible(false);
         this.setIconImage(Icons.get(this.getClass()));
@@ -60,10 +71,6 @@ public class Chest extends JFrame {
         return map.getContext();
     }
 
-    @Override
-    public Dimension getSize() {
-        return this.getPreferredSize();
-    }
 
     @Override
     public String getName() {
@@ -92,7 +99,11 @@ public class Chest extends JFrame {
         this.generateContent(false);
     }
 
-    public Content getContent() {
+    public List<ChestContent> getChestContents() {
+        return chestContents;
+    }
+
+    public JPanel getContent() {
         return content;
     }
 
@@ -115,20 +126,45 @@ public class Chest extends JFrame {
     public static class TopBar extends JPanel {
         private final Chest chest;
         private final JButton indexedButton;
+        private final JButton showAllButton;
+        private final JButton centerButton;
+        private final JToggleButton pinButton;
         private final JMenu chestMenu;
         private final JMenuBar menuBar;
         private final JLabel currentChest;
         private int currentChestIndex;
         private int numberChest;
         private boolean indexed = false;
+        private boolean showAll = false;
+        private final static String[] indexedString={"Spread","Reassemble"};
+        private final static String[] showString={"Show All","Show One"};
         private List<List<ItemStack>> listItems;
 
         public TopBar(Chest chest) {
             this.chest = chest;
-            this.indexedButton = new JButton("Spread");
+            this.indexedButton = new JButton(indexedString[indexed?1:0]);
             this.indexedButton.addActionListener(e -> {
                 setIndexed(!indexed);
                 generate(false);
+                this.indexedButton.setText(indexedString[indexed?1:0]);
+            });
+            this.showAllButton = new JButton(showString[showAll?1:0]);
+            this.showAllButton.addActionListener(e -> {
+                setShowAll(!showAll);
+                update(true);
+                this.showAllButton.setText(showString[showAll?1:0]);
+            });
+            this.centerButton=new JButton("Center Chest");
+            this.centerButton.addActionListener(e -> {
+                this.chest.setLocationRelativeTo(null);
+                this.chest.revalidate();
+                this.chest.repaint();
+            });
+            this.pinButton=new JToggleButton("Always on top");
+            this.pinButton.addActionListener(e -> {
+                this.chest.setAlwaysOnTop(!this.chest.isAlwaysOnTop());
+                this.chest.revalidate();
+                this.chest.repaint();
             });
             this.chestMenu = new JMenu("Select chest");
             this.menuBar = new JMenuBar();
@@ -137,6 +173,15 @@ public class Chest extends JFrame {
             this.add(this.indexedButton);
             this.add(this.menuBar);
             this.add(this.currentChest);
+            this.add(this.showAllButton);
+            this.add(this.centerButton);
+            this.add(this.pinButton);
+        }
+
+        private void setShowAll(boolean showAll) {
+            this.showAll = showAll;
+            this.chestMenu.setVisible(!this.showAll);
+            this.currentChest.setVisible(!this.showAll);
         }
 
         private void setIndexed(boolean indexed) {
@@ -148,7 +193,46 @@ public class Chest extends JFrame {
         }
 
         private void update() {
-            this.chest.getContent().update(listItems == null || listItems.size() < 1 ? null : listItems.get(currentChestIndex));
+            this.update(false);
+        }
+
+        /**
+         * Update the chest content
+         * @param hasChanged tri state, if true then
+         */
+        private void update(Boolean hasChanged) {
+            List<ChestContent> chestContents = this.chest.getChestContents();
+            if (hasChanged) {
+                Dimension dimension=this.chest.getPreferredSize();
+                LayoutManager layoutManager=this.chest.getContent().getLayout();
+                int factor=showAll && listItems.size()>1?2:1;
+                if (layoutManager instanceof GridLayout){
+                    GridLayout gridLayout=(GridLayout) layoutManager;
+                    gridLayout.setColumns(factor);
+                }
+                this.chest.setSize(new Dimension(dimension.width*factor,dimension.height*(showAll?(listItems.size()/2+listItems.size()%2):1)));
+
+                for (int i = 1; i < chestContents.size(); i++) {
+                    if (!showAll) {
+                        this.chest.getContent().remove(chestContents.get(i)); // this will not fail if the component was not there
+                    } else {
+                        if (i<listItems.size()){
+                            this.chest.getContent().add(chestContents.get(i));
+                        }else{
+                            this.chest.getContent().remove(chestContents.get(i));
+                        }
+                    }
+                }
+            }
+            if (showAll) {
+                for (int i = 0; i < listItems.size(); i++) {
+                    this.chest.getChestContents().get(i).update(listItems == null || listItems.size() < 1 ? null : listItems.get(i));
+                }
+            }else{
+                this.chest.getChestContents().get(0).update(listItems == null || listItems.size() < 1 ? null : listItems.get(currentChestIndex));
+            }
+            this.chest.getContent().revalidate();
+            this.chest.getContent().repaint();
         }
 
         private void generate(boolean initial) {
@@ -165,8 +249,10 @@ public class Chest extends JFrame {
                 listItems = null;
             }
             this.setNumberChest(listItems == null ? 0 : listItems.size());
-            if (initial) this.setIndexContent(0);
-            this.update();
+            if (initial){
+                this.setIndexContent(0);
+            }
+            this.update(true);
         }
 
         private void setIndexContent(int index) {
@@ -189,12 +275,12 @@ public class Chest extends JFrame {
         }
     }
 
-    public static class Content extends JPanel {
+    public static class ChestContent extends JPanel {
         private static final int ROW_NUMBER = 3;
         private static final int COL_NUMBER = 9;
         private final List<List<JButton>> list;
 
-        public Content() {
+        public ChestContent() {
             this.setLayout(new GridLayout(ROW_NUMBER, COL_NUMBER));
             this.list = new ArrayList<>();
             for (int row = 0; row < ROW_NUMBER; row++) {
@@ -346,7 +432,7 @@ public class Chest extends JFrame {
         }
 
         public static void drawCount(Graphics2D g2d, ItemStack itemStack) {
-            if (itemStack.getCount()>1){
+            if (itemStack.getCount() > 1) {
                 g2d.setColor(Color.GRAY);
                 g2d.setStroke(new BasicStroke(2));
                 g2d.fillOval(40, 40, 20, 20);
@@ -355,7 +441,6 @@ public class Chest extends JFrame {
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD));
                 g2d.drawChars(charArray, 0, charArray.length, charArray.length == 1 ? 47 : 43, 55);
             }
-
         }
 
         public static <T> String getToolTipString(Iterator<Pair<T, Integer>> properties, Function<Pair<T, Integer>, Pair<String, String>> display, FontMetrics fontMetrics) {
