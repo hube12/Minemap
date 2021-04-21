@@ -73,8 +73,8 @@ public class MapManager {
             this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(pos.getX(), pos.getZ()));
 
             SwingUtilities.invokeLater(() -> {
-                this.panel.leftBar.tooltip.updateBiomeDisplay(x, z);
-                this.panel.leftBar.tooltip.tooltip.repaint();
+                this.panel.getLeftBar().tooltip.updateBiomeDisplay(x, z);
+                this.panel.getLeftBar().tooltip.tooltip.repaint();
                 this.panel.repaint();
             });
 
@@ -94,7 +94,7 @@ public class MapManager {
                         toolsList.add(selectedTool);
                         selectedTool.addPoint(pos);
                     }
-                    this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
+                    this.panel.getRightBar().tooltip.updateToolsMetrics(toolsList);
                 }
             }
         }));
@@ -134,7 +134,7 @@ public class MapManager {
 
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
-        settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible())));
+        settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.getLeftBar().settings.setVisible(!panel.getLeftBar().settings.isVisible())));
 
         JMenuItem chest = new JMenuItem("Chest");
         chest.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -223,7 +223,7 @@ public class MapManager {
 
                 if (manager.panel.getContext().getLayerId() != layerId) {
                     manager.panel.getContext().setLayerId(layerId);
-                    manager.panel.leftBar.settings.layerDropdown.selectIfPresent(layerId);
+                    manager.panel.getLeftBar().settings.layerDropdown.selectIfPresent(layerId);
                     manager.panel.restart();
                 }
             }
@@ -285,7 +285,7 @@ public class MapManager {
         if (!toolsList.remove(tool)) {
             System.out.println("This is unexpected");
         }
-        this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
+        this.panel.getRightBar().tooltip.updateToolsMetrics(toolsList);
     }
 
     public Vec3i getScreenSize() {

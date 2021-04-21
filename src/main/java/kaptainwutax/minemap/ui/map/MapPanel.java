@@ -21,48 +21,45 @@ public class MapPanel extends JPanel {
 
     public final MapContext context;
     public final MapManager manager;
-    public final MapLeftSideBar leftBar;
-    public final MapRightSideBar rightBar;
     public final int threadCount;
     public FragmentScheduler scheduler;
-    private final MapCanvas canvas;
+    public final MapView mapView;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
-//        this.setLayout(new BorderLayout());
-
+//        this.setLayout(new OverlayLayout());
         this.context = new MapContext(version, dimension, worldSeed);
         this.manager = new MapManager(this);
-        this.leftBar = new MapLeftSideBar(this);
-        this.rightBar = new MapRightSideBar(this);
-        this.canvas = new MapCanvas(this);
+        this.mapView = new MapView(this);
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
-//        this.add(this.leftBar, BorderLayout.WEST);
-//        this.add(this.rightBar, BorderLayout.EAST);
-        this.add(this.canvas);
+        this.add(mapView);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
+                MapPanel.this.mapView.setSize(getSize());
+                MapPanel.this.mapView.revalidate();
+                MapPanel.this.mapView.repaint();
                 if (e.getComponent().getSize().width <= 600) {
-                    if (leftBar.settings.isVisible()) {
-                        leftBar.settings.setVisible(false);
-                        leftBar.settings.isHiddenForSize = true;
+                    if (getLeftBar().settings.isVisible()) {
+                        getLeftBar().settings.setVisible(false);
+                        getLeftBar().settings.isHiddenForSize = true;
                     }
-                    if (rightBar.tooltip.isVisible()) {
-                        rightBar.tooltip.setVisible(false);
-                        rightBar.tooltip.isHiddenForSize = true;
+                    if (getRightBar().tooltip.isVisible()) {
+                        getRightBar().tooltip.setVisible(false);
+                        getRightBar().tooltip.isHiddenForSize = true;
                     }
                 } else {
-                    if (leftBar.settings.isHiddenForSize) {
-                        leftBar.settings.setVisible(true);
-                        leftBar.settings.isHiddenForSize = false;
+                    if (getLeftBar().settings.isHiddenForSize) {
+                        getLeftBar().settings.setVisible(true);
+                        getLeftBar().settings.isHiddenForSize = false;
                     }
-                    if (rightBar.tooltip.isHiddenForSize) {
-                        rightBar.tooltip.setVisible(true);
-                        rightBar.tooltip.isHiddenForSize = false;
+                    if (getRightBar().tooltip.isHiddenForSize) {
+                        getRightBar().tooltip.setVisible(true);
+                        getRightBar().tooltip.isHiddenForSize = false;
                     }
                 }
             }
         });
+
         this.restart();
     }
 
@@ -83,11 +80,18 @@ public class MapPanel extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
-        this.canvas.setSize(new java.awt.Dimension(getWidth(),getHeight()));
         this.scheduler.purge();
-        this.canvas.repaint();
-        this.drawMap(this.canvas.getGraphics());
-        this.drawCrossHair(this.canvas.getGraphics());
+        this.mapView.paintComponent(graphics);
+//        this.drawMap(graphics);
+//        this.drawCrossHair(graphics);
+    }
+
+    public MapLeftSideBar getLeftBar() {
+        return mapView.leftBar;
+    }
+
+    public MapRightSideBar getRightBar() {
+        return mapView.rightBar;
     }
 
     public void drawMap(Graphics graphics) {

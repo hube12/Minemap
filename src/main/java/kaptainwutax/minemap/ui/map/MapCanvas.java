@@ -2,8 +2,6 @@ package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import org.lwjgl.awthacks.NonClearGraphics;
-import org.lwjgl.awthacks.NonClearGraphics2D;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
 
@@ -23,7 +21,14 @@ public class MapCanvas extends AWTGLCanvas {
     }
 
     @Override
+    public void setSize(Dimension d) {
+        super.setSize(d);
+        System.out.println("FFF "+d);
+    }
+
+    @Override
     public void initGL() {
+        System.out.println("OpenGL version: " + effective.majorVersion + "." + effective.minorVersion + " (Profile: " + effective.profile + ")");
         createCapabilities();
         glClearColor(0f, 1f, 1f, 1);
     }
@@ -34,7 +39,7 @@ public class MapCanvas extends AWTGLCanvas {
         drawQueue.forEach((fragment, info) -> {
             try {
                 fragment.build();
-                if (fragment.isBuilt()) fragment.drawBiomes(info,map.getWidth(),map.getHeight());
+                if (fragment.isBuilt()) fragment.drawBiomes(info, map.getWidth(), map.getHeight());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -45,28 +50,29 @@ public class MapCanvas extends AWTGLCanvas {
     @Override
     public void repaint() {
         super.repaint();
-        if(SwingUtilities.isEventDispatchThread()){
+        if (SwingUtilities.isEventDispatchThread()) {
+            if (!this.isValid()) return;
             render();
         } else {
             SwingUtilities.invokeLater(this::render);
         }
     }
 
-    @Override
-    public Graphics getGraphics() {
-        Graphics graphics = super.getGraphics();
-        if(graphics instanceof Graphics2D){
-            return new NonClearGraphics2D((Graphics2D) graphics);
-        } else {
-            return new NonClearGraphics(graphics);
-        }
-    }
+//    @Override
+//    public Graphics getGraphics() {
+//        Graphics graphics = super.getGraphics();
+//        if(graphics instanceof Graphics2D){
+//            return new NonClearGraphics2D((Graphics2D) graphics);
+//        } else {
+//            return new NonClearGraphics(graphics);
+//        }
+//    }
 
 
     public static GLData generateGLData() {
         GLData data = new GLData();
-        data.samples = 4;
-        data.swapInterval = 1;
+//        data.samples = 4;
+//        data.swapInterval = 1;
         return data;
     }
 }

@@ -38,7 +38,7 @@ import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME
  */
 public class TestVulkan {
     private static long debugMessenger;
-    private static final boolean ENABLE_VALIDATION_LAYERS = DEBUG.get(true);
+    private static final boolean ENABLE_VALIDATION_LAYERS = DEBUG.get(false);
     private static final Set<String> VALIDATION_LAYERS;
     static {
         if(ENABLE_VALIDATION_LAYERS) {

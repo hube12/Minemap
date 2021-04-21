@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
+import jdk.internal.util.Preconditions;
 import kaptainwutax.biomeutils.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.featureutils.Feature;
@@ -20,6 +21,8 @@ import sun.nio.ch.DirectBuffer;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.*;
@@ -316,9 +319,9 @@ public class Fragment {
     public void destroy() {
         deleteTexture();
         deleteFBO();
-        ((DirectBuffer) this.imageCache).cleaner().clean();
-        this.features.clear();
-        this.activeBiomesCache.clear();
+       // ((DirectBuffer) this.imageCache).cleaner().clean(); //TODO fixme
+//        this.features.clear();
+//        this.activeBiomesCache.clear();
     }
 
     public void deleteTexture() {
@@ -383,6 +386,8 @@ public class Fragment {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.biomeCache.length, this.biomeCache.length, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.imageCache);
         return true;
     }
+
+
 
 
     public Rectangle getRectangle() {
