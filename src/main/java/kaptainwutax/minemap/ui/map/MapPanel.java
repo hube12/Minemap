@@ -23,21 +23,26 @@ public class MapPanel extends JPanel {
     public final MapManager manager;
     public final int threadCount;
     public FragmentScheduler scheduler;
-    public final MapView mapView;
+    public final MapLeftSideBar leftBar;
+    public final MapRightSideBar rightBar;
+    private final MapCanvas canvas;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
-//        this.setLayout(new OverlayLayout());
+        this.setLayout(new OverlayLayout(this));
         this.context = new MapContext(version, dimension, worldSeed);
         this.manager = new MapManager(this);
-        this.mapView = new MapView(this);
+        this.canvas = new MapCanvas(this);
+
+        this.leftBar = new MapLeftSideBar(this);
+        this.rightBar = new MapRightSideBar(this);
+        this.add(this.canvas);
+        this.add(this.leftBar);
+        this.add(this.rightBar);
+        this.setMinimumSize(new java.awt.Dimension(200,200));
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
-        this.add(mapView);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                MapPanel.this.mapView.setSize(getSize());
-                MapPanel.this.mapView.revalidate();
-                MapPanel.this.mapView.repaint();
                 if (e.getComponent().getSize().width <= 600) {
                     if (getLeftBar().settings.isVisible()) {
                         getLeftBar().settings.setVisible(false);
@@ -81,17 +86,17 @@ public class MapPanel extends JPanel {
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
         this.scheduler.purge();
-        this.mapView.paintComponent(graphics);
-//        this.drawMap(graphics);
-//        this.drawCrossHair(graphics);
+        canvas.repaint();
+        this.drawMap(graphics);
+        this.drawCrossHair(graphics);
     }
 
     public MapLeftSideBar getLeftBar() {
-        return mapView.leftBar;
+        return leftBar;
     }
 
     public MapRightSideBar getRightBar() {
-        return mapView.rightBar;
+        return rightBar;
     }
 
     public void drawMap(Graphics graphics) {

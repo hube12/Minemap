@@ -80,6 +80,10 @@ dependencies {
     // Our awt simplification
     //https://oss.sonatype.org/content/repositories/snapshots/org/lwjglx/lwjgl3-awt/0.1.9-SNAPSHOT/lwjgl3-awt-0.1.9-20210121.080449-2.jar
     implementation ("org.lwjglx:lwjgl3-awt:${lwjglAwtVersion}")
+
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
+    testImplementation('com.github.romankh3:image-comparison:4.4.0')
+    testRuntime('org.junit.jupiter:junit-jupiter-engine:5.4.2')
 }
 
 application {
@@ -90,4 +94,19 @@ shadowJar {
     // this needs to be removed once https://github.com/johnrengelman/shadow/issues/663 is solved
     mainClassName="kaptainwutax.minemap.MineMap"
     archiveFileName = "MineMap-${minemap_version}.jar"
+}
+
+test {
+    useJUnitPlatform {
+        includeEngines("junit-jupiter")
+        maxHeapSize = "1G"
+    }
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut", "standardError"
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+        showExceptions true
+        showCauses true
+        showStackTraces true
+    }
 }
