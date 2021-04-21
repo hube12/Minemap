@@ -67,8 +67,11 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
     runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
 
-    // GLFW (natives?)
-//    implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    // GLFW
+    implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-macos"
     // STB (natives?)
 //    implementation "org.lwjgl:lwjgl-stb:${lwjglVersion}"
 

@@ -13,13 +13,19 @@ import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.minemap.util.ui.Graphic;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL33;
+import sun.nio.ch.DirectBuffer;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
-import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.*;
+
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL30.*;
 
 public class Fragment {
 
@@ -31,21 +37,22 @@ public class Fragment {
     private int layerIdCache;
     private int[][] biomeCache;
     private Set<Biome> activeBiomesCache;
-    private BufferedImage imageCache;
+    private ByteBuffer imageCache;
 
     private Map<Feature<?, ?>, List<BPos>> features;
     private BPos hoveredPos;
     private BPos clickedPos;
+
+    private Integer texture = null;
+    private Integer fbo = null;
 
     public Fragment(int blockX, int blockZ, int regionSize, MapContext context) {
         this.blockX = blockX;
         this.blockZ = blockZ;
         this.regionSize = regionSize;
         this.context = context;
-
         if (this.context != null) {
             this.refreshBiomeCache();
-            this.refreshImageCache();
             this.generateFeatures();
         }
     }
@@ -56,6 +63,26 @@ public class Fragment {
 
     public Fragment(RPos pos, MapContext context) {
         this(pos.toBlockPos(), pos.getRegionSize(), context);
+    }
+    public boolean isInstantiated(){
+        return context != null && biomeCache != null && imageCache != null;
+    }
+    public boolean isBuilt() {
+        return isInstantiated() && texture != null && fbo != null;
+    }
+
+    public void build() throws Exception {
+        this.refreshBiomeCache();
+        if (!isInstantiated()) return;
+        if (isBuilt()) return;
+        if (!createTexture()) throw new Exception("Failed to create Texture");
+        if (!createFBO()) {
+            deleteTexture();
+            throw new Exception("Failed to create FBO");
+        }
+        unbindTexture();
+        unbindFBO();
+
     }
 
     public int getX() {
@@ -74,14 +101,44 @@ public class Fragment {
         return this.context;
     }
 
-    public void drawBiomes(Graphics graphics, DrawInfo info) {
-        this.refreshBiomeCache();
-        this.refreshImageCache();
+    public Integer getTexture() {
+        return texture;
+    }
 
-        if (this.imageCache != null && this.context.getSettings().showBiomes) {
-            graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
+    public Integer getFbo() {
+        return fbo;
+    }
+
+    public void drawBiomes(DrawInfo info, int width, int height) {
+        if (!isBuilt()) return;
+
+        if (this.imageCache != null && this.texture != null && this.fbo != null && this.context.getSettings().showBiomes) {
+            double sX = info.x / (double) width * 2.0 - 1.0;
+            double sY = info.y / (double) height * 2.0 - 1.0;
+            double iX = info.width / (double) width * 2.0;
+            double iY = info.height / (double) height * 2.0;
+            glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+            glBegin(GL_QUADS);
+            glTexCoord2f(0, 0);
+            glVertex2d(sX, sY);
+            glTexCoord2f(1, 0);
+            glVertex2d(sX + iX, sY);
+            glTexCoord2f(1, 1);
+            glVertex2d(sX + iX, sY + iY);
+            glTexCoord2f(0, 1);
+            glVertex2d(sX, sY + iY);
+            glEnd();
+            glDisable(GL_TEXTURE_2D);
+//            System.out.println(sX+" "+sY+" "+iX+" "+iY);
+
+            unbindTexture();
         }
+    }
 
+    public void drawGrid(Graphics graphics, DrawInfo info) {
+        if (this.context==null) return;
         if (this.context.getSettings().showGrid) {
             Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
@@ -161,7 +218,7 @@ public class Fragment {
     }
 
     public Map<Feature<?, ?>, List<BPos>> getFeatures(int width, int height, BPos checkPos) {
-        if (checkPos == null || this.context == null || !this.context.getSettings().showFeatures) {
+        if (checkPos == null || this.context == null || !this.context.getSettings().showFeatures || this.features == null) {
             return Collections.emptyMap();
         }
 
@@ -179,6 +236,7 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
+        if (this.context==null) return;
         if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId()) return;
 
         this.layerIdCache = this.context.getLayerId();
@@ -196,19 +254,20 @@ public class Fragment {
             }
         }
 
-        this.refreshImageCache();
+        this.refreshBufferCache();
     }
 
-    private void refreshImageCache() {
+    private void refreshBufferCache() {
         if (this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache)) return;
 
         int scaledSize = this.biomeCache.length;
         this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
-        this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
+        this.imageCache = BufferUtils.createByteBuffer(scaledSize * scaledSize * 4); // we have to use 4 here (https://www.khronos.org/opengl/wiki/Common_Mistakes#Texture_upload_and_pixel_reads)
+
 
         for (int x = 0; x < scaledSize; x++) {
             for (int z = 0; z < scaledSize; z++) {
-                Biome biome = Biome.REGISTRY.get(this.biomeCache[x][z]);
+                Biome biome = Biome.REGISTRY.get(this.biomeCache[z][x]); // warning this need to be inverted for gpu
                 if (biome == null) continue;
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 
@@ -216,9 +275,13 @@ public class Fragment {
                     color = makeInactive(color);
                 }
 
-                this.imageCache.setRGB(x, z, color.getRGB());
+                this.imageCache.put((byte) color.getRed());
+                this.imageCache.put((byte) color.getGreen());
+                this.imageCache.put((byte) color.getBlue());
+                this.imageCache.put((byte) (0));// no alpha (used to smooth gpu rendering)
             }
         }
+        this.imageCache.flip();
     }
 
     private Color makeInactive(Color c) {
@@ -244,6 +307,83 @@ public class Fragment {
         if (blockX < this.getX() || blockX >= this.getX() + this.getSize()) return false;
         return blockZ >= this.getZ() && blockZ < this.getZ() + this.getSize();
     }
+
+
+    public void unbindTexture() {
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    public void destroy() {
+        deleteTexture();
+        deleteFBO();
+        ((DirectBuffer) this.imageCache).cleaner().clean();
+        this.features.clear();
+        this.activeBiomesCache.clear();
+    }
+
+    public void deleteTexture() {
+        unbindTexture();
+        if (texture != null) {
+            glDeleteTextures(texture);
+        }
+    }
+
+    public void unbindFBO() {
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    }
+
+    public void deleteFBO() {
+        unbindFBO();
+        if (fbo != null) {
+            glDeleteFramebuffers(fbo);
+        }
+    }
+
+    public boolean createFBO() {
+        if (this.fbo != null) {
+            this.deleteFBO();
+        }
+        if (this.texture == null) {
+            return false;
+        }
+        // create frame buffer
+        this.fbo = glGenFramebuffers();
+        glBindFramebuffer(GL_FRAMEBUFFER, this.fbo);
+        // bind the texture to the fbo
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this.texture, 0);
+        return glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE;
+    }
+
+    public boolean createTexture() {
+        if (this.texture != null) {
+            this.deleteTexture();
+        }
+        if (this.imageCache == null) {
+            return false;
+        }
+        this.texture = glGenTextures();
+        glBindTexture(GL_TEXTURE_2D, this.texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        // set wrap mode
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL33.GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL33.GL_CLAMP_TO_EDGE);
+        return this.refreshTextureCache();
+    }
+
+    public boolean refreshTextureCache() {
+        if (texture == null) {
+            return false;
+        }
+        if (this.imageCache == null) {
+            return false;
+        }
+        glBindTexture(GL_TEXTURE_2D, this.texture);
+        this.imageCache.rewind(); // re reading it
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, this.biomeCache.length, this.biomeCache.length, 0, GL_RGBA, GL_UNSIGNED_BYTE, this.imageCache);
+        return true;
+    }
+
 
     public Rectangle getRectangle() {
         return new Rectangle(blockX, blockZ, regionSize, regionSize);

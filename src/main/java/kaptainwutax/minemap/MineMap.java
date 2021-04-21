@@ -151,16 +151,16 @@ public class MineMap extends JFrame {
         MapSettings settings = new MapSettings(version, OVERWORLD).refresh();
         MapContext context = new MapContext(seed, settings);
         settings.hide(SlimeChunk.class, Mineshaft.class);
-        Fragment fragment = new Fragment(blockX, blockZ, size, context);
-        BufferedImage screenshot = getScreenShot(fragment, size, size);
-        ImageIO.write(screenshot, "png", new File(context.worldSeed + ".png"));
-        System.out.println("Done!");
+//        Fragment fragment = new Fragment(blockX, blockZ, size, context);
+//        BufferedImage screenshot = getScreenShot(fragment, size, size);
+//        ImageIO.write(screenshot, "png", new File(context.worldSeed + ".png"));
+//        System.out.println("Done!");
     }
 
     private static BufferedImage getScreenShot(Fragment fragment, int width, int height) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         DrawInfo info = new DrawInfo(0, 0, width, height);
-        fragment.drawBiomes(image.getGraphics(), info);
+        //fragment.drawBiomes(image.getGraphics(), info);
         fragment.drawFeatures(image.getGraphics(), info);
         return image;
     }

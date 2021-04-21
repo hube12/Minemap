@@ -10,6 +10,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,6 +33,17 @@ public class WorldTabs extends JTabbedPane {
             if (map == null) return false;
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                JTabbedPane tabbedPane = (JTabbedPane) e.getComponent();
+                int tabCount = tabbedPane.getTabCount();
+                for (int i = 0; i < tabCount; i++) {
+                    Component c = tabbedPane.getComponentAt(i);
+                    c.setPreferredSize(new java.awt.Dimension(c.getSize().width, c.getPreferredSize().height));
+                }
+            }
         });
     }
 

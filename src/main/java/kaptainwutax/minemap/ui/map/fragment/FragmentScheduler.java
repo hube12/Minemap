@@ -21,13 +21,22 @@ public class FragmentScheduler {
 
     protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
     private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
-    public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
-        @Override
-        public void drawBiomes(Graphics graphics, DrawInfo info) { }
+    public static Fragment LOADING_FRAGMENT;
 
-        @Override
-        public void drawFeatures(Graphics graphics, DrawInfo info) { }
-    };
+    static {
+        try {
+            LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
+                @Override
+                public void drawBiomes(DrawInfo info, int w, int h) { }
+
+                @Override
+                public void drawFeatures(Graphics graphics, DrawInfo info) { }
+            };
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
     protected ThreadPool executor;
     protected MapPanel listener;
@@ -79,7 +88,9 @@ public class FragmentScheduler {
 
     public void purge() {
         this.scheduledRegions.removeIf(region -> !this.isInBounds(region));
+        this.fragments.forEach((key, value) -> {if (!this.isInBounds(key)) value.destroy();}); // very important
         this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
+        System.gc();
     }
 
     public RPos getNearestScheduled() {

@@ -8,8 +8,6 @@ import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import org.lwjgl.opengl.awt.AWTGLCanvas;
-import org.lwjgl.opengl.awt.GLData;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,24 +25,21 @@ public class MapPanel extends JPanel {
     public final MapRightSideBar rightBar;
     public final int threadCount;
     public FragmentScheduler scheduler;
-    private AWTGLCanvas canvas;
+    private final MapCanvas canvas;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
-        this.setLayout(new BorderLayout());
+//        this.setLayout(new BorderLayout());
 
         this.context = new MapContext(version, dimension, worldSeed);
         this.manager = new MapManager(this);
         this.leftBar = new MapLeftSideBar(this);
         this.rightBar = new MapRightSideBar(this);
-        GLData data = new GLData();
-        data.samples = 4;
-        data.swapInterval = 0;
-        AWTGLCanvas canvas;
-
+        this.canvas = new MapCanvas(this);
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
-        this.add(this.leftBar, BorderLayout.WEST);
-        this.add(this.rightBar, BorderLayout.EAST);
+//        this.add(this.leftBar, BorderLayout.WEST);
+//        this.add(this.rightBar, BorderLayout.EAST);
+        this.add(this.canvas);
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 if (e.getComponent().getSize().width <= 600) {
@@ -88,17 +83,18 @@ public class MapPanel extends JPanel {
     @Override
     public void paintComponent(Graphics graphics) {
         super.paintComponent(graphics);
+        this.canvas.setSize(new java.awt.Dimension(getWidth(),getHeight()));
         this.scheduler.purge();
-        this.drawMap(graphics);
-        this.drawCrossHair(graphics);
+        this.canvas.repaint();
+        this.drawMap(this.canvas.getGraphics());
+        this.drawCrossHair(this.canvas.getGraphics());
     }
 
     public void drawMap(Graphics graphics) {
         Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
-        drawQueue.forEach((fragment, info) -> fragment.drawBiomes(graphics, info));
+        drawQueue.forEach((fragment, info) -> fragment.drawGrid(graphics, info));
         drawQueue.forEach((fragment, info) -> fragment.drawFeatures(graphics, info));
         drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.toolsList));
-
     }
 
     public void drawCrossHair(Graphics graphics) {
