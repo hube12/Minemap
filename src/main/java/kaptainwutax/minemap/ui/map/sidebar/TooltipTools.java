@@ -35,6 +35,7 @@ public class TooltipTools extends JPanel {
         this.map = map;
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.setBackground(new Color(0, 0, 0, 0));
+        this.setOpaque(false);
     }
 
     public void updateToolsMetrics(ArrayList<Tool> tools) {
@@ -93,6 +94,8 @@ public class TooltipTools extends JPanel {
             this.positionText.setFocusable(false);
             this.positionText.setOpaque(true);
             this.positionText.setForeground(Color.WHITE);
+            this.positionText.setEditable(false);
+            this.positionText.setHighlighter(null);
 
             this.infoButton = new InfoButton(16, -1, 1.9f);
             this.infoButton.addActionListener(e -> {
@@ -145,6 +148,9 @@ public class TooltipTools extends JPanel {
             this.add(this.closeButton, gbc);
 
             this.setBackground(new Color(0, 0, 0, 200));
+            this.setOpaque(false);
+            this.setFocusable(false);
+
         }
 
     }
