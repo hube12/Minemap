@@ -279,9 +279,15 @@ public class Icons {
     @SuppressWarnings("SameParameterValue")
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
         if (OBJECT_REGISTRY.containsKey(object)) {
-            OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("assets")[1]));
+            OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension, path -> {
+                String[] parts=path.toAbsolutePath().toString().split("assets");
+                return parts[1].concat(parts[2]);
+            }));
         } else {
-            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension, path -> path.toAbsolutePath().toString().split("assets")[1]));
+            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension,  path -> {
+                String[] parts=path.toAbsolutePath().toString().split("assets");
+                return parts[1].concat(parts[2]);
+            }));
         }
     }
 
@@ -296,6 +302,23 @@ public class Icons {
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
         return entry.get(entry.size() - 1).getSecond();
+    }
+
+    public static String getObjectInformation(Object object) {
+        List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
+        if (entry == null) {
+            if (object instanceof Item) {
+                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, ((Item) object).getName(), ".png");
+                List<Pair<String, BufferedImage>> entry2 = OBJECT_REGISTRY.get(object);
+                if (entry2 == null) return null;
+                entry = entry2;
+            } else {
+                return null;
+            }
+        }
+        if (entry.isEmpty()) return null;
+        // TODO make me config dependant
+        return entry.get(0).getFirst();
     }
 
     public static BufferedImage getObject(Object object) {

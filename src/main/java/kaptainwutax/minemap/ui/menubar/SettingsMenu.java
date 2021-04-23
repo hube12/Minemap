@@ -136,7 +136,6 @@ public class SettingsMenu extends Menu {
                 }
                 button.setEnabled(false);
                 Configs.USER_PROFILE.getUserSettings().look = look;
-                MineMap.lookType = look;
                 MineMap.applyStyle();
                 Configs.USER_PROFILE.flush();
             }));

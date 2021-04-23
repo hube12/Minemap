@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.component;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static kaptainwutax.minemap.MineMap.isDarkTheme;
 
 public class WorldTabs extends JTabbedPane {
 
@@ -74,7 +77,7 @@ public class WorldTabs extends JTabbedPane {
 
     @Override
     public void paintComponent(Graphics g) {
-        if (MineMap.lookType.isDark()) {
+        if (isDarkTheme()) {
             g.setColor(BACKGROUND_COLOR);
             g.fillRect(0, 0, this.getWidth(), this.getHeight());
         }

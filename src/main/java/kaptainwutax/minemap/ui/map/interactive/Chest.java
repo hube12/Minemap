@@ -8,6 +8,7 @@ import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
@@ -25,6 +26,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -33,12 +35,16 @@ import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 
 public class Chest extends JFrame {
     private final JPanel content;
+    private final JScrollPane scrollPane;
     private final List<ChestContent> chestContents = new ArrayList<>();
     private final TopBar topBar;
     private final MapPanel map;
     private final static int MAX_NUMBER_CHESTS = 4; //TODO find the max we will support
     private CPos pos;
     private RegionStructure<?, ?> feature;
+    static final int HEADER_HEIGHT = 30;
+    static final int CHEST_HEIGHT = 300;
+    static final int CHEST_WIDTH = 700;
 
     public Chest(MapPanel map) {
         this.map = map;
@@ -48,15 +54,16 @@ public class Chest extends JFrame {
         content = new JPanel();
         content.setLayout(gridLayout);
         for (int i = 0; i < MAX_NUMBER_CHESTS; i++) {
-            chestContents.add(new ChestContent());
+            chestContents.add(new ChestContent(this.getPreferredSize()));
         }
         content.add(chestContents.get(0));
         topBar = new TopBar(this);
         this.add(topBar, BorderLayout.NORTH);
-        JScrollPane scrollPane = new JScrollPane(content);
+        scrollPane = new JScrollPane(content);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         this.add(scrollPane, BorderLayout.CENTER);
+        // to center I need the size first
         this.setSize(this.getPreferredSize());
         this.setLocationRelativeTo(null); // center
         this.setVisible(false);
@@ -84,7 +91,7 @@ public class Chest extends JFrame {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(700, 330);
+        return new Dimension(CHEST_WIDTH, HEADER_HEIGHT + CHEST_HEIGHT);
     }
 
     public void setFeature(RegionStructure<?, ?> feature) {
@@ -105,6 +112,10 @@ public class Chest extends JFrame {
 
     public JPanel getContent() {
         return content;
+    }
+
+    public JScrollPane getScrollPane() {
+        return scrollPane;
     }
 
     public Pair<RegionStructure<?, ?>, CPos> getInformations() {
@@ -142,18 +153,28 @@ public class Chest extends JFrame {
 
         public TopBar(Chest chest) {
             this.chest = chest;
+            // spread button
             this.indexedButton = new JButton(indexedString[indexed ? 1 : 0]);
             this.indexedButton.addActionListener(e -> {
                 setIndexed(!indexed);
                 generate(false);
                 this.indexedButton.setText(indexedString[indexed ? 1 : 0]);
             });
+            // menu to select which chest
+            this.chestMenu = new JMenu("Select chest");
+            this.menuBar = new JMenuBar();
+            this.menuBar.add(this.chestMenu);
+            // label that show x/n
+            this.currentChest = new JLabel("");
+            // show all chests
             this.showAllButton = new JButton(showString[showAll ? 1 : 0]);
             this.showAllButton.addActionListener(e -> {
                 setShowAll(!showAll);
                 update(true);
+                this.currentChest.setVisible(!showAll);
                 this.showAllButton.setText(showString[showAll ? 1 : 0]);
             });
+            // center chest on the current screen
             this.centerButton = new JButton("Center Chest");
             this.centerButton.addActionListener(e -> {
                 GraphicsConfiguration config = this.chest.getGraphicsConfiguration();
@@ -168,16 +189,13 @@ public class Chest extends JFrame {
                 }
                 this.chest.setLocationRelativeTo(null);
             });
+            // pin the chest window on top
             this.pinButton = new JToggleButton("Always on top");
             this.pinButton.addActionListener(e -> {
                 this.chest.setAlwaysOnTop(!this.chest.isAlwaysOnTop());
                 this.chest.revalidate();
                 this.chest.repaint();
             });
-            this.chestMenu = new JMenu("Select chest");
-            this.menuBar = new JMenuBar();
-            this.menuBar.add(this.chestMenu);
-            this.currentChest = new JLabel("");
             this.add(this.indexedButton);
             this.add(this.menuBar);
             this.add(this.currentChest);
@@ -243,6 +261,11 @@ public class Chest extends JFrame {
             }
             this.chest.getContent().revalidate();
             this.chest.getContent().repaint();
+            this.chest.getScrollPane().revalidate();
+            this.chest.getScrollPane().revalidate();
+            this.showAllButton.setVisible(listItems.size() != 1);
+            this.menuBar.setVisible(listItems.size() != 1);
+            this.currentChest.setVisible(listItems.size() != 1);
         }
 
         private void generate(boolean initial) {
@@ -268,7 +291,7 @@ public class Chest extends JFrame {
 
         private void setIndexContent(int index) {
             this.currentChestIndex = index;
-            this.currentChest.setText("Viewing chest " + this.currentChestIndex);
+            this.currentChest.setText(this.currentChestIndex + 1 + "/" + (this.listItems == null ? "?" : this.listItems.size()));
         }
 
         public void setNumberChest(int numberChest) {
@@ -276,7 +299,7 @@ public class Chest extends JFrame {
             this.chestMenu.removeAll();
             for (int i = 0; i < numberChest; i++) {
                 int currentIndex = i;
-                JMenuItem menuItem = new JMenuItem("Chest " + currentIndex);
+                JMenuItem menuItem = new JMenuItem("Chest " + (currentIndex + 1));
                 menuItem.addMouseListener(Events.Mouse.onReleased(e -> {
                     this.setIndexContent(currentIndex);
                     this.update();
@@ -291,13 +314,14 @@ public class Chest extends JFrame {
         private static final int COL_NUMBER = 9;
         private final List<List<JButton>> list;
 
-        public ChestContent() {
+        public ChestContent(Dimension dimension) {
             this.setLayout(new GridLayout(ROW_NUMBER, COL_NUMBER));
             this.list = new ArrayList<>();
             for (int row = 0; row < ROW_NUMBER; row++) {
                 List<JButton> temp = new ArrayList<>();
                 for (int col = 0; col < COL_NUMBER; col++) {
                     JButton button = new JButton("");
+                    button.setPreferredSize(new Dimension((int) (CHEST_WIDTH / COL_NUMBER * 0.70), (int) (CHEST_HEIGHT / ROW_NUMBER * 0.70)));
                     temp.add(button);
                     this.add(button);
                 }
@@ -333,30 +357,37 @@ public class Chest extends JFrame {
                     ItemStack itemStack = currentIterator.next();
                     if (itemStack.isEmpty()) continue;
                     Item item = itemStack.getItem();
-                    boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantments().isEmpty() || !item.getEffects().isEmpty();
-                    boolean isPlate = item.getName().endsWith("_plate");
                     BufferedImage icon = Icons.getObject(item);
+                    String information = Icons.getObjectInformation(item);
+
                     JButton current = rowButton.get(col);
                     current.setMargin(new Insets(0, 0, 0, 0));
                     FontMetrics fontMetrics = current.getFontMetrics(current.getFont());
+
+                    String[] toIgnoreFirstEnchantment = new String[] {"aqua_affinity", "binding_curse", "flame", "infinity", "silk_touch", "mending", "vanishing_curse", "channeling", "multishot"};
                     String enchantmentToolTip = getToolTipString(
                         item.getEnchantments().iterator(),
                         enchantment -> new Pair<>(
                             String.format("<font color=%s>%s</font>",
-                                enchantment.getFirst().contains("curse") ? "red" : "#4c66be",
+                                enchantment.getFirst().contains("curse") ? "red" : MineMap.isDarkTheme() ? "#7bf7e6" : "#0850d6",
                                 Str.prettifyDashed(enchantment.getFirst())
                             ),
-                            Str.toRomanNumeral(enchantment.getSecond()).replaceFirst("^I$", "")
+                            String.format("<font color=%s>%s</font>",
+                                MineMap.isDarkTheme() ? "#fcf955" : "#f21509",
+                                Arrays.stream(toIgnoreFirstEnchantment).anyMatch(e -> e.equals(enchantment.getFirst())) ?
+                                    Str.toRomanNumeral(enchantment.getSecond()).replaceFirst("^I$", "") :
+                                    Str.toRomanNumeral(enchantment.getSecond())
+                            )
                         ),
                         fontMetrics
                     );
+
                     String effectTooltip = getToolTipString(
                         item.getEffects().iterator(),
                         effect -> new Pair<>(
                             String.format("<font color=%s>%s</font>",
                                 effect.getFirst().getCategory() == Effect.EffectType.BENEFICIAL ? "green" :
-                                    effect.getFirst().getCategory() == Effect.EffectType.NEUTRAL ? "white" : "red",
-//                                effect.getFirst().getColor(),
+                                    effect.getFirst().getCategory() == Effect.EffectType.NEUTRAL ? (MineMap.isDarkTheme() ? "white" : "black") : "red",
                                 Str.prettifyDashed(effect.getFirst().getDescription())
                             ),
 
@@ -364,39 +395,63 @@ public class Chest extends JFrame {
                         ),
                         fontMetrics
                     );
-                    // only set one of them (by default it's null if none)
-                    current.setToolTipText(enchantmentToolTip != null ? enchantmentToolTip : effectTooltip);
-                    if (icon == null) {
+
+                    // set the tool tip text as ItemName\nEnchantments\nEffects
+                    StringBuilder toolTipSb = new StringBuilder("<html>");
+                    toolTipSb.append("<p style=\"text-align:center;color:").append(MineMap.isDarkTheme() ? "white" : "black").append("\">")
+                        .append(Str.prettifyDashed(item.getName()))
+                        .append("</p>");
+                    if (enchantmentToolTip != null) toolTipSb.append(enchantmentToolTip);
+                    if (effectTooltip != null) toolTipSb.append(effectTooltip);
+                    current.setToolTipText(toolTipSb.append("</html>").toString());
+
+                    if (icon == null || information == null) {
                         current.setText("<html>" + Str.prettifyDashed(item.getName()) + "<br>" + itemStack.getCount() + "</html>");
                     } else {
+                        boolean shouldShine = item.getName().startsWith("enchanted_") || !item.getEnchantments().isEmpty() || !item.getEffects().isEmpty();
+                        boolean isPlate = item.getName().endsWith("_plate"); // same thing as block as most use the top texture
+                        boolean isBlock = information.contains("block");
+
                         int w = icon.getWidth();
                         int h = icon.getHeight();
-                        double scaleFactor = 64.0 / Math.max(w, h);
-                        BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
+                        int offset = isBlock ? 8 : 0;
+                        double iconSize = 64.0;
+                        double scaleFactor = iconSize / Math.max(w, h);
+                        BufferedImage background = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
                         // scale icon
+                        BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
                         AffineTransform at = new AffineTransform();
                         at.scale(scaleFactor, scaleFactor);
                         AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
                         scaledIcon = scaleOp.filter(icon, scaledIcon);
                         // set hints
-                        Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(scaledIcon.getGraphics()));
-                        // add leather
-                        doLeatherOverlay(item, w, h, scaleFactor, scaledIcon, g2d, scaleOp);
+                        Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(background.getGraphics()));
                         if (isPlate) {
-                            g2d.setColor(Color.DARK_GRAY);
-                            g2d.setStroke(new BasicStroke(7, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-                            g2d.drawRect(0, 0, scaledIcon.getWidth(), scaledIcon.getHeight());
+                            g2d.rotate(Math.PI / 8, background.getWidth() / 2.0, background.getHeight() / 2.0);
                         }
+                        // write image to the background
+                        g2d.drawImage(scaledIcon, offset, offset, (int) iconSize - offset * 2, (int) iconSize - offset * 2, null);
+                        // add a border around the block
+                        if (isBlock) {
+                            g2d.setColor(isPlate ? Color.LIGHT_GRAY : Color.BLACK);
+                            g2d.setStroke(new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                            g2d.drawRect(offset, offset, background.getWidth() - offset * 2, background.getHeight() - offset * 2);
+                        }
+                        if (isPlate) {
+                            g2d.rotate(-Math.PI / 8, background.getWidth() / 2.0, background.getHeight() / 2.0);
+                        }
+                        // add leather
+                        doLeatherOverlay(item, w, h, scaleFactor, background, g2d, scaleOp);
                         if (item.getName().equals(Items.FILLED_MAP.getName())) {
                             ColorTintFilter colorTintFilter = new ColorTintFilter(Color.BLUE, 0.4f);
-                            colorTintFilter.filter(scaledIcon, scaledIcon);
+                            colorTintFilter.filter(background, background);
                         } else if (shouldShine) {
                             ColorTintFilter colorTintFilter = new ColorTintFilter(Color.PINK, 0.4f);
-                            colorTintFilter.filter(scaledIcon, scaledIcon);
+                            colorTintFilter.filter(background, background);
                         }
                         // add the item count
                         drawCount(g2d, itemStack);
-                        current.setIcon(new ImageIcon(scaledIcon));
+                        current.setIcon(new ImageIcon(background));
                     }
                 }
             }
@@ -456,7 +511,7 @@ public class Chest extends JFrame {
 
         public static <T> String getToolTipString(Iterator<Pair<T, Integer>> properties, Function<Pair<T, Integer>, Pair<String, String>> display, FontMetrics fontMetrics) {
             if (properties.hasNext()) {
-                StringBuilder sb = new StringBuilder("<html>");
+                StringBuilder sb = new StringBuilder();
                 while (properties.hasNext()) {
                     Pair<T, Integer> property = properties.next();
                     Pair<String, String> sentence = display.apply(property);

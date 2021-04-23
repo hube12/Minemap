@@ -40,7 +40,6 @@ public class MineMap extends JFrame {
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
     public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
     public static MineMap INSTANCE;
-    public static LookType lookType = LookType.DARCULA;
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
 
@@ -256,11 +255,15 @@ public class MineMap extends JFrame {
 
     public static void applyStyle() {
         try {
-            lookType.setLookAndFeel();
+            if (Configs.USER_PROFILE!=null &&  Configs.USER_PROFILE.getUserSettings()!=null){
+                Configs.USER_PROFILE.getUserSettings().look.setLookAndFeel();
+            }else{
+                throw new UnsatisfiedLinkError("Missing settings");
+            }
         } catch (Exception e) {
-            lookType = LookType.DARCULA;
+            Logger.LOGGER.warning(e.toString());
             try {
-                lookType.setLookAndFeel();
+                LookType.DARCULA.setLookAndFeel();
             } catch (Exception impossibleError) {
                 Logger.LOGGER.severe(impossibleError.toString());
                 impossibleError.printStackTrace();
@@ -278,6 +281,13 @@ public class MineMap extends JFrame {
 
     public void doDelayedInitTasks() {
         this.toolbarPane.doDelayedLabels();
+    }
+
+    public static boolean isDarkTheme(){
+        if (Configs.USER_PROFILE!=null &&  Configs.USER_PROFILE.getUserSettings()!=null){
+            return Configs.USER_PROFILE.getUserSettings().look.isDark();
+        }
+        return true;
     }
 
     public enum LookType {
