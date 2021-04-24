@@ -259,7 +259,7 @@ public class Chest extends JFrame {
             this.chest.getScrollPane().revalidate();
             this.showAllButton.setVisible(this.listItems != null && listItems.size() != 1);
             this.menuBar.setVisible(this.listItems != null && listItems.size() != 1);
-            this.currentChest.setVisible(this.listItems != null && listItems.size() != 1);
+            this.currentChest.setVisible(this.listItems != null && listItems.size() != 1 && !this.showAll);
         }
 
         private void generate(boolean initial) {
