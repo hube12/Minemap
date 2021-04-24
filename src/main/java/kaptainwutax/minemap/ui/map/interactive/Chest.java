@@ -18,6 +18,7 @@ import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.Graphic;
+import kaptainwutax.minemap.util.ui.buttons.UnknownButton;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;
@@ -102,10 +103,6 @@ public class Chest extends JFrame {
         this.pos = pos;
     }
 
-    public void generateContent() {
-        this.generateContent(false);
-    }
-
     public List<ChestContent> getChestContents() {
         return chestContents;
     }
@@ -122,9 +119,8 @@ public class Chest extends JFrame {
         return new Pair<>(this.feature, this.pos);
     }
 
-    public void generateContent(boolean indexed) {
+    public void generateContent() {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(this.feature.getName()), this.pos.getX() * 16 + 9, this.pos.getZ() * 16 + 9));
-        this.topBar.setIndexed(indexed);
         this.topBar.setIndexContent(0);
         this.topBar.generate(true);
     }
@@ -171,7 +167,6 @@ public class Chest extends JFrame {
             this.showAllButton.addActionListener(e -> {
                 setShowAll(!showAll);
                 update(true);
-                this.currentChest.setVisible(!showAll);
                 this.showAllButton.setText(showString[showAll ? 1 : 0]);
             });
             // center chest on the current screen
@@ -228,23 +223,22 @@ public class Chest extends JFrame {
          * @param hasChanged tri state, if true then
          */
         private void update(Boolean hasChanged) {
-            if (listItems == null) return;
             List<ChestContent> chestContents = this.chest.getChestContents();
             if (hasChanged) {
                 Dimension dimension = this.chest.getPreferredSize();
                 LayoutManager layoutManager = this.chest.getContent().getLayout();
-                int factor = showAll && listItems.size() > 1 ? 2 : 1;
+                int factor = showAll && listItems != null && listItems.size() > 1 ? 2 : 1;
                 if (layoutManager instanceof GridLayout) {
                     GridLayout gridLayout = (GridLayout) layoutManager;
                     gridLayout.setColumns(factor);
                 }
-                this.chest.setSize(new Dimension(dimension.width * factor, dimension.height * (showAll ? (listItems.size() / 2 + listItems.size() % 2) : 1)));
+                this.chest.setSize(new Dimension(dimension.width * factor, dimension.height * (showAll && listItems != null ? (listItems.size() / 2 + listItems.size() % 2) : 1)));
 
                 for (int i = 1; i < chestContents.size(); i++) {
                     if (!showAll) {
                         this.chest.getContent().remove(chestContents.get(i)); // this will not fail if the component was not there
                     } else {
-                        if (i < listItems.size()) {
+                        if (listItems != null && i < listItems.size()) {
                             this.chest.getContent().add(chestContents.get(i));
                         } else {
                             this.chest.getContent().remove(chestContents.get(i));
@@ -253,7 +247,7 @@ public class Chest extends JFrame {
                 }
             }
             if (showAll) {
-                for (int i = 0; i < listItems.size(); i++) {
+                for (int i = 0; i < (this.listItems == null ? 1 : listItems.size()); i++) {
                     this.chest.getChestContents().get(i).update(listItems == null || listItems.size() < 1 ? null : listItems.get(i));
                 }
             } else {
@@ -263,9 +257,9 @@ public class Chest extends JFrame {
             this.chest.getContent().repaint();
             this.chest.getScrollPane().revalidate();
             this.chest.getScrollPane().revalidate();
-            this.showAllButton.setVisible(listItems.size() != 1);
-            this.menuBar.setVisible(listItems.size() != 1);
-            this.currentChest.setVisible(listItems.size() != 1);
+            this.showAllButton.setVisible(this.listItems != null && listItems.size() != 1);
+            this.menuBar.setVisible(this.listItems != null && listItems.size() != 1);
+            this.currentChest.setVisible(this.listItems != null && listItems.size() != 1);
         }
 
         private void generate(boolean initial) {
@@ -278,15 +272,14 @@ public class Chest extends JFrame {
                     indexed,
                     this.chest.getContext()
                 );
-                this.setNumberChest(listItems == null ? 0 : listItems.size());
-                if (initial) {
-                    this.setIndexContent(0);
-                }
-                this.update(true);
             } else {
                 listItems = null;
             }
-
+            this.setNumberChest(listItems == null ? 0 : listItems.size());
+            if (initial) {
+                this.setIndexContent(0);
+            }
+            this.update(true);
         }
 
         private void setIndexContent(int index) {
@@ -343,7 +336,19 @@ public class Chest extends JFrame {
             for (int row = 0; row < ROW_NUMBER; row++) {
                 List<JButton> rowButton = this.list.get(row);
                 for (int col = 0; col < COL_NUMBER; col++) {
-                    rowButton.get(col).setText("U");
+                    BufferedImage icon = Icons.get(UnknownButton.class);
+                    assert icon != null;
+                    int w = icon.getWidth();
+                    int h = icon.getHeight();
+                    double iconSize = 64.0;
+                    double scaleFactor = iconSize / Math.max(w, h);
+                    // scale icon
+                    BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
+                    AffineTransform at = new AffineTransform();
+                    at.scale(scaleFactor, scaleFactor);
+                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                    scaledIcon = scaleOp.filter(icon, scaledIcon);
+                    rowButton.get(col).setIcon(new ImageIcon(scaledIcon));
                 }
             }
         }

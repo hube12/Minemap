@@ -15,10 +15,7 @@ import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.ui.ModalPopup;
-import kaptainwutax.minemap.util.ui.buttons.CloseButton;
-import kaptainwutax.minemap.util.ui.buttons.CopyButton;
-import kaptainwutax.minemap.util.ui.buttons.InfoButton;
-import kaptainwutax.minemap.util.ui.buttons.JumpButton;
+import kaptainwutax.minemap.util.ui.buttons.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -226,6 +223,7 @@ public class Icons {
         register(CopyButton.class, dir, isJar, "copy");
         register(JumpButton.class, dir, isJar, "jump");
         register(InfoButton.class, dir, isJar, "info");
+        register(UnknownButton.class, dir, isJar, "unknown");
 
         register(MineMap.class, dir, isJar, "logo");
 

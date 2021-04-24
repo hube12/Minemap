@@ -6,10 +6,13 @@ import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.math.Vec3i;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
+import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
@@ -21,7 +24,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -138,22 +144,52 @@ public class MapManager {
 
         JMenuItem chest = new JMenuItem("Chest");
         chest.setBorder(new EmptyBorder(5, 15, 5, 15));
-        chest.setEnabled(false);
         chestMenu = new Chest(this.panel);
         chest.addMouseListener(Events.Mouse.onReleased(e -> this.chestMenu.setVisible(true)));
 
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
-        this.addTools(popup, Arrays.asList(Ruler::new, Area::new, Circle::new));
-        popup.add(chest);
+        List<Supplier<Tool>> tools = Arrays.asList(Ruler::new, Area::new, Circle::new);
+        this.addTools(popup, tools);
         popup.addPopupMenuListener(new PopupMenuListener() {
                                        @Override
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
-                                           SwingUtilities.invokeLater(() -> {
-                                               MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-                                               ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
-                                               int size = (int) map.manager.pixelsPerFragment;
+                                           popup.removeAll();
+                                           MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                                           ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
+                                           int size = (int) map.manager.pixelsPerFragment;
+                                           JPopupMenu source=(JPopupMenu)e.getSource();
+                                           try {
+                                               Field desiredLocationXField = JPopupMenu.class.getDeclaredField("desiredLocationX");
+                                               Field desiredLocationYField = JPopupMenu.class.getDeclaredField("desiredLocationY");
+                                               desiredLocationXField.setAccessible(true);
+                                               desiredLocationYField.setAccessible(true);
+                                               // 10 and 70 are fixed from the window on Microsoft (assumimg correct header)
+                                               int desiredLocationX = (int) desiredLocationXField.get(source)-MineMap.INSTANCE.getX()-map.manager.panel.getX()-10;
+                                               int desiredLocationY = (int) desiredLocationYField.get(source)-MineMap.INSTANCE.getY()-map.manager.panel.getY()-70;
+                                               BPos bPos= getPos(desiredLocationX,desiredLocationY);
+                                               RPos rPos=bPos.toRegionPos(map.manager.blocksPerFragment);
+                                               Fragment fragment=map.scheduler.getFragmentAt(rPos.getX(),rPos.getZ());
+                                               fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
+                                                   if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
+                                                       features.add(new Pair<>(feature, positions));
+                                                   }
+                                               });
+                                               if (features.isEmpty()){
+                                                   for (int i = -1; i <= 1; i++) {
+                                                       for (int j = -1; j <= 1; j++) {
+                                                           RPos offsetRpos=new RPos(rPos.getX()+i,rPos.getZ()+j,map.manager.blocksPerFragment);
+                                                           map.scheduler.getFragmentAt(offsetRpos.getX(),offsetRpos.getZ()).getHoveredFeatures(size, size).forEach((feature, positions) -> {
+                                                               if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
+                                                                   features.add(new Pair<>(feature, positions));
+                                                               }
+                                                           });
+                                                       }
+                                                   }
+                                               }
+                                           }catch (Exception reflectionException){
+                                               Logger.LOGGER.warning("Reflection failed with error "+reflectionException.getMessage());
                                                map.scheduler.forEachFragment(fragment -> {
                                                    fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
                                                        if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
@@ -161,16 +197,30 @@ public class MapManager {
                                                        }
                                                    });
                                                });
-                                               chest.setEnabled(!features.isEmpty());
-                                               if (!features.isEmpty()) {
-                                                   Pair<Feature<?, ?>, List<BPos>> featureListPair = features.get(0);
-                                                   Feature<?, ?> feature = featureListPair.getFirst();
-                                                   BPos bPos = featureListPair.getSecond().get(0);
-                                                   chestMenu.setPos(bPos.toChunkPos());
-                                                   chestMenu.setFeature((RegionStructure<?, ?>) feature);
-                                                   chestMenu.generateContent();
-                                               }
-                                           });
+                                           }
+                                           if (!features.isEmpty()) {
+                                               popup.add(chest);
+                                               Pair<Feature<?, ?>, List<BPos>> featureListPair = features.get(0);
+                                               Feature<?, ?> feature = featureListPair.getFirst();
+                                               BPos bPos = featureListPair.getSecond().get(0);
+                                               JMenuItem copyTp = new JMenuItem("Copy TP");
+                                               copyTp.addMouseListener(Events.Mouse.onReleased(ecp -> {
+                                                       Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                                                       String tpCommand = String.format("/tp @p %d ~ %d", bPos.getX(), bPos.getZ());
+                                                       StringSelection stringSelection = new StringSelection(tpCommand);
+                                                       clipboard.setContents(stringSelection, null);
+                                                   }
+                                               ));
+                                               popup.add(copyTp);
+                                               chestMenu.setPos(bPos.toChunkPos());
+                                               chestMenu.setFeature((RegionStructure<?, ?>) feature);
+                                               chestMenu.generateContent();
+                                           } else {
+                                               popup.add(pin);
+                                               popup.add(rename);
+                                               popup.add(settings);
+                                               addTools(popup, tools);
+                                           }
                                        }
 
                                        @Override
@@ -181,7 +231,6 @@ public class MapManager {
                                        public void popupMenuCanceled(PopupMenuEvent e) { }
                                    }
         );
-
         this.panel.setComponentPopupMenu(popup);
     }
 
