@@ -15,6 +15,9 @@
     <a href="https://github.com/hube12/MineMap/releases/latest"  alt="Release">
         <img src="https://img.shields.io/github/v/release/hube12/minemap?style=flat-square"/>
     </a>
+    <a href="https://github.com/hube12/MineMap/releases/latest"  alt="Release count">
+        <img src="https://img.shields.io/github/downloads/hube12/minemap/total?style=flat-square"/>
+    </a>
     <a href="https://discord.gg/anHsq24nqt" alt="Discord">
         <img src="https://img.shields.io/discord/813104049737433189?logo=discord&style=flat-square" alt="chat on Discord"/>
     </a>
