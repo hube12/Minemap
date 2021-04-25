@@ -14,10 +14,7 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
-import kaptainwutax.minemap.ui.map.tool.Area;
-import kaptainwutax.minemap.ui.map.tool.Circle;
-import kaptainwutax.minemap.ui.map.tool.Ruler;
-import kaptainwutax.minemap.ui.map.tool.Tool;
+import kaptainwutax.minemap.ui.map.tool.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -150,7 +147,7 @@ public class MapManager {
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
-        List<Supplier<Tool>> tools = Arrays.asList(Ruler::new, Area::new, Circle::new);
+        List<Supplier<Tool>> tools = Arrays.asList(Ruler::new, Area::new, Circle::new, Polyline::new);
         this.addTools(popup, tools);
         popup.addPopupMenuListener(new PopupMenuListener() {
                                        @Override
@@ -159,28 +156,28 @@ public class MapManager {
                                            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                                            ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
                                            int size = (int) map.manager.pixelsPerFragment;
-                                           JPopupMenu source=(JPopupMenu)e.getSource();
+                                           JPopupMenu source = (JPopupMenu) e.getSource();
                                            try {
                                                Field desiredLocationXField = JPopupMenu.class.getDeclaredField("desiredLocationX");
                                                Field desiredLocationYField = JPopupMenu.class.getDeclaredField("desiredLocationY");
                                                desiredLocationXField.setAccessible(true);
                                                desiredLocationYField.setAccessible(true);
                                                // 10 and 70 are fixed from the window on Microsoft (assumimg correct header)
-                                               int desiredLocationX = (int) desiredLocationXField.get(source)-MineMap.INSTANCE.getX()-map.manager.panel.getX()-10;
-                                               int desiredLocationY = (int) desiredLocationYField.get(source)-MineMap.INSTANCE.getY()-map.manager.panel.getY()-70;
-                                               BPos bPos= getPos(desiredLocationX,desiredLocationY);
-                                               RPos rPos=bPos.toRegionPos(map.manager.blocksPerFragment);
-                                               Fragment fragment=map.scheduler.getFragmentAt(rPos.getX(),rPos.getZ());
+                                               int desiredLocationX = (int) desiredLocationXField.get(source) - MineMap.INSTANCE.getX() - map.manager.panel.getX() - 10;
+                                               int desiredLocationY = (int) desiredLocationYField.get(source) - MineMap.INSTANCE.getY() - map.manager.panel.getY() - 70;
+                                               BPos bPos = getPos(desiredLocationX, desiredLocationY);
+                                               RPos rPos = bPos.toRegionPos(map.manager.blocksPerFragment);
+                                               Fragment fragment = map.scheduler.getFragmentAt(rPos.getX(), rPos.getZ());
                                                fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
                                                    if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
                                                        features.add(new Pair<>(feature, positions));
                                                    }
                                                });
-                                               if (features.isEmpty()){
+                                               if (features.isEmpty()) {
                                                    for (int i = -1; i <= 1; i++) {
                                                        for (int j = -1; j <= 1; j++) {
-                                                           RPos offsetRpos=new RPos(rPos.getX()+i,rPos.getZ()+j,map.manager.blocksPerFragment);
-                                                           map.scheduler.getFragmentAt(offsetRpos.getX(),offsetRpos.getZ()).getHoveredFeatures(size, size).forEach((feature, positions) -> {
+                                                           RPos offsetRpos = new RPos(rPos.getX() + i, rPos.getZ() + j, map.manager.blocksPerFragment);
+                                                           map.scheduler.getFragmentAt(offsetRpos.getX(), offsetRpos.getZ()).getHoveredFeatures(size, size).forEach((feature, positions) -> {
                                                                if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
                                                                    features.add(new Pair<>(feature, positions));
                                                                }
@@ -188,8 +185,8 @@ public class MapManager {
                                                        }
                                                    }
                                                }
-                                           }catch (Exception reflectionException){
-                                               Logger.LOGGER.warning("Reflection failed with error "+reflectionException.getMessage());
+                                           } catch (Exception reflectionException) {
+                                               Logger.LOGGER.warning("Reflection failed with error " + reflectionException.getMessage());
                                                map.scheduler.forEachFragment(fragment -> {
                                                    fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
                                                        if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
@@ -286,12 +283,15 @@ public class MapManager {
             toolMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
             toolMenus.add(toolMenu);
         }
-        Consumer<String> rTools = prefix -> {
+        Consumer<Pair<String, String>> rTools = prefix -> {
             for (int i = 0; i < tools.size(); i++) {
-                toolMenus.get(i).setText(String.join(" ", prefix, tools.get(i).get().getName()));
+                Tool currentTool = tools.get(i).get();
+                toolMenus.get(i).setText(String.join(" ",
+                    selectedTool != null && selectedTool.getName().equals(currentTool.getName()) ?
+                        prefix.getSecond() : prefix.getFirst(), currentTool.getName()));
             }
         };
-        rTools.accept("Enable");
+        rTools.accept(new Pair<>("Enable", "Disable"));
 
         BiConsumer<Tool, JMenuItem> createNewTool = (newTool, menuItem) -> {
             toolsList.add(newTool);
@@ -306,7 +306,7 @@ public class MapManager {
                 createNewTool.accept(tool, menuItem);
             } else {
                 this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                rTools.accept("Enable");
+                rTools.accept(new Pair<>("Enable", "Disable"));
                 if (!selectedTool.isAcceptable()) {
                     removeTool(selectedTool);
                 }

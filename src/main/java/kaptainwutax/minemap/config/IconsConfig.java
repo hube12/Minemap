@@ -8,6 +8,7 @@ import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
+import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
@@ -75,6 +76,7 @@ public class IconsConfig extends Config {
         addDefaultEntry(PillagerOutpost.class, 1.0);
         addDefaultEntry(OWRuinedPortal.class, 0.7);
         addDefaultEntry(NERuinedPortal.class, 0.7);
+        addDefaultEntry(OWNERuinedPortal.class, 0.7);
         addDefaultEntry(Shipwreck.class, 1.0);
         addDefaultEntry(SwampHut.class, 1.0);
         addDefaultEntry(Village.class, 1.0);
@@ -91,6 +93,7 @@ public class IconsConfig extends Config {
         addDefaultEntry(SpawnPoint.class, 1.0);
 
         addDefaultEntry(Ruler.class, 1.0);
+        addDefaultEntry(Polyline.class, 1.0);
         addDefaultEntry(Area.class, 1.0);
         addDefaultEntry(Circle.class, 1.0);
 

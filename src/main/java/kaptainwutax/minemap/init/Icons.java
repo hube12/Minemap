@@ -12,6 +12,7 @@ import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
+import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.ui.ModalPopup;
@@ -201,6 +202,7 @@ public class Icons {
         // special cases
         register(OWRuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
         register(NERuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
+        register(OWNERuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
 
         register(OWBastionRemnant.class, dir, isJar, Structure.getName(BastionRemnant.class));
         register(OWFortress.class, dir, isJar, Structure.getName(Fortress.class));
@@ -217,6 +219,7 @@ public class Icons {
         register(Ruler.class, dir, isJar, "ruler");
         register(Area.class, dir, isJar, "area");
         register(Circle.class, dir, isJar, "circle");
+        register(Polyline.class, dir, isJar, "ruler");
 
 
         register(CloseButton.class, dir, isJar, "close");

@@ -5,6 +5,7 @@ import kaptainwutax.featureutils.structure.BuriedTreasure;
 import kaptainwutax.featureutils.structure.DesertPyramid;
 import kaptainwutax.featureutils.structure.Shipwreck;
 import kaptainwutax.minemap.feature.NERuinedPortal;
+import kaptainwutax.minemap.feature.OWNERuinedPortal;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
 import kaptainwutax.minemap.feature.chests.loot.BurriedTreasureLoot;
 import kaptainwutax.minemap.feature.chests.loot.DesertPyramidLoot;
@@ -21,6 +22,7 @@ public class Chests {
         register(DesertPyramid.class, DesertPyramidLoot::new);
         register(BuriedTreasure.class, BurriedTreasureLoot::new);
         register(NERuinedPortal.class, RuinedPortalLoot::new);
+        register(OWNERuinedPortal.class, RuinedPortalLoot::new);
         register(OWRuinedPortal.class, RuinedPortalLoot::new);
         register(Shipwreck.class, ShipwreckLoot::new);
     }

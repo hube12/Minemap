@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.map.tool;
 import kaptainwutax.mcutils.util.pos.BPos;
 
 import java.awt.*;
+import java.util.List;
 
 public abstract class Tool {
 
@@ -12,7 +13,11 @@ public abstract class Tool {
 
     public abstract Shape getPartialShape();
 
+    public abstract List<Shape> getPartialShapes();
+
     public abstract Shape getExactShape();
+
+    public abstract List<Shape> getExactShapes();
 
     public abstract boolean isComplete();
 
@@ -39,4 +44,5 @@ public abstract class Tool {
 
     public abstract String getName();
 
+    public abstract boolean isMultiplePolygon();
 }

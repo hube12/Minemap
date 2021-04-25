@@ -5,6 +5,7 @@ import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class Area extends Tool {
@@ -59,6 +60,11 @@ public class Area extends Tool {
     }
 
     @Override
+    public List<Shape> getPartialShapes() {
+        return null;
+    }
+
+    @Override
     public Polygon getExactShape() {
         int offset = 0;
         switch (this.getPointsTraced()) {
@@ -71,6 +77,11 @@ public class Area extends Tool {
             case 4:
                 return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
         }
+        return null;
+    }
+
+    @Override
+    public List<Shape> getExactShapes() {
         return null;
     }
 
@@ -159,6 +170,11 @@ public class Area extends Tool {
     @Override
     public String getName() {
         return "Area";
+    }
+
+    @Override
+    public boolean isMultiplePolygon() {
+        return false;
     }
 
     @Override

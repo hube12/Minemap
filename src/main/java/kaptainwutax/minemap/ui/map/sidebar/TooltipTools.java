@@ -144,7 +144,9 @@ public class TooltipTools extends JPanel {
             this.add(this.iconView, gbc);
             this.add(this.colorChooser, gbc);
             this.add(this.positionText, gbc);
-            this.add(this.infoButton, gbc);
+            if (tool.getExactShape()!=null){
+                this.add(this.infoButton, gbc);
+            }
             this.add(this.closeButton, gbc);
 
             this.setBackground(new Color(0, 0, 0, 200));

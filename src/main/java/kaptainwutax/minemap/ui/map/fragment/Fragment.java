@@ -106,42 +106,54 @@ public class Fragment {
     public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
         for (Tool tool : tools) {
             if (tool.isPartial()) {
-                Area polygon;
-                polygon = new Area(tool.getPartialShape());
-                Area rectangle = new Area(this.getRectangle());
 
-                polygon.intersect(rectangle);
-                if (!polygon.isEmpty()) {
-                    Color old = graphics.getColor();
-                    Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
-                    g2d.setColor(tool.getColor());
-
-                    // get the correct polygon in the fragment
-                    AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-                    AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width) / ((double) regionSize), ((double) info.height) / ((double) regionSize));
-                    scaleToDisplayFragment.concatenate(translateToZero);
-                    AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
-                    translateBackToDisplay.concatenate(scaleToDisplayFragment);
-                    polygon = polygon.createTransformedArea(translateBackToDisplay);
-
-                    // decide to fill or hide artefacts due to fragments
-                    if (tool.shouldFill()) {
-                        g2d.fill(polygon);
+                if (tool.isMultiplePolygon()) {
+                    if (tool.getPartialShapes()==null) continue;
+                    List<Shape> shapes = tool.getPartialShapes();
+                    for (Shape shape : shapes) {
+                        drawSinglePolygon(graphics, info, tool, new Area(shape));
                     }
-                    if (tool.shouldHideArtefact()) {
-                        Color color = new Color(tool.getColor().getRed(), tool.getColor().getGreen(), tool.getColor().getBlue(), 140);
-                        g2d.setColor(color);
-                        g2d.fill(polygon);
-                    } else {
-                        int strokeSize = (int) (((double) regionSize) / info.height);
-                        g2d.setStroke(new BasicStroke(DisplayMaths.clamp(strokeSize, 1, 7), BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
-                        g2d.draw(polygon);
-                    }
-                    g2d.setColor(old);
+                } else {
+                    if (tool.getPartialShape() == null) continue;
+                    drawSinglePolygon(graphics, info, tool, new Area(tool.getPartialShape()));
                 }
             }
         }
+    }
 
+
+    public void drawSinglePolygon(Graphics graphics, DrawInfo info, Tool tool, Area polygon) {
+        Area rectangle = new Area(this.getRectangle());
+
+        polygon.intersect(rectangle);
+        if (!polygon.isEmpty()) {
+            Color old = graphics.getColor();
+            Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
+            g2d.setColor(tool.getColor());
+
+            // get the correct polygon in the fragment
+            AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
+            AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width) / ((double) regionSize), ((double) info.height) / ((double) regionSize));
+            scaleToDisplayFragment.concatenate(translateToZero);
+            AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
+            translateBackToDisplay.concatenate(scaleToDisplayFragment);
+            polygon = polygon.createTransformedArea(translateBackToDisplay);
+
+            // decide to fill or hide artefacts due to fragments
+            if (tool.shouldFill()) {
+                g2d.fill(polygon);
+            }
+            if (tool.shouldHideArtefact()) {
+                Color color = new Color(tool.getColor().getRed(), tool.getColor().getGreen(), tool.getColor().getBlue(), 140);
+                g2d.setColor(color);
+                g2d.fill(polygon);
+            } else {
+                int strokeSize = (int) (((double) regionSize) / info.height);
+                g2d.setStroke(new BasicStroke(DisplayMaths.clamp(strokeSize, 1, 7), BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
+                g2d.draw(polygon);
+            }
+            g2d.setColor(old);
+        }
     }
 
     public void onHovered(int blockX, int blockZ) {

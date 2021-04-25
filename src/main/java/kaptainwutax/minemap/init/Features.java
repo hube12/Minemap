@@ -36,6 +36,7 @@ public class Features {
 
         register(OWRuinedPortal.class, OWRuinedPortal::new);
         register(NERuinedPortal.class, NERuinedPortal::new);
+        register(OWNERuinedPortal.class, OWNERuinedPortal::new);
 
         register(OWBastionRemnant.class, OWBastionRemnant::new);
         register(OWFortress.class, OWFortress::new);

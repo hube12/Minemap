@@ -6,8 +6,10 @@ import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
+import kaptainwutax.minemap.feature.NERuinedPortal;
 import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
+import kaptainwutax.minemap.feature.OWNERuinedPortal;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 
@@ -21,7 +23,7 @@ public class OWNetherIcon extends StaticIcon {
 
     @Override
     public boolean isValidFeature(Feature<?, ?> feature) {
-        return feature instanceof OWBastionRemnant || feature instanceof OWFortress;
+        return feature instanceof OWBastionRemnant || feature instanceof OWFortress || feature instanceof OWNERuinedPortal;
     }
 
     @Override

@@ -4,6 +4,7 @@ import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
+import java.util.List;
 
 public class Circle extends Tool {
     private BPos pos1 = null;
@@ -44,6 +45,11 @@ public class Circle extends Tool {
     }
 
     @Override
+    public List<Shape> getPartialShapes() {
+        return null;
+    }
+
+    @Override
     public Shape getExactShape() {
         int offset = 0;
         switch (this.getPointsTraced()) {
@@ -52,6 +58,11 @@ public class Circle extends Tool {
             case 2:
                 return DisplayMaths.getCircle(pos1, pos2);
         }
+        return null;
+    }
+
+    @Override
+    public List<Shape> getExactShapes() {
         return null;
     }
 
@@ -143,6 +154,11 @@ public class Circle extends Tool {
     @Override
     public String getName() {
         return "Circle";
+    }
+
+    @Override
+    public boolean isMultiplePolygon() {
+        return false;
     }
 
     @Override

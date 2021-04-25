@@ -4,65 +4,51 @@ import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Ruler extends Tool {
-    private BPos pos1 = null;
-    private BPos pos2 = null;
+
+public class Polyline extends Tool {
+    private final List<BPos> bPosList = new ArrayList<>();
     private int pointsTraced = 0;
     private Color color;
 
-    public Ruler() {
+    public Polyline() {
         color = DisplayMaths.getRandomColor();
     }
 
     @Override
     public boolean addPoint(BPos bpos) {
-        switch (pointsTraced) {
-            case 0:
-                pos1 = bpos;
-                break;
-            case 1:
-                pos2 = bpos;
-                break;
-            default:
-                return false;
-        }
+        bPosList.add(bpos);
         pointsTraced++;
         return true;
     }
 
     @Override
     public Polygon getPartialShape() {
-        int offset = 5;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-        }
         return null;
     }
 
     @Override
     public List<Shape> getPartialShapes() {
-        return null;
-    }
-
-    @Override
-    public Polygon getExactShape() {
-        int offset = 0;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
+        int offset = 5;
+        if (bPosList.size() > 1) {
+            return DisplayMaths.getPolylinePolygon(bPosList, offset);
         }
         return null;
     }
 
     @Override
+    public Polygon getExactShape() {
+        return null;
+    }
+
+    @Override
     public List<Shape> getExactShapes() {
+        int offset = 2;
+        if (bPosList.size() > 1) {
+            return DisplayMaths.getPolylinePolygon(bPosList, offset);
+        }
         return null;
     }
 
@@ -73,47 +59,40 @@ public class Ruler extends Tool {
 
     @Override
     public boolean isComplete() {
-        return this.getPointsTraced() == 2 && pos1 != null && pos2 != null;
+        return bPosList.size() > 1;
     }
 
     @Override
     public boolean isAcceptable() {
-        return isComplete();
+        return bPosList.size() > 1;
     }
 
     @Override
     public boolean isPartial() {
-        switch (this.getPointsTraced()) {
-            case 0:
-                return false;
-            case 1:
-                return pos1 != null;
-            case 2:
-                return pos1 != null && pos2 != null;
-        }
-        return false;
+        return bPosList.size() > 1;
     }
 
     @Override
     public void reset() {
         pointsTraced = 0;
-        pos1 = null;
-        pos2 = null;
+        bPosList.clear();
     }
 
     @Override
     public double getMetric() {
-        if (this.isComplete()) {
-            double metric = DisplayMaths.getDistance2D(pos1, pos2);
-            return DisplayMaths.round(metric, 2);
+        double metric = 0.0D;
+        for (int i = 0; i < bPosList.size() - 1; i++) {
+            BPos pos1 = bPosList.get(i);
+            BPos pos2 = bPosList.get(i + 1);
+            metric += DisplayMaths.getDistance2D(pos1, pos2);
         }
-        return 0;
+        return DisplayMaths.round(metric, 2);
     }
 
     @Override
     public String[] getMetricString() {
         return new String[] {
-            String.format("Distance: %.2f blocks", this.getMetric())
+            String.format("Polyline: %.2f blocks", this.getMetric())
         };
     }
 
@@ -129,7 +108,7 @@ public class Ruler extends Tool {
 
     @Override
     public Tool duplicate() {
-        return new Ruler();
+        return new Polyline();
     }
 
     @Override
@@ -144,20 +123,20 @@ public class Ruler extends Tool {
 
     @Override
     public String getName() {
-        return "Ruler";
+        return "Polyline";
     }
 
     @Override
     public boolean isMultiplePolygon() {
-        return false;
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Ruler{" +
-            "pos1=" + pos1 +
-            ", pos2=" + pos2 +
+        return "Polyline{" +
+            "bPosList=" + bPosList +
             ", pointsTraced=" + pointsTraced +
+            ", color=" + color +
             '}';
     }
 }
