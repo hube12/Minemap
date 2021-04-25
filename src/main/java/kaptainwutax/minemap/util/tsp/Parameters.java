@@ -18,7 +18,7 @@ public class Parameters {
     /**
      * Heuristic importance
      */
-    public static double beta = 2.0;
+    public static double beta = 1.5;
 
     /**
      * Size of ant population
@@ -33,6 +33,6 @@ public class Parameters {
     /**
      * Number of iterations to find a good solution
      */
-    public static int iterationsMax = 150;
+    public static int iterationsMax = 1500;
 
 }

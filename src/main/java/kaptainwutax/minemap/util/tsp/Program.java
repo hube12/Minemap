@@ -9,7 +9,9 @@ public class Program {
 
     public Pair<Double, List<Integer>> startApplication(List<BPos> bPosList) {
         if (bPosList.size()<10){
-            Parameters.NNSize=bPosList.size();
+            Parameters.NNSize=bPosList.size()/2;
+        }else{
+            Parameters.NNSize=10;
         }
         Environment environment = new Environment(TspReader.getDistances(bPosList));
         Statistics statistics = new Statistics( environment);

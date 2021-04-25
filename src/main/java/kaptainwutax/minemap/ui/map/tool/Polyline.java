@@ -6,6 +6,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.util.data.ListUtil;
 import kaptainwutax.minemap.util.math.DisplayMaths;
+import kaptainwutax.minemap.util.tsp.Parameters;
 import kaptainwutax.minemap.util.tsp.Program;
 
 import javax.swing.*;
@@ -34,6 +35,8 @@ public class Polyline extends Tool {
             Pair<Double, List<Integer>> res= program.startApplication(bPosList);
             ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[res.getSecond().size()]));
             manager.getPanel().rightBar.tooltip.updateToolsMetrics(manager.toolsList);
+
+
         });
         return true;
     }
