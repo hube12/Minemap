@@ -366,6 +366,9 @@ public class MapManager {
         return new BPos(xi, 0, yi);
     }
 
+    public MapPanel getPanel() {
+        return panel;
+    }
 
     public enum ModifierDown {
         CTRL_DOWN(InputEvent::isControlDown),

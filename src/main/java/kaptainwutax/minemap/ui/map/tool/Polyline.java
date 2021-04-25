@@ -1,17 +1,25 @@
 package kaptainwutax.minemap.ui.map.tool;
 
+import com.seedfinding.latticg.util.Pair;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.MapManager;
+import kaptainwutax.minemap.util.data.ListUtil;
 import kaptainwutax.minemap.util.math.DisplayMaths;
+import kaptainwutax.minemap.util.tsp.Program;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
 public class Polyline extends Tool {
-    private final List<BPos> bPosList = new ArrayList<>();
+    private final LinkedList<BPos> bPosList = new LinkedList<>();
     private int pointsTraced = 0;
     private Color color;
+    private Program program=new Program();
 
     public Polyline() {
         color = DisplayMaths.getRandomColor();
@@ -21,6 +29,12 @@ public class Polyline extends Tool {
     public boolean addPoint(BPos bpos) {
         bPosList.add(bpos);
         pointsTraced++;
+        MapManager manager=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager();
+        SwingUtilities.invokeLater(()->{
+            Pair<Double, List<Integer>> res= program.startApplication(bPosList);
+            ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[res.getSecond().size()]));
+            manager.getPanel().rightBar.tooltip.updateToolsMetrics(manager.toolsList);
+        });
         return true;
     }
 

@@ -422,15 +422,15 @@ public class Assets {
         return fileStream;
     }
 
-    public static List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
+    public static java.util.List<Path> getFileHierarchical(Path dir, String fileName, String extension) throws IOException {
         return Files.walk(dir).
             filter(file -> Files.isRegularFile(file) && file.toAbsolutePath().getFileName().toString().equals(fileName + extension)).
             collect(Collectors.toList());
     }
 
-    public static List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
-        List<Path> paths;
-        List<Pair<String, BufferedImage>> list = new ArrayList<>();
+    public static java.util.List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
+        java.util.List<Path> paths;
+        java.util.List<Pair<String, BufferedImage>> list = new ArrayList<>();
         try {
             paths = Assets.getFileHierarchical(dir, name, extension);
         } catch (IOException e) {
