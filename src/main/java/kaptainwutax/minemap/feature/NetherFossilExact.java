@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.feature;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
@@ -14,14 +14,14 @@ public class NetherFossilExact extends NetherFossil {
         super(config, version);
     }
 
-    @Override
-    public boolean isValidBiome(Biome biome) {
-        boolean b = super.isValidBiome(biome);
-        if (b) {
-
-        }
-        return b;
-    }
+//    @Override
+//    public boolean isValidBiome(Biome biome) {
+//        boolean b = super.isValidBiome(biome);
+//        if (b) {
+//
+//        }
+//        return b;
+//    }
 
     @Override
     public boolean isValidDimension(Dimension dimension) {

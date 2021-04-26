@@ -239,10 +239,10 @@ public class Icons {
 
     private static void cleanDuplicates() {
         for (Map.Entry<Class<?>, List<Pair<String, BufferedImage>>> pairs : CLASS_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e->e.getFirst())).collect(Collectors.toList()));
         }
         for (Map.Entry<Object, List<Pair<String, BufferedImage>>> pairs : OBJECT_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e->e.getFirst())).collect(Collectors.toList()));
         }
     }
 

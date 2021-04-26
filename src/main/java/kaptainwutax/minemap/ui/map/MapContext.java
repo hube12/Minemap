@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
+import kaptainwutax.biomeutils.source.LayeredBiomeSource;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.version.UnsupportedVersion;
@@ -20,7 +21,7 @@ public class MapContext {
     private final MapSettings settings;
     private final IconManager iconManager;
 
-    private final ThreadLocal<Map<Dimension, BiomeSource>> biomeSource;
+    private final ThreadLocal<Map<Dimension, LayeredBiomeSource<BiomeLayer>>> biomeSource;
     private final ThreadLocal<Map<Dimension, ChunkGenerator>> chunkGenerators;
 
     private int layerId;
@@ -32,10 +33,11 @@ public class MapContext {
         this.settings = settings;
 
         this.biomeSource = ThreadLocal.withInitial(() -> {
-            Map<Dimension, BiomeSource> map = new HashMap<>();
+            Map<Dimension, LayeredBiomeSource<BiomeLayer>> map = new HashMap<>();
             for (Dimension dim : Dimension.values()) {
                 try {
-                    BiomeSource biomeSource = BiomeSource.of(dim, this.version, worldSeed);
+                    @SuppressWarnings("unchecked")
+                    LayeredBiomeSource<BiomeLayer> biomeSource = (LayeredBiomeSource<BiomeLayer>) BiomeSource.of(dim, this.version, worldSeed);
                     map.put(dim, biomeSource);
                 } catch (UnsupportedVersion e) {
                     System.out.printf("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
@@ -109,11 +111,11 @@ public class MapContext {
         return this.chunkGenerators.get().get(dimension);
     }
 
-    public BiomeSource getBiomeSource() {
+    public LayeredBiomeSource<BiomeLayer> getBiomeSource() {
         return this.getBiomeSource(this.dimension);
     }
 
-    public BiomeSource getBiomeSource(Dimension dimension) {
+    public LayeredBiomeSource<BiomeLayer> getBiomeSource(Dimension dimension) {
         return this.biomeSource.get().get(dimension);
     }
 

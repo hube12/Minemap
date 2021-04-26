@@ -1,10 +1,12 @@
 package kaptainwutax.minemap.ui.map.fragment;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
+import kaptainwutax.biomeutils.biome.Biomes;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
@@ -32,6 +34,8 @@ public class Fragment {
     private int[][] biomeCache;
     private Set<Biome> activeBiomesCache;
     private BufferedImage imageCache;
+    private int lastCheating = 1;
+    private boolean hasBiomeModified=false;
 
     private Map<Feature<?, ?>, List<BPos>> features;
     private BPos hoveredPos;
@@ -45,7 +49,6 @@ public class Fragment {
 
         if (this.context != null) {
             this.refreshBiomeCache();
-            this.refreshImageCache();
             this.generateFeatures();
         }
     }
@@ -76,7 +79,6 @@ public class Fragment {
 
     public void drawBiomes(Graphics graphics, DrawInfo info) {
         this.refreshBiomeCache();
-        this.refreshImageCache();
 
         if (this.imageCache != null && this.context.getSettings().showBiomes) {
             graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
@@ -108,7 +110,7 @@ public class Fragment {
             if (tool.isPartial()) {
 
                 if (tool.isMultiplePolygon()) {
-                    if (tool.getPartialShapes()==null) continue;
+                    if (tool.getPartialShapes() == null) continue;
                     List<Shape> shapes = tool.getPartialShapes();
                     for (Shape shape : shapes) {
                         drawSinglePolygon(graphics, info, tool, new Area(shape));
@@ -191,36 +193,49 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId()) return;
-
+        int cheating = Math.max(1, (int) (32.0D / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
+        if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
+        lastCheating = cheating;
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
-        int effectiveRegion = Math.max(this.regionSize / layer.getScale(), 1);
+        int effectiveRegion = Math.max(this.regionSize / layer.getScale(), 1)/cheating;
         RPos region = new BPos(this.blockX, 0, this.blockZ).toRegionPos(layer.getScale());
 
         if (this.biomeCache == null || this.biomeCache.length != effectiveRegion) {
             this.biomeCache = new int[effectiveRegion][effectiveRegion];
         }
 
+//        if (layer instanceof IntBiomeLayer){
+//            int[] biomes=((IntBiomeLayer) layer).sample(region.getX() ,0, region.getZ(),effectiveRegion,1,effectiveRegion);
+//            for (int x = 0; x < effectiveRegion; x++) {
+//                this.biomeCache[x]=Arrays.copyOfRange(biomes,x*effectiveRegion,(x+1)*effectiveRegion);
+//            }
+//        }else{
+//            for (int x = 0; x < effectiveRegion; x++) {
+//                for (int z = 0; z < effectiveRegion; z++) {
+//                    this.biomeCache[x][z]=layer.getBiome(region.getX() + x, 0, region.getZ() + z);
+//                }
+//            }
+//        }
         for (int x = 0; x < effectiveRegion; x++) {
             for (int z = 0; z < effectiveRegion; z++) {
-                this.biomeCache[x][z] = layer.get(region.getX() + x, 0, region.getZ() + z);
+                this.biomeCache[x][z]=layer.getBiome(region.getX() + x * cheating, 0, region.getZ() + z * cheating);
             }
         }
-
+        hasBiomeModified = true;
         this.refreshImageCache();
     }
 
     private void refreshImageCache() {
-        if (this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache)) return;
-
+        if (this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache) && !hasBiomeModified) return;
+        hasBiomeModified = false;
         int scaledSize = this.biomeCache.length;
         this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
         this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
 
         for (int x = 0; x < scaledSize; x++) {
             for (int z = 0; z < scaledSize; z++) {
-                Biome biome = Biome.REGISTRY.get(this.biomeCache[x][z]);
+                Biome biome = Biomes.REGISTRY.get(this.biomeCache[x][z]);
                 if (biome == null) continue;
                 Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
 

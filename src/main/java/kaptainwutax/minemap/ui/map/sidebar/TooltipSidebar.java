@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
+import kaptainwutax.biomeutils.biome.Biomes;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
@@ -29,7 +30,7 @@ public class TooltipSidebar extends JPanel {
     public static int getBiome(MapPanel map, int blockX, int blockZ) {
         BiomeLayer layer = map.getContext().getBiomeLayer();
         RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
-        return layer.get(pos.getX(), 0, pos.getZ());
+        return layer.getBiome(pos.getX(), 0, pos.getZ());
     }
 
     private void addBiomeDisplay() {
@@ -57,7 +58,7 @@ public class TooltipSidebar extends JPanel {
 
     public void updateBiomeDisplay(int blockX, int blockZ) {
         int biomeId = getBiome(this.map, blockX, blockZ);
-        Biome biome = Biome.REGISTRY.get(biomeId);
+        Biome biome = Biomes.REGISTRY.get(biomeId);
         String name = biome == null ? "Unknown" : Str.formatName(biome.getName());
 
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,

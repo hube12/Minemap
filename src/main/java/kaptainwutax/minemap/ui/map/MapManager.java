@@ -36,6 +36,7 @@ import java.util.function.Supplier;
 public class MapManager {
 
     public static final int DEFAULT_REGION_SIZE = 512;
+    public static final double DEFAULT_PIXELS_PER_FRAGMENT = 1024.0;
     public final int blocksPerFragment;
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
@@ -55,7 +56,7 @@ public class MapManager {
     public MapManager(MapPanel panel, int blocksPerFragment) {
         this.panel = panel;
         this.blocksPerFragment = blocksPerFragment;
-        this.pixelsPerFragment = (int) (256.0D * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
+        this.pixelsPerFragment = (int) (DEFAULT_PIXELS_PER_FRAGMENT * (this.blocksPerFragment / DEFAULT_REGION_SIZE));
 
         this.panel.addMouseMotionListener(Events.Mouse.onDragged(e -> {
             if (this.mousePointer == null) return;

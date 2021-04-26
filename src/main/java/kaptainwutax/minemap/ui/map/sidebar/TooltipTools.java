@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
+import kaptainwutax.biomeutils.biome.Biomes;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
@@ -107,7 +108,7 @@ public class TooltipTools extends JPanel {
                 HashMap<Biome, Long> biomesCount = new HashMap<>();
                 for (BPos coord : coords) {
                     int biomeId = TooltipSidebar.getBiome(map, coord.getX(), coord.getZ());
-                    Biome biome = Biome.REGISTRY.get(biomeId);
+                    Biome biome = Biomes.REGISTRY.get(biomeId);
                     biomesCount.merge(biome, 1L, Long::sum);
                 }
                 long total = biomesCount.values().stream().reduce(0L, Long::sum);

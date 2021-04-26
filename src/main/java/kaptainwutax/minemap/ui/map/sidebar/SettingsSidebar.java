@@ -1,7 +1,9 @@
 package kaptainwutax.minemap.ui.map.sidebar;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
+import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
+import kaptainwutax.biomeutils.source.LayeredBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
@@ -67,8 +69,8 @@ public class SettingsSidebar extends JPanel {
         this.add(scrollPane);
     }
 
-    private void addLayerDropdown() {
-        BiomeSource source = this.map.getContext().getBiomeSource();
+    private <T extends BiomeLayer> void addLayerDropdown() {
+        LayeredBiomeSource<BiomeLayer> source = this.map.getContext().getBiomeSource();
         this.layerDropdown = new Dropdown<>(i -> "[" + i + "] " + source.getLayer(i).getClass().getSimpleName() + " " + source.getLayer(i).getScale() + ":1", IntStream.range(0, source.getLayerCount()).boxed());
         this.layerDropdown.selectIfPresent(this.map.getContext().getLayerId());
 

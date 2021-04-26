@@ -1,7 +1,8 @@
 package kaptainwutax.minemap.ui.map;
 
 import com.google.gson.annotations.Expose;
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
+import kaptainwutax.biomeutils.biome.Biomes;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
@@ -43,7 +44,7 @@ public class MapSettings {
             .filter(f -> f.isValidDimension(this.dimension))
             .map(Feature::getName).collect(Collectors.toMap(e -> e, e -> true));
 
-        this.biomes = Biome.REGISTRY.values().stream()
+        this.biomes = Biomes.REGISTRY.values().stream()
             .filter(b -> b.getDimension() == dimension).map(Biome::getName)
             .collect(Collectors.toMap(e -> e, e -> true));
     }
@@ -67,7 +68,7 @@ public class MapSettings {
                 e -> this.features.getOrDefault(e.getValue().getName(), true)
             ));
 
-        this.biomeStates = Biome.REGISTRY.values().stream()
+        this.biomeStates = Biomes.REGISTRY.values().stream()
             .filter(b -> b.getDimension() == this.dimension)
             .filter(b -> b.getVersion().isOlderOrEqualTo(this.version))
             .collect(Collectors.toMap(

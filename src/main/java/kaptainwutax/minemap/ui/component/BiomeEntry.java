@@ -1,6 +1,6 @@
 package kaptainwutax.minemap.ui.component;
 
-import kaptainwutax.biomeutils.Biome;
+import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.util.data.Str;
 
