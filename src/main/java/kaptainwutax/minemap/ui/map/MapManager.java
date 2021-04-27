@@ -35,8 +35,8 @@ import java.util.function.Supplier;
 
 public class MapManager {
 
-    public static final int DEFAULT_REGION_SIZE = 512;
-    public static final double DEFAULT_PIXELS_PER_FRAGMENT = 1024.0;
+    public static final int DEFAULT_REGION_SIZE = 512;//8192;
+    public static final double DEFAULT_PIXELS_PER_FRAGMENT = 256.0;
     public final int blocksPerFragment;
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;

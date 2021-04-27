@@ -39,6 +39,7 @@ public class MineMap extends JFrame {
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
     public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
+    public final static boolean DEBUG=false;
     public static MineMap INSTANCE;
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;

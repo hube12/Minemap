@@ -35,7 +35,7 @@ public class Fragment {
     private Set<Biome> activeBiomesCache;
     private BufferedImage imageCache;
     private int lastCheating = 1;
-    private boolean hasBiomeModified=false;
+    private boolean hasBiomeModified = false;
 
     private Map<Feature<?, ?>, List<BPos>> features;
     private BPos hoveredPos;
@@ -193,12 +193,12 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        int cheating = Math.max(1, (int) (32.0D / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
+        int cheating = Math.max(1, (int) (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.blocksPerFragment / 16 / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
         if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
         lastCheating = cheating;
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
-        int effectiveRegion = Math.max(this.regionSize / layer.getScale(), 1)/cheating;
+        int effectiveRegion = Math.max(Math.max(this.regionSize / layer.getScale(), 1) / cheating, 1);
         RPos region = new BPos(this.blockX, 0, this.blockZ).toRegionPos(layer.getScale());
 
         if (this.biomeCache == null || this.biomeCache.length != effectiveRegion) {
@@ -219,7 +219,7 @@ public class Fragment {
 //        }
         for (int x = 0; x < effectiveRegion; x++) {
             for (int z = 0; z < effectiveRegion; z++) {
-                this.biomeCache[x][z]=layer.getBiome(region.getX() + x * cheating, 0, region.getZ() + z * cheating);
+                this.biomeCache[x][z] = layer.getBiome(region.getX() + x * cheating, 0, region.getZ() + z * cheating);
             }
         }
         hasBiomeModified = true;

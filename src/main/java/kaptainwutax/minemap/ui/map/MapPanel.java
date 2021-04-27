@@ -17,6 +17,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import static kaptainwutax.minemap.MineMap.DEBUG;
+
 public class MapPanel extends JPanel {
 
     public final MapContext context;
@@ -80,18 +82,34 @@ public class MapPanel extends JPanel {
 
     @Override
     public void paintComponent(Graphics graphics) {
+        long start=System.nanoTime();
         super.paintComponent(graphics);
+        if (DEBUG) System.out.println("Draw super "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
+
         this.scheduler.purge();
+        if (DEBUG)System.out.println("Draw scheduler "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
         this.drawMap(graphics);
+        if (DEBUG)System.out.println("Draw map "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
         this.drawCrossHair(graphics);
+        if (DEBUG)System.out.println("Draw crosshair "+" "+(System.nanoTime()-start));
     }
 
     public void drawMap(Graphics graphics) {
+        long start=System.nanoTime();
         Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
+        if (DEBUG)System.out.println("Draw queue "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
         drawQueue.forEach((fragment, info) -> fragment.drawBiomes(graphics, info));
+        if (DEBUG)System.out.println("Draw Biomes "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
         drawQueue.forEach((fragment, info) -> fragment.drawFeatures(graphics, info));
+        if (DEBUG)System.out.println("Draw feature "+" "+(System.nanoTime()-start));
+        start=System.nanoTime();
         drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.toolsList));
-
+        if (DEBUG) System.out.println("Draw tools "+" "+(System.nanoTime()-start));
     }
 
     public void drawCrossHair(Graphics graphics) {
@@ -108,20 +126,24 @@ public class MapPanel extends JPanel {
 
         BPos min = this.manager.getPos(0, 0);
         BPos max = this.manager.getPos(w, h);
+
+        double scaleFactor = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
+        int factor=1;
+//        if (scaleFactor<0.04){
+//            factor=8;
+//        }
         RPos regionMin = min.toRegionPos(this.manager.blocksPerFragment);
         RPos regionMax = max.toRegionPos(this.manager.blocksPerFragment);
-        double scaleFactor = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
-
-        for (int regionX = regionMin.getX(); regionX <= regionMax.getX(); regionX++) {
-            for (int regionZ = regionMin.getZ(); regionZ <= regionMax.getZ(); regionZ++) {
-                Fragment fragment = this.scheduler.getFragmentAt(regionX, regionZ);
-                int blockOffsetX = regionMin.toBlockPos().getX() - min.getX();
-                int blockOffsetZ = regionMin.toBlockPos().getZ() - min.getZ();
-                double pixelOffsetX = blockOffsetX * scaleFactor;
-                double pixelOffsetZ = blockOffsetZ * scaleFactor;
-                double x = (regionX - regionMin.getX()) * this.manager.pixelsPerFragment + pixelOffsetX;
-                double z = (regionZ - regionMin.getZ()) * this.manager.pixelsPerFragment + pixelOffsetZ;
-                int size = (int) (this.manager.pixelsPerFragment);
+        int blockOffsetX = regionMin.toBlockPos().getX() - min.getX();
+        int blockOffsetZ = regionMin.toBlockPos().getZ() - min.getZ();
+        double pixelOffsetX = blockOffsetX * scaleFactor;
+        double pixelOffsetZ = blockOffsetZ * scaleFactor;
+        for (int regionX = regionMin.getX()/factor; regionX <= regionMax.getX()/factor; regionX++) {
+            for (int regionZ = regionMin.getZ()/factor; regionZ <= regionMax.getZ()/factor; regionZ++) {
+                Fragment fragment = this.scheduler.getFragmentAt(regionX*factor, regionZ*factor,factor);
+                double x = (regionX*factor - regionMin.getX()) * this.manager.pixelsPerFragment + pixelOffsetX;
+                double z = (regionZ*factor - regionMin.getZ()) * this.manager.pixelsPerFragment + pixelOffsetZ;
+                int size = (int) (this.manager.pixelsPerFragment)*factor;
                 drawQueue.put(fragment, new DrawInfo((int) x, (int) z, size, size));
             }
         }
