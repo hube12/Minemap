@@ -51,7 +51,7 @@ public class TabGroup {
 
     private void loadSeed(long worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.worldSeed = worldSeed;
-        Configs.USER_PROFILE.addRecentSeed(worldSeed);
+        Configs.USER_PROFILE.addRecentSeed(worldSeed,this.version);
         for (Dimension dimension : dimensions) {
             MapPanel mapPanel = new MapPanel(this.getVersion(), dimension, this.worldSeed, threadCount);
             this.mapPanels.put(dimension, mapPanel);

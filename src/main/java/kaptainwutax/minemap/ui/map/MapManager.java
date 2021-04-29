@@ -243,9 +243,9 @@ public class MapManager {
                 double newPixelsPerFragment = manager.pixelsPerFragment;
 
                 if (zoomOut) {
-                    newPixelsPerFragment /= 4.0D;
+                    newPixelsPerFragment /= 2.0D;
                 } else {
-                    newPixelsPerFragment *= 4.0D;
+                    newPixelsPerFragment *= 2.0D;
                 }
 
                 if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {

@@ -193,8 +193,7 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        int cheating = Math.max(1, (int) (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.blocksPerFragment / 32 / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
-        System.out.println(cheating);
+        int cheating = Math.max(1, (int) (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.blocksPerFragment / 16 / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
         if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
         lastCheating = cheating;
         this.layerIdCache = this.context.getLayerId();

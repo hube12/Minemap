@@ -1,5 +1,7 @@
 package kaptainwutax.minemap.ui.menubar;
 
+import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
@@ -38,7 +40,7 @@ public class FileMenu extends Menu {
 
         this.recentSeeds = new JMenu("Recent Seeds");
         this.recentSeeds.addMenuListener(Events.Menu.onSelected(e->this.addRecentSeedGroup()));
-        
+
         this.screenshot = new JMenuItem("Screenshot");
         this.addMouseAndKeyListener(this.screenshot, screenshot(), screenshot(), true);
 
@@ -59,10 +61,30 @@ public class FileMenu extends Menu {
 
     public void addRecentSeedGroup(){
         this.recentSeeds.removeAll();
-        for (long seed:Configs.USER_PROFILE.getRecentSeeds()){
-            JMenuItem item=new JMenuItem(String.valueOf(seed));
-            this.recentSeeds.add(item);
+        for (String config:Configs.USER_PROFILE.getRecentSeeds()){
+            String[] split=config.split("::");
+            if (split.length==2){
+                String seed=split[0];
+                String version=split[1];
+                MCVersion mcVersion=MCVersion.fromString(version);
+                if (mcVersion!=null){
+                    JMenuItem item=new JMenuItem(seed +" ["+mcVersion+"]");
+                    this.addMouseAndKeyListener(item,openSeed(seed,mcVersion),openSeed(seed,mcVersion),true);
+                    this.recentSeeds.add(item);
+                }
+            }
         }
+    }
+
+    public Runnable openSeed(String seed,MCVersion version){
+        return ()->{
+            MineMap.INSTANCE.worldTabs.load(
+                version,
+                seed,
+                Configs.USER_PROFILE.getThreadCount(Runtime.getRuntime().availableProcessors()),
+                Configs.USER_PROFILE.getEnabledDimensions()
+            );
+        };
     }
 
     public Runnable newSeed() {
