@@ -23,10 +23,10 @@ public class UtilitiesMenu extends Menu {
         this.menu.setMnemonic(KeyEvent.VK_U);
 
         this.listStructure = new JMenuItem("List N Structures");
-        this.listStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(getNStructure())));
+        this.addMouseAndKeyListener(this.listStructure, getNStructure(), getNStructure(), false);
 
         this.structureSeedMode = new JCheckBoxMenuItem("Structure Seed Mode");
-        this.structureSeedMode.addActionListener(e -> toggleStructureMode(false).run());
+        this.addMouseAndKeyListener(this.structureSeedMode, toggleStructureMode(false), toggleStructureMode(true), true);;
         this.structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> {

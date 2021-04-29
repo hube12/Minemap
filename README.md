@@ -62,6 +62,7 @@ Supports all Minecraft release starting from 1.0+
 #### Main controls:
 - Ctrl + `N` : New seed
 - Ctrl + `S` : Screenshot
+- Ctrl + `O` : Open screenshot folder
 - Ctrl + `Q` : Close
 
 #### Optional controls :

@@ -12,6 +12,7 @@ import kaptainwutax.minemap.ui.map.MapManager;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
+import javax.swing.text.DefaultCaret;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -60,7 +61,7 @@ public class SettingsMenu extends Menu {
         this.addMouseAndKeyListener(this.settingsFolder, settingsFolder(), settingsFolder(), true);
 
         this.about = new JMenuItem("About Minemap");
-        this.addMouseAndKeyListener(this.settingsFolder, aboutPanel(), aboutPanel(), true);
+        this.addMouseAndKeyListener(this.about, aboutPanel(), aboutPanel(), true);
 
 
         this.menu.add(this.lookMenu);
@@ -270,7 +271,9 @@ public class SettingsMenu extends Menu {
                     }
                 }
             });
-
+            textArea.setCaretPosition(0);
+            DefaultCaret caret = (DefaultCaret) textArea.getCaret();
+            caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

@@ -81,6 +81,7 @@ public class KeyboardsConfig extends Config {
         this.KEYBOARDS.clear();
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.NEW_SEED, KeyShortcuts.KeyRegister.registerCtrlKey("N"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.SCREENSHOT, KeyShortcuts.KeyRegister.registerCtrlKey("S"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.SCREENSHOT_FOLDER, KeyShortcuts.KeyRegister.registerCtrlKey("O"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.CLOSE, KeyShortcuts.KeyRegister.registerCtrlKey("Q"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_COORDS, KeyShortcuts.KeyRegister.registerAltKey("G"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_SPAWN, KeyShortcuts.KeyRegister.registerAltKey("P"));

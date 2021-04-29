@@ -48,6 +48,8 @@ public class KeyShortcuts {
         NEW_SEED(menuBar.fileMenu.newSeed()),
         @SerializedName("SCREENSHOT")
         SCREENSHOT(menuBar.fileMenu.screenshot()),
+        @SerializedName("SCREENSHOT_FOLDER")
+        SCREENSHOT_FOLDER(menuBar.fileMenu.screenshotFolder()),
         @SerializedName("CLOSE")
         CLOSE(menuBar.fileMenu.close(true)),
         @SerializedName("GO_TO_COORDS")

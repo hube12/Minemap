@@ -33,16 +33,16 @@ public class WorldMenu extends Menu {
         this.menu.setMnemonic(KeyEvent.VK_W);
 
         this.goToCoords = new JMenuItem("Go to Coordinates");
-        this.goToCoords.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(goToCoords()))); // this can wait
+        this.addMouseAndKeyListener(this.goToCoords, goToCoords(), goToCoords(), false);
 
         this.goToSpawn = new JMenuItem("Go to Spawn");
-        this.goToSpawn.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(goToSpawn()))); // this can wait
+        this.addMouseAndKeyListener(this.goToSpawn, goToSpawn(), goToSpawn(), false);
 
         this.goToStructure = new JMenuItem("Go to Structure");
-        this.goToStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(goToStructure()))); // this can wait
+        this.addMouseAndKeyListener(this.goToStructure, goToStructure(), goToStructure(), false);
 
         this.loadShadowSeed = new JMenuItem("Load Shadow Seed");
-        this.loadShadowSeed.addMouseListener(Events.Mouse.onPressed(e -> loadShadowSeed().run())); // this needs to run immediately
+        this.addMouseAndKeyListener(this.loadShadowSeed, loadShadowSeed(), loadShadowSeed(), true);
 
         this.goToCoords.setEnabled(false);
         this.goToSpawn.setEnabled(false);
@@ -58,7 +58,7 @@ public class WorldMenu extends Menu {
         }));
 
         this.changeSalts = new JMenuItem("Change Salts");
-        this.changeSalts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(changeSalts())));
+        this.addMouseAndKeyListener(this.changeSalts, changeSalts(), changeSalts(), false);
 
         this.menu.add(goToCoords);
         this.menu.add(goToSpawn);

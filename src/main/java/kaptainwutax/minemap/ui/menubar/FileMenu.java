@@ -1,6 +1,5 @@
 package kaptainwutax.minemap.ui.menubar;
 
-import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.LinkedList;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
 
@@ -160,6 +158,7 @@ public class FileMenu extends Menu {
     public void doDelayedLabels() {
         this.loadSeed.setText(String.format("New From Seed (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.NEW_SEED)));
         this.screenshot.setText(String.format("Screenshot (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.SCREENSHOT)));
+        this.screenshotFolder.setText(String.format("Open Screenshot Folder (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.SCREENSHOT_FOLDER)));
         this.close.setText(String.format("Close (%s)", getKeyComboString(KeyShortcuts.ShortcutAction.CLOSE)));
     }
 }
