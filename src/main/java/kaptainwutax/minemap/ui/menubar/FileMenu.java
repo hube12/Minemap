@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.menubar;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
@@ -10,39 +11,59 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
 
 public class FileMenu extends Menu {
-    private final JMenuItem screenshot;
     private final JMenuItem loadSeed;
+    private final JMenu recentSeeds;
+    private final JMenuItem screenshot;
+    private final JMenuItem screenshotFolder;
     private final JMenuItem close;
     public static boolean isClosing=false;
 
     public FileMenu() {
         this.menu = new JMenu("Home");
+        this.menu.setMnemonic(KeyEvent.VK_H);
 
         this.loadSeed = new JMenuItem("New From Seed");
-        this.loadSeed.addMouseListener(Events.Mouse.onPressed(e -> newSeed().run())); // this needs to run immediately
+        this.addMouseAndKeyListener(this.loadSeed, newSeed(), newSeed(), true);
 
+        this.recentSeeds = new JMenu("Recent Seeds");
+        this.recentSeeds.addMenuListener(Events.Menu.onSelected(e->this.addRecentSeedGroup()));
+        
         this.screenshot = new JMenuItem("Screenshot");
-        this.screenshot.addMouseListener(Events.Mouse.onPressed(e -> screenshot().run())); // this needs to run immediately
+        this.addMouseAndKeyListener(this.screenshot, screenshot(), screenshot(), true);
+
+        this.screenshotFolder = new JMenuItem("Open Screenshot Folder");
+        this.addMouseAndKeyListener(this.screenshotFolder, screenshotFolder(), screenshotFolder(), true);
 
         this.close = new JMenuItem("Close");
-        this.close.addMouseListener(Events.Mouse.onPressed(mouseEvent -> close(false).run())); // this needs to run immediately
+        this.addMouseAndKeyListener(this.close, close(true), close(true), true);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> screenshot.setEnabled(MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null)));
 
-        this.menu.add(loadSeed);
+        this.menu.add(this.loadSeed);
+        this.menu.add(this.recentSeeds);
         this.menu.add(this.screenshot);
-        this.menu.add(close);
+        this.menu.add(this.screenshotFolder);
+        this.menu.add(this.close);
     }
 
+    public void addRecentSeedGroup(){
+        this.recentSeeds.removeAll();
+        for (long seed:Configs.USER_PROFILE.getRecentSeeds()){
+            JMenuItem item=new JMenuItem(String.valueOf(seed));
+            this.recentSeeds.add(item);
+        }
+    }
 
     public Runnable newSeed() {
         return () -> {
@@ -61,15 +82,31 @@ public class FileMenu extends Menu {
             BufferedImage image = map.getScreenshot();
 
             String fileName = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-            File dir = new File("screenshots/");
-            File file = new File("screenshots/" + fileName + ".png");
-            if (!dir.exists() && !dir.mkdirs()) return;
-
+            File dir = new File(MineMap.SCREENSHOTS_DIR);
+            if (!dir.exists() && !dir.mkdirs()) {
+                Logger.LOGGER.severe("Screenshot dir doesn't exists yet");
+                return;
+            }
+            File file = new File(MineMap.SCREENSHOTS_DIR + File.separatorChar + fileName + ".png");
             try {
                 ImageIO.write(image, "png", file);
             } catch (IOException e) {
                 Logger.LOGGER.severe(e.toString());
                 e.printStackTrace();
+            }
+        };
+    }
+
+    public Runnable screenshotFolder() {
+        return () -> {
+            Desktop desktop = Desktop.getDesktop();
+            File dir = new File(MineMap.SCREENSHOTS_DIR);
+            if (!dir.exists() && !dir.mkdirs()) return;
+            try {
+                desktop.open(dir);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Logger.LOGGER.warning("Screenshot folder could not be opened");
             }
         };
     }

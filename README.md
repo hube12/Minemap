@@ -59,23 +59,40 @@ Supports all Minecraft release starting from 1.0+
 
 ### Shortcuts
 
+#### Main controls:
 - Ctrl + `N` : New seed
 - Ctrl + `S` : Screenshot
 - Ctrl + `Q` : Close
-- Alt + `G` : Go to Coordinates
-- Alt + `P` : Go to Spawn
-- Alt + `L` : Load Shadow Seed
-- Alt + `S` : Go to Structure
-- Alt + `C` : Change Salts
-- Alt + `A` : Toggle Structure Seed Mode
-- Alt + `K` : Show Shortcuts Menu
 
-- Ctrl + `Numpad +` : Zoom in
-- Ctrl + `Numpad -` : Zoom out
-- Alt + `Numpad +` : Layer +
-- Alt + `Numpad -` : Layer -
+#### Optional controls :
+- Alt + `A` : Toggle Structure Seed Mode
+- Alt + `C` : Change Salts
+- Alt + `E` : Open Settings Folder (see [Configuration](#configuration))
+- Alt + `G` : Go to Coordinates
+- Alt + `K` : Show Shortcuts Menu
+- Alt + `L` : Load Shadow Seed
+- Alt + `O` : Open Screenshot Folder
+- Alt + `P` : Go to Spawn
+- Alt + `S` : Go to Structure
+
+#### Zooming in and out:
+  - Ctrl + `Numpad +` : Zoom in
+  - Ctrl + `Numpad -` : Zoom out
+  - Alt + `Numpad +` : Layer +
+  - Alt + `Numpad -` : Layer -
 
 In a dialog type `enter` to activate the continue button or `esc` to close the dialog.
+
+Hold `alt` then press H, W, U or E to get one of the 4 menu to open.
+
+You can navigate the menus and press enter to use the button in it.
+
+### Configuration
+
+All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.minemap` (Mac/Linux)
+
+There is 4 folder here: 
+- 
 
 ### Command line
 

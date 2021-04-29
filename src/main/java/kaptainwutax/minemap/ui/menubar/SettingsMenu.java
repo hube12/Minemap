@@ -13,6 +13,8 @@ import kaptainwutax.minemap.ui.map.MapManager;
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -25,10 +27,12 @@ public class SettingsMenu extends Menu {
     private final JMenu modifierKey;
     private final JCheckBoxMenuItem zoom;
     private final JMenuItem shortcuts;
+    private final JMenuItem settingsFolder;
     private final JMenuItem about;
 
     public SettingsMenu() {
         this.menu = new JMenu("Settings");
+        this.menu.setMnemonic(KeyEvent.VK_E);
 
         this.lookMenu = new JMenu("UI Look");
         this.addLookGroup();
@@ -47,46 +51,16 @@ public class SettingsMenu extends Menu {
             Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom = zoom.getState();
             Configs.USER_PROFILE.flush();
         });
-        this.menu.addMenuListener(Events.Menu.onSelected(e -> {
-            this.zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom);
-        }));
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom)));
 
         this.shortcuts = new JMenuItem("Shortcuts");
-        this.shortcuts.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(changeShortcuts())));
+        this.addMouseAndKeyListener(this.shortcuts, changeShortcuts(), changeShortcuts(), false);
+
+        this.settingsFolder = new JMenuItem("Open Settings Folder");
+        this.addMouseAndKeyListener(this.settingsFolder, settingsFolder(), settingsFolder(), true);
 
         this.about = new JMenuItem("About Minemap");
-        this.about.addMouseListener(Events.Mouse.onPressed(e -> {
-            JFrame frame = new JFrame("About Minemap " + MineMap.version);
-            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setPreferredSize(new Dimension(500, 400));
-            JTextPane textArea = new JTextPane();
-            textArea.setContentType("text/html");
-            textArea.setEditable(false);
-            textArea.setText(getAbout());
-            textArea.setFont(new Font("Times", Font.PLAIN, 16));
-            textArea.addHyperlinkListener(linkEvent -> {
-                if (linkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    if (Desktop.isDesktopSupported()) {
-                        try {
-                            Desktop.getDesktop().browse(linkEvent.getURL().toURI());
-                        } catch (IOException | URISyntaxException error) {
-                            Logger.LOGGER.warning(String.format("URL could not be opened for %s, error: %s", linkEvent.getURL(), error));
-                        }
-                    }
-                }
-            });
-
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-            scrollPane.setPreferredSize(new Dimension(500, 400));
-
-            frame.add(scrollPane);
-            frame.pack();
-            frame.setLocationRelativeTo(null); // center
-            frame.setVisible(true);
-
-        }));
+        this.addMouseAndKeyListener(this.settingsFolder, aboutPanel(), aboutPanel(), true);
 
 
         this.menu.add(this.lookMenu);
@@ -95,10 +69,12 @@ public class SettingsMenu extends Menu {
         this.menu.add(this.modifierKey);
         this.menu.add(this.zoom);
         this.menu.add(this.shortcuts);
+        this.menu.add(this.settingsFolder);
         this.menu.add(this.about);
     }
 
     public static String getAbout() {
+        @SuppressWarnings("StringBufferReplaceableByString ")
         StringBuilder sb = new StringBuilder("<html><body>");
         sb.append("This is a program to replace the old amidst with a non Minecraft based one (meaning you can run it without Minecraft installed), ")
             .append("it is also way more efficient since it is fully multithreaded.")
@@ -271,6 +247,42 @@ public class SettingsMenu extends Menu {
         }));
     }
 
+
+    public Runnable aboutPanel() {
+        return () -> {
+            JFrame frame = new JFrame("About Minemap " + MineMap.version);
+
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setPreferredSize(new Dimension(500, 400));
+            JTextPane textArea = new JTextPane();
+            textArea.setContentType("text/html");
+            textArea.setEditable(false);
+            textArea.setText(getAbout());
+            textArea.setFont(new Font("Times", Font.PLAIN, 16));
+            textArea.addHyperlinkListener(linkEvent -> {
+                if (linkEvent.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                    if (Desktop.isDesktopSupported()) {
+                        try {
+                            Desktop.getDesktop().browse(linkEvent.getURL().toURI());
+                        } catch (IOException | URISyntaxException error) {
+                            Logger.LOGGER.warning(String.format("URL could not be opened for %s, error: %s", linkEvent.getURL(), error));
+                        }
+                    }
+                }
+            });
+
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setPreferredSize(new Dimension(500, 400));
+
+            frame.add(scrollPane);
+            frame.pack();
+            frame.setLocationRelativeTo(null); // center
+            frame.setVisible(true);
+        };
+    }
+
     public Runnable changeShortcuts() {
         return () -> {
             ShortcutDialog dialog;
@@ -282,6 +294,20 @@ public class SettingsMenu extends Menu {
                 this.deactivate.run();
                 Logger.LOGGER.severe(exception.toString());
                 exception.printStackTrace();
+            }
+        };
+    }
+
+    public Runnable settingsFolder() {
+        return () -> {
+            Desktop desktop = Desktop.getDesktop();
+            File dir = new File(MineMap.ROOT_DIR);
+            if (!dir.exists()) return;
+            try {
+                desktop.open(dir);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Logger.LOGGER.warning("Settings folder could not be opened");
             }
         };
     }

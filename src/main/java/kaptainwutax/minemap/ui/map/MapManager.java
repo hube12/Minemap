@@ -37,7 +37,7 @@ public class MapManager {
 
     public static final int DEFAULT_REGION_SIZE = 512;//8192;
     public static final double DEFAULT_PIXELS_PER_FRAGMENT = 256.0;
-    public final int blocksPerFragment;
+    public int blocksPerFragment;
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
     private final JPopupMenu popup;
@@ -243,18 +243,16 @@ public class MapManager {
                 double newPixelsPerFragment = manager.pixelsPerFragment;
 
                 if (zoomOut) {
-                    newPixelsPerFragment /= 2.0D;
+                    newPixelsPerFragment /= 4.0D;
                 } else {
-                    newPixelsPerFragment *= 2.0D;
+                    newPixelsPerFragment *= 4.0D;
                 }
 
-                // restrict min zoom to 4096 chunks per fragment
                 if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    // restrict min zoom to 4096 chunks per fragment
                     newPixelsPerFragment = 4096.0D * (manager.blocksPerFragment / 512.0D);
-                }
-
-                // restrict max zoom to 32 chunks per fragment
-                if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                }else if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                    // restrict max zoom to 32 chunks per fragment
                     newPixelsPerFragment = 32.0D * (manager.blocksPerFragment / 512.0D);
                 }
 

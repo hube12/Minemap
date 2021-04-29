@@ -39,6 +39,7 @@ public class MineMap extends JFrame {
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
     public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
+    public final static String SCREENSHOTS_DIR = ROOT_DIR + File.separatorChar + "screenshots";
     public final static boolean DEBUG=false;
     public static MineMap INSTANCE;
     public MenuBar toolbarPane;
@@ -228,7 +229,7 @@ public class MineMap extends JFrame {
 
     public static void createDirs() {
         try {
-            String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR};
+            String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR,SCREENSHOTS_DIR};
             for (String dir : dirs) {
                 Files.createDirectories(Paths.get(dir));
             }

@@ -14,9 +14,8 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapSettings;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class UserProfileConfig extends Config {
@@ -31,6 +30,8 @@ public class UserProfileConfig extends Config {
     protected String MINEMAP_VERSION;
     @Expose
     protected UserSettings USER_SETTINGS;
+    @Expose
+    protected Queue<Long> RECENT_SEEDS=new LinkedBlockingQueue<>(20);
     @Expose
     protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
     @Expose
@@ -103,6 +104,23 @@ public class UserProfileConfig extends Config {
 
     public void setDimensionState(Dimension dimension, boolean state) {
         this.DIMENSIONS.put(dimension.getName(), state);
+        this.flush();
+    }
+
+    public Queue<Long> getRecentSeeds() {
+        return RECENT_SEEDS;
+    }
+
+    public void addRecentSeed(long seed){
+        if (!RECENT_SEEDS.offer(seed)){
+            Long head=RECENT_SEEDS.poll();
+            if (head==null){
+                Logger.LOGGER.severe("Queue has no capacity ? "+ RECENT_SEEDS.peek());
+            }
+            if (! RECENT_SEEDS.offer(seed)){
+                Logger.LOGGER.severe("Queue could not insert after removal: "+ RECENT_SEEDS.peek());
+            }
+        }
         this.flush();
     }
 

@@ -2,6 +2,8 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.config.Config;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
 import java.util.*;
@@ -27,7 +29,11 @@ public class TabGroup {
         if (worldSeed.isEmpty()) {
             this.loadSeed(new Random().nextLong(), threadCount, dimensions);
         } else {
-            try {this.loadSeed(Long.parseLong(worldSeed), threadCount, dimensions);} catch (NumberFormatException e) {this.loadSeed(worldSeed.hashCode(), threadCount, dimensions);}
+            try {
+                this.loadSeed(Long.parseLong(worldSeed), threadCount, dimensions);
+            } catch (NumberFormatException e) {
+                this.loadSeed(worldSeed.hashCode(), threadCount, dimensions);
+            }
         }
     }
 
@@ -45,7 +51,7 @@ public class TabGroup {
 
     private void loadSeed(long worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.worldSeed = worldSeed;
-
+        Configs.USER_PROFILE.addRecentSeed(worldSeed);
         for (Dimension dimension : dimensions) {
             MapPanel mapPanel = new MapPanel(this.getVersion(), dimension, this.worldSeed, threadCount);
             this.mapPanels.put(dimension, mapPanel);

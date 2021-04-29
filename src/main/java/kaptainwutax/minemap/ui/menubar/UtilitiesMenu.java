@@ -10,6 +10,8 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 
+import java.awt.event.KeyEvent;
+
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
 
 public class UtilitiesMenu extends Menu {
@@ -18,6 +20,7 @@ public class UtilitiesMenu extends Menu {
 
     public UtilitiesMenu() {
         this.menu = new JMenu("Utilities");
+        this.menu.setMnemonic(KeyEvent.VK_U);
 
         this.listStructure = new JMenuItem("List N Structures");
         this.listStructure.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(getNStructure())));

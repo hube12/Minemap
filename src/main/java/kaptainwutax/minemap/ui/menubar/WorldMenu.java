@@ -16,6 +16,7 @@ import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.icon.SpawnIcon;
 
 import javax.swing.*;
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
@@ -29,6 +30,7 @@ public class WorldMenu extends Menu {
 
     public WorldMenu() {
         this.menu = new JMenu("World");
+        this.menu.setMnemonic(KeyEvent.VK_W);
 
         this.goToCoords = new JMenuItem("Go to Coordinates");
         this.goToCoords.addMouseListener(Events.Mouse.onPressed(e -> SwingUtilities.invokeLater(goToCoords()))); // this can wait

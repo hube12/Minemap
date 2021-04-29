@@ -1,6 +1,8 @@
 package kaptainwutax.minemap.listener;
 
 import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuKeyEvent;
+import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuListener;
 import java.awt.event.*;
 import java.util.function.Consumer;
@@ -163,6 +165,47 @@ public class Events {
 
         public enum Type {
             SELECTED, DESELECTED, CANCELED
+        }
+    }
+
+    public static final class MenuKey implements MenuKeyListener {
+        private final MenuKey.Type type;
+        private final Consumer<MenuKeyEvent> event;
+
+        public MenuKey(MenuKey.Type type, Consumer<MenuKeyEvent> event) {
+            this.type = type;
+            this.event = event;
+        }
+
+        public static MenuKey onTyped(Consumer<MenuKeyEvent> event) {
+            return new MenuKey(Type.TYPED, event);
+        }
+
+        public static MenuKey onPressed(Consumer<MenuKeyEvent> event) {
+            return new MenuKey(Type.PRESSED, event);
+        }
+
+        public static MenuKey onReleased(Consumer<MenuKeyEvent> event) {
+            return new MenuKey(Type.RELEASED, event);
+        }
+
+        @Override
+        public void menuKeyTyped(MenuKeyEvent e) {
+            if (this.type == Type.TYPED) this.event.accept(e);
+        }
+
+        @Override
+        public void menuKeyPressed(MenuKeyEvent e) {
+            if (this.type == Type.PRESSED) this.event.accept(e);
+        }
+
+        @Override
+        public void menuKeyReleased(MenuKeyEvent e) {
+            if (this.type == Type.RELEASED) this.event.accept(e);
+        }
+
+        public enum Type {
+            TYPED, PRESSED, RELEASED
         }
     }
 
