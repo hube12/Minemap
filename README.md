@@ -92,8 +92,12 @@ You can navigate the menus and press enter to use the button in it.
 
 All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.minemap` (Mac/Linux)
 
-There is 4 folder here: 
-- 
+#### There are 4 folder here: 
+  - configs: User config file in json to save user preferences, can be edited manually but highly discouraged 
+  (be sure to save them after editing in a safe place, also please check your json syntax like comma at the end)
+  - downloads: Assets downloaded from mojang.com with mostly the icons for the items, those are the property of Mojang AB
+  - logs: log to be send if any bug happens, this will help to pinpoint the error
+  - screenshots : screenshot made in the application
 
 ### Command line
 
