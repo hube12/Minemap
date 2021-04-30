@@ -36,7 +36,7 @@ public abstract class Loot {
 
     public abstract List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, BiomeSource biomeSource, MCVersion version);
 
-    public int getSumWithPredicate(List<List<ItemStack>> lists, Predicate<ItemStack> predicate) {
+    public static int getSumWithPredicate(List<List<ItemStack>> lists, Predicate<ItemStack> predicate) {
         return lists.stream().mapToInt(list -> list.stream().anyMatch(predicate) ? 1 : 0).sum();
     }
 
