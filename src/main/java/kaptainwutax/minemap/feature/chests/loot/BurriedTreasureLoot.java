@@ -24,5 +24,4 @@ public class BurriedTreasureLoot extends Loot {
         return Collections.singletonList(loot1);
     }
 
-
 }

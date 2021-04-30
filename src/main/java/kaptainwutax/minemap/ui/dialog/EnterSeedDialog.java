@@ -5,7 +5,7 @@ import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.util.ui.Dropdown;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;

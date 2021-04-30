@@ -2,14 +2,13 @@ package kaptainwutax.minemap.ui.map.sidebar;
 
 import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
-import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.biomeutils.source.LayeredBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.BiomeEntry;
-import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.util.ui.Dropdown;
 import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;

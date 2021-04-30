@@ -12,7 +12,7 @@ import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.StructureHelper;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.util.ui.Dropdown;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;

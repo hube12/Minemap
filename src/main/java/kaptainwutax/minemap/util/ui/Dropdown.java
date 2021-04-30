@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.ui.component;
+package kaptainwutax.minemap.util.ui;
 
 import javax.swing.*;
 import java.util.Arrays;

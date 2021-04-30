@@ -28,7 +28,6 @@ public class Graphic {
         return g2d;
     }
 
-
     public static Graphics2D withoutDithering(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
         // disable dithering for full color accuracy

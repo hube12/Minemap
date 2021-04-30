@@ -2,7 +2,7 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.component.Dropdown;
+import kaptainwutax.minemap.util.ui.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
