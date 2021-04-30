@@ -69,7 +69,7 @@ public class TooltipTools extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(tool.getClass());
-                    if (icon==null) return;
+                    if (icon == null) return;
                     int iconSizeX, iconSizeZ;
                     int defaultValue = 20;
                     float factor = 1.5F;
@@ -103,8 +103,18 @@ public class TooltipTools extends JPanel {
                 MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                 if (map == null) return;
                 Shape shape = tool.getExactShape();
-                if (shape == null) return;
-                List<BPos> coords = DisplayMaths.getPointsInArea(shape,tool.getPointsTraced());
+                List<BPos> coords;
+                if (shape == null) {
+                    List<Shape> shapes = tool.getExactShapes();
+                    if (shapes == null || shapes.size() == 0) return;
+                    coords = new ArrayList<>();
+                    for (Shape s : shapes) {
+                        coords.addAll(DisplayMaths.getPointsInArea(s, tool.getPointsTraced()/(shapes.size()+1)+1));
+                    }
+                } else {
+                    coords = DisplayMaths.getPointsInArea(shape, tool.getPointsTraced());
+                }
+
                 HashMap<Biome, Long> biomesCount = new HashMap<>();
                 for (BPos coord : coords) {
                     int biomeId = TooltipSidebar.getBiome(map, coord.getX(), coord.getZ());
@@ -113,7 +123,7 @@ public class TooltipTools extends JPanel {
                 }
                 long total = biomesCount.values().stream().reduce(0L, Long::sum);
                 HashMap<Color, Long> colorCount = new HashMap<>();
-                HashMap<Color, Pair<String,String>> colorToName = new HashMap<>();
+                HashMap<Color, Pair<String, String>> colorToName = new HashMap<>();
                 for (Biome biome : biomesCount.keySet()) {
                     long count = biomesCount.get(biome);
                     Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
@@ -128,7 +138,7 @@ public class TooltipTools extends JPanel {
                 frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 frame.setPreferredSize(new Dimension(500, 400));
 
-                PieChart pieChart = new PieChart(colorCount, colorToName,"On a total of %d blocks", total);
+                PieChart pieChart = new PieChart(colorCount, colorToName, "On a total of %d blocks", total);
                 pieChart.setSize(new Dimension(400, 400));
 
                 frame.add(pieChart);
@@ -145,9 +155,7 @@ public class TooltipTools extends JPanel {
             this.add(this.iconView, gbc);
             this.add(this.colorChooser, gbc);
             this.add(this.positionText, gbc);
-            if (tool.getExactShape()!=null){
-                this.add(this.infoButton, gbc);
-            }
+            this.add(this.infoButton, gbc);
             this.add(this.closeButton, gbc);
 
             this.setBackground(new Color(0, 0, 0, 200));

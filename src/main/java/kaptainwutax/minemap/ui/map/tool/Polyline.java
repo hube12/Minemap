@@ -18,9 +18,10 @@ import java.util.List;
 
 public class Polyline extends Tool {
     private final LinkedList<BPos> bPosList = new LinkedList<>();
+    private BPos firstPoint=null;
     private int pointsTraced = 0;
     private Color color;
-    private Program program=new Program();
+    private final Program program=new Program();
 
     public Polyline() {
         color = DisplayMaths.getRandomColor();
@@ -28,15 +29,15 @@ public class Polyline extends Tool {
 
     @Override
     public boolean addPoint(BPos bpos) {
+        if (firstPoint==null) firstPoint=bpos;
         bPosList.add(bpos);
         pointsTraced++;
         MapManager manager=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager();
         SwingUtilities.invokeLater(()->{
             Pair<Double, List<Integer>> res= program.startApplication(bPosList);
-            ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[res.getSecond().size()]));
+            ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[0]));
+            ListUtil.cycleInPlace(bPosList, firstPoint);
             manager.getPanel().rightBar.tooltip.updateToolsMetrics(manager.toolsList);
-
-
         });
         return true;
     }
@@ -62,7 +63,7 @@ public class Polyline extends Tool {
 
     @Override
     public List<Shape> getExactShapes() {
-        int offset = 2;
+        int offset = 0;
         if (bPosList.size() > 1) {
             return DisplayMaths.getPolylinePolygon(bPosList, offset);
         }
