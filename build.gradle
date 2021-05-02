@@ -36,13 +36,12 @@ run{
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
-    implementation('com.github.KaptainWutax:NoiseUtils:bb71e46efe0f8d930bac8af94fecf250b70e0c23') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:f12f3a4d33a70f4f30a9389290adf5a7ac302a8c') { transitive = false }
+    implementation('com.github.KaptainWutax:NoiseUtils:a3954932b15a889aa51c82176942d62f291c3b12') { transitive = false }
 
-    implementation('com.github.KaptainWutax:MCUtils:cb9c78e4e37e12dca0ddaefc3a7f3053dfbd237b') { transitive = false }
-
-    implementation('com.github.KaptainWutax:BiomeUtils:60c1868a245e99a09fe430b487f50491769c6170') {transitive = false}
-    implementation('com.github.KaptainWutax:TerrainUtils:4c449a2d688d9673e0b78728e00cfbf0a57d47a6') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:3b757c89aa67fb04ded579e25376f4c2549d8184') {transitive = false}
+    implementation('com.github.KaptainWutax:BiomeUtils:d88c6cc685a1c0e7f6df693a04ed2bd1e9176ddb') {transitive = false}
+    implementation('com.github.KaptainWutax:TerrainUtils:dbba2ba61a2c8920b48b1fb9a32fa8e9fe353d61') {transitive = false}
+    implementation('com.github.KaptainWutax:FeatureUtils:f2a8729d48976aa76ef32d7655b4758442437533') {transitive = false}
 
     implementation('com.github.hube12:ChunkRandomReversal:76bc51ef8b05a6366b8080ed8d071ba5d3ba5e82') {transitive = false}
     implementation('com.seedfinding:latticg:1.05')

@@ -9,13 +9,14 @@ import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.chests.Loot;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 import java.util.Collections;
 import java.util.List;
 
 public class RuinedPortalLoot extends Loot {
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, BiomeSource biomeSource, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, RegionStructure<?, ?> structure, boolean indexed, ChunkRand rand, BiomeSource biomeSource, ChunkGenerator generator, MCVersion version) {
         rand.setDecoratorSeed(worldSeed, cPos.getX() * 16, cPos.getZ() * 16, 40005, version);
         long lootTableSeed = rand.nextLong();
         LootContext context = new LootContext(lootTableSeed);

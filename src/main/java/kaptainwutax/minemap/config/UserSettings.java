@@ -14,6 +14,8 @@ public class UserSettings {
     @Expose
     public boolean restrictMaximumZoom = true;
     @Expose
+    public boolean doHeightmap = true;
+    @Expose
     public String fragmentMetric = "Euclidean";
     @Expose
     public boolean structureMode = false;

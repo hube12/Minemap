@@ -6,6 +6,7 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 
@@ -35,6 +36,11 @@ public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean canGenerate(Data data, ChunkGenerator generator) {
+        return true;
     }
 
     @Override

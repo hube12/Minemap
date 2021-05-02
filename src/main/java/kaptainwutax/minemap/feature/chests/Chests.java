@@ -3,14 +3,12 @@ package kaptainwutax.minemap.feature.chests;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.BuriedTreasure;
 import kaptainwutax.featureutils.structure.DesertPyramid;
+import kaptainwutax.featureutils.structure.EndCity;
 import kaptainwutax.featureutils.structure.Shipwreck;
 import kaptainwutax.minemap.feature.NERuinedPortal;
 import kaptainwutax.minemap.feature.OWNERuinedPortal;
 import kaptainwutax.minemap.feature.OWRuinedPortal;
-import kaptainwutax.minemap.feature.chests.loot.BurriedTreasureLoot;
-import kaptainwutax.minemap.feature.chests.loot.DesertPyramidLoot;
-import kaptainwutax.minemap.feature.chests.loot.RuinedPortalLoot;
-import kaptainwutax.minemap.feature.chests.loot.ShipwreckLoot;
+import kaptainwutax.minemap.feature.chests.loot.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +23,7 @@ public class Chests {
         register(OWNERuinedPortal.class, RuinedPortalLoot::new);
         register(OWRuinedPortal.class, RuinedPortalLoot::new);
         register(Shipwreck.class, ShipwreckLoot::new);
+        register(EndCity.class, EndCityLoot::new);
     }
 
     public static <T extends Feature<?, ?>> void register(Class<T> clazz, Loot.LootFactory<?> lootFactory) {

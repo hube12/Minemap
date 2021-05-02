@@ -40,7 +40,7 @@ public class Chest extends JFrame {
     private final List<ChestContent> chestContents = new ArrayList<>();
     private final TopBar topBar;
     private final MapPanel map;
-    private final static int MAX_NUMBER_CHESTS = 4; //TODO find the max we will support
+    private final static int MAX_NUMBER_CHESTS = 32; //TODO find the max we will support
     private CPos pos;
     private RegionStructure<?, ?> feature;
     static final int HEADER_HEIGHT = 30;

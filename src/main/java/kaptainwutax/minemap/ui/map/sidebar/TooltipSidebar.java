@@ -5,8 +5,10 @@ import kaptainwutax.biomeutils.biome.Biomes;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -31,6 +33,11 @@ public class TooltipSidebar extends JPanel {
         BiomeLayer layer = map.getContext().getBiomeLayer();
         RPos pos = new BPos(blockX, 0, blockZ).toRegionPos(layer.getScale());
         return layer.getBiome(pos.getX(), 0, pos.getZ());
+    }
+
+    public static int getHeight(MapPanel map, int blockX, int blockZ) {
+        ChunkGenerator generator = map.getContext().getChunkGenerator();
+        return generator.getHeightOnGround(blockX,blockZ);
     }
 
     private void addBiomeDisplay() {
@@ -64,6 +71,11 @@ public class TooltipSidebar extends JPanel {
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
             biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
+        if (Configs.USER_PROFILE.getUserSettings().doHeightmap){
+            int height = getHeight(this.map, blockX, blockZ);
+            String heightText = String.format("[%d, %d] height: %d", blockX, blockZ,height);
+            this.biomeDisplay.setText("<html>"+text+"<br>"+heightText+"</html>");
+        }
     }
 
 }
