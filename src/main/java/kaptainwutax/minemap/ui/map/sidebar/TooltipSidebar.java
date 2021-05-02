@@ -37,6 +37,7 @@ public class TooltipSidebar extends JPanel {
 
     public static int getHeight(MapPanel map, int blockX, int blockZ) {
         ChunkGenerator generator = map.getContext().getChunkGenerator();
+        if (generator==null) return -1;
         return generator.getHeightOnGround(blockX,blockZ);
     }
 
