@@ -26,7 +26,7 @@ public class FeatureEntry extends JPanel {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                paintImage(Icons.get(feature.getClass()), g,20,1.0F);
+                paintImage(Icons.get(feature.getClass()), g, 20, 1.0F);
             }
         };
 

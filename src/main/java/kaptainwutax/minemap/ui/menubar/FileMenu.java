@@ -27,7 +27,7 @@ public class FileMenu extends Menu {
     private final JMenuItem screenshot;
     private final JMenuItem screenshotFolder;
     private final JMenuItem close;
-    public static boolean isClosing=false;
+    public static boolean isClosing = false;
 
     public FileMenu() {
         this.menu = new JMenu("Home");
@@ -37,7 +37,7 @@ public class FileMenu extends Menu {
         this.addMouseAndKeyListener(this.loadSeed, newSeed(), newSeed(), true);
 
         this.recentSeeds = new JMenu("Recent Seeds");
-        this.recentSeeds.addMenuListener(Events.Menu.onSelected(e->this.addRecentSeedGroup()));
+        this.recentSeeds.addMenuListener(Events.Menu.onSelected(e -> this.addRecentSeedGroup()));
 
         this.screenshot = new JMenuItem("Screenshot");
         this.addMouseAndKeyListener(this.screenshot, screenshot(), screenshot(), true);
@@ -57,25 +57,25 @@ public class FileMenu extends Menu {
         this.menu.add(this.close);
     }
 
-    public void addRecentSeedGroup(){
+    public void addRecentSeedGroup() {
         this.recentSeeds.removeAll();
-        for (String config:Configs.USER_PROFILE.getRecentSeeds()){
-            String[] split=config.split("::");
-            if (split.length==2){
-                String seed=split[0];
-                String version=split[1];
-                MCVersion mcVersion=MCVersion.fromString(version);
-                if (mcVersion!=null){
-                    JMenuItem item=new JMenuItem(seed +" ["+mcVersion+"]");
-                    this.addMouseAndKeyListener(item,openSeed(seed,mcVersion),openSeed(seed,mcVersion),true);
+        for (String config : Configs.USER_PROFILE.getRecentSeeds()) {
+            String[] split = config.split("::");
+            if (split.length == 2) {
+                String seed = split[0];
+                String version = split[1];
+                MCVersion mcVersion = MCVersion.fromString(version);
+                if (mcVersion != null) {
+                    JMenuItem item = new JMenuItem(seed + " [" + mcVersion + "]");
+                    this.addMouseAndKeyListener(item, openSeed(seed, mcVersion), openSeed(seed, mcVersion), true);
                     this.recentSeeds.add(item);
                 }
             }
         }
     }
 
-    public Runnable openSeed(String seed,MCVersion version){
-        return ()->{
+    public Runnable openSeed(String seed, MCVersion version) {
+        return () -> {
             MineMap.INSTANCE.worldTabs.load(
                 version,
                 seed,
@@ -136,11 +136,11 @@ public class FileMenu extends Menu {
             if (isClosing) return;
             int input;
             if (displayMsg) {
-                isClosing=true;
+                isClosing = true;
                 this.activate.run();
                 input = JOptionPane.showConfirmDialog(null, "Do you want to close MineMap?", "Close MineMap", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 this.deactivate.run();
-                isClosing=false;
+                isClosing = false;
             } else {
                 input = 0;
             }

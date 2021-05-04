@@ -2,8 +2,8 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,7 +23,6 @@ public class CoordHopperDialog extends Dialog {
         super("Go to Coordinates", new GridLayout(0, 1));
         this.addExitProcedure(onExit);
     }
-
 
 
     @Override

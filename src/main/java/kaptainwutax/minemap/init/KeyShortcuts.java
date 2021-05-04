@@ -2,15 +2,12 @@ package kaptainwutax.minemap.init;
 
 import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.ui.menubar.FileMenu;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-import static javax.swing.JOptionPane.getRootFrame;
 import static kaptainwutax.minemap.ui.map.MapManager.zoom;
 import static kaptainwutax.minemap.util.data.Str.prettifyDashed;
 

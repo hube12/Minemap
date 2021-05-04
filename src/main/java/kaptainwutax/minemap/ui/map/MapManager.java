@@ -251,7 +251,7 @@ public class MapManager {
                 if (newPixelsPerFragment > 4096.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
                     // restrict min zoom to 4096 chunks per fragment
                     newPixelsPerFragment = 4096.0D * (manager.blocksPerFragment / 512.0D);
-                }else if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
+                } else if (Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom && newPixelsPerFragment < 32.0D * (double) manager.blocksPerFragment / DEFAULT_REGION_SIZE) {
                     // restrict max zoom to 32 chunks per fragment
                     newPixelsPerFragment = 32.0D * (manager.blocksPerFragment / 512.0D);
                 }

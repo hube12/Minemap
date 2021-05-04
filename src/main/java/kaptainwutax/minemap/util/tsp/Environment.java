@@ -43,7 +43,6 @@ public class Environment {
 
     /**
      * Environment requires a graph to solve
-     *
      */
     public Environment(double[][] graph) {
         super();
@@ -59,10 +58,10 @@ public class Environment {
         NNList = new int[getNodesSize()][getNNSize()];
         // For each node of the graph, sort the nearest neighbors by distance
         // and cut the list by the size nn.
-        for(int i = 0; i < getNodesSize(); i++) {
+        for (int i = 0; i < getNodesSize(); i++) {
             Integer[] nodeIndex = new Integer[getNodesSize()];
             Double[] nodeData = new Double[getNodesSize()];
-            for(int j = 0; j < getNodesSize(); j++) {
+            for (int j = 0; j < getNodesSize(); j++) {
                 nodeIndex[j] = j;
                 nodeData[j] = getCost(i, j);
             }
@@ -70,7 +69,7 @@ public class Environment {
             // option to be selected to nearest neighbors list
             nodeData[i] = Collections.max(Arrays.asList(nodeData));
             Arrays.sort(nodeIndex, Comparator.comparingDouble(o -> nodeData[o]));
-            for(int r = 0; r < getNNSize(); r++) {
+            for (int r = 0; r < getNNSize(); r++) {
                 NNList[i][r] = nodeIndex[r];
             }
         }
@@ -82,7 +81,7 @@ public class Environment {
      */
     public void generateAntPopulation() {
         ants = new Ant[getAntPopSize()];
-        for(int k = 0; k < getAntPopSize(); k++) {
+        for (int k = 0; k < getAntPopSize(); k++) {
             ants[k] = new Ant(getNodesSize(), this);
         }
     }
@@ -91,8 +90,8 @@ public class Environment {
      * Create pheromone and choice info structure:
      * -> Pheromone is used to represent the quality of the edges used to build solutions.
      * -> ChoiceInfo is calculated with the pheromone and the quality of routes, to be
-     *    used by the ants as decision rule and index to speed up the algorithm.
-     *
+     * used by the ants as decision rule and index to speed up the algorithm.
+     * <p>
      * To generate the environment the pheromone is initialized taken in account the cost
      * of the nearest neighbor tour.
      */
@@ -100,8 +99,8 @@ public class Environment {
         pheromone = new double[getNodesSize()][getNodesSize()];
         choiceInfo = new double[getNodesSize()][getNodesSize()];
         initialTrail = 1.0 / (Parameters.rho * ants[0].calculateNearestNeighborTour());
-        for(int i = 0; i < getNodesSize(); i++) {
-            for(int j = i; j < getNodesSize(); j++) {
+        for (int i = 0; i < getNodesSize(); i++) {
+            for (int j = i; j < getNodesSize(); j++) {
                 pheromone[i][j] = initialTrail;
                 pheromone[j][i] = initialTrail;
                 choiceInfo[i][j] = initialTrail;
@@ -118,8 +117,8 @@ public class Environment {
      * balance between heuristic and pheromone.
      */
     public void calculateChoiceInformation() {
-        for(int i = 0; i < getNodesSize(); i++) {
-            for(int j = 0; j < i; j++) {
+        for (int i = 0; i < getNodesSize(); i++) {
+            for (int j = 0; j < i; j++) {
                 double heuristic = (1.0 / (getCost(i, j) + 0.1));
                 choiceInfo[i][j] = Math.pow(pheromone[i][j], Parameters.alpha) * Math.pow(heuristic, Parameters.beta);
                 choiceInfo[j][i] = choiceInfo[i][j];
@@ -134,20 +133,20 @@ public class Environment {
         // At the first step reset all ants (clearVisited) and put each one
         // in a random vertex of the graph.
         int phase = 0;
-        for(int k = 0; k < getAntPopSize(); k++) {
+        for (int k = 0; k < getAntPopSize(); k++) {
             ants[k].clearVisited();
             ants[k].startAtRandomPosition(phase);
         }
         // Make all ants choose the next non visited vertex based in the
         // pheromone trails and heuristic of the edge cost.
-        while(phase < getNodesSize() - 1) {
+        while (phase < getNodesSize() - 1) {
             phase++;
-            for(int k = 0; k < getAntPopSize(); k++) {
+            for (int k = 0; k < getAntPopSize(); k++) {
                 ants[k].goToNNListAsDecisionRule(phase);
             }
         }
         // Close the circuit and calculate the total cost
-        for(int k = 0; k < getAntPopSize(); k++) {
+        for (int k = 0; k < getAntPopSize(); k++) {
             ants[k].finishTourCircuit();
         }
     }
@@ -158,7 +157,7 @@ public class Environment {
      */
     public void updatePheromone() {
         evaporatePheromone();
-        for(int k = 0; k < getAntPopSize(); k++) {
+        for (int k = 0; k < getAntPopSize(); k++) {
             depositPheromone(ants[k]);
         }
         calculateChoiceInformation();
@@ -169,8 +168,8 @@ public class Environment {
      * for all edges
      */
     public void evaporatePheromone() {
-        for(int i = 0; i < getNodesSize(); i++) {
-            for(int j = i; j < getNodesSize(); j++) {
+        for (int i = 0; i < getNodesSize(); i++) {
+            for (int j = i; j < getNodesSize(); j++) {
                 pheromone[i][j] = (1 - Parameters.rho) * pheromone[i][j];
                 pheromone[j][i] = pheromone[i][j];
             }
@@ -185,7 +184,7 @@ public class Environment {
      */
     public void depositPheromone(Ant ant) {
         double dTau = 1.0 / ant.getTourCost();
-        for(int i = 0; i < getNodesSize(); i++) {
+        for (int i = 0; i < getNodesSize(); i++) {
             int j = ant.getRoutePhase(i);
             int l = ant.getRoutePhase(i + 1);
             pheromone[j][l] = pheromone[j][l] + dTau;

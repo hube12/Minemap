@@ -129,7 +129,7 @@ public class Area extends Tool {
         double metric = 0;
         if (this.isComplete()) {
             metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3, pos4));
-        }else if (this.getPointsTraced() >= 3) {
+        } else if (this.getPointsTraced() >= 3) {
             metric = DisplayMaths.polygonArea(Arrays.asList(pos1, pos2, pos3));
         }
         return DisplayMaths.round(metric, 2);

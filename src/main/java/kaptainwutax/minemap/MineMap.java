@@ -40,7 +40,7 @@ public class MineMap extends JFrame {
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
     public final static String DOWNLOAD_DIR = ROOT_DIR + File.separatorChar + "downloads";
     public final static String SCREENSHOTS_DIR = ROOT_DIR + File.separatorChar + "screenshots";
-    public final static boolean DEBUG=false;
+    public final static boolean DEBUG = false;
     public static MineMap INSTANCE;
     public MenuBar toolbarPane;
     public WorldTabs worldTabs;
@@ -229,7 +229,7 @@ public class MineMap extends JFrame {
 
     public static void createDirs() {
         try {
-            String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR,SCREENSHOTS_DIR};
+            String[] dirs = {LOG_DIR, SETTINGS_DIR, DOWNLOAD_DIR, SCREENSHOTS_DIR};
             for (String dir : dirs) {
                 Files.createDirectories(Paths.get(dir));
             }
@@ -257,9 +257,9 @@ public class MineMap extends JFrame {
 
     public static void applyStyle() {
         try {
-            if (Configs.USER_PROFILE!=null &&  Configs.USER_PROFILE.getUserSettings()!=null){
+            if (Configs.USER_PROFILE != null && Configs.USER_PROFILE.getUserSettings() != null) {
                 Configs.USER_PROFILE.getUserSettings().look.setLookAndFeel();
-            }else{
+            } else {
                 throw new UnsatisfiedLinkError("Missing settings");
             }
         } catch (Exception e) {
@@ -285,8 +285,8 @@ public class MineMap extends JFrame {
         this.toolbarPane.doDelayedLabels();
     }
 
-    public static boolean isDarkTheme(){
-        if (Configs.USER_PROFILE!=null &&  Configs.USER_PROFILE.getUserSettings()!=null){
+    public static boolean isDarkTheme() {
+        if (Configs.USER_PROFILE != null && Configs.USER_PROFILE.getUserSettings() != null) {
             return Configs.USER_PROFILE.getUserSettings().look.isDark();
         }
         return true;

@@ -3,13 +3,11 @@ package kaptainwutax.minemap.ui.menubar;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
-import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.StructureListDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
-
 import java.awt.event.KeyEvent;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
@@ -26,7 +24,8 @@ public class UtilitiesMenu extends Menu {
         this.addMouseAndKeyListener(this.listStructure, getNStructure(), getNStructure(), false);
 
         this.structureSeedMode = new JCheckBoxMenuItem("Structure Seed Mode");
-        this.addMouseAndKeyListener(this.structureSeedMode, toggleStructureMode(false), toggleStructureMode(true), true);;
+        this.addMouseAndKeyListener(this.structureSeedMode, toggleStructureMode(false), toggleStructureMode(true), true);
+        ;
         this.structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> {
@@ -42,7 +41,8 @@ public class UtilitiesMenu extends Menu {
         return () -> {
             if (isKeyboard) this.structureSeedMode.setSelected(!this.structureSeedMode.isSelected());
             if (!this.structureSeedMode.isEnabled()) return;
-            Configs.USER_PROFILE.getUserSettings().structureMode = this.structureSeedMode.isSelected();
+            boolean hasJustBeenSelected = !this.structureSeedMode.isSelected();
+            Configs.USER_PROFILE.getUserSettings().structureMode = hasJustBeenSelected;
             Configs.USER_PROFILE.flush();
             MineMap.INSTANCE.worldTabs.invalidateAll();
             if (MineMap.INSTANCE.toolbarPane.structureSeedModePopup == null) {
@@ -50,23 +50,16 @@ public class UtilitiesMenu extends Menu {
                 System.out.println("This should not happen");
                 return;
             }
-            MineMap.INSTANCE.toolbarPane.structureSeedModePopup.setVisible(this.structureSeedMode.isSelected());
+            MineMap.INSTANCE.toolbarPane.structureSeedModePopup.setVisible(hasJustBeenSelected);
         };
     }
 
     public Runnable getNStructure() {
         return () -> {
             if (!this.listStructure.isEnabled()) return;
-            StructureListDialog dialog;
-            try {
-                this.activate.run();
-                dialog = new StructureListDialog(this.deactivate);
-                dialog.setVisible(true);
-            } catch (Exception exception) {
-                this.deactivate.run();
-                Logger.LOGGER.severe(exception.toString());
-                exception.printStackTrace();
-            }
+            this.activate.run();
+            JDialog dialog = new StructureListDialog(this.deactivate);
+            dialog.setVisible(true);
         };
     }
 

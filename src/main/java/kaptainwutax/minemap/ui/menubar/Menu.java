@@ -21,19 +21,19 @@ public abstract class Menu {
 
     public abstract void doDelayedLabels();
 
-    public void addMouseAndKeyListener(JMenuItem item,Runnable runnableMouse, Runnable runnableKeyboard, boolean immediate){
+    public void addMouseAndKeyListener(JMenuItem item, Runnable runnableMouse, Runnable runnableKeyboard, boolean immediate) {
         item.addMouseListener(Events.Mouse.onPressed(e -> {
-            if (immediate){
+            if (immediate) {
                 runnableMouse.run();
-            }else{
+            } else {
                 SwingUtilities.invokeLater(runnableMouse);
             }
         }));
         item.addMenuKeyListener(Events.MenuKey.onPressed(e -> {
-            if (item.isArmed() && e.getKeyCode()== KeyEvent.VK_ENTER){
-                if (immediate){
+            if (item.isArmed() && e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (immediate) {
                     runnableKeyboard.run();
-                }else{
+                } else {
                     SwingUtilities.invokeLater(runnableKeyboard);
                 }
             }

@@ -12,16 +12,16 @@ import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.StructureHelper;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.interactive.ListPanel;
-import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
+import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
+import kaptainwutax.minemap.util.ui.interactive.ListPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -212,7 +212,7 @@ public class StructureListDialog extends Dialog {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    paintImage(Icons.get(feature.getClass()),g);
+                    paintImage(Icons.get(feature.getClass()), g);
                 }
             };
 

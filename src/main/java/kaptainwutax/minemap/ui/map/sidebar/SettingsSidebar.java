@@ -8,10 +8,10 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.BiomeEntry;
-import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.component.FeatureEntry;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;

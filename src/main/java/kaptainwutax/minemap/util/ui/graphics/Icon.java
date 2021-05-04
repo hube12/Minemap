@@ -16,11 +16,11 @@ public class Icon {
     }
 
     public static void paintImage(BufferedImage icon, Graphics g, int defaultSize, float factor, int inset) {
-        paintImage(icon, g, defaultSize, new Pair<>(factor, factor), new Pair<>(inset, inset),false);
+        paintImage(icon, g, defaultSize, new Pair<>(factor, factor), new Pair<>(inset, inset), false);
     }
 
     public static void paintImage(BufferedImage icon, Graphics g, int defaultSize, Pair<Float, Float> factor) {
-        paintImage(icon, g, defaultSize, factor, new Pair<>(0, 0),false);
+        paintImage(icon, g, defaultSize, factor, new Pair<>(0, 0), false);
     }
 
     public static void paintImage(BufferedImage icon, Graphics g, int defaultSize, Pair<Float, Float> factor, Pair<Integer, Integer> insets, boolean shouldOffsetByHalf) {

@@ -10,19 +10,20 @@ import java.awt.geom.NoninvertibleTransformException;
 public class OutlinedText {
     private final Color outlineColor;
     private final Stroke outlineStroke;
-    public OutlinedText(Color outlineColor,Stroke outlineStroke){
-        this.outlineColor=outlineColor;
-        this.outlineStroke=outlineStroke;
+
+    public OutlinedText(Color outlineColor, Stroke outlineStroke) {
+        this.outlineColor = outlineColor;
+        this.outlineStroke = outlineStroke;
     }
 
-    public void drawOutline(Graphics2D g2d,String text,int offsetX,int offsetY){
-        Stroke oldStroke=g2d.getStroke();
-        Color oldColor=g2d.getColor();
-        AffineTransform transform=new AffineTransform();
+    public void drawOutline(Graphics2D g2d, String text, int offsetX, int offsetY) {
+        Stroke oldStroke = g2d.getStroke();
+        Color oldColor = g2d.getColor();
+        AffineTransform transform = new AffineTransform();
         transform.translate(offsetX, offsetY);
         AffineTransform reverseTransform;
         try {
-            reverseTransform=transform.createInverse();
+            reverseTransform = transform.createInverse();
         } catch (NoninvertibleTransformException e) {
             e.printStackTrace();
             Logger.LOGGER.severe(e.getMessage());

@@ -84,7 +84,7 @@ Supports all Minecraft release starting from 1.0+
 
 In a dialog type `enter` to activate the continue button or `esc` to close the dialog.
 
-Hold `alt` then press H, W, U or E to get one of the 4 menu to open.
+Hold `alt` then press H, W, U, E or B to get one of the 5 menus to open.
 
 You can navigate the menus and press enter to use the button in it.
 

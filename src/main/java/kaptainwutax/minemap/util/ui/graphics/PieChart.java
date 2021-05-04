@@ -1,8 +1,6 @@
 package kaptainwutax.minemap.util.ui.graphics;
 
 import kaptainwutax.mcutils.util.data.Pair;
-import kaptainwutax.minemap.util.ui.graphics.Graphic;
-import kaptainwutax.minemap.util.ui.graphics.OutlinedText;
 import kaptainwutax.seedutils.rand.JRand;
 import kaptainwutax.terrainutils.utils.MathHelper;
 

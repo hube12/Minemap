@@ -2,11 +2,7 @@ package kaptainwutax.minemap.util.tsp;
 
 import kaptainwutax.mcutils.util.pos.BPos;
 
-import java.io.*;
 import java.util.List;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Thanks: https://github.com/phil8192/tsp-java
@@ -36,7 +32,7 @@ public class TspReader {
 
 
     private static void calculateDistances() {
-        distances=new double[data.length][data.length];
+        distances = new double[data.length][data.length];
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data.length; j++) {
                 if (i == j) {
@@ -51,8 +47,8 @@ public class TspReader {
     }
 
     private static void stripCoordinates(List<BPos> bPosList) {
-        data=new double[bPosList.size()][2];
-        for (BPos bPos:bPosList){
+        data = new double[bPosList.size()][2];
+        for (BPos bPos : bPosList) {
             coordinateArray = new double[2];
             coordinateArray[0] = bPos.getX();
             coordinateArray[1] = bPos.getZ();

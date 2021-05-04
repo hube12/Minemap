@@ -12,11 +12,11 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.minemap.util.ui.interactive.ColorChooserButton;
-import kaptainwutax.minemap.util.ui.graphics.PieChart;
-import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
+import kaptainwutax.minemap.util.ui.graphics.PieChart;
+import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
+import kaptainwutax.minemap.util.ui.interactive.ColorChooserButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,7 +69,7 @@ public class TooltipTools extends JPanel {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    paintImage(Icons.get(tool.getClass()),g);
+                    paintImage(Icons.get(tool.getClass()), g);
                 }
             };
 
@@ -98,7 +98,7 @@ public class TooltipTools extends JPanel {
                     if (shapes == null || shapes.size() == 0) return;
                     coords = new ArrayList<>();
                     for (Shape s : shapes) {
-                        coords.addAll(DisplayMaths.getPointsInArea(s, tool.getPointsTraced()/(shapes.size()+1)+1));
+                        coords.addAll(DisplayMaths.getPointsInArea(s, tool.getPointsTraced() / (shapes.size() + 1) + 1));
                     }
                 } else {
                     coords = DisplayMaths.getPointsInArea(shape, tool.getPointsTraced());

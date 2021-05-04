@@ -112,7 +112,7 @@ public class IconsConfig extends Config {
         ICON_SIZES.put(clazz.toGenericString(), size);
     }
 
-    private void addOverrideEntry(Class<?> clazz, Double size) {
+    public void addOverrideEntry(Class<?> clazz, Double size) {
         OVERRIDES.put(clazz.toGenericString(), size);
     }
 

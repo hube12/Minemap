@@ -123,8 +123,8 @@ public class FragmentScheduler {
         return this.fragments.get(regionPos);
     }
 
-    public Fragment getFragmentAt(int regionX, int regionZ,int factor) {
-        RPos regionPos = new RPos(regionX, regionZ, this.listener.getManager().blocksPerFragment*factor);
+    public Fragment getFragmentAt(int regionX, int regionZ, int factor) {
+        RPos regionPos = new RPos(regionX, regionZ, this.listener.getManager().blocksPerFragment * factor);
 
         if (!this.fragments.containsKey(regionPos) && !this.scheduledRegions.contains(regionPos)) {
             this.fragments.put(regionPos, LOADING_FRAGMENT);

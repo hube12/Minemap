@@ -14,7 +14,7 @@ public abstract class Dialog extends JDialog {
     private Runnable runAtExit;
 
     public Dialog(String title, LayoutManager layout) {
-        this.setModal(true);
+        this.setModalityType(ModalityType.APPLICATION_MODAL);
 
         this.setTitle(title);
         this.getContentPane().setLayout(layout);

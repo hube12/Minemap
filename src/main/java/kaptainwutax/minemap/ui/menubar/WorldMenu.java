@@ -108,8 +108,8 @@ public class WorldMenu extends Menu {
             this.goToStructure.setEnabled(map != null);
             if (!this.goToStructure.isEnabled()) return;
             this.activate.run();
-            JDialog jumpDialogue = new StructureHopperDialog(this.deactivate);
-            jumpDialogue.setVisible(true);
+            JDialog dialog = new StructureHopperDialog(this.deactivate);
+            dialog.setVisible(true);
         };
     }
 

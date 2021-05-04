@@ -39,7 +39,7 @@ public class RegionIcon extends StaticIcon {
                 CPos pos = structure.getInRegion(worldSeedWithSalt, data.regionX, data.regionZ, rand);
                 if (pos != null) {
                     if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource())) {
-                        if (structure.canGenerate(pos.getX(),pos.getZ(),this.getContext().getChunkGenerator())) {
+                        if (structure.canGenerate(pos.getX(), pos.getZ(), this.getContext().getChunkGenerator())) {
                             positions.add(pos.toBlockPos().add(9, 0, 9));
                         }
                     } else if (Configs.USER_PROFILE.getUserSettings().structureMode) {

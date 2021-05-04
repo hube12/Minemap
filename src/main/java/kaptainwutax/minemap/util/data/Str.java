@@ -64,4 +64,13 @@ public final class Str {
         }
         return map.get(l) + toRomanNumeral(number - l);
     }
+
+    public static String getInitials(String str){
+        str=prettifyDashed(str);
+        StringBuilder res= new StringBuilder();
+        for(String e:str.split(" ")){
+            res.append(e.charAt(0));
+        }
+        return res.toString();
+    }
 }

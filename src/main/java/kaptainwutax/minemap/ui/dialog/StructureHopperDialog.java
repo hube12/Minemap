@@ -11,11 +11,11 @@ import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.StructureHelper;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 
 import javax.swing.*;
 import java.awt.*;

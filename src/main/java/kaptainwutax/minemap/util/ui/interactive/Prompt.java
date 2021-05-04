@@ -4,6 +4,7 @@ import javax.swing.text.JTextComponent;
 
 public class Prompt {
     public static final String PROMPT = "promptText";
+
     public static String getPrompt(JTextComponent textComponent) {
         return (String) textComponent.getClientProperty(PROMPT);
     }

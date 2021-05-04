@@ -22,7 +22,6 @@ public class Statistics {
     private double bestSoFar = Double.MAX_VALUE;
 
 
-
     /**
      * Needs an environment and the coordinates of the vertices to be drawn
      *
@@ -36,30 +35,29 @@ public class Statistics {
      * For each iteration get the best, the worst and the mean tour cost
      * of all tours constructed by the ants, if a improvement was detected
      * show show the values.
-     *
      */
     public Pair<Double, List<Integer>> calculateStatistics() {
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
         double total = 0.0;
         Ant bestAnt = null;
-        for(Ant ant : environment.getAnts()) {
-            if(ant.getTourCost() < min) {
+        for (Ant ant : environment.getAnts()) {
+            if (ant.getTourCost() < min) {
                 min = ant.getTourCost();
                 bestAnt = ant;
             }
-            if(ant.getTourCost() > max) {
+            if (ant.getTourCost() > max) {
                 max = ant.getTourCost();
             }
             total += ant.getTourCost();
         }
-        if(min < bestSoFar) {
+        if (min < bestSoFar) {
             bestSoFar = min;
             assert bestAnt != null;
             int[] bestTourSoFar = bestAnt.getTour().clone();
-            List<Integer> list= IntStream.of(bestTourSoFar).boxed().collect(Collectors.toList());
-            list.remove(list.size()-1);
-           return new Pair<>(min,list);
+            List<Integer> list = IntStream.of(bestTourSoFar).boxed().collect(Collectors.toList());
+            list.remove(list.size() - 1);
+            return new Pair<>(min, list);
         }
 
         return null;

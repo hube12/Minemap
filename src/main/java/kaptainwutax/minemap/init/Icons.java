@@ -15,8 +15,8 @@ import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
-import kaptainwutax.minemap.util.ui.interactive.ModalPopup;
 import kaptainwutax.minemap.util.ui.buttons.*;
+import kaptainwutax.minemap.util.ui.interactive.ModalPopup;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -29,7 +29,6 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
@@ -237,10 +236,10 @@ public class Icons {
 
     private static void cleanDuplicates() {
         for (Map.Entry<Class<?>, List<Pair<String, BufferedImage>>> pairs : CLASS_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e->e.getFirst())).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e -> e.getFirst())).collect(Collectors.toList()));
         }
         for (Map.Entry<Object, List<Pair<String, BufferedImage>>> pairs : OBJECT_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e->e.getFirst())).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e -> e.getFirst())).collect(Collectors.toList()));
         }
     }
 
@@ -279,12 +278,12 @@ public class Icons {
     private static <T> void registerObject(Object object, Path dir, boolean isJar, String name, String extension) {
         if (OBJECT_REGISTRY.containsKey(object)) {
             OBJECT_REGISTRY.get(object).addAll(Assets.getAsset(dir, isJar, name, extension, path -> {
-                String[] parts=path.toAbsolutePath().toString().split("assets");
+                String[] parts = path.toAbsolutePath().toString().split("assets");
                 return parts[1].concat(parts[2]);
             }));
         } else {
-            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension,  path -> {
-                String[] parts=path.toAbsolutePath().toString().split("assets");
+            OBJECT_REGISTRY.put(object, Assets.getAsset(dir, isJar, name, extension, path -> {
+                String[] parts = path.toAbsolutePath().toString().split("assets");
                 return parts[1].concat(parts[2]);
             }));
         }

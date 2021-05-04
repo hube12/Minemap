@@ -5,7 +5,6 @@ import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.NEStronghold;
@@ -15,7 +14,10 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapSettings;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,7 @@ public class UserProfileConfig extends Config {
     @Expose
     protected UserSettings USER_SETTINGS;
     @Expose
-    protected Queue<String> RECENT_SEEDS=new LinkedBlockingQueue<>(20);
+    protected Queue<String> RECENT_SEEDS = new LinkedBlockingQueue<>(20);
     @Expose
     protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
     @Expose
@@ -112,15 +114,15 @@ public class UserProfileConfig extends Config {
         return RECENT_SEEDS;
     }
 
-    public void addRecentSeed(long seed,MCVersion version){
-        String pair=seed+"::"+version;
-        if (!RECENT_SEEDS.offer(pair)){
-            String head=RECENT_SEEDS.poll();
-            if (head==null){
-                Logger.LOGGER.severe("Queue has no capacity ? "+ RECENT_SEEDS.peek());
+    public void addRecentSeed(long seed, MCVersion version) {
+        String pair = seed + "::" + version;
+        if (!RECENT_SEEDS.offer(pair)) {
+            String head = RECENT_SEEDS.poll();
+            if (head == null) {
+                Logger.LOGGER.severe("Queue has no capacity ? " + RECENT_SEEDS.peek());
             }
-            if (! RECENT_SEEDS.offer(pair)){
-                Logger.LOGGER.severe("Queue could not insert after removal: "+ RECENT_SEEDS.peek());
+            if (!RECENT_SEEDS.offer(pair)) {
+                Logger.LOGGER.severe("Queue could not insert after removal: " + RECENT_SEEDS.peek());
             }
         }
         this.flush();

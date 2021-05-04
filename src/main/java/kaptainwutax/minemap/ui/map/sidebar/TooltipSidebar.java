@@ -37,8 +37,8 @@ public class TooltipSidebar extends JPanel {
 
     public static int getHeight(MapPanel map, int blockX, int blockZ) {
         ChunkGenerator generator = map.getContext().getChunkGenerator();
-        if (generator==null) return -1;
-        return generator.getHeightOnGround(blockX,blockZ);
+        if (generator == null) return -1;
+        return generator.getHeightOnGround(blockX, blockZ);
     }
 
     private void addBiomeDisplay() {
@@ -72,10 +72,10 @@ public class TooltipSidebar extends JPanel {
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
             biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
-        if (Configs.USER_PROFILE.getUserSettings().doHeightmap){
+        if (Configs.USER_PROFILE.getUserSettings().doHeightmap) {
             int height = getHeight(this.map, blockX, blockZ);
-            String heightText = String.format("[%d, %d] height: %d", blockX, blockZ,height);
-            this.biomeDisplay.setText("<html>"+text+"<br>"+heightText+"</html>");
+            String heightText = String.format("[%d, %d] height: %d", blockX, blockZ, height);
+            this.biomeDisplay.setText("<html>" + text + "<br>" + heightText + "</html>");
         }
     }
 

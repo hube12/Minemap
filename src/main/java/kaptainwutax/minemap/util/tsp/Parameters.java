@@ -28,7 +28,7 @@ public class Parameters {
     /**
      * Size of nearest neighbor list for each vertex
      */
-    public static int NNSize =  4;
+    public static int NNSize = 4;
 
     /**
      * Number of iterations to find a good solution

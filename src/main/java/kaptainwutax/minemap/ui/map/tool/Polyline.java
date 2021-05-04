@@ -6,22 +6,20 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.util.data.ListUtil;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.minemap.util.tsp.Parameters;
 import kaptainwutax.minemap.util.tsp.Program;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 
 public class Polyline extends Tool {
     private final LinkedList<BPos> bPosList = new LinkedList<>();
-    private BPos firstPoint=null;
+    private BPos firstPoint = null;
     private int pointsTraced = 0;
     private Color color;
-    private final Program program=new Program();
+    private final Program program = new Program();
 
     public Polyline() {
         color = DisplayMaths.getRandomColor();
@@ -29,12 +27,12 @@ public class Polyline extends Tool {
 
     @Override
     public boolean addPoint(BPos bpos) {
-        if (firstPoint==null) firstPoint=bpos;
+        if (firstPoint == null) firstPoint = bpos;
         bPosList.add(bpos);
         pointsTraced++;
-        MapManager manager=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager();
-        SwingUtilities.invokeLater(()->{
-            Pair<Double, List<Integer>> res= program.startApplication(bPosList);
+        MapManager manager = MineMap.INSTANCE.worldTabs.getSelectedMapPanel().getManager();
+        SwingUtilities.invokeLater(() -> {
+            Pair<Double, List<Integer>> res = program.startApplication(bPosList);
             ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[0]));
             ListUtil.cycleInPlace(bPosList, firstPoint);
             manager.getPanel().rightBar.tooltip.updateToolsMetrics(manager.toolsList);

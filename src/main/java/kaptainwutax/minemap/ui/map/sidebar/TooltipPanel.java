@@ -53,7 +53,7 @@ public class TooltipPanel extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(feature.getClass());
-                    paintImage(icon,g);
+                    paintImage(icon, g);
                 }
             };
 

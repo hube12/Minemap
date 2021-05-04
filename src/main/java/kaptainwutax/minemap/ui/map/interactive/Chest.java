@@ -17,8 +17,8 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import kaptainwutax.minemap.util.ui.buttons.UnknownButton;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;

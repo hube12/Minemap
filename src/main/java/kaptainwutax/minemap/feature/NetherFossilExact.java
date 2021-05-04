@@ -1,6 +1,5 @@
 package kaptainwutax.minemap.feature;
 
-import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
