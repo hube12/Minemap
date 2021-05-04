@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+
 public class TooltipPanel extends JPanel {
 
     private final MapPanel map;
@@ -51,18 +53,7 @@ public class TooltipPanel extends JPanel {
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
                     BufferedImage icon = Icons.get(feature.getClass());
-                    if (icon == null) return;
-                    int iconSizeX, iconSizeZ;
-                    int defaultValue = 20;
-                    float factor = 1.5F;
-                    if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
-                        iconSizeX = defaultValue;
-                        iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
-                    } else {
-                        iconSizeZ = defaultValue;
-                        iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
-                    }
-                    g.drawImage(icon, (defaultValue - iconSizeX) / 2, (defaultValue - iconSizeZ) / 2, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
+                    paintImage(icon,g);
                 }
             };
 

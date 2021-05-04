@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
@@ -12,6 +13,8 @@ import kaptainwutax.minemap.util.ui.Graphic;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
+
+import static kaptainwutax.minemap.util.ui.Icon.paintImage;
 
 public abstract class StaticIcon extends IconRenderer {
 
@@ -39,28 +42,13 @@ public abstract class StaticIcon extends IconRenderer {
 
     @Override
     public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
-        BufferedImage icon = Icons.get(feature.getClass());
-        if (icon == null) return;
-        if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
-            this.iconSizeX = DEFAULT_VALUE;
-            this.iconSizeZ = (int) (DEFAULT_VALUE * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
-        } else {
-            this.iconSizeZ = DEFAULT_VALUE;
-            this.iconSizeX = (int) (DEFAULT_VALUE * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
-        }
+        float scaleFactor = (float) (getZoomScaleFactor() * Configs.ICONS.getSize(feature.getClass()) * (hovered ? this.getHoverScaleFactor() : 1));
+        int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width);
+        int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height);
         Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
+        BufferedImage icon = Icons.get(feature.getClass());
+        paintImage(icon, g2d, DEFAULT_VALUE, new Pair<>(scaleFactor, scaleFactor), new Pair<>(info.x + sx, info.y + sy), true);
 
-
-        float sizeX = hovered ? this.iconSizeX * this.getHoverScaleFactor() : this.iconSizeX;
-        float sizeZ = hovered ? this.iconSizeZ * this.getHoverScaleFactor() : this.iconSizeZ;
-        double scaleFactor = getZoomScaleFactor() * Configs.ICONS.getSize(feature.getClass());
-        sizeX *= scaleFactor;
-        sizeZ *= scaleFactor;
-
-        int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width - sizeX / 2.0F);
-        int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height - sizeZ / 2.0F);
-
-        g2d.drawImage(icon, info.x + sx, info.y + sy, (int) sizeX, (int) sizeZ, null);
         if (getExtraInfo() != null && this.getContext().getSettings().showExtraInfos) {
             String stringInfo = getExtraInfo().apply(pos);
             if (stringInfo != null) {
@@ -70,11 +58,13 @@ public abstract class StaticIcon extends IconRenderer {
 //                g2d.fillOval(info.x + sx + 15, info.y + sy+15, 10, 10);
                 char[] charArray = stringInfo.toCharArray();
                 g2d.setColor(Color.BLACK);
-                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (14 * scaleFactor)));
-                g2d.drawChars(charArray, 0, charArray.length, info.x + sx + (charArray.length == 1 ? 1 : 0) * ((int) sizeX / 2 - 5) - 1, info.y + sy + (int) sizeZ - 5 - 1);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 14F * scaleFactor));
+                int posX = info.x + sx + 5 * (charArray.length == 1 ? 1 : 0);
+                int posY = (int) (info.y + sy - 5 + DEFAULT_VALUE * scaleFactor);
+                g2d.drawChars(charArray, 0, charArray.length, posX - 1, posY - 1);
                 g2d.setColor(Color.WHITE);
-                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, (float) (13 * scaleFactor)));
-                g2d.drawChars(charArray, 0, charArray.length, info.x + sx + (charArray.length == 1 ? 1 : 0) * ((int) sizeX / 2 - 5), info.y + sy + (int) sizeZ - 5);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 13 * scaleFactor));
+                g2d.drawChars(charArray, 0, charArray.length, posX, posY);
                 g2d.setColor(old);
             }
         }

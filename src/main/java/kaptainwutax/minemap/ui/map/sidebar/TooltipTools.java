@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+
 public class TooltipTools extends JPanel {
 
     private final MapPanel map;
@@ -68,19 +70,7 @@ public class TooltipTools extends JPanel {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    BufferedImage icon = Icons.get(tool.getClass());
-                    if (icon == null) return;
-                    int iconSizeX, iconSizeZ;
-                    int defaultValue = 20;
-                    float factor = 1.5F;
-                    if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
-                        iconSizeX = defaultValue;
-                        iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
-                    } else {
-                        iconSizeZ = defaultValue;
-                        iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
-                    }
-                    g.drawImage(icon, (defaultValue - iconSizeX) / 2, (defaultValue - iconSizeZ) / 2, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
+                    paintImage(Icons.get(tool.getClass()),g);
                 }
             };
 

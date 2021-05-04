@@ -13,6 +13,8 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+
 public class EnterSeedDialog extends Dialog {
 
     public JTextField seedField;
@@ -31,7 +33,7 @@ public class EnterSeedDialog extends Dialog {
         int cores = Runtime.getRuntime().availableProcessors();
 
         this.seedField = new JTextField();
-        PromptSupport.setPrompt("Enter your seed here...", this.seedField);
+        setPrompt("Enter your seed here...", this.seedField);
 
         this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
         this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));

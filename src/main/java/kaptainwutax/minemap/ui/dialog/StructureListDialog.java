@@ -32,6 +32,9 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+
 public class StructureListDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;
     public JButton continueButton;
@@ -66,7 +69,7 @@ public class StructureListDialog extends Dialog {
         this.structureItemDropdown = new Dropdown<>(structureItems);
 
         this.enterN = new JTextField("1");
-        PromptSupport.setPrompt("Number of structures", this.enterN);
+        setPrompt("Number of structures", this.enterN);
 
         this.enterN.addKeyListener(Events.Keyboard.onReleased(e -> {
             try {
@@ -211,18 +214,7 @@ public class StructureListDialog extends Dialog {
                 @Override
                 protected void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    BufferedImage icon = Icons.get(feature.getClass());
-                    int iconSizeX, iconSizeZ;
-                    int defaultValue = 20;
-                    float factor = 1.5F;
-                    if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
-                        iconSizeX = defaultValue;
-                        iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
-                    } else {
-                        iconSizeZ = defaultValue;
-                        iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
-                    }
-                    g.drawImage(icon, (defaultValue - iconSizeX) / 2, (defaultValue - iconSizeZ) / 2, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
+                    paintImage(Icons.get(feature.getClass()),g);
                 }
             };
 

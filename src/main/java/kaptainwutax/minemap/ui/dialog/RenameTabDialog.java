@@ -8,6 +8,8 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 import javax.swing.*;
 import java.awt.*;
 
+import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+
 public class RenameTabDialog extends Dialog {
 
     public JTextField nameField;
@@ -23,7 +25,7 @@ public class RenameTabDialog extends Dialog {
         header = MineMap.INSTANCE.worldTabs.getSelectedHeader();
 
         this.nameField = new JTextField(header.getName());
-        PromptSupport.setPrompt("Enter the tab name here...", this.nameField);
+        setPrompt("Enter the tab name here...", this.nameField);
 
         this.continueButton = new JButton("Continue");
 

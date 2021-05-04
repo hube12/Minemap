@@ -5,7 +5,8 @@ import kaptainwutax.minemap.util.ui.RoundedBorder;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
+
+import static kaptainwutax.minemap.util.ui.Icon.paintImage;
 
 public abstract class ButtonIcon extends JButton {
     public final int size;
@@ -83,18 +84,7 @@ public abstract class ButtonIcon extends JButton {
 
             g.setColor(old);
         }
-
-        BufferedImage icon = Icons.get(this.getClass());
-        int iconSizeX, iconSizeZ;
-        int defaultValue = size;
-        if (icon.getRaster().getWidth() > icon.getRaster().getHeight()) {
-            iconSizeX = defaultValue;
-            iconSizeZ = (int) (defaultValue * (float) icon.getRaster().getHeight() / icon.getRaster().getWidth());
-        } else {
-            iconSizeZ = defaultValue;
-            iconSizeX = (int) (defaultValue * (float) icon.getRaster().getWidth() / icon.getRaster().getHeight());
-        }
-        g.drawImage(icon, (defaultValue - iconSizeX) / 2 + inset, (defaultValue - iconSizeZ) / 2 + inset, (int) (iconSizeX * factor), (int) (iconSizeZ * factor), null);
+        paintImage(Icons.get(this.getClass()), g, size, factor, inset);
     }
 
     public void changeBColor(Color color) {

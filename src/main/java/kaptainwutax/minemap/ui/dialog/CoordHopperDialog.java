@@ -4,11 +4,15 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.util.ui.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import org.jdesktop.swingx.plaf.TextUIWrapper;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.IntUnaryOperator;
+
+import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+
 
 public class CoordHopperDialog extends Dialog {
 
@@ -22,10 +26,12 @@ public class CoordHopperDialog extends Dialog {
         this.addExitProcedure(onExit);
     }
 
+
+
     @Override
     public void initComponents() {
         this.enterX = new JTextField("0");
-        PromptSupport.setPrompt("X Coordinate...", this.enterX);
+        setPrompt("X Coordinate...", this.enterX);
 
         this.enterX.addKeyListener(Events.Keyboard.onReleased(e -> {
             try {
@@ -37,7 +43,7 @@ public class CoordHopperDialog extends Dialog {
         }));
 
         this.enterZ = new JTextField("0");
-        PromptSupport.setPrompt("Z Coordinate...", this.enterZ);
+        setPrompt("Z Coordinate...", this.enterZ);
 
         this.enterZ.addKeyListener(Events.Keyboard.onReleased(e -> {
             try {
