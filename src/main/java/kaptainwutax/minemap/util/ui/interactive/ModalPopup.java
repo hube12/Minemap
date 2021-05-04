@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.util.ui;
+package kaptainwutax.minemap.util.ui.interactive;
 
 import javax.swing.*;
 import java.awt.*;

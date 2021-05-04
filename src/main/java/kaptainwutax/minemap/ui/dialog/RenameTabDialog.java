@@ -3,12 +3,11 @@ package kaptainwutax.minemap.ui.dialog;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.component.TabHeader;
-import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 public class RenameTabDialog extends Dialog {
 

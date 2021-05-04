@@ -12,22 +12,21 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.minemap.util.ui.ColorChooserButton;
-import kaptainwutax.minemap.util.ui.PieChart;
-import kaptainwutax.minemap.util.ui.RoundedPanel;
+import kaptainwutax.minemap.util.ui.interactive.ColorChooserButton;
+import kaptainwutax.minemap.util.ui.graphics.PieChart;
+import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.InfoButton;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
 public class TooltipTools extends JPanel {
 

@@ -15,11 +15,10 @@ import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
-import kaptainwutax.minemap.util.ui.ModalPopup;
+import kaptainwutax.minemap.util.ui.interactive.ModalPopup;
 import kaptainwutax.minemap.util.ui.buttons.*;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +36,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static javax.swing.JOptionPane.getRootFrame;
 import static kaptainwutax.minemap.init.Logger.LOGGER;
 
 public class Icons {

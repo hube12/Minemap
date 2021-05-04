@@ -7,7 +7,7 @@ import kaptainwutax.minemap.util.data.Str;
 import javax.swing.*;
 import java.awt.*;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
 public class FeatureEntry extends JPanel {
 

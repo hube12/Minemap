@@ -10,7 +10,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
 public class TooltipPanel extends JPanel {
 

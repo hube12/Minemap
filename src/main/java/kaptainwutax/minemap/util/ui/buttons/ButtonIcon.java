@@ -1,12 +1,12 @@
 package kaptainwutax.minemap.util.ui.buttons;
 
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.util.ui.RoundedBorder;
+import kaptainwutax.minemap.util.ui.graphics.RoundedBorder;
 
 import javax.swing.*;
 import java.awt.*;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
 public abstract class ButtonIcon extends JButton {
     public final int size;

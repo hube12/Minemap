@@ -12,28 +12,26 @@ import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.StructureHelper;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.Dropdown;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.ListPanel;
-import kaptainwutax.minemap.util.ui.RoundedPanel;
+import kaptainwutax.minemap.util.ui.interactive.ListPanel;
+import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;
-import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
-import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 public class StructureListDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;

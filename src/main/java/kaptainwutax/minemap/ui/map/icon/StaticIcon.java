@@ -8,13 +8,13 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.minemap.util.ui.Graphic;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
-import static kaptainwutax.minemap.util.ui.Icon.paintImage;
+import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
 public abstract class StaticIcon extends IconRenderer {
 

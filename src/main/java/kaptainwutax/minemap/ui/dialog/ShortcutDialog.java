@@ -5,7 +5,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.Dropdown;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 
 import javax.swing.*;
 import java.awt.*;

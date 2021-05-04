@@ -14,7 +14,7 @@ import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.math.DisplayMaths;
-import kaptainwutax.minemap.util.ui.Graphic;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

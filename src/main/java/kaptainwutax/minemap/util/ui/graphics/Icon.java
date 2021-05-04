@@ -1,4 +1,4 @@
-package kaptainwutax.minemap.util.ui;
+package kaptainwutax.minemap.util.ui.graphics;
 
 import kaptainwutax.mcutils.util.data.Pair;
 

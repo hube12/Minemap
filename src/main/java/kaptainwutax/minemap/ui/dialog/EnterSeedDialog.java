@@ -5,15 +5,14 @@ import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.Dropdown;
-import org.jdesktop.swingx.prompt.PromptSupport;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 public class EnterSeedDialog extends Dialog {
 

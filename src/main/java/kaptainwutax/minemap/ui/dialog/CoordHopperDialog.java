@@ -2,16 +2,14 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.util.ui.Dropdown;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import org.jdesktop.swingx.plaf.TextUIWrapper;
-import org.jdesktop.swingx.prompt.PromptSupport;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.function.IntUnaryOperator;
 
-import static kaptainwutax.minemap.util.ui.Prompt.setPrompt;
+import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 
 public class CoordHopperDialog extends Dialog {

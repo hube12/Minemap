@@ -14,7 +14,7 @@ import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.minemap.util.ui.ModalPopup;
+import kaptainwutax.minemap.util.ui.interactive.ModalPopup;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
