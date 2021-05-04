@@ -33,8 +33,8 @@ public class IconSizeDialog extends Dialog {
         List<Class<? extends Feature<?, ?>>> features = new ArrayList<>(Features.REGISTRY.keySet());
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
         double steps = 10.0D;
-        // 10 possible size between 0.1D and 1.0D
-        for (int i = 1; i <= steps; i++) {
+        // 10 possible size between 0.4D and 1.0D
+        for (int i = 4; i <= steps; i++) {
             labels.put(i, new JLabel(String.valueOf(i / steps)));
         }
         int[] values = new int[features.size()];
@@ -42,7 +42,7 @@ public class IconSizeDialog extends Dialog {
             values[i] = (int) (Configs.ICONS.getSize(features.get(i)) * steps);
         }
         JSplitPane sliderSplit = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        MultipleSlider multipleSlider = new MultipleSlider(features.size(), 1, (int) steps, values, labels);
+        MultipleSlider multipleSlider = new MultipleSlider(features.size(), 4, (int) steps, values, labels);
         this.sliders = multipleSlider.getSliders();
         if (this.sliders.length != features.size()) return;
         JPanel iconPanel = new JPanel();
@@ -60,7 +60,7 @@ public class IconSizeDialog extends Dialog {
             label.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.lightGray, Color.WHITE));
             JSlider currentSlider = this.sliders[i];
             currentSlider.addChangeListener(e -> {
-                int value = Math.min(Math.max(currentSlider.getValue(), 1), (int) steps);
+                int value = Math.min(Math.max(currentSlider.getValue(), 4), (int) steps);
                 Configs.ICONS.addOverrideEntry(feature, value / steps);
                 Configs.ICONS.flush();
                 ImageIcon newIcon = getIcon(feature, scaledSize, size);
