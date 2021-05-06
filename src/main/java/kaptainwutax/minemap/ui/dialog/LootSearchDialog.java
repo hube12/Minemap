@@ -69,15 +69,20 @@ public class LootSearchDialog extends Dialog {
         map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         if (map == null) {
             Logger.LOGGER.severe("No map");
+            SwingUtilities.invokeLater(this::dispose);
             return;
         }
         List<Class<? extends Feature<?, ?>>> features = Chests.getRegistry().keySet().stream().filter(e -> {
             Class<? extends Feature<?, ?>> superClazz = Chests.getSuperRegistry().get(e);
             if (superClazz == null) return false;
-            return Generators.get(superClazz) != null;
+            if (Generators.get(superClazz) == null) return false;
+            Feature<?,?> f=Features.getForVersion(map.getContext().getVersion()).get(e);
+            if (f==null) return false;
+            return f.isValidDimension(map.getContext().getDimension());
         }).collect(Collectors.toList());
         if (features.size() == 0) {
             Logger.LOGGER.severe("No features");
+            SwingUtilities.invokeLater(this::dispose);
             return;
         }
 
@@ -119,6 +124,7 @@ public class LootSearchDialog extends Dialog {
         Class<? extends Feature<?, ?>> first = Chests.getSuperRegistry().get(features.get(0));
         if (first == null) {
             Logger.LOGGER.severe("Missing super feature " + features.get(0));
+            SwingUtilities.invokeLater(this::dispose);
             return;
         }
         Generator generator = Generators.get(first).create(map.context.getVersion());
@@ -173,16 +179,14 @@ public class LootSearchDialog extends Dialog {
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool=new ForkJoinPool(Math.max(map.threadCount-2,1));
         List<BPos> bPosList = StreamEx.of(StructureHelper.getClosest((RegionStructure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff))
-            .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds
             .parallel(forkJoinPool)
+            .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds
             .filter(e -> {
                 List<List<ItemStack>> lists = lootGen.getLootAt(map.context.worldSeed, e.toChunkPos(), feature, false, finalChunkGenerator, map.context.getVersion());
                 return getSumWithPredicate(lists, i -> i.getItem().getName().equals(selectedItem.getName())) > 0;
             })
             .limit(n)
             .collect(Collectors.toList());
-
-
         this.dispose();
         TpPanel.makeFrame(bPosList, feature, n);
     }
