@@ -4,6 +4,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.dialog.LootSearchDialog;
 import kaptainwutax.minemap.ui.dialog.StructureListDialog;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
@@ -15,6 +16,7 @@ import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
 public class UtilitiesMenu extends Menu {
     public JMenuItem structureSeedMode;
     public JMenuItem listStructure;
+    public JMenuItem lootSearch;
 
     public UtilitiesMenu() {
         this.menu = new JMenu("Utilities");
@@ -23,17 +25,21 @@ public class UtilitiesMenu extends Menu {
         this.listStructure = new JMenuItem("List N Structures");
         this.addMouseAndKeyListener(this.listStructure, getNStructure(), getNStructure(), false);
 
+        this.lootSearch = new JMenuItem("Find Chest Loot");
+        this.addMouseAndKeyListener(this.lootSearch, getLoot(), getLoot(), false);
+
         this.structureSeedMode = new JCheckBoxMenuItem("Structure Seed Mode");
         this.addMouseAndKeyListener(this.structureSeedMode, toggleStructureMode(false), toggleStructureMode(true), true);
-        ;
         this.structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             listStructure.setEnabled(map != null);
+            lootSearch.setEnabled(map != null);
         }));
 
         this.menu.add(listStructure);
+        this.menu.add(lootSearch);
         this.menu.add(structureSeedMode);
     }
 
@@ -59,6 +65,15 @@ public class UtilitiesMenu extends Menu {
             if (!this.listStructure.isEnabled()) return;
             this.activate.run();
             JDialog dialog = new StructureListDialog(this.deactivate);
+            dialog.setVisible(true);
+        };
+    }
+
+    public Runnable getLoot() {
+        return () -> {
+            if (!this.lootSearch.isEnabled()) return;
+            this.activate.run();
+            JDialog dialog = new LootSearchDialog(this.deactivate);
             dialog.setVisible(true);
         };
     }

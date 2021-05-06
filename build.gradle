@@ -19,17 +19,17 @@ repositories {
     maven {
         url "https://maven.latticg.com/"
     }
-    maven{
+    maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ['-Xlint:deprecation','-Xlint:unchecked']
-    options.fork=true
+    options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
+    options.fork = true
 }
 
-run{
+run {
     args "--no-update"
 }
 
@@ -39,17 +39,18 @@ dependencies {
     implementation('com.github.KaptainWutax:MCUtils:f12f3a4d33a70f4f30a9389290adf5a7ac302a8c') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:a3954932b15a889aa51c82176942d62f291c3b12') { transitive = false }
 
-    implementation('com.github.KaptainWutax:BiomeUtils:d88c6cc685a1c0e7f6df693a04ed2bd1e9176ddb') {transitive = false}
-    implementation('com.github.KaptainWutax:TerrainUtils:dbba2ba61a2c8920b48b1fb9a32fa8e9fe353d61') {transitive = false}
-    implementation('com.github.KaptainWutax:FeatureUtils:4f165bde9acb59173b1adb42099128623adbb627') {transitive = false}
+    implementation('com.github.KaptainWutax:BiomeUtils:d88c6cc685a1c0e7f6df693a04ed2bd1e9176ddb') { transitive = false }
+    implementation('com.github.KaptainWutax:TerrainUtils:dbba2ba61a2c8920b48b1fb9a32fa8e9fe353d61') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:61931addbb3a41e92078aef8e3430d22af96e8f6') { transitive = false }
 
-    implementation('com.github.hube12:ChunkRandomReversal:76bc51ef8b05a6366b8080ed8d071ba5d3ba5e82') {transitive = false}
+    implementation('com.github.hube12:ChunkRandomReversal:76bc51ef8b05a6366b8080ed8d071ba5d3ba5e82') { transitive = false }
     implementation('com.seedfinding:latticg:1.05')
 
     implementation('com.google.code.gson:gson:2.8.6')
     implementation('com.formdev:flatlaf:0.38')
     implementation('org.swinglabs.swingx:swingx-core:1.6.5-1')
     implementation('org.pushing-pixels:radiance-trident:3.5.1')
+    implementation('one.util:streamex:0.7.3')
 
 }
 
@@ -59,6 +60,6 @@ application {
 
 shadowJar {
     // this needs to be removed once https://github.com/johnrengelman/shadow/issues/663 is solved
-    mainClassName="kaptainwutax.minemap.MineMap"
+    mainClassName = "kaptainwutax.minemap.MineMap"
     archiveFileName = "MineMap-${minemap_version}.jar"
 }
