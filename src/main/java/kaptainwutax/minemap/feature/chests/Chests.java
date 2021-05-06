@@ -18,7 +18,7 @@ public class Chests {
 
     public static void registerChests() {
         register(DesertPyramid.class, DesertPyramidLoot::new);
-        register(BuriedTreasure.class, BurriedTreasureLoot::new);
+        register(BuriedTreasure.class, BuriedTreasureloot::new);
         register(NERuinedPortal.class, RuinedPortalLoot::new);
         register(OWNERuinedPortal.class, RuinedPortalLoot::new);
         register(OWRuinedPortal.class, RuinedPortalLoot::new);

@@ -1,9 +1,12 @@
 package kaptainwutax.minemap.feature.chests;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
+import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.featureutils.structure.generator.Generator;
+import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
@@ -40,6 +43,9 @@ public abstract class Loot {
         return lists.stream().mapToInt(list -> list.stream().anyMatch(predicate) ? 1 : 0).sum();
     }
 
+    public Generator.GeneratorFactory<?> getGeneratorFactory(Feature<?,?> feature){
+        return Generators.get(feature.getClass());
+    }
 
     @FunctionalInterface
     public interface LootFactory<T extends Loot> {
