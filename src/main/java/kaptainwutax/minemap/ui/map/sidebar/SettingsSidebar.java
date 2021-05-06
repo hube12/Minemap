@@ -177,6 +177,7 @@ public class SettingsSidebar extends JPanel {
             entry.getCheckBox().addItemListener(e -> {
                 this.settings.setState(biome, entry.getCheckBox().isSelected());
                 this.map.repaint();
+                SwingUtilities.invokeLater(() -> this.settings.setDirty(false));
             });
 
             this.toggles.add(entry);

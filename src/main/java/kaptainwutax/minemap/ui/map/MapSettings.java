@@ -31,6 +31,7 @@ public class MapSettings {
     private Map<Class<? extends Feature<?, ?>>, Feature<?, ?>> featureTypes;
     private Map<Class<? extends Feature<?, ?>>, Boolean> featureStates;
     private Map<Biome, Boolean> biomeStates;
+    private boolean isDirty;
 
     public MapSettings(Dimension dimension) {
         this(MCVersion.values()[0], dimension);
@@ -91,9 +92,18 @@ public class MapSettings {
         return this;
     }
 
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        isDirty = dirty;
+    }
+
     public MapSettings setState(Biome biome, boolean state) {
         this.biomeStates.replace(biome, state);
         this.biomes.put(biome.getName(), state);
+        this.setDirty(true);
         return this;
     }
 
