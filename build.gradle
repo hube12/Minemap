@@ -30,7 +30,7 @@ tasks.withType(JavaCompile) {
 }
 
 run {
-    args "--no-update"
+   args "--no-update"
 }
 
 dependencies {
@@ -43,7 +43,7 @@ dependencies {
     implementation('com.github.KaptainWutax:TerrainUtils:dbba2ba61a2c8920b48b1fb9a32fa8e9fe353d61') { transitive = false }
     implementation('com.github.KaptainWutax:FeatureUtils:61931addbb3a41e92078aef8e3430d22af96e8f6') { transitive = false }
 
-    implementation('com.github.hube12:ChunkRandomReversal:76bc51ef8b05a6366b8080ed8d071ba5d3ba5e82') { transitive = false }
+    implementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') { transitive = false }
     implementation('com.seedfinding:latticg:1.05')
 
     implementation('com.google.code.gson:gson:2.8.6')
