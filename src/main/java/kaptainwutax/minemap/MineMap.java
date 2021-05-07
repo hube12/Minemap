@@ -27,14 +27,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.rmi.UnexpectedException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
 
 
 public class MineMap extends JFrame {
-    public static final String version = "1.0.8"; //using SemVer
+    public static final String version = "@VERSION@"; //using SemVer
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
@@ -58,16 +60,20 @@ public class MineMap extends JFrame {
         this.setIconImage(Icons.get(this.getClass()));
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) throws IOException {
+        if (MineMap.version.startsWith("@VER") && MineMap.version.endsWith("SION@")) {
+            throw new UnexpectedException("The version was not replaced manually or by gradle");
+        }
         createDirs();
         Logger.registerLogger();
-        Pair<Pair<String, String>, String> updateInfo = Assets.shouldUpdate();
+        HashMap<String, Pair<Pair<String, String>, String>> updateInfo = Assets.shouldUpdate();
         boolean noUpdate = Arrays.asList(args).contains("--no-update");
         boolean update = Arrays.asList(args).contains("--update");
         boolean screenshot = Arrays.asList(args).contains("--screenshot");
         doRegister();
         if (!screenshot && updateInfo != null && !noUpdate) {
-            updateMinemap(updateInfo.getFirst(), updateInfo.getSecond(), !update);
+            updateMinemap(updateInfo, !update);
         }
         if (screenshot) {
             doScreenshot(args);
@@ -166,11 +172,28 @@ public class MineMap extends JFrame {
         return image;
     }
 
-    private static void updateMinemap(Pair<String, String> versionUrlFilename, String tagName, boolean shouldAsk) {
+    private static void updateMinemap(HashMap<String, Pair<Pair<String, String>, String>> updateInfo, boolean shouldAsk) {
+        Pair<Pair<String, String>, String> release = updateInfo.get("jar");
+        if (release == null) {
+            Logger.LOGGER.severe("Missing jar Entry");
+            return;
+        }
+        String OS = System.getProperty("os.name").toLowerCase();
+        boolean isWindows = (OS.contains("win"));
+        boolean isMax = (OS.contains("mac"));
+        boolean isUnix = (OS.contains("nix") || OS.contains("nux") || OS.contains("aix"));
+        boolean isSolaris = (OS.contains("sunos"));
+        boolean shouldUseVersion = false;
+        Pair<Pair<String, String>, String> exeRelease = updateInfo.get("exe");
+        if (exeRelease != null && isWindows) {
+            release = exeRelease;
+            shouldUseVersion = true;
+        }
+        // TODO add more build options here
         if (shouldAsk) {
             int dialogResult = JOptionPane.showConfirmDialog(
                 null,
-                String.format("Would you like to update to the version %s of Minemap?", tagName),
+                String.format("Would you like to update to the version %s of Minemap?", release.getSecond()),
                 "Update available for Minemap " + MineMap.version,
                 JOptionPane.YES_NO_OPTION
             );
@@ -182,7 +205,7 @@ public class MineMap extends JFrame {
         downloadPopup.setSize(new Dimension(300, 50));
         downloadPopup.setShape(new RoundRectangle2D.Double(0, 0, 300, 50, 50, 50));
         applyStyle();
-        SwingWorker<String, Void> downloadWorker = getDownloadWorker(downloadPopup, versionUrlFilename);
+        SwingWorker<String, Void> downloadWorker = getDownloadWorker(downloadPopup, release.getFirst());
         downloadWorker.execute();
         downloadPopup.setVisible(true);
         String newVersion = null;
@@ -196,7 +219,12 @@ public class MineMap extends JFrame {
         if (newVersion != null) {
             Process ps;
             try {
-                ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
+                if (!shouldUseVersion) {
+                    ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
+                } else {
+                    ps = Runtime.getRuntime().exec(new String[] {"./" + newVersion, "--no-update"});
+                }
+
                 Logger.LOGGER.info(String.format("Process exited with %s", ps.waitFor()));
             } catch (Exception e) {
                 Logger.LOGGER.severe(String.format("Failed to spawn the new process, error %s", e));

@@ -1,8 +1,10 @@
 plugins {
     id 'java'
     id "application"
-    id "com.github.johnrengelman.shadow" version "5.2.0"
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+    id 'edu.sc.seis.launch4j' version '2.5.0'
 }
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -24,13 +26,27 @@ repositories {
     }
 }
 
+import org.apache.tools.ant.filters.ReplaceTokens
+
+// this task replace the @VERSION@ token with the current project.version
+task processSource(type: Sync) {
+    from sourceSets.main.java
+    inputs.property 'version', version
+    filter(ReplaceTokens, tokens: [VERSION: version])
+    into "$buildDir/src"
+}
+
+compileJava {
+    source = processSource.outputs
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
     options.fork = true
 }
 
 run {
-   args "--no-update"
+    args "--no-update"
 }
 
 dependencies {
@@ -55,11 +71,32 @@ dependencies {
 }
 
 application {
-    mainClass.set("kaptainwutax.minemap.MineMap")
+    mainClass.set("${main_class_name}")
 }
 
 shadowJar {
     // this needs to be removed once https://github.com/johnrengelman/shadow/issues/663 is solved
-    mainClassName = "kaptainwutax.minemap.MineMap"
-    archiveFileName = "MineMap-${minemap_version}.jar"
+    archiveFileName = "${project.name}-${project.version}.jar"
+}
+
+//// make it so build do the shadowJar
+//tasks.named("build") {
+//    dependsOn(tasks.named("shadowJar"))
+//    dependsOn(tasks.named("createExe"))
+//}
+
+launch4j {
+    outfile = "${project.name}-${project.version}.exe"
+    mainClassName = "${main_class_name}"
+    icon = "${projectDir}/icon.ico"
+    outputDir = "executable"
+    supportUrl = "https://github.com/hube12/MineMap/issues"
+    jvmOptions = ["-Xms1G", "-Xmx8G"]
+    initialHeapPercent = 5
+    maxHeapPercent = 80
+    jarTask = project.tasks.shadowJar
+    productName = "MineMap"
+    fileDescription = "A lightning fast map viewer for Minecraft."
+    copyConfigurable = [] // don't copy lib
+    libraryDir= "ignore_libs"
 }

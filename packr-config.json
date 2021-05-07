@@ -1,0 +1,14 @@
+{
+    "platform": "windows64",
+    "jdk": "OpenJDK11U-jre_x64_windows_hotspot_11.0.11_9.zip",
+    "executable": "MineMap-1.0.8",
+    "classpath": [
+        "build/libs/MineMap-1.0.8.jar"
+    ],
+    "mainclass": "kaptainwutax.minemap.MineMap",
+    "vmargs": [
+       "Xmx1G"
+    ],
+    "minimizejre": "soft",
+    "output": "out-win"
+}
