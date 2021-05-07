@@ -138,8 +138,10 @@ You just need to have the Java JDK installed then do:
 
 Go in the directory and run `./gradlew run` to run Minemap (we enable the no-update option)
 
-Run `./gradlew shadowJar` to generate the release jar (modify Minemap.version and gradle.properties MinemapVersion
-variables accordingly)
+Run `./gradlew shadowJar` to generate the release jar (modify gradle.properties version
+variable accordingly)
+
+Run `./gradlew release` to generate the .exe and the .jar.
 
 To use vulkan with debug and validation layers please install the vulkan Lunar SDK.
 

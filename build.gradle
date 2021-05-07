@@ -71,7 +71,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("${main_class_name}")
+    mainClass.set("kaptainwutax.minemap.MineMap")
 }
 
 shadowJar {
@@ -79,17 +79,10 @@ shadowJar {
     archiveFileName = "${project.name}-${project.version}.jar"
 }
 
-//// make it so build do the shadowJar
-//tasks.named("build") {
-//    dependsOn(tasks.named("shadowJar"))
-//    dependsOn(tasks.named("createExe"))
-//}
-
 launch4j {
     outfile = "${project.name}-${project.version}.exe"
-    mainClassName = "${main_class_name}"
     icon = "${projectDir}/icon.ico"
-    outputDir = "executable"
+    outputDir = "libs"
     supportUrl = "https://github.com/hube12/MineMap/issues"
     jvmOptions = ["-Xms1G", "-Xmx8G"]
     initialHeapPercent = 5
@@ -99,4 +92,9 @@ launch4j {
     fileDescription = "A lightning fast map viewer for Minecraft."
     copyConfigurable = [] // don't copy lib
     libraryDir= "ignore_libs"
+}
+
+task("release"){
+    dependsOn(shadowJar)
+    dependsOn(createExe)
 }
