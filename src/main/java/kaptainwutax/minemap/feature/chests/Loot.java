@@ -44,6 +44,7 @@ public abstract class Loot {
         if (factory == null) return null;
         if (!(feature instanceof ILoot)) return null;
         if (!isCorrectInstance(feature)) return null;
+        if (generator==null) return null;
         Generator structureGen = factory.create(version);
         structureGen.generate(generator, cPos, rand);
         HashMap<Generator.ILootType, List<List<ItemStack>>> loots = ((ILoot) feature).getLoot(worldSeed, structureGen, rand, indexed);

@@ -55,9 +55,9 @@ dependencies {
     implementation('com.github.KaptainWutax:MCUtils:8c2ba1dee2b2995d28a60a838f87881001677a46') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:a3954932b15a889aa51c82176942d62f291c3b12') { transitive = false }
 
-    implementation('com.github.KaptainWutax:BiomeUtils:31754afc78f2d54c3915b3c31705f9aaf1d18e64') { transitive = false }
+    implementation('com.github.KaptainWutax:BiomeUtils:03a1925861dfc90d133c2d8f80d51d356ef0d1d6') { transitive = false }
     implementation('com.github.KaptainWutax:TerrainUtils:dbba2ba61a2c8920b48b1fb9a32fa8e9fe353d61') { transitive = false }
-    implementation('com.github.KaptainWutax:FeatureUtils:1932c463a943cb5d8dd730a8089016923a99e87c') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:944cf63bba9f07533ea7f3eb2c4688e8342f3d97') { transitive = false }
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') { transitive = false }
     implementation('com.seedfinding:latticg:1.05')
