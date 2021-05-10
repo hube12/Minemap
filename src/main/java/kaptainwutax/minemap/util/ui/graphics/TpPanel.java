@@ -4,7 +4,6 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.dialog.StructureListDialog;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.buttons.CopyButton;
 import kaptainwutax.minemap.util.ui.buttons.JumpButton;

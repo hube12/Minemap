@@ -90,25 +90,40 @@ public class TooltipTools extends JPanel {
             this.positionText.setEditable(false);
             this.positionText.setHighlighter(null);
             // disable caret selection
-            this.positionText.setCaret(new Caret()
-            {
-                public void install(JTextComponent c){}
-                public void deinstall(JTextComponent c){}
-                public void paint(Graphics g){}
-                public void addChangeListener(ChangeListener l){}
-                public void removeChangeListener(ChangeListener l){}
-                public boolean isVisible(){return false;}
-                public void setVisible(boolean v){}
-                public boolean isSelectionVisible(){return false;}
-                public void setSelectionVisible(boolean v){}
-                public void setMagicCaretPosition(Point p){}
-                public Point getMagicCaretPosition(){return new Point(0,0);}
-                public void setBlinkRate(int rate){}
-                public int getBlinkRate(){return 10000;}
-                public int getDot(){return 0;}
-                public int getMark(){return 0;}
-                public void setDot(int dot){}
-                public void moveDot(int dot){}
+            this.positionText.setCaret(new Caret() {
+                public void install(JTextComponent c) {}
+
+                public void deinstall(JTextComponent c) {}
+
+                public void paint(Graphics g) {}
+
+                public void addChangeListener(ChangeListener l) {}
+
+                public void removeChangeListener(ChangeListener l) {}
+
+                public boolean isVisible() {return false;}
+
+                public void setVisible(boolean v) {}
+
+                public boolean isSelectionVisible() {return false;}
+
+                public void setSelectionVisible(boolean v) {}
+
+                public void setMagicCaretPosition(Point p) {}
+
+                public Point getMagicCaretPosition() {return new Point(0, 0);}
+
+                public void setBlinkRate(int rate) {}
+
+                public int getBlinkRate() {return 10000;}
+
+                public int getDot() {return 0;}
+
+                public int getMark() {return 0;}
+
+                public void setDot(int dot) {}
+
+                public void moveDot(int dot) {}
             });
 
             this.infoButton = new InfoButton(16, -1, 1.9f);

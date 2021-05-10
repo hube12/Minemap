@@ -46,7 +46,7 @@ public class Assets {
     }
 
     @SuppressWarnings("unchecked")
-    public static HashMap<String,Pair<Pair<String, String>, String>> shouldUpdate() {
+    public static HashMap<String, Pair<Pair<String, String>, String>> shouldUpdate() {
         String data = getDataRestAPI("https://api.github.com/repos/hube12/MineMap/releases/latest");
         if (data == null) {
             return null;
@@ -57,20 +57,20 @@ public class Assets {
             if (!tagName.equals(MineMap.version)) {
                 if (map.containsKey("assets")) {
                     ArrayList<Map<String, Object>> assets = (ArrayList<Map<String, Object>>) map.get("assets");
-                    HashMap<String,Pair<Pair<String, String>, String>> versionToDownload= new LinkedHashMap<>();
+                    HashMap<String, Pair<Pair<String, String>, String>> versionToDownload = new LinkedHashMap<>();
                     for (Map<String, Object> asset : assets) {
                         if (asset.containsKey("browser_download_url") && asset.containsKey("name") && ((String) asset.get("name")).startsWith("MineMap-")) {
                             String url = (String) asset.get("browser_download_url");
                             String filename = (String) asset.get("name");
-                            String[] split=filename.split("\\.");
-                            if (split.length>1){
-                                versionToDownload.put(split[split.length-1],new Pair<>(new Pair<>(url, filename), tagName));
+                            String[] split = filename.split("\\.");
+                            if (split.length > 1) {
+                                versionToDownload.put(split[split.length - 1], new Pair<>(new Pair<>(url, filename), tagName));
                             }
                         }
                     }
-                    if (versionToDownload.isEmpty() || !versionToDownload.containsKey("jar")){
+                    if (versionToDownload.isEmpty() || !versionToDownload.containsKey("jar")) {
                         Logger.LOGGER.warning("Github release does not contain a correct release.");
-                    }else{
+                    } else {
                         return versionToDownload;
                     }
                 } else {

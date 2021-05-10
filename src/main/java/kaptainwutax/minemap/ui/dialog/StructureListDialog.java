@@ -7,29 +7,23 @@ import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.feature.*;
-import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.feature.OWBastionRemnant;
+import kaptainwutax.minemap.feature.OWFortress;
+import kaptainwutax.minemap.feature.OWNERuinedPortal;
+import kaptainwutax.minemap.feature.StructureHelper;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.buttons.CopyButton;
-import kaptainwutax.minemap.util.ui.buttons.JumpButton;
-import kaptainwutax.minemap.util.ui.graphics.RoundedPanel;
 import kaptainwutax.minemap.util.ui.graphics.TpPanel;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
-import kaptainwutax.minemap.util.ui.interactive.ListPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 public class StructureListDialog extends Dialog {
@@ -85,8 +79,6 @@ public class StructureListDialog extends Dialog {
         this.getContentPane().add(this.structureItemDropdown);
         this.getContentPane().add(this.continueButton);
     }
-
-
 
 
     protected void create() {
@@ -147,8 +139,6 @@ public class StructureListDialog extends Dialog {
             return feature.getName();
         }
     }
-
-
 
 
 }

@@ -1,11 +1,9 @@
 package kaptainwutax.minemap.feature.chests.loot;
 
-import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.loot.LootContext;
 import kaptainwutax.featureutils.loot.MCLootTables;
 import kaptainwutax.featureutils.loot.item.ItemStack;
-import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.RuinedPortal;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.CPos;

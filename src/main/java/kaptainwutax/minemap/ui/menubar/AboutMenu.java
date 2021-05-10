@@ -6,7 +6,6 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.IconSizeDialog;
-import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;

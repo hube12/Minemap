@@ -32,6 +32,8 @@ public class UserProfileConfig extends Config {
     @Expose
     protected String MINEMAP_VERSION;
     @Expose
+    protected String OLD_MINEMAP_VERSION;
+    @Expose
     protected UserSettings USER_SETTINGS;
     @Expose
     protected Queue<String> RECENT_SEEDS = new LinkedBlockingQueue<>(20);
@@ -158,17 +160,26 @@ public class UserProfileConfig extends Config {
         this.THREAD_COUNT = this.THREAD_COUNT == 0 ? 1 : this.THREAD_COUNT;
         this.MC_VERSION = this.MC_VERSION == null ? MCVersion.values()[0] : this.MC_VERSION;
         this.USER_SETTINGS = this.USER_SETTINGS == null ? new UserSettings() : this.USER_SETTINGS;
-        this.MINEMAP_VERSION = this.MINEMAP_VERSION == null ? MineMap.version : this.MINEMAP_VERSION;
+        this.OLD_MINEMAP_VERSION=this.OLD_MINEMAP_VERSION==null?this.MINEMAP_VERSION:this.OLD_MINEMAP_VERSION;
+        this.MINEMAP_VERSION = MineMap.version;
         //this.ASSET_VERSION=this.ASSET_VERSION; // allowed since I use null as an invalid version
         for (Dimension dimension : Dimension.values()) {
+            String old=dimension.getName().replace("the_","");
             if (!this.DIMENSIONS.containsKey(dimension.getName())) {
-                this.DIMENSIONS.put(dimension.getName(), true);
+                // this is a hacky fix for the migration
+                this.DIMENSIONS.put(dimension.getName(), this.DIMENSIONS.getOrDefault(old, true));
             }
             if (!this.DEFAULT_MAP_SETTINGS.containsKey(dimension.getName())) {
                 MapSettings settings = new MapSettings(dimension).refresh();
                 settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class, NEStronghold.class);
-                this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings);
+                this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), this.DEFAULT_MAP_SETTINGS.getOrDefault(old, settings));
             }
+            // Cleanup for old values
+            if (!old.equals(dimension.getName())){
+                this.DIMENSIONS.remove(old);
+                this.DEFAULT_MAP_SETTINGS.remove(old);
+            }
+
             // TODO hide NEStronghold by default (need versionned config ordered)
         }
     }

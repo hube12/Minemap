@@ -9,7 +9,6 @@ import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.*;
-import kaptainwutax.minemap.ui.map.icon.EndCityIcon;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
@@ -17,8 +16,10 @@ import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.ui.buttons.*;
-import kaptainwutax.minemap.util.ui.feature_icons.EndShipIcon;
 import kaptainwutax.minemap.util.ui.interactive.ModalPopup;
+import kaptainwutax.minemap.util.ui.special_icons.EndShipIcon;
+import kaptainwutax.minemap.util.ui.special_icons.IglooLabIcon;
+import kaptainwutax.minemap.util.ui.special_icons.ZombieVillageIcon;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -230,6 +231,8 @@ public class Icons {
         register(MineMap.class, dir, isJar, "logo");
 
         register(EndShipIcon.class, dir, isJar, "end_ship");
+        register(IglooLabIcon.class, dir, isJar, "igloo_basement");
+        register(ZombieVillageIcon.class, dir, isJar, "abandoned_village");
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

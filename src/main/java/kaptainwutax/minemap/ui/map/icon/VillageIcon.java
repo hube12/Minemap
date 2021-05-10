@@ -1,15 +1,12 @@
 package kaptainwutax.minemap.ui.map.icon;
 
 import kaptainwutax.featureutils.Feature;
-import kaptainwutax.featureutils.structure.EndCity;
 import kaptainwutax.featureutils.structure.Village;
-import kaptainwutax.featureutils.structure.generator.EndCityGenerator;
+import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.BPos;
-import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.ui.map.MapContext;
-import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.util.ui.feature_icons.EndShipIcon;
+import kaptainwutax.minemap.util.ui.special_icons.ZombieVillageIcon;
 
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
@@ -28,11 +25,9 @@ public class VillageIcon extends RegionIcon {
     @Override
     public Function<BPos, BufferedImage> getExtraIcon() {
         return bPos -> {
-            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            if (map == null) return null;
-            EndCityGenerator endCityGenerator = new EndCityGenerator(map.context.getVersion());
-            if (!endCityGenerator.generate(map.context.getChunkGenerator(), bPos.toChunkPos())) return null;
-            return endCityGenerator.hasShip() ? Icons.get(EndShipIcon.class) : null;
+            Village village = new Village(this.getContext().getVersion());
+            return village.isZombieVillage(this.getContext().worldSeed, bPos.toChunkPos(), new ChunkRand()) ?
+                Icons.get(ZombieVillageIcon.class) : null;
         };
     }
 }

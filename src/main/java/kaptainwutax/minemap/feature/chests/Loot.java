@@ -1,12 +1,9 @@
 package kaptainwutax.minemap.feature.chests;
 
-import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.loot.ILoot;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.loot.item.Items;
-import kaptainwutax.featureutils.structure.BuriedTreasure;
-import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.generator.Generator;
 import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
@@ -35,14 +32,14 @@ public abstract class Loot {
 
     public List<List<ItemStack>> getLootAt(CPos cPos, Feature<?, ?> feature, boolean indexed, MapContext context) {
         if (context == null || feature == null || cPos == null) return null;
-        return getLootAt(context.getWorldSeed(), cPos, feature, indexed, new ChunkRand(),  context.getChunkGenerator(), context.getVersion());
+        return getLootAt(context.getWorldSeed(), cPos, feature, indexed, new ChunkRand(), context.getChunkGenerator(), context.getVersion());
     }
 
-    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed,  ChunkGenerator generator, MCVersion version) {
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkGenerator generator, MCVersion version) {
         return getLootAt(worldSeed, cPos, feature, indexed, new ChunkRand(), generator, version);
     }
 
-    public  List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkRand rand, ChunkGenerator generator, MCVersion version){
+    public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkRand rand, ChunkGenerator generator, MCVersion version) {
         Generator.GeneratorFactory<?> factory = this.getGeneratorFactory(feature);
         if (factory == null) return null;
         if (!(feature instanceof ILoot)) return null;
@@ -54,13 +51,13 @@ public abstract class Loot {
         return loots.values().stream().flatMap(Collection::stream).collect(Collectors.toList());
     }
 
-    public abstract boolean isCorrectInstance(Feature<?,?> feature);
+    public abstract boolean isCorrectInstance(Feature<?, ?> feature);
 
     public static int getSumWithPredicate(List<List<ItemStack>> lists, Predicate<ItemStack> predicate) {
         return lists.stream().mapToInt(list -> list.stream().filter(predicate).mapToInt(ItemStack::getCount).sum()).sum();
     }
 
-    public Generator.GeneratorFactory<?> getGeneratorFactory(Feature<?,?> feature){
+    public Generator.GeneratorFactory<?> getGeneratorFactory(Feature<?, ?> feature) {
         return Generators.get(feature.getClass());
     }
 

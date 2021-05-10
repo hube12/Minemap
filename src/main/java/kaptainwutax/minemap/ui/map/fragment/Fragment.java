@@ -79,7 +79,7 @@ public class Fragment {
 
     public void drawBiomes(Graphics graphics, DrawInfo info) {
         this.refreshBiomeCache();
-        if (this.context.getSettings().isDirty()){
+        if (this.context.getSettings().isDirty()) {
             this.refreshImageCache();
         }
 

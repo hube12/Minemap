@@ -115,7 +115,7 @@ public class SettingsSidebar extends JPanel {
             }
         };
 
-        JCheckBox showExtraIcons= new JCheckBox("Show Extra icons") {
+        JCheckBox showExtraIcons = new JCheckBox("Show Extra icons") {
             @Override
             protected void paintComponent(Graphics g) {
                 this.setSelected(SettingsSidebar.this.settings.showExtraIcons);

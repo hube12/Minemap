@@ -61,7 +61,7 @@ public abstract class ButtonIcon extends JButton {
         if (border) this.setBorder(new RoundedBorder(size - 2, 30));
         this.setForeground(Color.DARK_GRAY);
 
-        Graphics2D g2d =  Graphic.setGoodRendering(Graphic.withoutDithering(g));
+        Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(g));
 
         if (this.background) {
             Color old = g.getColor();

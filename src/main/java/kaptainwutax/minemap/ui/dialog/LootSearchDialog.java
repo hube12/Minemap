@@ -76,8 +76,8 @@ public class LootSearchDialog extends Dialog {
             Class<? extends Feature<?, ?>> superClazz = Chests.getSuperRegistry().get(e);
             if (superClazz == null) return false;
             if (Generators.get(superClazz) == null) return false;
-            Feature<?,?> f=Features.getForVersion(map.getContext().getVersion()).get(e);
-            if (f==null) return false;
+            Feature<?, ?> f = Features.getForVersion(map.getContext().getVersion()).get(e);
+            if (f == null) return false;
             return f.isValidDimension(map.getContext().getDimension());
         }).collect(Collectors.toList());
         if (features.size() == 0) {
@@ -177,7 +177,7 @@ public class LootSearchDialog extends Dialog {
 
         ChunkGenerator finalChunkGenerator = chunkGenerator;
         long start = System.currentTimeMillis();
-        ForkJoinPool forkJoinPool=new ForkJoinPool(Math.max(map.threadCount-2,1));
+        ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
         List<BPos> bPosList = StreamEx.of(StructureHelper.getClosest((RegionStructure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff))
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds
