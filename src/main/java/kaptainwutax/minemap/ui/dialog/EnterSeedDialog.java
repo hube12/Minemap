@@ -37,7 +37,7 @@ public class EnterSeedDialog extends Dialog {
         this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
         this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
 
-        this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.v1_0)));
+        this.versionDropdown = new Dropdown<>(Arrays.stream(MCVersion.values()).filter(v -> v.isNewerOrEqualTo(MCVersion.vb1_8_1)));
         this.versionDropdown.selectIfPresent(Configs.USER_PROFILE.getVersion());
 
         JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.versionDropdown, this.threadDropdown);
