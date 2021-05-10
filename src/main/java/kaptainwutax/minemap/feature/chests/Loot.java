@@ -9,6 +9,7 @@ import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.terrainutils.ChunkGenerator;
 
@@ -59,7 +60,12 @@ public abstract class Loot {
     }
 
     public Generator.GeneratorFactory<?> getGeneratorFactory(Feature<?, ?> feature) {
-        return Generators.get(feature.getClass());
+        Class<? extends Feature<?, ?>> superFeature = Chests.getSuperRegistry().get(feature.getClass());
+        if (superFeature == null) {
+            Logger.LOGGER.severe("Missing super feature " + feature);
+            return null;
+        }
+        return Generators.get(superFeature);
     }
 
     @FunctionalInterface

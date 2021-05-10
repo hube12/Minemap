@@ -4,6 +4,7 @@ import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.data.Str;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,7 +63,7 @@ public class TabGroup {
         AtomicBoolean first = new AtomicBoolean(true);
 
         this.mapPanels.forEach((dimension, mapPanel) -> {
-            String s = dimension.getName().substring(0, 1).toUpperCase() + dimension.getName().substring(1);
+            String s = Str.prettifyDashed(dimension.getName());
             tabs.addMapTab(prefix + s + " " + this.worldSeed, this, mapPanel);
 
             if (first.get()) {
