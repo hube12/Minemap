@@ -33,6 +33,8 @@ public class IconManager {
             OWNetherIcon::new,
             NEOverworldIcon::new,
             EndCityIcon::new,
+            IglooIcon::new,
+            VillageIcon::new,
             c -> new StrongholdIcon(c, 128)
         );
     }
