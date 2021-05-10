@@ -39,10 +39,12 @@ public class StrongholdIcon extends StaticIcon {
     }
 
     @Override
-    public Function<Object, String> getExtraInfo() {
+    public Function<BPos, String> getExtraInfo() {
         return (input) -> {
-            BPos bPos = (BPos) input;
-            CPos cPos = new CPos(bPos.getX() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1), bPos.getZ() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1));
+            CPos cPos = new CPos(
+                input.getX() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1),
+                input.getZ() >> (this.getContext().dimension == Dimension.OVERWORLD ? 4 : 1)
+            );
             CPos[] starts = this.getStarts();
             OptionalInt integer = IntStream.range(0, starts.length).filter(idx -> starts[idx].equals(cPos)).findFirst();
             return integer.isPresent() ? String.valueOf(integer.getAsInt()) : null;

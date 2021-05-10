@@ -115,6 +115,14 @@ public class SettingsSidebar extends JPanel {
             }
         };
 
+        JCheckBox showExtraIcons= new JCheckBox("Show Extra icons") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                this.setSelected(SettingsSidebar.this.settings.showExtraIcons);
+                super.paintComponent(g);
+            }
+        };
+
         showBiomes.addItemListener(e -> {
             this.settings.showBiomes = showBiomes.isSelected();
             this.map.repaint();
@@ -135,10 +143,16 @@ public class SettingsSidebar extends JPanel {
             this.map.repaint();
         });
 
+        showExtraIcons.addItemListener(e -> {
+            this.settings.showExtraIcons = showExtraIcons.isSelected();
+            this.map.repaint();
+        });
+
         this.toggles.add(showBiomes);
         this.toggles.add(showFeatures);
         this.toggles.add(showGrid);
         this.toggles.add(showExtraInfos);
+        this.toggles.add(showExtraIcons);
     }
 
     private void addFeatureToggles() {

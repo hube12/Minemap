@@ -11,6 +11,7 @@ import kaptainwutax.minemap.util.data.DrawInfo;
 import kaptainwutax.minemap.util.ui.graphics.Graphic;
 
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
@@ -19,8 +20,8 @@ import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 public abstract class StaticIcon extends IconRenderer {
 
     private static final int DEFAULT_VALUE = 24;
-    private int iconSizeX;
-    private int iconSizeZ;
+    private final int iconSizeX;
+    private final int iconSizeZ;
 
     public StaticIcon(MapContext context) {
         this(context, DEFAULT_VALUE, DEFAULT_VALUE);
@@ -32,11 +33,11 @@ public abstract class StaticIcon extends IconRenderer {
         this.iconSizeZ = iconSizeZ;
     }
 
-    public Function<Object, String> getExtraInfo() {
+    public Function<BPos, String> getExtraInfo() {
         return null;
     }
 
-    public Function<Object, String> getExtraIcon() {
+    public Function<BPos, BufferedImage> getExtraIcon() {
         return null;
     }
 
@@ -66,6 +67,18 @@ public abstract class StaticIcon extends IconRenderer {
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 13 * scaleFactor));
                 g2d.drawChars(charArray, 0, charArray.length, posX, posY);
                 g2d.setColor(old);
+            }
+        }
+        if (getExtraIcon() != null && this.getContext().getSettings().showExtraIcons) {
+            BufferedImage extraIcon = getExtraIcon().apply(pos);
+            if (extraIcon != null) {
+                int posX = (int) (info.x + sx + (DEFAULT_VALUE - 16) * scaleFactor / 2);
+                int posY = (int) (info.y + sy - (DEFAULT_VALUE + 16) * scaleFactor / 2);
+                Shape oldClip = g2d.getClip();
+                int size = (int) (16 * scaleFactor);
+                g2d.setClip(new Ellipse2D.Float(posX, posY, size, size));
+                g2d.drawImage(extraIcon, posX, posY, size, size, null);
+                g2d.setClip(oldClip);
             }
         }
     }

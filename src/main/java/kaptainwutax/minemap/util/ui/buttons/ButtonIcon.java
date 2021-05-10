@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.util.ui.buttons;
 
 import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import kaptainwutax.minemap.util.ui.graphics.RoundedBorder;
 
 import javax.swing.*;
@@ -60,19 +61,7 @@ public abstract class ButtonIcon extends JButton {
         if (border) this.setBorder(new RoundedBorder(size - 2, 30));
         this.setForeground(Color.DARK_GRAY);
 
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        // disable stroke change
-        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-        // disable weird floating point since pixel accurate
-        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_OFF);
-        // Interpolation correctly
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        // disable dithering for full color accuracy
-        g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+        Graphics2D g2d =  Graphic.setGoodRendering(Graphic.withoutDithering(g));
 
         if (this.background) {
             Color old = g.getColor();
