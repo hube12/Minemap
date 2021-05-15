@@ -436,34 +436,48 @@ public class Assets {
             collect(Collectors.toList());
     }
 
-    public static java.util.List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
+    public static java.util.List<Pair<Path, InputStream>> getInputStream(Path dir, boolean isJar, String name, String extension) {
         java.util.List<Path> paths;
-        java.util.List<Pair<String, BufferedImage>> list = new ArrayList<>();
+        java.util.List<Pair<Path, InputStream>> list = new ArrayList<>();
         try {
             paths = Assets.getFileHierarchical(dir, name, extension);
         } catch (IOException e) {
             LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e));
-            System.err.println("Didn't find icon " + name + ".");
+            System.err.println("Didn't find file " + name + ".");
             return list;
         }
         for (Path path : paths) {
             try {
                 InputStream inputStream = isJar ? Icons.class.getResourceAsStream(path.toString()) : new FileInputStream(path.toString());
-                list.add(new Pair<>(fnObjectStorage.apply(path), ImageIO.read(inputStream)));
+                if (inputStream==null){
+                    LOGGER.severe(String.format("Input stream is null, %s",path));
+                    return list;
+                }
+                list.add(new Pair<>(path, inputStream));
             } catch (IOException e) {
-                LOGGER.severe(String.format("Exception while reading the input stream or getting " +
-                    "the file input for %s at %s with error %s", name, dir.toString(), e));
+                LOGGER.severe(String.format("Exception while  getting the file input for %s at %s with error %s", name, dir.toString(), e));
             }
         }
         if (list.isEmpty()) {
-            System.err.println("Didn't find icon " + name + ".");
+            System.err.println("Didn't find file " + name + ".");
             LOGGER.severe(String.format("File not found for %s", name));
-        } else {
-            System.out.println("Found icon " + name + ".");
         }
 
         return list;
     }
+
+
+    public static java.util.List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
+        return getInputStream(dir,isJar,name,extension).stream().map(e-> {
+            try {
+                return new Pair<>(fnObjectStorage.apply(e.getFirst()),ImageIO.read(e.getSecond()));
+            } catch (IOException ioException) {
+                LOGGER.severe(String.format("Exception while reading the file input stream for %s at %s with error %s", name, dir.toString(), e));
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
 
     private static String getDataRestAPI(String apiUrl) {
         try {

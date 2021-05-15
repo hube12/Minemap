@@ -75,6 +75,7 @@ public class MapManager {
 
         this.panel.addMouseMotionListener(Events.Mouse.onMoved(e -> {
             BPos pos = this.getPos(e.getX(), e.getY());
+            this.mousePointer = e.getPoint();
             int x = pos.getX();
             int z = pos.getZ();
             this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(pos.getX(), pos.getZ()));
@@ -151,7 +152,7 @@ public class MapManager {
         JMenuItem portal = new JMenuItem("Portal");
         portal.setBorder(new EmptyBorder(5, 15, 5, 15));
         portalMenu = new Portal(this.panel);
-        portal.addMouseListener(Events.Mouse.onReleased(e -> this.portalMenu.setVisible(true)));
+        portal.addMouseListener(Events.Mouse.onReleased(e -> this.portalMenu.run()));
 
         popup.add(pin);
         popup.add(rename);
@@ -165,16 +166,21 @@ public class MapManager {
                                            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                                            ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
                                            int size = (int) map.manager.pixelsPerFragment;
-                                           JPopupMenu source = (JPopupMenu) e.getSource();
-                                           try {
-                                               Field desiredLocationXField = JPopupMenu.class.getDeclaredField("desiredLocationX");
-                                               Field desiredLocationYField = JPopupMenu.class.getDeclaredField("desiredLocationY");
-                                               desiredLocationXField.setAccessible(true);
-                                               desiredLocationYField.setAccessible(true);
-                                               // 10 and 70 are fixed from the window on Microsoft (assumimg correct header)
-                                               int desiredLocationX = (int) desiredLocationXField.get(source) - MineMap.INSTANCE.getX() - map.manager.panel.getX() - 10;
-                                               int desiredLocationY = (int) desiredLocationYField.get(source) - MineMap.INSTANCE.getY() - map.manager.panel.getY() - 70;
-                                               BPos bPos = getPos(desiredLocationX, desiredLocationY);
+//                                           JPopupMenu source = (JPopupMenu) e.getSource();
+//                                           try {
+//                                               Field desiredLocationXField = JPopupMenu.class.getDeclaredField("desiredLocationX");
+//                                               Field desiredLocationYField = JPopupMenu.class.getDeclaredField("desiredLocationY");
+//                                               desiredLocationXField.setAccessible(true);
+//                                               desiredLocationYField.setAccessible(true);
+//                                               // 10 and 70 are fixed from the window on Microsoft (assumimg correct header)
+//                                               int desiredLocationX = (int) desiredLocationXField.get(source) - MineMap.INSTANCE.getX() - map.manager.panel.getX() - 10;
+//                                               int desiredLocationY = (int) desiredLocationYField.get(source) - MineMap.INSTANCE.getY() - map.manager.panel.getY() - 70;
+//                                           } catch (Exception reflectionException) {
+//                                               Logger.LOGGER.warning("Reflection failed with error " + reflectionException.getMessage());
+//                                           }
+                                           {
+                                               BPos bPos = getPos(mousePointer.x, mousePointer.y);
+                                               System.out.println(bPos);
                                                RPos rPos = bPos.toRegionPos(map.manager.blocksPerFragment);
                                                Fragment fragment = map.scheduler.getFragmentAt(rPos.getX(), rPos.getZ());
                                                fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
@@ -194,16 +200,15 @@ public class MapManager {
                                                        }
                                                    }
                                                }
-                                           } catch (Exception reflectionException) {
-                                               Logger.LOGGER.warning("Reflection failed with error " + reflectionException.getMessage());
-                                               map.scheduler.forEachFragment(fragment -> {
-                                                   fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
+                                               if (features.isEmpty()) {
+                                                   map.scheduler.forEachFragment(f -> f.getHoveredFeatures(size, size).forEach((feature, positions) -> {
                                                        if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
                                                            features.add(new Pair<>(feature, positions));
                                                        }
-                                                   });
-                                               });
+                                                   }));
+                                               }
                                            }
+
                                            if (!features.isEmpty()) {
                                                popup.add(chest);
                                                Pair<Feature<?, ?>, List<BPos>> featureListPair = features.get(0);
@@ -217,13 +222,13 @@ public class MapManager {
                                                        clipboard.setContents(stringSelection, null);
                                                    }
                                                ));
-                                               if (feature instanceof RuinedPortal){
+                                               if (feature instanceof RuinedPortal) {
                                                    popup.add(portal);
                                                    portalMenu.setPos(bPos.toChunkPos());
                                                    portalMenu.setFeature((RuinedPortal) feature);
-                                                   if (!portalMenu.generateContent()){
-                                                       System.err.println("Portal not generated for "+bPos);
-                                                       Logger.LOGGER.severe("Portal not generated for "+bPos);
+                                                   if (!portalMenu.generateContent()) {
+                                                       System.err.println("Portal not generated for " + bPos);
+                                                       Logger.LOGGER.severe("Portal not generated for " + bPos);
                                                    }
                                                }
                                                popup.add(copyTp);

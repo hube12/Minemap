@@ -7,6 +7,7 @@ import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.generator.Generator;
 import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.init.Logger;
@@ -33,7 +34,19 @@ public abstract class Loot {
 
     public List<List<ItemStack>> getLootAt(CPos cPos, Feature<?, ?> feature, boolean indexed, MapContext context) {
         if (context == null || feature == null || cPos == null) return null;
-        return getLootAt(context.getWorldSeed(), cPos, feature, indexed, new ChunkRand(), context.getChunkGenerator(), context.getVersion());
+        ChunkGenerator generator = null;
+        if (feature.isValidDimension(context.getChunkGenerator().getBiomeSource().getDimension())) {
+            generator = context.getChunkGenerator();
+        } else {
+            for (Dimension dimension : Dimension.values()) {
+                if (feature.isValidDimension(dimension)) {
+                    generator = context.getChunkGenerator(dimension);
+                    break;
+                }
+            }
+        }
+        if (generator == null) return null;
+        return getLootAt(context.getWorldSeed(), cPos, feature, indexed, new ChunkRand(), generator, context.getVersion());
     }
 
     public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkGenerator generator, MCVersion version) {
@@ -45,9 +58,9 @@ public abstract class Loot {
         if (factory == null) return null;
         if (!(feature instanceof ILoot)) return null;
         if (!isCorrectInstance(feature)) return null;
-        if (generator==null) return null;
+        if (generator == null) return null;
         Generator structureGen = factory.create(version);
-        structureGen.generate(generator, cPos, rand);
+        if (!structureGen.generate(generator, cPos, rand)) return null;
         HashMap<Generator.ILootType, List<List<ItemStack>>> loots = ((ILoot) feature).getLoot(worldSeed, structureGen, rand, indexed);
         if (loots == null) return null;
         return loots.values().stream().flatMap(Collection::stream).collect(Collectors.toList());

@@ -67,7 +67,32 @@ dependencies {
     implementation('org.swinglabs.swingx:swingx-core:1.6.5-1')
     implementation('org.pushing-pixels:radiance-trident:3.5.1')
     implementation('one.util:streamex:0.7.3')
-
+    // JOML
+    implementation "org.joml:joml:1.10.1"
+    // LWJGL core
+    implementation "org.lwjgl:lwjgl:${lwjglVersion}"
+    // LWJGL natives
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
+    // OPENGL
+    implementation "org.lwjgl:lwjgl-opengl:${lwjglVersion}"
+    // OPENGL NATIVES
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-opengl:${lwjglVersion}:natives-macos"
+    // GLFW
+    implementation "org.lwjgl:lwjgl-glfw:${lwjglVersion}"
+    // GLFW NATIVES
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-glfw:${lwjglVersion}:natives-macos"
+    // STB
+    implementation "org.lwjgl:lwjgl-stb:${lwjglVersion}"
+    // STB NATIVES
+    runtimeOnly "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-windows"
+    runtimeOnly "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-linux"
+    runtimeOnly "org.lwjgl:lwjgl-stb:${lwjglVersion}:natives-macos"
 }
 
 application {
