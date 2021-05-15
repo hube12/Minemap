@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.channels.Channels;
@@ -96,7 +97,7 @@ public class Texture {
         assert list.size() == 1;
         ByteBuffer byteBuffer;
         try {
-            byteBuffer = ByteBuffer.allocateDirect(list.get(0).getSecond().available());
+            byteBuffer = BufferUtils.createByteBuffer(list.get(0).getSecond().available());
             Channels.newChannel(list.get(0).getSecond()).read(byteBuffer);
             byteBuffer.flip();
         } catch (IOException e) {

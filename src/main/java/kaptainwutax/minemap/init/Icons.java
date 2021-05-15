@@ -201,8 +201,8 @@ public class Icons {
 
         // special cases
         register(OWRuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
-        register(NERuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
-        register(OWNERuinedPortal.class, dir, isJar, Structure.getName(RuinedPortal.class));
+        register(NERuinedPortal.class, dir, isJar, "other_ruined_portal");
+        register(OWNERuinedPortal.class, dir, isJar, "other_ruined_portal");
 
         register(OWBastionRemnant.class, dir, isJar, Structure.getName(BastionRemnant.class));
         register(OWFortress.class, dir, isJar, Structure.getName(Fortress.class));

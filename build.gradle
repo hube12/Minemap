@@ -5,15 +5,18 @@ plugins {
     id 'edu.sc.seis.launch4j' version '2.5.0'
 }
 
+defaultTasks("clean","release")
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    // very important ByteBuffer does not have flip in java 1.8
+    // this set the javac --release flag
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
 }
 
 repositories {
     mavenCentral()
-    jcenter()
 
     maven {
         url "https://jitpack.io"
@@ -119,9 +122,12 @@ launch4j {
     libraryDir= "ignore_libs"
     jreMaxVersion=JavaVersion.VERSION_HIGHER
     jreMinVersion=JavaVersion.VERSION_1_8
+    // this is a dirty fix to use JAVA_HOME
+    bundledJrePath ="%JAVA_HOME%;%PATH%"
 }
 
 task("release"){
+    dependsOn(clean)
     dependsOn(shadowJar)
     dependsOn(createExe)
 }

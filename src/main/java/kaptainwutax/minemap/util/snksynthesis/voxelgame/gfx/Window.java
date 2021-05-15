@@ -4,6 +4,8 @@ import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import static org.lwjgl.glfw.GLFW.*;
+
+import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.MemoryUtil;
 
 import org.lwjgl.opengl.GL;
@@ -62,12 +64,14 @@ public class Window {
         glfwShowWindow(window);
 
         GL.createCapabilities();
+        GLUtil.setupDebugMessageCallback(System.err);
 
         glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
             glViewport(0, 0, width, height);
             this.width = width;
             this.height = height;
         });
+
     }
 
     /**
