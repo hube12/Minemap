@@ -8,7 +8,8 @@ import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Window;
 
 public class Camera {
 
-    private Vector3f front, pos;
+    private Vector3f front;
+    private final Vector3f pos;
     private boolean firstMouse;
     private float lastX, lastY, yaw, pitch;
 
@@ -55,8 +56,8 @@ public class Camera {
 
     public void addMouseCallback(Window window) {
 
-        lastX = window.getWidth() / 2;
-        lastY = window.getHeight() / 2;
+        lastX = window.getWidth() / 2f;
+        lastY = window.getHeight() / 2f;
         firstMouse = true;
 
         glfwSetCursorPos(window.getRawWindow(), lastX, lastY);

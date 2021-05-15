@@ -3,6 +3,7 @@ package kaptainwutax.minemap.util.snksynthesis.voxelgame;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.Block;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.BlockManager;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.BlockType;
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Font;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Shader;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Window;
 import org.joml.Matrix4f;
@@ -20,6 +21,8 @@ public class Visualizer {
     private final BlockManager blockManager;
     private Block light;
     private Vector3f lightPos;
+    private Font font;
+    private String text=null;
 
     private void draw(MemoryStack stack) {
         // Bind shader
@@ -55,6 +58,39 @@ public class Visualizer {
 
         // Unbind light shader
         lightShader.unbind();
+
+        renderText();
+    }
+
+    private void set2DContext() {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, window.getWidth(), window.getHeight(), 0, -1, 1);
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glDisable(GL_CULL_FACE);
+        glDisable(GL_TEXTURE_2D);
+        glDisable(GL_LIGHTING);
+        glDisable(GL_DEPTH_TEST);
+    }
+
+    private void renderText() {
+        set2DContext();
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        int sfont = 0;
+        font.draw(0, 20, sfont, "Press Esc to exit mouse capture.");
+        font.draw(0, 40, sfont, "Press Q to enter mouse capture.");
+        font.draw(0, 60, sfont, "Press WASD to move around.");
+        font.draw(0, 80, sfont, "Press Space/Shift to move up/down.");
+        if (text!=null){
+            font.draw(0, window.getHeight()-20, sfont, text);
+        }
+
+    }
+
+    public void setText(String text){
+        this.text=text;
     }
 
     private void init() {
@@ -82,9 +118,11 @@ public class Visualizer {
         light = new Block(BlockType.LIGHT);
         light.getModel().translate(lightPos);
 
+        font = new Font("Karrik-Regular.ttf");
+
         glEnable(GL_DEPTH_TEST);
         glClearColor(0.1607843137254902f, 0.6235294117647059f, 1.0f, 1.0f);
-        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     }
 
     private void destroy() {
@@ -114,7 +152,7 @@ public class Visualizer {
         destroy();
     }
 
-    public Visualizer(){
+    public Visualizer() {
         blockManager = new BlockManager();
     }
 
