@@ -159,6 +159,8 @@ The main core part was done by KaptainWutax.
 Any of the work done by Neil is released under MIT. However all materials which are not hand made will be released under
 the specific author license, this includes but not limit to some icons and the logo.
 
+The visualizer is made by SnkSynthesis and released under MIT : https://github.com/SnkSynthesis/voxel-game
+
 All the structures and features icons are released under CC-0 at https://github.com/hube12/mc_icons.
 
 NOT OFFICIAL MINECRAFT PRODUCT. NOT APPROVED BY OR ASSOCIATED WITH MOJANG.
