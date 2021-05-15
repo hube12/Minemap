@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.map;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.featureutils.structure.RuinedPortal;
 import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.math.Vec3i;
@@ -14,6 +15,7 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
+import kaptainwutax.minemap.ui.map.interactive.Portal;
 import kaptainwutax.minemap.ui.map.tool.*;
 
 import javax.swing.*;
@@ -42,6 +44,7 @@ public class MapManager {
     private final MapPanel panel;
     private final JPopupMenu popup;
     private final Chest chestMenu;
+    private final Portal portalMenu;
     public double pixelsPerFragment;
     public double centerX;
     public double centerY;
@@ -145,6 +148,11 @@ public class MapManager {
         chestMenu = new Chest(this.panel);
         chest.addMouseListener(Events.Mouse.onReleased(e -> this.chestMenu.setVisible(true)));
 
+        JMenuItem portal = new JMenuItem("Portal");
+        portal.setBorder(new EmptyBorder(5, 15, 5, 15));
+        portalMenu = new Portal(this.panel);
+        portal.addMouseListener(Events.Mouse.onReleased(e -> this.portalMenu.setVisible(true)));
+
         popup.add(pin);
         popup.add(rename);
         popup.add(settings);
@@ -209,6 +217,15 @@ public class MapManager {
                                                        clipboard.setContents(stringSelection, null);
                                                    }
                                                ));
+                                               if (feature instanceof RuinedPortal){
+                                                   popup.add(portal);
+                                                   portalMenu.setPos(bPos.toChunkPos());
+                                                   portalMenu.setFeature((RuinedPortal) feature);
+                                                   if (!portalMenu.generateContent()){
+                                                       System.err.println("Portal not generated for "+bPos);
+                                                       Logger.LOGGER.severe("Portal not generated for "+bPos);
+                                                   }
+                                               }
                                                popup.add(copyTp);
                                                chestMenu.setPos(bPos.toChunkPos());
                                                chestMenu.setFeature((RegionStructure<?, ?>) feature);

@@ -52,12 +52,12 @@ run {
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
-    implementation('com.github.KaptainWutax:MCUtils:c0acdac614f0b6bf3b279f83910bd345d08a6ccb') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:424f9dd6ed25672c314ab8fd2101f9634f0e2707') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:a3954932b15a889aa51c82176942d62f291c3b12') { transitive = false }
 
     implementation('com.github.KaptainWutax:BiomeUtils:43cbdbe4319790ecdfde89cc24077e8b3faf215c') { transitive = false }
     implementation('com.github.KaptainWutax:TerrainUtils:21b6d72b7798403abf620f736d0f1972daf822ed') { transitive = false }
-    implementation('com.github.KaptainWutax:FeatureUtils:2c8af946e7f441fe5b5f1608f981a03c0628f0f0') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:7e7e83c59025bc55bd2d8f40f24de557a8f367e2') { transitive = false }
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') { transitive = false }
     implementation('com.seedfinding:latticg:1.05')
@@ -92,6 +92,8 @@ launch4j {
     fileDescription = "A lightning fast map viewer for Minecraft."
     copyConfigurable = [] // don't copy lib
     libraryDir= "ignore_libs"
+    jreMaxVersion=JavaVersion.VERSION_HIGHER
+    jreMinVersion=JavaVersion.VERSION_1_8
 }
 
 task("release"){

@@ -469,7 +469,6 @@ public class Chest extends JFrame {
                     rowButton.get(col).setText("");
                     rowButton.get(col).setToolTipText(null);
                     rowButton.get(col).setIcon(null);
-
                 }
             }
         }
