@@ -53,6 +53,11 @@ public class Texture {
         stbi_image_free(data);
     }
 
+    // this is meant to be internally used
+    protected Texture(int textureId){
+        this.texture=textureId;
+    }
+
     /**
      * Loads an RGB image.
      *
@@ -77,6 +82,10 @@ public class Texture {
 
     public void unbind() {
         glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    public void destroy(){
+        glDeleteTextures(texture);
     }
 
     public int getTexture() {

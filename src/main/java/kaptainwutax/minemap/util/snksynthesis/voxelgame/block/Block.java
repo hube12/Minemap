@@ -1,15 +1,17 @@
 package kaptainwutax.minemap.util.snksynthesis.voxelgame.block;
 
-import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.*;
-
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Mesh;
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Shader;
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Texture;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.MemoryUtil;
 
-import static org.lwjgl.opengl.GL33.*;
-
 import java.nio.FloatBuffer;
+
+import static org.lwjgl.opengl.GL33.glGetUniformLocation;
+import static org.lwjgl.opengl.GL33.glUniformMatrix4fv;
 
 public class Block {
 
@@ -23,7 +25,7 @@ public class Block {
         switch (type) {
             case GRASS:
                 tex = Texture.loadRGBA("soil+grass+stone.png");
-                this.mesh = new Mesh(VERTICE_01_0);
+                this.mesh = new Mesh(VERTICE_01_10);
                 break;
             case STONE:
                 tex = Texture.loadRGBA("soil+grass+stone.png");
@@ -39,11 +41,11 @@ public class Block {
                 break;
             case CRYING_OBSIDIAN:
                 tex = Texture.loadRGBA("crying+obsidian.png");
-                this.mesh = new Mesh(VERTICE_01_0);
+                this.mesh = new Mesh(VERTICE_1_1);
                 break;
             case OBSIDIAN:
                 tex = Texture.loadRGBA("crying+obsidian.png");
-                this.mesh = new Mesh(VERTICE_1_1);
+                this.mesh = new Mesh(VERTICE_0_0);
                 break;
 
         }
@@ -54,7 +56,7 @@ public class Block {
 
     /**
      * Copy constructor
-     * 
+     *
      * @param block - Block to be copied
      */
     public Block(Block block) {
@@ -71,6 +73,7 @@ public class Block {
 
     public void destroy() {
         mesh.destroy();
+        tex.destroy();
         MemoryUtil.memFree(allocatedMem);
     }
 
@@ -87,7 +90,7 @@ public class Block {
     }
 
     // @formatter:off
-    protected final float[] VERTICE_0_0 = {
+    protected final float[] FULL = {
         // Positions            Texture Coords       Normals
         -0.5f, -0.5f, -0.5f,    0.0f, 0.0f,     0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,    1.0f, 0.0f,     0.0f,  0.0f, -1.0f,
@@ -134,7 +137,7 @@ public class Block {
     // @formatter:on
 
     // @formatter:off
-    protected final float[] VERTICE_01_0 = {
+    protected final float[] VERTICE_01_10 = {
         // Positions            Texture Coords       Normals 
         -0.5f, -0.5f, -0.5f,    0.5f, 0.5f,     0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,    1.0f, 0.5f,     0.0f,  0.0f, -1.0f,
@@ -271,6 +274,54 @@ public class Block {
          0.5f,  0.5f,  0.5f,    1.0f, 0.5f,      0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f,  0.5f,    0.5f, 0.5f,      0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,    0.5f, 0.0f,      0.0f,  1.0f,  0.0f
+    };
+    // @formatter:on
+
+
+    // @formatter:off
+    protected final float[] VERTICE_0_0 = {
+        // Positions            Texture Coords         Normals
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.5f,      0.0f,  0.0f, -1.0f,
+        0.5f, -0.5f, -0.5f,    0.5f, 0.5f,      0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,    0.5f, 1.0f,      0.0f,  0.0f, -1.0f,
+        0.5f,  0.5f, -0.5f,    0.5f, 1.0f,      0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 1.0f,      0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.5f,      0.0f,  0.0f, -1.0f,
+
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.5f,       0.0f,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f,    0.5f, 0.5f,       0.0f,  0.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,    0.5f, 1.0f,       0.0f,  0.0f, 1.0f,
+        0.5f,  0.5f,  0.5f,    0.5f, 1.0f,       0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,       0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 0.5f,       0.0f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f,  0.5f,     0.0f, 0.5f,       -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,    0.5f, 0.5f,        -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,    0.5f, 1.0f,        -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,    0.5f, 1.0f,        -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,     0.0f, 1.0f,       -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,     0.0f, 0.5f,       -1.0f,  0.0f,  0.0f,
+
+        0.5f,  0.5f,  0.5f,    0.0f, 0.5f,      1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,   0.5f, 0.5f,       1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,   0.5f, 1.0f,       1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,   0.5f, 1.0f,       1.0f,  0.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,    0.0f, 1.0f,      1.0f,  0.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,    0.0f, 0.5f,      1.0f,  0.0f,  0.0f,
+
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.5f,      0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f, -0.5f,    0.5f, 0.5f,      0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,    0.5f, 1.0f,      0.0f, -1.0f,  0.0f,
+        0.5f, -0.5f,  0.5f,    0.5f, 1.0f,      0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,    0.0f, 1.0f,      0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,    0.0f, 0.5f,      0.0f, -1.0f,  0.0f,
+
+        -0.5f,  0.5f, -0.5f,    0.0f, 0.5f,       0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f, -0.5f,    0.5f, 0.5f,       0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,    0.5f, 1.0f,       0.0f,  1.0f,  0.0f,
+        0.5f,  0.5f,  0.5f,    0.5f, 1.0f,       0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,    0.0f, 1.0f,       0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,    0.0f, 0.5f,       0.0f,  1.0f,  0.0f
     };
     // @formatter:on
 

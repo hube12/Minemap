@@ -62,31 +62,37 @@ public class Visualizer {
         renderText();
     }
 
-    private void set2DContext() {
+    private void enabled2DContext() {
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
         glOrtho(0, window.getWidth(), window.getHeight(), 0, -1, 1);
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glDisable(GL_CULL_FACE);
         glDisable(GL_TEXTURE_2D);
         glDisable(GL_LIGHTING);
         glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+    private void disable2DContext() {
+        glEnable(GL_TEXTURE_2D);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
     }
 
     private void renderText() {
-        set2DContext();
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        int sfont = 0;
-        font.draw(0, 20, sfont, "Press Esc to exit mouse capture.");
-        font.draw(0, 40, sfont, "Press Q to enter mouse capture.");
-        font.draw(0, 60, sfont, "Press WASD to move around.");
-        font.draw(0, 80, sfont, "Press Space/Shift to move up/down.");
-        if (text!=null){
-            font.draw(0, window.getHeight()-20, sfont, text);
-        }
+        enabled2DContext();
 
+        int sfont = 0;
+        font.draw(2, 20, sfont, "Press Esc to exit mouse capture.");
+        font.draw(2, 40, sfont, "Press Q to enter mouse capture.");
+        font.draw(2, 60, sfont, "Press WASD to move around.");
+        font.draw(2, 80, sfont, "Press Space/Shift to move up/down.");
+        if (text!=null){
+            font.draw(2, window.getHeight()-20, sfont, text);
+        }
+        disable2DContext();
     }
 
     public void setText(String text){
@@ -121,6 +127,7 @@ public class Visualizer {
         font = new Font("Karrik-Regular.ttf");
 
         glEnable(GL_DEPTH_TEST);
+        glDisable(GL_CULL_FACE);
         glClearColor(0.1607843137254902f, 0.6235294117647059f, 1.0f, 1.0f);
 
     }
@@ -129,6 +136,7 @@ public class Visualizer {
         shader.destroy();
         lightShader.destroy();
         blockManager.destroy();
+        window.destroy();
     }
 
     private void update() {

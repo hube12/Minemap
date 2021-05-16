@@ -3,12 +3,17 @@ package kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
 import org.lwjgl.opengl.GLUtil;
+import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryUtil;
 
 import org.lwjgl.opengl.GL;
+
+import java.util.Objects;
+
 import static org.lwjgl.opengl.GL33.*;
 
 /**
@@ -22,6 +27,7 @@ public class Window {
     private boolean resized;
     private float deltaTime;
     private float lastFrame;
+    private Callback callback;
 
     public Window(String title, int width, int height) {
         this.title = title;
@@ -53,6 +59,7 @@ public class Window {
 
         // Center window
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        assert vidMode != null;
         glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
 
         // Make current OpenGL context
@@ -64,7 +71,7 @@ public class Window {
         glfwShowWindow(window);
 
         GL.createCapabilities();
-        GLUtil.setupDebugMessageCallback(System.err);
+        callback=GLUtil.setupDebugMessageCallback(System.err);
 
         glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
             glViewport(0, 0, width, height);
@@ -85,6 +92,19 @@ public class Window {
 
         glfwPollEvents();
         glfwSwapBuffers(window);
+    }
+
+    public void destroy(){
+        GL.setCapabilities(null);
+
+        if (callback != null) {
+            callback.free();
+        }
+
+        glfwFreeCallbacks(window);
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
     public boolean shouldClose() {

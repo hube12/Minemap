@@ -98,7 +98,8 @@ public class Portal {
             getVisualizer().getBlockManager().scheduleBlock(p, type);
         }
         BPos pos=ruinedPortalGenerator.getPos();
-        getVisualizer().setText(String.format("Generated at %d %d %d and was %s",pos.getX(),pos.getY(),pos.getZ(),ruinedPortalGenerator.isBuried()?"buried":"at the surface"));
+        getVisualizer().setText(String.format("Generated at %d %d %d and was %s with world height at %d",
+            pos.getX(),pos.getY(),pos.getZ(),ruinedPortalGenerator.isBuried()?"buried":"at the surface",ruinedPortalGenerator.getHeight()));
         return true;
     }
 
