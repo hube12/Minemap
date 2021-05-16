@@ -50,8 +50,11 @@ public final class Str {
     public static String prettifyDashed(String s) {
         if (s == null) return null;
         String[] words = s.toLowerCase().split("_");
-        if ((words[0].equals("NE") || words[0].equals("OW"))) {
+        if ((words[0].equals("ne") || words[0].equals("ow"))) {
             words[0] = capitalize(words[0], 2);
+        }
+        if (words.length>1 && (words[1].equals("ne") || words[1].equals("ow"))) {
+            words[1] = capitalize(words[1], 2);
         }
         return Arrays.stream(words).map(Str::capitalize).collect(Collectors.joining(" "));
     }

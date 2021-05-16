@@ -11,10 +11,12 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.Visualizer;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.BlockType;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 public class Portal {
     private final MapPanel map;
@@ -55,19 +57,21 @@ public class Portal {
     public boolean generateContent() {
         Pair<RuinedPortal, CPos> informations = this.getInformations();
         RuinedPortalGenerator ruinedPortalGenerator = new RuinedPortalGenerator(informations.getFirst().getVersion());
-        if (!ruinedPortalGenerator.generate(this.map.context.getChunkGenerator(), informations.getSecond())){
-            if (isRunning.get()){
-                visualizer.setText("Portal did not generate");
-                getVisualizer().getBlockManager().scheduleDestroy();
-            }
+        Pair<ChunkGenerator, Function<CPos,CPos>> generator=this.map.context.getChunkGenerator(feature);
+        if (generator==null){
+            visualizer.setText("Portal did not generate");
+            getVisualizer().getBlockManager().scheduleDestroy();
+            return false;
+        }
+        if (!ruinedPortalGenerator.generate(generator.getFirst(), generator.getSecond().apply(informations.getSecond()))){
+            visualizer.setText("Portal did not generate");
+            getVisualizer().getBlockManager().scheduleDestroy();
             return false;
         }
         List<Pair<Block, BPos>> blocks = ruinedPortalGenerator.getPortal();
         if (blocks == null || blocks.isEmpty()) {
-            if (isRunning.get()){
-                visualizer.setText("Portal did not generate");
-                getVisualizer().getBlockManager().scheduleDestroy();
-            }
+            visualizer.setText("Portal did not generate");
+            getVisualizer().getBlockManager().scheduleDestroy();
             return false;
         }
         int minX = Integer.MAX_VALUE;

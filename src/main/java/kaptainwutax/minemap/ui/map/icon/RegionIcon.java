@@ -3,13 +3,16 @@ package kaptainwutax.minemap.ui.map.icon;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mcutils.rand.ChunkRand;
+import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
+import kaptainwutax.terrainutils.ChunkGenerator;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class RegionIcon extends StaticIcon {
 
@@ -33,24 +36,42 @@ public class RegionIcon extends StaticIcon {
             worldSeedWithSalt -= Configs.SALTS.getDefaultSalt(this.getContext().version, feature.getName());
             worldSeedWithSalt += Configs.SALTS.getSalt(this.getContext().version, feature.getName());
         }
-        for (int x = fragment.getX() - increment; x < fragment.getX() + fragment.getSize() + increment; x += increment) {
-            for (int z = fragment.getZ() - increment; z < fragment.getZ() + fragment.getSize() + increment; z += increment) {
+        int fragXMin = integerTranslation().apply(fragment.getX());
+        int fragXMax = integerTranslation().apply(fragment.getX() + fragment.getSize());
+        int fragZMin = integerTranslation().apply(fragment.getZ());
+        int fragZMax = integerTranslation().apply(fragment.getZ() + fragment.getSize());
+        for (int x = fragXMin - increment; x < fragXMax + increment; x += increment) {
+            for (int z = fragZMin - increment; z < fragZMax + increment; z += increment) {
                 RegionStructure.Data<?> data = structure.at(x >> 4, z >> 4);
                 CPos pos = structure.getInRegion(worldSeedWithSalt, data.regionX, data.regionZ, rand);
                 if (pos != null) {
-                    if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource())) {
-                        if (this.getContext().getChunkGenerator() == null) {
-                            positions.add(pos.toBlockPos().add(9, 0, 9));
-                        } else if (structure.canGenerate(pos.getX(), pos.getZ(), this.getContext().getChunkGenerator())) {
-                            positions.add(pos.toBlockPos().add(9, 0, 9));
+                    BPos currentPos = blockPosTranslation().apply(pos.toBlockPos().add(9, 0, 9));
+                    if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource(getDimension()))) {
+                        ChunkGenerator generator = this.getContext().getChunkGenerator(structure).getFirst();
+                        if (generator == null) {
+                            positions.add(currentPos);
+                        } else if (structure.canGenerate(pos.getX(), pos.getZ(), generator)) {
+                            positions.add(currentPos);
                         }
                     } else if (Configs.USER_PROFILE.getUserSettings().structureMode) {
-                        positions.add(pos.toBlockPos().add(9, 0, 9));
+                        positions.add(currentPos);
                     }
                 }
 
             }
         }
+    }
+
+    public Dimension getDimension() {
+        return this.getContext().getDimension();
+    }
+
+    public Function<BPos, BPos> blockPosTranslation() {
+        return e -> e;
+    }
+
+    public Function<Integer, Integer> integerTranslation() {
+        return e -> e;
     }
 
 }

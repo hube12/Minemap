@@ -7,7 +7,7 @@ import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.structure.generator.Generator;
 import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
-import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.init.Logger;
@@ -17,6 +17,7 @@ import kaptainwutax.terrainutils.ChunkGenerator;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -34,19 +35,10 @@ public abstract class Loot {
 
     public List<List<ItemStack>> getLootAt(CPos cPos, Feature<?, ?> feature, boolean indexed, MapContext context) {
         if (context == null || feature == null || cPos == null) return null;
-        ChunkGenerator generator = null;
-        if (feature.isValidDimension(context.getChunkGenerator().getBiomeSource().getDimension())) {
-            generator = context.getChunkGenerator();
-        } else {
-            for (Dimension dimension : Dimension.values()) {
-                if (feature.isValidDimension(dimension)) {
-                    generator = context.getChunkGenerator(dimension);
-                    break;
-                }
-            }
-        }
+        Pair<ChunkGenerator, Function<CPos, CPos>> generator = context.getChunkGenerator(feature);
         if (generator == null) return null;
-        return getLootAt(context.getWorldSeed(), cPos, feature, indexed, new ChunkRand(), generator, context.getVersion());
+        return getLootAt(context.getWorldSeed(), generator.getSecond().apply(cPos),
+            feature, indexed, new ChunkRand(), generator.getFirst(), context.getVersion());
     }
 
     public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkGenerator generator, MCVersion version) {

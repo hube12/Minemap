@@ -3,7 +3,11 @@ package kaptainwutax.minemap.ui.map;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.biomeutils.source.LayeredBiomeSource;
+import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.structure.RuinedPortal;
 import kaptainwutax.mcutils.state.Dimension;
+import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.version.UnsupportedVersion;
 import kaptainwutax.minemap.init.Configs;
@@ -11,6 +15,7 @@ import kaptainwutax.terrainutils.ChunkGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class MapContext {
 
@@ -109,6 +114,38 @@ public class MapContext {
 
     public ChunkGenerator getChunkGenerator(Dimension dimension) {
         return this.chunkGenerators.get().get(dimension);
+    }
+
+    public Pair<ChunkGenerator, Function<CPos, CPos>> getChunkGenerator(Feature<?, ?> feature) {
+        ChunkGenerator generator = null;
+        Function<CPos, CPos> f = e -> e;
+        if (feature instanceof RuinedPortal) {
+            RuinedPortal ruinedPortal = (RuinedPortal) feature;
+            Dimension dimension = ruinedPortal.getDimension();
+            return new Pair<>(this.getChunkGenerator(dimension), getDimensionFunction(dimension));
+        }
+        if (feature.isValidDimension(this.getChunkGenerator().getBiomeSource().getDimension())) {
+            generator = this.getChunkGenerator();
+        } else {
+            for (Dimension dimension : Dimension.values()) {
+                if (feature.isValidDimension(dimension)) {
+                    generator = this.getChunkGenerator(dimension);
+                    f = getDimensionFunction(dimension);
+                    break;
+                }
+            }
+        }
+        return new Pair<>(generator, f);
+    }
+
+    public Function<CPos, CPos> getDimensionFunction(Dimension dimension) {
+        Function<CPos, CPos> f = e -> e;
+        if (dimension == Dimension.NETHER && this.getDimension() == Dimension.OVERWORLD) {
+            f = e -> e.shr(3);
+        } else if (dimension == Dimension.OVERWORLD && this.getDimension() == Dimension.NETHER) {
+            f = e -> e.shl(3);
+        }
+        return f;
     }
 
     public LayeredBiomeSource<BiomeLayer> getBiomeSource() {
