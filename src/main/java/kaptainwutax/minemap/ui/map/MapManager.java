@@ -180,7 +180,6 @@ public class MapManager {
 //                                           }
                                            {
                                                BPos bPos = getPos(mousePointer.x, mousePointer.y);
-                                               System.out.println(bPos);
                                                RPos rPos = bPos.toRegionPos(map.manager.blocksPerFragment);
                                                Fragment fragment = map.scheduler.getFragmentAt(rPos.getX(), rPos.getZ());
                                                fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {

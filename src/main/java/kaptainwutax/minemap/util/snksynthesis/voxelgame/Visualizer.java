@@ -84,13 +84,14 @@ public class Visualizer {
     private void renderText() {
         enabled2DContext();
 
-        int sfont = 0;
+        int sfont = 0; // font 24
         font.draw(2, 20, sfont, "Press Esc to exit mouse capture.");
         font.draw(2, 40, sfont, "Press Q to enter mouse capture.");
         font.draw(2, 60, sfont, "Press WASD to move around.");
         font.draw(2, 80, sfont, "Press Space/Shift to move up/down.");
         if (text!=null){
-            font.draw(2, window.getHeight()-20, sfont, text);
+            // font 14
+            font.draw(2, window.getHeight()-20, sfont+3, text);
         }
         disable2DContext();
     }
