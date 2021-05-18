@@ -24,11 +24,10 @@ public class Portal {
     private final MapPanel map;
     private CPos pos;
     private RuinedPortal feature;
-    private final Visualizer visualizer;
+    private static final Visualizer visualizer=new Visualizer();
 
     public Portal(MapPanel map) {
         this.map = map;
-        this.visualizer = new Visualizer();
     }
 
     public Visualizer getVisualizer() {
