@@ -2,6 +2,7 @@ package kaptainwutax.minemap.init;
 
 import com.google.gson.annotations.SerializedName;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
 
 import java.awt.*;
@@ -71,6 +72,10 @@ public class KeyShortcuts {
         LAYER_ZOOM_IN(zoom(false, true)),
         @SerializedName("LAYER_ZOOM_OUT")
         LAYER_ZOOM_OUT(zoom(true, true)),
+        @SerializedName("CLOSE_TAB")
+        CLOSE_TAB(WorldTabs::closeTab),
+        @SerializedName("CLOSE_TABS")
+        CLOSE_TABS(WorldTabs::closeTabs),
         ;
 
         public Runnable action;
@@ -180,6 +185,14 @@ public class KeyShortcuts {
             return new KeyRegister(keyText, Type.KEY_PRESSED, Modifier.ALT, KeyLocation.ANY);
         }
 
+        public static KeyRegister registerAltOnlyKey(String keyText) {
+            return new KeyRegister(keyText, Type.KEY_PRESSED, Modifier.ALT_ONLY, KeyLocation.ANY);
+        }
+
+        public static KeyRegister registerAltShiftKey(String keyText) {
+            return new KeyRegister(keyText, Type.KEY_PRESSED, Modifier.ALT_SHIFT, KeyLocation.ANY);
+        }
+
         public static String getDisplayRepresentation(KeyRegister key) {
             if (key == null) return "None";
             StringBuilder stringBuilder = new StringBuilder();
@@ -261,6 +274,12 @@ public class KeyShortcuts {
                 case ALT:
                     isModifierOk = keyEvent.isAltDown();
                     break;
+                case ALT_ONLY:
+                    isModifierOk = keyEvent.isAltDown() && !(keyEvent.isControlDown() || keyEvent.isMetaDown() || keyEvent.isShiftDown() || keyEvent.isAltGraphDown());
+                    break;
+                case ALT_SHIFT:
+                    isModifierOk = keyEvent.isAltDown() && keyEvent.isShiftDown();
+                    break;
                 case ALT_GR:
                     isModifierOk = keyEvent.isAltGraphDown();
                     break;
@@ -320,7 +339,10 @@ public class KeyShortcuts {
             ALT(3),
             ALT_GR(4),
             NONE(5),
-            ANY(6);
+            ANY(6),
+            ALT_SHIFT(7),
+            ALT_ONLY(8)
+            ;
             public final int id;
 
             Modifier(int id) { this.id = id; }

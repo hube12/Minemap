@@ -41,7 +41,9 @@ public abstract class Config {
 
     public Config readConfig() {
         try {
-            return GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
+            Config config=GSON.fromJson(new FileReader(this.getConfigFile()), this.getClass());
+            if (config==null) throw new Exception("WTF");
+            return config;
         } catch (Exception e) {
             this.generateConfig();
         }

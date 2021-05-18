@@ -23,6 +23,8 @@ public class Visualizer {
     private Vector3f lightPos;
     private Font font;
     private String text=null;
+    protected static final EventManager eventManager=new EventManager();
+    private boolean isRunning=false;
 
     private void draw(MemoryStack stack) {
         // Bind shader
@@ -41,6 +43,7 @@ public class Visualizer {
         Matrix4f view = cam.getViewMat();
         glUniformMatrix4fv(shader.getLocation("view"), false, view.get(stack.mallocFloat(16)));
         blockManager.checkDestroy();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         blockManager.draw(shader, stack);
 
         // Unbind shader
@@ -89,6 +92,7 @@ public class Visualizer {
         font.draw(2, 40, sfont, "Press Q to enter mouse capture.");
         font.draw(2, 60, sfont, "Press WASD to move around.");
         font.draw(2, 80, sfont, "Press Space/Shift to move up/down.");
+        font.draw(2, 100, sfont, "Press 0-9 to circle options.");
         if (text!=null){
             // font 14
             font.draw(2, window.getHeight()-20, sfont+3, text);
@@ -137,6 +141,7 @@ public class Visualizer {
         shader.destroy();
         lightShader.destroy();
         blockManager.destroy();
+        eventManager.destroy();
         window.destroy();
     }
 
@@ -144,9 +149,13 @@ public class Visualizer {
         cam.procInput(window);
     }
 
-    public void run() {
+    public void run(boolean shouldUseOldEvents) {
+        isRunning=true;
+        if (!shouldUseOldEvents){
+            eventManager.destroy();
+        }
+        blockManager.destroy();
         init();
-
         while (!window.shouldClose()) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -159,6 +168,11 @@ public class Visualizer {
             window.update();
         }
         destroy();
+        isRunning=false;
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 
     public Visualizer() {
@@ -167,5 +181,9 @@ public class Visualizer {
 
     public BlockManager getBlockManager() {
         return blockManager;
+    }
+
+    public static EventManager getEventManager() {
+        return eventManager;
     }
 }

@@ -2,6 +2,7 @@ package kaptainwutax.minemap.ui.component;
 
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
@@ -21,6 +22,7 @@ public class WorldTabs extends JTabbedPane {
 
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
+    public TabGroup currentTabGroup = null;
 
     @SuppressWarnings("deprecation")
     public WorldTabs() {
@@ -38,6 +40,7 @@ public class WorldTabs extends JTabbedPane {
         TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
         this.tabGroups.add(tabGroup);
         tabGroup.add(this);
+        currentTabGroup = tabGroup;
     }
 
     @Override
@@ -55,6 +58,7 @@ public class WorldTabs extends JTabbedPane {
             super.remove(mapPanel);
         }
         this.tabGroups.remove(tabGroup);
+        this.currentTabGroup = this.tabGroups.isEmpty() ? null : this.tabGroups.get(this.tabGroups.size() - 1);
     }
 
     public Component getSelectedComponent() {
@@ -71,6 +75,10 @@ public class WorldTabs extends JTabbedPane {
         if (this.getSelectedIndex() < 0) return null;
         Component c = this.getTabComponentAt(this.getSelectedIndex());
         return c instanceof TabHeader ? (TabHeader) c : null;
+    }
+
+    public TabGroup getCurrentTabGroup() {
+        return currentTabGroup;
     }
 
     @Override
@@ -93,7 +101,15 @@ public class WorldTabs extends JTabbedPane {
 
     @Override
     public void addTab(String title, Component component) {
-        this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> this.remove(component)));
+        this.setTabComponentAt(this.addTabAndGetIndex(title, component), new TabHeader(title, e -> closeTab()));
+    }
+
+    public static void closeTab() {
+        MineMap.INSTANCE.worldTabs.remove(MineMap.INSTANCE.worldTabs.getSelectedComponent());
+    }
+
+    public static void closeTabs() {
+        MineMap.INSTANCE.worldTabs.remove(MineMap.INSTANCE.worldTabs.getCurrentTabGroup());
     }
 
     public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {

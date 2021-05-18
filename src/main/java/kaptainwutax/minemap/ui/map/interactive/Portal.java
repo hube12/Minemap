@@ -9,13 +9,15 @@ import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.EventManager;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.Visualizer;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.BlockType;
 import kaptainwutax.terrainutils.ChunkGenerator;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class Portal {
@@ -23,12 +25,10 @@ public class Portal {
     private CPos pos;
     private RuinedPortal feature;
     private final Visualizer visualizer;
-    private AtomicBoolean isRunning;
 
     public Portal(MapPanel map) {
         this.map = map;
         this.visualizer = new Visualizer();
-        this.isRunning = new AtomicBoolean(false);
     }
 
     public Visualizer getVisualizer() {
@@ -36,14 +36,16 @@ public class Portal {
     }
 
     public void run() {
-        if (!isRunning.get()) {
-            isRunning.set(true);
-            Thread t = new Thread(() -> {
-                visualizer.run(); //blocking
-                isRunning.set(false);
-            });
-            t.start();
-        }
+        // we wait for 5ms in case of spam click so the other thread could be launched
+        SwingUtilities.invokeLater(() -> {
+                if (!visualizer.isRunning()) {
+                    Thread t = new Thread(() -> {
+                        visualizer.run(true); //blocking
+                    });
+                    t.start();
+                }
+            }
+        );
     }
 
     public void setFeature(RuinedPortal feature) {
@@ -57,23 +59,42 @@ public class Portal {
     public boolean generateContent() {
         Pair<RuinedPortal, CPos> informations = this.getInformations();
         RuinedPortalGenerator ruinedPortalGenerator = new RuinedPortalGenerator(informations.getFirst().getVersion());
-        Pair<ChunkGenerator, Function<CPos,CPos>> generator=this.map.context.getChunkGenerator(feature);
-        if (generator==null){
+        Pair<ChunkGenerator, Function<CPos, CPos>> generator = this.map.context.getChunkGenerator(feature);
+        if (generator == null) {
             visualizer.setText("Portal did not generate");
             getVisualizer().getBlockManager().scheduleDestroy();
             return false;
         }
-        if (!ruinedPortalGenerator.generate(generator.getFirst(), generator.getSecond().apply(informations.getSecond()))){
+        if (!ruinedPortalGenerator.generate(generator.getFirst(), generator.getSecond().apply(informations.getSecond()))) {
             visualizer.setText("Portal did not generate");
             getVisualizer().getBlockManager().scheduleDestroy();
             return false;
         }
-        List<Pair<Block, BPos>> blocks = ruinedPortalGenerator.getPortal();
+        List<Pair<Block, BPos>> blocks = ruinedPortalGenerator.getObsidian();
         if (blocks == null || blocks.isEmpty()) {
             visualizer.setText("Portal did not generate");
             getVisualizer().getBlockManager().scheduleDestroy();
             return false;
         }
+        Pair<HashMap<BPos, Block>, BPos> blockHashMap = getBlockHashmap(blocks, informations);
+        getVisualizer().getBlockManager().scheduleDestroy();
+        for (BPos pos : blockHashMap.getFirst().keySet()) {
+            BPos p = pos.subtract(blockHashMap.getSecond()).add(8, 0, 8);
+            Block block = blockHashMap.getFirst().get(pos);
+            BlockType type = block == Blocks.OBSIDIAN ? BlockType.OBSIDIAN : block == Blocks.CRYING_OBSIDIAN ? BlockType.CRYING_OBSIDIAN : BlockType.GRASS;
+            getVisualizer().getBlockManager().scheduleBlock(p, type);
+        }
+        BPos pos = ruinedPortalGenerator.getPos();
+        getVisualizer().setText(String.format("Generated at %d, %d, %d and was %s with world height at %d",
+            pos.getX(), pos.getY(), pos.getZ(), ruinedPortalGenerator.isBuried() ? "buried" : "at the surface", ruinedPortalGenerator.getHeight()));
+        Visualizer.getEventManager().clearEventHandler();
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_1, getVisualizer(),blockHashMap.getSecond(), RuinedPortalGenerator::getObsidian));
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_2, getVisualizer(),blockHashMap.getSecond(),  RuinedPortalGenerator::getPortal));
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_3, getVisualizer(),blockHashMap.getSecond(),  RuinedPortalGenerator::getMinimalPortal));
+        return true;
+    }
+
+    public static Pair<HashMap<BPos, Block>, BPos> getBlockHashmap(List<Pair<Block, BPos>> blocks, Pair<RuinedPortal, CPos> informations) {
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int minZ = Integer.MAX_VALUE;
@@ -83,8 +104,8 @@ public class Portal {
         HashMap<BPos, Block> blockHashMap = new HashMap<>();
         for (Pair<Block, BPos> block : blocks) {
             if (blockHashMap.containsKey(block.getSecond())) {
-                Logger.LOGGER.severe("Impossible case " + informations);
-                System.err.println("Impossible case " + informations);
+                Logger.LOGGER.severe("Impossible case " + informations + " " + block);
+                System.err.println("Impossible case " + informations + " " + block);
             }
             blockHashMap.put(block.getSecond(), block.getFirst());
             minX = Math.min(block.getSecond().getX(), minX);
@@ -94,17 +115,34 @@ public class Portal {
             maxY = Math.max(block.getSecond().getY(), maxY);
             maxZ = Math.max(block.getSecond().getZ(), maxZ);
         }
-        getVisualizer().getBlockManager().scheduleDestroy();
-        for (BPos pos : blockHashMap.keySet()) {
-            BPos p = pos.subtract(minX, minY, minZ).add(8, 0, 8);
-            Block block = blockHashMap.get(pos);
-            BlockType type = block == Blocks.OBSIDIAN ? BlockType.OBSIDIAN : block == Blocks.CRYING_OBSIDIAN ? BlockType.CRYING_OBSIDIAN : BlockType.GRASS;
-            getVisualizer().getBlockManager().scheduleBlock(p, type);
-        }
-        BPos pos=ruinedPortalGenerator.getPos();
-        getVisualizer().setText(String.format("Generated at %d, %d, %d and was %s with world height at %d",
-            pos.getX(),pos.getY(),pos.getZ(),ruinedPortalGenerator.isBuried()?"buried":"at the surface",ruinedPortalGenerator.getHeight()));
-        return true;
+        return new Pair<>(blockHashMap, new BPos(minX, minY, minZ));
+    }
+
+    public static Consumer<EventManager.EventAction> createHandler(RuinedPortalGenerator ruinedPortalGenerator,
+                                                                   EventManager.EventAction eventAction,
+                                                                   Visualizer visualizer,
+                                                                   BPos offsetPos,
+                                                                   Function<RuinedPortalGenerator, List<Pair<Block, BPos>>> posFn) {
+        return e -> {
+            if (e == eventAction) {
+                if (visualizer != null && ruinedPortalGenerator != null && visualizer.isRunning()) {
+                    List<Pair<Block, BPos>> blocks = posFn.apply(ruinedPortalGenerator);
+                    if (blocks == null || blocks.isEmpty()) {
+                        visualizer.setText("Portal did not generate");
+                        visualizer.getBlockManager().scheduleDestroy();
+                        return;
+                    }
+                    Pair<HashMap<BPos, Block>, BPos> blockHashMap = getBlockHashmap(blocks, null);
+                    visualizer.getBlockManager().scheduleDestroy();
+                    for (BPos pos : blockHashMap.getFirst().keySet()) {
+                        BPos p = pos.subtract(offsetPos).add(8, 0, 8);
+                        Block block = blockHashMap.getFirst().get(pos);
+                        BlockType type = block == Blocks.OBSIDIAN ? BlockType.OBSIDIAN : block == Blocks.CRYING_OBSIDIAN ? BlockType.CRYING_OBSIDIAN : BlockType.GRASS;
+                        visualizer.getBlockManager().scheduleBlock(p, type);
+                    }
+                }
+            }
+        };
     }
 
     public void setPos(CPos pos) {

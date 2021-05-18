@@ -58,6 +58,7 @@ Supports all Minecraft release starting from 1.0+
 - View different biomes layers
 - View extra infos such as Stronghold portal order, type of structure (Bastion, Shipwreck, Village are currently supported)
 - Fully customized icons for structures and features + Mojang ones downloaded for item in chest loot.
+- 3D viewer for portals
 
 ### Shortcuts
 
@@ -77,7 +78,9 @@ Supports all Minecraft release starting from 1.0+
 - Alt + `O` : Open Screenshot Folder
 - Alt + `P` : Go to Spawn
 - Alt + `S` : Go to Structure
-
+- Alt + `Q` : Close current tab
+- Alt + Shift + `Q` : Close current tab group
+ 
 #### Zooming in and out:
   - Ctrl + `Numpad +` : Zoom in
   - Ctrl + `Numpad -` : Zoom out
@@ -89,6 +92,14 @@ In a dialog type `enter` to activate the continue button or `esc` to close the d
 Hold `alt` then press H, W, U, E or B to get one of the 5 menus to open.
 
 You can navigate the menus and press enter to use the button in it.
+
+#### Specific to 3D viewer
+  - `Q` : Enter mouse control
+  - `Esc` : Exit mouse control
+  - `WASD` : Move around in the world
+  - `Mouse movement` : Look around
+  - `0-9` : specific control (might not be binded to anything)
+
 
 ### Configuration
 

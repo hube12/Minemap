@@ -52,6 +52,38 @@ public class Camera {
             glfwSetInputMode(window.getRawWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             firstMouse = true;
         }
+
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_0) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_0);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_1) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_1);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_2) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_2);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_3) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_3);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_4) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_4);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_5) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_5);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_6) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_6);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_7) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_7);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_8) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_8);
+        }
+        if (glfwGetKey(window.getRawWindow(), GLFW_KEY_9) == GLFW_PRESS) {
+            Visualizer.eventManager.process(EventManager.EventAction.KEY_9);
+        }
+
     }
 
     public void addMouseCallback(Window window) {

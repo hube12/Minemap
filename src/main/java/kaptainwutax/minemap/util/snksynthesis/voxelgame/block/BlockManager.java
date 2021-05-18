@@ -6,9 +6,10 @@ import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Shader;
 import org.lwjgl.system.MemoryStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import static org.lwjgl.opengl.GL33.*;
 public class BlockManager {
 
     private final List<Block> blocks = new ArrayList<>();

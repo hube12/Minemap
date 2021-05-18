@@ -60,7 +60,7 @@ dependencies {
 
     implementation('com.github.KaptainWutax:BiomeUtils:e18d79c9925356acb68615ad7ec298950cb956cf') { transitive = false }
     implementation('com.github.KaptainWutax:TerrainUtils:21b6d72b7798403abf620f736d0f1972daf822ed') { transitive = false }
-    implementation('com.github.KaptainWutax:FeatureUtils:75e3855d3a3b9adb59398e70ea5430279b662216') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:e4f6db824ef763c3772abd8e07ee9e2c30e2f2d3') { transitive = false }
 
     implementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') { transitive = false }
     implementation('com.seedfinding:latticg:1.05')

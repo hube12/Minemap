@@ -94,6 +94,8 @@ public class KeyboardsConfig extends Config {
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.ZOOM_OUT, KeyShortcuts.KeyRegister.registerCtrlKey("NumPad -"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.LAYER_ZOOM_IN, KeyShortcuts.KeyRegister.registerAltKey("NumPad +"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.LAYER_ZOOM_OUT, KeyShortcuts.KeyRegister.registerAltKey("NumPad -"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.CLOSE_TAB, KeyShortcuts.KeyRegister.registerAltOnlyKey("Q"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.CLOSE_TABS, KeyShortcuts.KeyRegister.registerAltShiftKey("Q"));
     }
 
     public void resetOverrides() {
