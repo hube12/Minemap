@@ -15,8 +15,9 @@ public class RenameTabDialog extends Dialog {
     public JButton continueButton;
     private TabHeader header;
 
-    public RenameTabDialog() {
+    public RenameTabDialog(Runnable onExit) {
         super("Rename Tab", new GridLayout(0, 1));
+        this.addExitProcedure(onExit);
     }
 
     @Override

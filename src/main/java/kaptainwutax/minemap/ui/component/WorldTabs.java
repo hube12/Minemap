@@ -36,11 +36,12 @@ public class WorldTabs extends JTabbedPane {
         });
     }
 
-    public void load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
+    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
         TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
         this.tabGroups.add(tabGroup);
         tabGroup.add(this);
         currentTabGroup = tabGroup;
+        return tabGroup;
     }
 
     @Override
@@ -126,14 +127,14 @@ public class WorldTabs extends JTabbedPane {
                 this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
             }
         }));
-
+        mapPanel.setHeader(tabHeader);
         this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), tabHeader);
     }
 
     public JPopupMenu createTabMenu(TabGroup current, MapPanel mapPanel) {
         JPopupMenu popup = new JPopupMenu();
 
-        JMenuItem removeOthers = new JMenuItem("Close Other Tabs");
+        JMenuItem removeOthers = new JMenuItem("Close Other Tab Groups");
         removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {

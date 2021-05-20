@@ -14,15 +14,12 @@ import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapSettings;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class UserProfileConfig extends Config {
-
+    public static int MAX_SIZE = 10;
     @Expose
     protected int THREAD_COUNT;
     @Expose
@@ -36,7 +33,9 @@ public class UserProfileConfig extends Config {
     @Expose
     protected UserSettings USER_SETTINGS;
     @Expose
-    protected Queue<String> RECENT_SEEDS = new LinkedBlockingQueue<>(20);
+    protected LinkedBlockingQueue<String> RECENT_SEEDS = new LinkedBlockingQueue<>(MAX_SIZE);
+    @Expose
+    protected LinkedBlockingQueue<String> PINNED_SEEDS = new LinkedBlockingQueue<>(MAX_SIZE);
     @Expose
     protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
     @Expose
@@ -130,6 +129,32 @@ public class UserProfileConfig extends Config {
         this.flush();
     }
 
+    public Queue<String> getPinnedSeeds() {
+        return PINNED_SEEDS;
+    }
+
+    public void addPinnedSeed(long seed, MCVersion version, Dimension dimension) {
+        String pair = seed + "::" + version + "::" + dimension.getId();
+        if (!PINNED_SEEDS.offer(pair)) {
+            String head = PINNED_SEEDS.poll();
+            if (head == null) {
+                Logger.LOGGER.severe("Queue has no capacity ? " + PINNED_SEEDS.peek());
+            }
+            if (!PINNED_SEEDS.offer(pair)) {
+                Logger.LOGGER.severe("Queue could not insert after removal: " + PINNED_SEEDS.peek());
+            }
+        }
+        this.flush();
+    }
+
+    public void removePinnedSeed(long seed, MCVersion version, Dimension dimension) {
+        String pair = seed + "::" + version + "::" + dimension.getId();
+        if (!PINNED_SEEDS.remove(pair)) {
+            Logger.LOGGER.info("This seed was not in the queue " + seed);
+        }
+        this.flush();
+    }
+
     public void flush() {
         try {
             this.writeConfig();
@@ -156,15 +181,23 @@ public class UserProfileConfig extends Config {
     }
 
     @Override
+    public Config readConfig() {
+        UserProfileConfig config = (UserProfileConfig) super.readConfig();
+        config.RECENT_SEEDS = resizeQueue(config.RECENT_SEEDS, MAX_SIZE);
+        config.PINNED_SEEDS = resizeQueue(config.PINNED_SEEDS, MAX_SIZE);
+        return config;
+    }
+
+    @Override
     public void maintainConfig() {
         this.THREAD_COUNT = this.THREAD_COUNT == 0 ? 1 : this.THREAD_COUNT;
         this.MC_VERSION = this.MC_VERSION == null ? MCVersion.values()[0] : this.MC_VERSION;
         this.USER_SETTINGS = this.USER_SETTINGS == null ? new UserSettings() : this.USER_SETTINGS;
-        this.OLD_MINEMAP_VERSION=this.OLD_MINEMAP_VERSION==null?this.MINEMAP_VERSION:this.OLD_MINEMAP_VERSION;
+        this.OLD_MINEMAP_VERSION = this.OLD_MINEMAP_VERSION == null ? this.MINEMAP_VERSION : this.OLD_MINEMAP_VERSION;
         this.MINEMAP_VERSION = MineMap.version;
         //this.ASSET_VERSION=this.ASSET_VERSION; // allowed since I use null as an invalid version
         for (Dimension dimension : Dimension.values()) {
-            String old=dimension.getName().replace("the_","");
+            String old = dimension.getName().replace("the_", "");
             if (!this.DIMENSIONS.containsKey(dimension.getName())) {
                 // this is a hacky fix for the migration
                 this.DIMENSIONS.put(dimension.getName(), this.DIMENSIONS.getOrDefault(old, true));
@@ -175,13 +208,26 @@ public class UserProfileConfig extends Config {
                 this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), this.DEFAULT_MAP_SETTINGS.getOrDefault(old, settings));
             }
             // Cleanup for old values
-            if (!old.equals(dimension.getName())){
+            if (!old.equals(dimension.getName())) {
                 this.DIMENSIONS.remove(old);
                 this.DEFAULT_MAP_SETTINGS.remove(old);
             }
 
             // TODO hide NEStronghold by default (need versionned config ordered)
         }
+        this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE);
+        this.PINNED_SEEDS = resizeQueue(this.PINNED_SEEDS, MAX_SIZE);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> LinkedBlockingQueue<T> resizeQueue(LinkedBlockingQueue<T> queue, int size) {
+        Object[] recentSeeds = queue.toArray();
+        queue.clear();
+        queue = new LinkedBlockingQueue<>(MAX_SIZE);
+        for (int i = 0; i < Math.min(size, recentSeeds.length); i++) {
+            if (!queue.offer((T) recentSeeds[i])) Logger.LOGGER.severe("The Queue is not sized correctly " + i + " " + MAX_SIZE + " " + queue.size() + " " + Arrays.toString(queue.toArray()));
+        }
+        return queue;
     }
 
 }

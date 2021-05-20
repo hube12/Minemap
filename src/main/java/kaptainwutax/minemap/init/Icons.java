@@ -223,6 +223,7 @@ public class Icons {
 
 
         register(CloseButton.class, dir, isJar, "close");
+        register(LockButton.class, dir, isJar, "lock");
         register(CopyButton.class, dir, isJar, "copy");
         register(JumpButton.class, dir, isJar, "jump");
         register(InfoButton.class, dir, isJar, "info");

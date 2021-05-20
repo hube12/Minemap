@@ -1,7 +1,11 @@
 package kaptainwutax.minemap.ui.component;
 
+import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
+import kaptainwutax.minemap.util.ui.buttons.LockButton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,20 +16,47 @@ public class TabHeader extends JPanel {
 
     protected JLabel tabTitle;
     protected JButton closeButton;
+    protected JButton lockButton;
+    protected boolean isPinned;
 
     public TabHeader(String title, Consumer<MouseEvent> onClose) {
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
         this.createTabTitle(title);
         this.createCloseButton(onClose);
+        this.isPinned=false;
         this.setOpaque(false);
     }
 
     public boolean isPinned() {
-        return !this.closeButton.isVisible();
+        return isPinned;
     }
 
     public void setPinned(boolean state) {
-        this.closeButton.setVisible(!state);
+        this.setPinned(state,true);
+    }
+    public void setPinned(boolean state,boolean shouldSave) {
+        MapContext context=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context;
+        if (state){
+            if (shouldSave){
+                Configs.USER_PROFILE.addPinnedSeed(context.getWorldSeed(),context.getVersion(),context.getDimension());
+            }
+            this.remove(closeButton);
+            this.add(lockButton);
+        }else{
+            if (shouldSave){
+                Configs.USER_PROFILE.removePinnedSeed(context.getWorldSeed(),context.getVersion(),context.getDimension());
+            }
+            this.remove(lockButton);
+            this.add(closeButton);
+        }
+        this.isPinned=state;
+        this.repaint();
+    }
+
+
+
+    public void togglePinned() {
+        this.setPinned(!this.isPinned);
     }
 
     public String getName() {
@@ -50,6 +81,7 @@ public class TabHeader extends JPanel {
 
     protected void createCloseButton(Consumer<MouseEvent> onClose) {
         this.closeButton = new CloseButton(12, 5, 1.5F);
+        this.lockButton = new LockButton(12, 7, 1.2F,true,new Color(143, 219, 209, 117),false);
         this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
         this.add(this.closeButton);
     }

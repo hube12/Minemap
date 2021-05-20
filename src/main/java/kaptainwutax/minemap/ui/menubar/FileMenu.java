@@ -17,9 +17,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 
 import static kaptainwutax.minemap.config.KeyboardsConfig.getKeyComboString;
+import static kaptainwutax.minemap.config.UserProfileConfig.MAX_SIZE;
 
 public class FileMenu extends Menu {
     private final JMenuItem loadSeed;
@@ -59,7 +61,13 @@ public class FileMenu extends Menu {
 
     public void addRecentSeedGroup() {
         this.recentSeeds.removeAll();
-        for (String config : Configs.USER_PROFILE.getRecentSeeds()) {
+        Object[] recentSeeds = Configs.USER_PROFILE.getRecentSeeds().toArray();
+        if (recentSeeds.length > MAX_SIZE) {
+            Logger.LOGGER.severe("This is not possible size of recent seeds is more than fixed " + Arrays.toString(recentSeeds) + " " + MAX_SIZE + " " + recentSeeds.length);
+        }
+        int len = Math.min(MAX_SIZE, recentSeeds.length);
+        for (int i = 1; i <= len; i++) {
+            String config = (String) recentSeeds[len - i];
             String[] split = config.split("::");
             if (split.length == 2) {
                 String seed = split[0];

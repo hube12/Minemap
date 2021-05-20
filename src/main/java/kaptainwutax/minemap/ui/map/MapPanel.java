@@ -4,6 +4,7 @@ import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.ui.component.TabHeader;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
@@ -27,6 +28,7 @@ public class MapPanel extends JPanel {
     public final MapRightSideBar rightBar;
     public final int threadCount;
     public FragmentScheduler scheduler;
+    public TabHeader header;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
@@ -66,6 +68,13 @@ public class MapPanel extends JPanel {
         this.restart();
     }
 
+    public void setHeader(TabHeader tabHeader){
+        this.header=tabHeader;
+    }
+
+    public TabHeader getHeader() {
+        return header;
+    }
     public MapContext getContext() {
         return this.context;
     }

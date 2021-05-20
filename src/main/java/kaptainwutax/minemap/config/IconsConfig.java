@@ -10,10 +10,7 @@ import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Polyline;
 import kaptainwutax.minemap.ui.map.tool.Ruler;
-import kaptainwutax.minemap.util.ui.buttons.CloseButton;
-import kaptainwutax.minemap.util.ui.buttons.CopyButton;
-import kaptainwutax.minemap.util.ui.buttons.InfoButton;
-import kaptainwutax.minemap.util.ui.buttons.JumpButton;
+import kaptainwutax.minemap.util.ui.buttons.*;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -99,6 +96,7 @@ public class IconsConfig extends Config {
 
 
         addDefaultEntry(CloseButton.class, 1.0);
+        addDefaultEntry(LockButton.class, 1.0);
         addDefaultEntry(CopyButton.class, 1.0);
         addDefaultEntry(JumpButton.class, 1.0);
         addDefaultEntry(InfoButton.class, 1.0);

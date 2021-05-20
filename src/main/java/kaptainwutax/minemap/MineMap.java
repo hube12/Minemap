@@ -7,6 +7,7 @@ import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.chests.Chests;
 import kaptainwutax.minemap.init.*;
+import kaptainwutax.minemap.ui.component.TabGroup;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapSettings;
@@ -28,11 +29,13 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.rmi.UnexpectedException;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
+import static kaptainwutax.minemap.config.UserProfileConfig.MAX_SIZE;
 
 
 public class MineMap extends JFrame {
@@ -220,9 +223,9 @@ public class MineMap extends JFrame {
             Process ps;
             try {
                 if (!shouldUseVersion) {
-                    ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
+                    ps = Runtime.getRuntime().exec(new String[]{"java", "-jar", newVersion, "--no-update"});
                 } else {
-                    ps = Runtime.getRuntime().exec(new String[] {"./" + newVersion, "--no-update"});
+                    ps = Runtime.getRuntime().exec(new String[]{"./" + newVersion, "--no-update"});
                 }
 
                 Logger.LOGGER.info(String.format("Process exited with %s", ps.waitFor()));
@@ -281,6 +284,7 @@ public class MineMap extends JFrame {
         KeyShortcuts.registerShortcuts();
         INSTANCE.doDelayedInitTasks();
         Icons.registerDelayedIcons(INSTANCE);
+        INSTANCE.loadPinnedSeeds();
     }
 
     public static void applyStyle() {
@@ -311,6 +315,48 @@ public class MineMap extends JFrame {
 
     public void doDelayedInitTasks() {
         this.toolbarPane.doDelayedLabels();
+    }
+
+    public void loadPinnedSeeds() {
+        int cores = Runtime.getRuntime().availableProcessors();
+        Object[] pinned = Configs.USER_PROFILE.getPinnedSeeds().toArray();
+        int len = Math.min(MAX_SIZE, pinned.length);
+        List<Pair<Pair<MCVersion,String>, kaptainwutax.mcutils.state.Dimension>> list=new ArrayList<>();
+        for (int i = 1; i <= len; i++) {
+            String config = (String) pinned[len - i];
+            String[] split = config.split("::");
+            if (split.length == 3) {
+                String seed = split[0];
+                String version = split[1];
+                MCVersion mcVersion = MCVersion.fromString(version);
+                int integer = Integer.MAX_VALUE;
+                try {
+                    integer = Integer.parseInt(split[2]);
+                } catch (NumberFormatException e) {
+                    Logger.LOGGER.severe(e.getMessage());
+                }
+                kaptainwutax.mcutils.state.Dimension dimension = kaptainwutax.mcutils.state.Dimension.fromId(integer);
+                if (mcVersion != null && dimension != null) {
+                    list.add(new Pair<>(new Pair<>(mcVersion,seed),dimension));
+                } else {
+                    Logger.LOGGER.severe("Pinned seed is not possible to use " + dimension + " " + mcVersion + " " + seed);
+                }
+            } else {
+                Logger.LOGGER.severe("Pinned seed is not in the proper format");
+            }
+        }
+        Map<Pair<MCVersion, String>,List<kaptainwutax.mcutils.state.Dimension>> pinnedSeeds=list.stream()
+            .collect(Collectors.groupingBy(Pair::getFirst,Collectors.mapping(Pair::getSecond,Collectors.toList())));
+        for (Map.Entry<Pair<MCVersion, String>,List<kaptainwutax.mcutils.state.Dimension>> pinnedSeed:pinnedSeeds.entrySet()){
+            pinnedSeed.getValue().sort(kaptainwutax.mcutils.state.Dimension::compareTo);
+            TabGroup tabGroup=MineMap.INSTANCE.worldTabs.load(
+                pinnedSeed.getKey().getFirst(),
+                pinnedSeed.getKey().getSecond(),
+                Configs.USER_PROFILE.getThreadCount(cores),
+                pinnedSeed.getValue()
+                );
+            tabGroup.getMapPanels().forEach(e->e.getHeader().setPinned(true,false));
+        }
     }
 
     public static boolean isDarkTheme() {

@@ -13,6 +13,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
+import kaptainwutax.minemap.ui.dialog.StructureListDialog;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.interactive.Portal;
@@ -123,20 +124,20 @@ public class MapManager {
 
         this.popup = new JPopupMenu();
 
-        JMenuItem pin = new JMenuItem("Pin");
+        JMenuItem pin = new JMenuItem("Pin tab");
         pin.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         pin.addMouseListener(Events.Mouse.onReleased(e -> {
             boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isPinned();
             MineMap.INSTANCE.worldTabs.getSelectedHeader().setPinned(newState);
-            pin.setText(newState ? "Unpin" : "Pin");
+            pin.setText(newState ? "Unpin Tab" : "Pin Tab");
         }));
 
         JMenuItem rename = new JMenuItem("Rename");
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         rename.addMouseListener(Events.Mouse.onReleased(e -> {
-            RenameTabDialog renameTabDialog = new RenameTabDialog();
+            RenameTabDialog renameTabDialog = new RenameTabDialog(()->{});
             renameTabDialog.setVisible(true);
         }));
 
