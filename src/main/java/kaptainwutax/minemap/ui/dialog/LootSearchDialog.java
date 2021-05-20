@@ -6,6 +6,7 @@ import kaptainwutax.featureutils.loot.ILoot;
 import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.featureutils.structure.generator.Generator;
 import kaptainwutax.featureutils.structure.generator.Generators;
 import kaptainwutax.mcutils.rand.ChunkRand;
@@ -33,8 +34,10 @@ import java.awt.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ForkJoinPool;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static kaptainwutax.minemap.feature.chests.Loot.getSumWithPredicate;
 import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
@@ -178,7 +181,8 @@ public class LootSearchDialog extends Dialog {
         ChunkGenerator finalChunkGenerator = chunkGenerator;
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
-        List<BPos> bPosList = StreamEx.of(StructureHelper.getClosest((RegionStructure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff))
+        Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff);
+        List<BPos> bPosList = StreamEx.of(Objects.requireNonNull(stream))
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds
             .filter(e -> {
@@ -188,7 +192,7 @@ public class LootSearchDialog extends Dialog {
             .limit(n)
             .collect(Collectors.toList());
         this.dispose();
-        TpPanel.makeFrame(bPosList, feature, n);
+        TpPanel.makeFrame(bPosList, feature);
     }
 
     protected void cancel() {

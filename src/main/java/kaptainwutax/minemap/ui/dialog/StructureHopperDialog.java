@@ -3,6 +3,8 @@ package kaptainwutax.minemap.ui.dialog;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.featureutils.structure.Stronghold;
+import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
@@ -16,11 +18,13 @@ import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
+import one.util.streamex.StreamEx;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class StructureHopperDialog extends Dialog {
     public Dropdown<StructureItem> structureItemDropdown;
@@ -45,9 +49,10 @@ public class StructureHopperDialog extends Dialog {
         manager = map.getManager();
         chunkRand = new ChunkRand();
         List<Feature<?, ?>> features = settings.getAllFeatures();
+
         List<StructureItem> structureItems = features.stream()
-            .filter(e -> e instanceof RegionStructure)
-            .map(e -> new StructureItem((RegionStructure<?, ?>) e))
+            .filter(e -> e instanceof RegionStructure || e instanceof Stronghold/**/)
+            .map(e -> new StructureItem((Structure<?, ?>) e))
             .collect(Collectors.toList());
 
         this.structureItemDropdown = new Dropdown<>(structureItems);
@@ -62,7 +67,8 @@ public class StructureHopperDialog extends Dialog {
 
     protected void create() {
         if (!this.continueButton.isEnabled()) return;
-        RegionStructure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        Structure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        if (!(feature instanceof RegionStructure || feature instanceof Stronghold)) return;
         BPos centerPos = manager.getCenterPos();
         BiomeSource biomeSource = context.getBiomeSource();
         int dimCoeff = 0;
@@ -70,7 +76,9 @@ public class StructureHopperDialog extends Dialog {
             biomeSource = context.getBiomeSource(Dimension.NETHER);
             dimCoeff = 3;
         }
-        List<BPos> bPosList = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff)
+        Stream<BPos> stream=StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff);
+        assert stream != null;
+        List<BPos> bPosList = StreamEx.of(stream)
             .sequential()
             .limit(1)
             .collect(Collectors.toList());
@@ -90,13 +98,13 @@ public class StructureHopperDialog extends Dialog {
 
     static class StructureItem {
 
-        private final RegionStructure<?, ?> feature;
+        private final Structure<?, ?> feature;
 
-        StructureItem(RegionStructure<?, ?> feature) {
+        StructureItem(Structure<?, ?> feature) {
             this.feature = feature;
         }
 
-        public RegionStructure<?, ?> getFeature() {
+        public Structure<?, ?> getFeature() {
             return feature;
         }
 

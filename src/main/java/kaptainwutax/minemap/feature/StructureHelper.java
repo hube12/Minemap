@@ -2,6 +2,8 @@ package kaptainwutax.minemap.feature;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.structure.RegionStructure;
+import kaptainwutax.featureutils.structure.Stronghold;
+import kaptainwutax.featureutils.structure.Structure;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
@@ -16,20 +18,32 @@ import java.util.stream.StreamSupport;
 
 public class StructureHelper {
 
-    public static Stream<BPos> getClosest(RegionStructure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, int dimCoeff) {
-        int chunkInRegion = structure.getSpacing();
-        int regionSize = chunkInRegion * 16;
-        RPos centerRPos = currentPos.toRegionPos(regionSize);
-        SpiralIterator spiral = new SpiralIterator(centerRPos, regionSize);
+    public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, int dimCoeff) {
+        if (structure instanceof RegionStructure<?, ?>) {
+            RegionStructure<?, ?> regionStructure = (RegionStructure<?, ?>) structure;
+            int chunkInRegion = regionStructure.getSpacing();
+            int regionSize = chunkInRegion * 16;
+            RPos centerRPos = currentPos.toRegionPos(regionSize);
+            SpiralIterator spiral = new SpiralIterator(centerRPos, regionSize);
 
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(spiral.iterator(), Spliterator.ORDERED), false)
-            .map(rPos -> StructureHelper.getInRegion(structure, worldseed, chunkRand, rPos))
-            .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
-            .filter(cPos -> StructureHelper.canSpawn(structure, cPos, source))
-            .map(cPos -> {
-                BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
-                return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
-            });
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(spiral.iterator(), Spliterator.ORDERED), false)
+                .map(rPos -> StructureHelper.getInRegion(regionStructure, worldseed, chunkRand, rPos))
+                .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
+                .filter(cPos -> StructureHelper.canSpawn(regionStructure, cPos, source))
+                .map(cPos -> {
+                    BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
+                    return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+                });
+        } else {
+            if (structure instanceof Stronghold) {
+                return StreamSupport.stream(Spliterators.spliterator(((Stronghold) structure).getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
+                    .map(cPos -> {
+                        BPos dimPos = ((CPos)cPos).toBlockPos().add(9, 0, 9);
+                        return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+                    });
+            }
+        }
+        return null;
     }
 
     public static CPos getInRegion(RegionStructure<?, ?> structure, long worldseed, ChunkRand chunkRand, RPos rPos) {
