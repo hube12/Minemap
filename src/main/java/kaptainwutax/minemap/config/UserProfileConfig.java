@@ -19,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 public class UserProfileConfig extends Config {
-    public static int MAX_SIZE = 10;
+    public static int MAX_SIZE = 15;
     @Expose
     protected int THREAD_COUNT;
     @Expose
