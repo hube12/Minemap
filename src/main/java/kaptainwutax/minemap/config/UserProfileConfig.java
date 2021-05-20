@@ -136,6 +136,7 @@ public class UserProfileConfig extends Config {
 
     public void addPinnedSeed(long seed, MCVersion version, Dimension dimension) {
         String pair = seed + "::" + version + "::" + dimension.getId();
+        if (PINNED_SEEDS.contains(pair)) return;
         if (!PINNED_SEEDS.offer(pair)) {
             String head = PINNED_SEEDS.poll();
             if (head == null) {
