@@ -117,6 +117,7 @@ public class UserProfileConfig extends Config {
 
     public void addRecentSeed(long seed, MCVersion version) {
         String pair = seed + "::" + version;
+        if (RECENT_SEEDS.contains(pair)) return;
         if (!RECENT_SEEDS.offer(pair)) {
             String head = RECENT_SEEDS.poll();
             if (head == null) {
