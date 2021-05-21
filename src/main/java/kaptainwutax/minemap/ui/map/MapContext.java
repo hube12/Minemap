@@ -124,7 +124,7 @@ public class MapContext {
             Dimension dimension = ruinedPortal.getDimension();
             return new Pair<>(this.getChunkGenerator(dimension), getDimensionFunction(dimension));
         }
-        if (feature.isValidDimension(this.getChunkGenerator().getBiomeSource().getDimension())) {
+        if (feature.isValidDimension(this.getDimension())) {
             generator = this.getChunkGenerator();
         } else {
             for (Dimension dimension : Dimension.values()) {
