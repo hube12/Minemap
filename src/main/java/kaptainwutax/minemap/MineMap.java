@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.rmi.UnexpectedException;
 import java.util.List;
 import java.util.*;
 import java.util.function.Supplier;
@@ -66,7 +65,7 @@ public class MineMap extends JFrame {
     @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) throws IOException {
         if (MineMap.version.startsWith("@VER") && MineMap.version.endsWith("SION@")) {
-            throw new UnexpectedException("The version was not replaced manually or by gradle");
+            throw new UnsupportedOperationException("The version was not replaced manually or by gradle");
         }
         createDirs();
         Logger.registerLogger();

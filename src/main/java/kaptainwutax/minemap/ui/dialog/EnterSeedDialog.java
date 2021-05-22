@@ -5,6 +5,7 @@ import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 
 import javax.swing.*;
@@ -51,8 +52,7 @@ public class EnterSeedDialog extends Dialog {
         JSplitPane splitPanel2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.continueButton, this.cancelButton);
 
         JCheckBoxMenuItem[] checkBoxes = Arrays.stream(Dimension.values()).map(dimension -> {
-            String s = Character.toUpperCase(dimension.getName().charAt(0)) + dimension.getName().substring(1);
-            JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + s);
+            JCheckBoxMenuItem check = new JCheckBoxMenuItem("Load " + Str.prettifyDashed(dimension.getName()));
             check.setState(Configs.USER_PROFILE.isDimensionEnabled(dimension));
             check.addChangeListener(e -> Configs.USER_PROFILE.setDimensionState(dimension, check.getState()));
             return check;

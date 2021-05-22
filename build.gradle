@@ -1,9 +1,21 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.guardsquare:proguard-gradle:7.1.0-beta4'
+    }
+}
 plugins {
     id 'java'
     id "application"
     id "com.github.johnrengelman.shadow" version "7.0.0"
     id 'edu.sc.seis.launch4j' version '2.5.0'
 }
+
+
 
 defaultTasks("clean","release")
 
@@ -17,7 +29,7 @@ java {
 
 repositories {
     mavenCentral()
-
+    google()
     maven {
         url "https://jitpack.io"
     }
@@ -30,6 +42,7 @@ repositories {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
+import proguard.gradle.ProGuardTask
 
 // this task replace the @VERSION@ token with the current project.version
 task processSource(type: Sync) {
@@ -58,7 +71,7 @@ dependencies {
     implementation('com.github.KaptainWutax:MCUtils:424f9dd6ed25672c314ab8fd2101f9634f0e2707') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:a3954932b15a889aa51c82176942d62f291c3b12') { transitive = false }
 
-    implementation('com.github.KaptainWutax:BiomeUtils:e18d79c9925356acb68615ad7ec298950cb956cf') { transitive = false }
+    implementation('com.github.KaptainWutax:BiomeUtils:0b7e2bd4f011ea8e1191c78df05e91bac052b568') { transitive = false }
     implementation('com.github.KaptainWutax:TerrainUtils:21b6d72b7798403abf620f736d0f1972daf822ed') { transitive = false }
     implementation('com.github.KaptainWutax:FeatureUtils:e4f6db824ef763c3772abd8e07ee9e2c30e2f2d3') { transitive = false }
 
@@ -130,4 +143,105 @@ task("release"){
     dependsOn(clean)
     dependsOn(shadowJar)
     dependsOn(createExe)
+}
+
+
+task proguard(type: ProGuardTask) {
+
+    // You should probably import a more compact ProGuard-style configuration
+    // file for all static settings, but we're specifying them all here, for
+    // the sake of the example.
+    //configuration 'configuration.pro'
+
+    verbose
+
+    // Specify the input jars, output jars, and library jars.
+
+    injars  "build/libs/${project.name}-${project.version}.jar"
+    outjars 'out.jar'
+
+    // Automatically handle the Java version of this build.
+    if (System.getProperty('java.version').startsWith('1.')) {
+        // Before Java 9, the runtime classes were packaged in a single jar file.
+        libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    } else {
+        // As of Java 9, the runtime classes are packaged in modular jmod files.
+        libraryjars "${System.getProperty('java.home')}/jmods/java.base.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.desktop.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.logging.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.sql.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.management.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.datatransfer.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.prefs.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        libraryjars "${System.getProperty('java.home')}/jmods/java.naming.jmod", jarfilter: '!**.jar', filter: '!module-info.class'
+        //libraryjars "${System.getProperty('java.home')}/jmods/....."
+    }
+
+    //libraryjars 'junit.jar'
+    //libraryjars 'servlet.jar'
+    //libraryjars 'jai_core.jar'
+    //...
+
+    // Save the obfuscation mapping to a file, so you can de-obfuscate any stack
+    // traces later on. Keep a fixed source file attribute and all line number
+    // tables to get line numbers in the stack traces.
+    // You can comment this out if you're not interested in stack traces.
+
+    printmapping 'out.map'
+    renamesourcefileattribute 'SourceFile'
+    keepattributes 'SourceFile,LineNumberTable'
+
+    // Preserve all annotations.
+
+    keepattributes '*Annotation*'
+
+    // You can print out the seeds that are matching the keep options below.
+
+    //printseeds 'out.seeds'
+
+    // Preserve all public applications.
+
+    keepclasseswithmembers 'public class * { \
+        public static void main(java.lang.String[]); \
+    }'
+
+    // Preserve all native method names and the names of their classes.
+
+    keepclasseswithmembernames includedescriptorclasses: true, 'class * { \
+        native <methods>; \
+    }'
+
+    // Preserve the special static methods that are required in all enumeration
+    // classes.
+
+    keepclassmembers allowoptimization: true, 'enum * { \
+        public static **[] values(); \
+        public static ** valueOf(java.lang.String); \
+    }'
+
+    // Explicitly preserve all serialization members. The Serializable interface
+    // is only a marker interface, so it wouldn't save them.
+    // You can comment this out if your application doesn't use serialization.
+    // If your code contains serializable classes that have to be backward
+    // compatible, please refer to the manual.
+
+    keepclassmembers 'class * implements java.io.Serializable { \
+        static final long serialVersionUID; \
+        static final java.io.ObjectStreamField[] serialPersistentFields; \
+        private void writeObject(java.io.ObjectOutputStream); \
+        private void readObject(java.io.ObjectInputStream); \
+        java.lang.Object writeReplace(); \
+        java.lang.Object readResolve(); \
+    }'
+
+    // Your application may contain more items that need to be preserved;
+    // typically classes that are dynamically created using Class.forName:
+    keep 'class org.jetbrains.annotations.** { *; }'
+    dontwarn 'org.jetbrains.annotations.**'
+    dontwarn "sun.misc.Unsafe"
+    dontwarn "javax.annotation.**"
+    dontwarn "org.lwjgl.vulkan.**"
+    // keep 'public class com.example.MyClass'
+    // keep 'public interface com.example.MyInterface'
+    // keep 'public class * implements com.example.MyInterface'
 }

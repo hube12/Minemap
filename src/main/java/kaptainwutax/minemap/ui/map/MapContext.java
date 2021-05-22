@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.map;
 import kaptainwutax.biomeutils.layer.BiomeLayer;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.biomeutils.source.LayeredBiomeSource;
+import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RuinedPortal;
 import kaptainwutax.mcutils.state.Dimension;
@@ -26,7 +27,7 @@ public class MapContext {
     private final MapSettings settings;
     private final IconManager iconManager;
 
-    private final ThreadLocal<Map<Dimension, LayeredBiomeSource<BiomeLayer>>> biomeSource;
+    private final ThreadLocal<Map<Dimension, LayeredBiomeSource<? extends BiomeLayer>>> biomeSource;
     private final ThreadLocal<Map<Dimension, ChunkGenerator>> chunkGenerators;
 
     private int layerId;
@@ -38,11 +39,18 @@ public class MapContext {
         this.settings = settings;
 
         this.biomeSource = ThreadLocal.withInitial(() -> {
-            Map<Dimension, LayeredBiomeSource<BiomeLayer>> map = new HashMap<>();
+            Map<Dimension, LayeredBiomeSource<?>> map = new HashMap<>();
             for (Dimension dim : Dimension.values()) {
                 try {
-                    @SuppressWarnings("unchecked")
-                    LayeredBiomeSource<BiomeLayer> biomeSource = (LayeredBiomeSource<BiomeLayer>) BiomeSource.of(dim, this.version, worldSeed);
+
+                    LayeredBiomeSource<? extends BiomeLayer> biomeSource;
+
+                    if (dim == Dimension.OVERWORLD) {
+                        biomeSource = new OverworldBiomeSource(this.version, this.worldSeed, settings.biomeSize, settings.riverSize);
+                    } else {
+                        biomeSource = (LayeredBiomeSource<? extends BiomeLayer>) BiomeSource.of(dim, this.version, worldSeed);
+                    }
+
                     map.put(dim, biomeSource);
                 } catch (UnsupportedVersion e) {
                     System.out.printf("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
@@ -148,16 +156,17 @@ public class MapContext {
         return f;
     }
 
-    public LayeredBiomeSource<BiomeLayer> getBiomeSource() {
+    public LayeredBiomeSource<? extends BiomeLayer> getBiomeSource() {
         return this.getBiomeSource(this.dimension);
     }
 
-    public LayeredBiomeSource<BiomeLayer> getBiomeSource(Dimension dimension) {
+    public LayeredBiomeSource<? extends BiomeLayer> getBiomeSource(Dimension dimension) {
         return this.biomeSource.get().get(dimension);
     }
 
-    public BiomeLayer getBiomeLayer() {
-        return this.getBiomeSource().getLayer(this.layerId);
+    @SuppressWarnings("unchecked")
+    public <T extends BiomeLayer> T getBiomeLayer() {
+        return (T) this.getBiomeSource().getLayer(this.layerId);
     }
 
 }
