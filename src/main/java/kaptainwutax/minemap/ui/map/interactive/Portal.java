@@ -12,7 +12,7 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.EventManager;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.Visualizer;
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.block.BlockType;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -58,7 +58,7 @@ public class Portal {
     public boolean generateContent() {
         Pair<RuinedPortal, CPos> informations = this.getInformations();
         RuinedPortalGenerator ruinedPortalGenerator = new RuinedPortalGenerator(informations.getFirst().getVersion());
-        Pair<ChunkGenerator, Function<CPos, CPos>> generator = this.map.context.getChunkGenerator(feature);
+        Pair<TerrainGenerator, Function<CPos, CPos>> generator = this.map.context.getTerrainGenerator(feature);
         if (generator == null) {
             visualizer.setText("Portal did not generate");
             getVisualizer().getBlockManager().scheduleDestroy();

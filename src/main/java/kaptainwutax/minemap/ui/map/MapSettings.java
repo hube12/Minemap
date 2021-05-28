@@ -3,9 +3,14 @@ package kaptainwutax.minemap.ui.map;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.biomeutils.biome.Biome;
 import kaptainwutax.biomeutils.biome.Biomes;
+import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.structure.Mineshaft;
+import kaptainwutax.featureutils.structure.NetherFossil;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.init.Features;
 
 import java.text.Collator;
@@ -13,23 +18,40 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MapSettings {
+    public static final Set<Class<? extends Feature<?, ?>>> DEFAULT_HIDE = new HashSet<Class<? extends Feature<?, ?>>>() {{
+        add(SlimeChunk.class);
+        add(Mineshaft.class);
+        add(OWBastionRemnant.class);
+        add(OWFortress.class);
+        add(NetherFossil.class);
+        add(NEStronghold.class);
+        add(OWNERuinedPortal.class);
+        add(NERuinedPortal.class);
+    }};
+    public static final boolean DEFAULT_SHOW_BIOMES = true;
+    public static final boolean DEFAULT_SHOW_FEATURES = true;
+    public static final boolean DEFAULT_SHOW_GRID = false;
+    public static final boolean DEFAULT_SHOW_EXTRA_INFOS = false;
+    public static final boolean DEFAULT_SHOW_EXTRA_ICONS = true;
+    public static final int DEFAULT_BIOME_SIZE = OverworldBiomeSource.DEFAULT_BIOME_SIZE;
+    public static final int DEFAULT_RIVER_SIZE = OverworldBiomeSource.DEFAULT_RIVER_SIZE;
 
-    private final MCVersion version;
-    private final Dimension dimension;
+    private MCVersion version;
+    private Dimension dimension;
     @Expose
-    public boolean showBiomes = true;
+    public Boolean showBiomes = true;
     @Expose
-    public boolean showFeatures = true;
+    public Boolean showFeatures = true;
     @Expose
-    public boolean showGrid = false;
+    public Boolean showGrid = false;
     @Expose
-    public boolean showExtraInfos = false;
+    public Boolean showExtraInfos = false;
     @Expose
-    public boolean showExtraIcons = true;
+    public Boolean showExtraIcons = true;
     @Expose
-    public int biomeSize=4;
+    public Integer biomeSize = 4;
     @Expose
-    public int riverSize=4;
+    public Integer riverSize = 4;
     @Expose
     private Map<String, Boolean> features;
     @Expose
@@ -49,10 +71,12 @@ public class MapSettings {
 
         this.features = Features.getForVersion(this.version).values().stream()
             .filter(f -> f.isValidDimension(this.dimension))
-            .map(Feature::getName).collect(Collectors.toMap(e -> e, e -> true));
+            .map(Feature::getName)
+            .collect(Collectors.toMap(e -> e, e -> true));
 
         this.biomes = Biomes.REGISTRY.values().stream()
-            .filter(b -> b.getDimension() == dimension).map(Biome::getName)
+            .filter(b -> b.getDimension() == this.dimension)
+            .map(Biome::getName)
             .collect(Collectors.toMap(e -> e, e -> true));
     }
 
@@ -77,7 +101,7 @@ public class MapSettings {
 
         this.biomeStates = Biomes.REGISTRY.values().stream()
             .filter(b -> b.getDimension() == this.dimension)
-            .filter(b -> b.getVersion().isOlderOrEqualTo(this.version) || b.getDimension()==Dimension.END)
+            .filter(b -> b.getVersion().isOlderOrEqualTo(this.version) || b.getDimension() == Dimension.END)
             .collect(Collectors.toMap(
                 e -> e,
                 e -> this.biomes.getOrDefault(e.getName(), true)
@@ -113,20 +137,9 @@ public class MapSettings {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public final MapSettings hide(Feature<?, ?>... features) {
-        for (Feature<?, ?> feature : features) {
-            this.setState(feature, false);
-        }
-
-        return this;
-    }
-
-    public final MapSettings show(Feature<?, ?>... features) {
-        for (Feature<?, ?> feature : features) {
-            this.setState(feature, true);
-        }
-
-        return this;
+        return this.hide((Class<? extends Feature<?, ?>>[]) Arrays.stream(features).toArray());
     }
 
     @SafeVarargs
@@ -136,6 +149,11 @@ public class MapSettings {
         }
 
         return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public final MapSettings show(Feature<?, ?>... features) {
+        return this.show((Class<? extends Feature<?, ?>>[]) Arrays.stream(features).toArray());
     }
 
     @SafeVarargs
@@ -214,6 +232,53 @@ public class MapSettings {
             && this.featureTypes.containsKey(feature);
     }
 
+    public Integer getBiomeSize() {
+        return biomeSize;
+    }
+
+    public Integer getRiverSize() {
+        return riverSize;
+    }
+
+    public void setBiomeSize(Integer biomeSize) {
+        this.biomeSize = biomeSize;
+    }
+
+    public void setRiverSize(Integer riverSize) {
+        this.riverSize = riverSize;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void resetConfig() {
+        this.hide(DEFAULT_HIDE.toArray(new Class[0]));
+    }
+
+    public void maintainConfig(Dimension dimension, MCVersion version) {
+        this.dimension = dimension;
+        this.version = version;
+        List<Feature<?, ?>> features = Features.getForVersion(this.version).values().stream()
+            .filter(f -> f.isValidDimension(this.dimension))
+            .collect(Collectors.toList());
+        for (Feature<?, ?> feature : features) {
+            if (!this.features.containsKey(feature.getName())) {
+                this.features.put(feature.getName(), !DEFAULT_HIDE.contains(feature.getClass()));
+            }
+        }
+        List<Biome> biomes = Biomes.REGISTRY.values().stream()
+            .filter(b -> b.getDimension() == this.dimension)
+            .collect(Collectors.toList());
+        for (Biome biome : biomes) {
+            this.biomes.putIfAbsent(biome.getName(), true);
+        }
+        this.showBiomes = this.showBiomes != null ? this.showBiomes : DEFAULT_SHOW_BIOMES;
+        this.showFeatures = this.showFeatures != null ? this.showFeatures : DEFAULT_SHOW_FEATURES;
+        this.showGrid = this.showGrid != null ? this.showGrid : DEFAULT_SHOW_GRID;
+        this.showExtraInfos = this.showExtraInfos != null ? this.showExtraInfos : DEFAULT_SHOW_EXTRA_INFOS;
+        this.showExtraIcons = this.showExtraIcons != null ? this.showExtraIcons : DEFAULT_SHOW_EXTRA_ICONS;
+        this.biomeSize = this.biomeSize != null ? this.biomeSize : DEFAULT_BIOME_SIZE;
+        this.riverSize = this.riverSize != null ? this.riverSize : DEFAULT_RIVER_SIZE;
+    }
+
     public boolean isActive(Biome biome) {
         return this.biomeStates.getOrDefault(biome, false);
     }
@@ -224,8 +289,8 @@ public class MapSettings {
         this.showGrid = other.showGrid;
         this.showExtraInfos = other.showExtraInfos;
         this.showExtraIcons = other.showExtraIcons;
-        this.biomeSize=other.biomeSize;
-        this.riverSize=other.riverSize;
+        this.biomeSize = other.biomeSize;
+        this.riverSize = other.riverSize;
         this.getAllFeatures().forEach(this::hide);
         this.getAllBiomes().forEach(this::hide);
         other.getActiveBiomes().forEach(this::show);
@@ -244,8 +309,8 @@ public class MapSettings {
         copy.showGrid = this.showGrid;
         copy.showExtraInfos = this.showExtraInfos;
         copy.showExtraIcons = this.showExtraIcons;
-        copy.biomeSize=this.biomeSize;
-        copy.riverSize=this.riverSize;
+        copy.biomeSize = this.biomeSize;
+        copy.riverSize = this.riverSize;
         copy.biomes = new HashMap<>(this.biomes);
         copy.features = new HashMap<>(this.features);
         return copy.refresh();

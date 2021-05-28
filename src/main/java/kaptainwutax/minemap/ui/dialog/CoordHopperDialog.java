@@ -16,6 +16,7 @@ public class CoordHopperDialog extends Dialog {
 
     public JTextField enterX;
     public JTextField enterZ;
+    public JSplitPane duo;
     public Dropdown<Type> typeDropdown;
     public JButton continueButton;
 
@@ -58,7 +59,8 @@ public class CoordHopperDialog extends Dialog {
 
         this.continueButton.addMouseListener(Events.Mouse.onPressed(e -> create()));
 
-        JSplitPane duo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.enterX, this.enterZ);
+        this.duo = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.enterX, this.enterZ);
+        duo.setResizeWeight(0.5);
         this.getContentPane().add(duo);
         this.getContentPane().add(this.typeDropdown);
         this.getContentPane().add(this.continueButton);

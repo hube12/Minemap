@@ -8,7 +8,7 @@ import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -36,7 +36,7 @@ public class TooltipSidebar extends JPanel {
     }
 
     public static int getHeight(MapPanel map, int blockX, int blockZ) {
-        ChunkGenerator generator = map.getContext().getChunkGenerator();
+        TerrainGenerator generator = map.getContext().getTerrainGenerator();
         if (generator == null) return -1;
         return generator.getHeightOnGround(blockX, blockZ);
     }

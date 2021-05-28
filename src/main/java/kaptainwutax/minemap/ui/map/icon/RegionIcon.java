@@ -9,7 +9,7 @@ import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 import java.util.List;
 import java.util.function.Function;
@@ -47,7 +47,7 @@ public class RegionIcon extends StaticIcon {
                 if (pos != null) {
                     BPos currentPos = blockPosTranslation().apply(pos.toBlockPos().add(9, 0, 9));
                     if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource(getDimension()))) {
-                        ChunkGenerator generator = this.getContext().getChunkGenerator(structure).getFirst();
+                        TerrainGenerator generator = this.getContext().getTerrainGenerator(structure).getFirst();
                         if (generator == null) {
                             positions.add(currentPos);
                         } else if (structure.canGenerate(pos.getX(), pos.getZ(), generator)) {

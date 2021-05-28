@@ -28,7 +28,7 @@ public class EndCityIcon extends RegionIcon {
     public Function<BPos, Pair<Color,BufferedImage>> getExtraIcon() {
         return bPos -> {
             EndCityGenerator endCityGenerator = new EndCityGenerator(this.getContext().getVersion());
-            if (!endCityGenerator.generate(this.getContext().getChunkGenerator(), bPos.toChunkPos())) return null;
+            if (!endCityGenerator.generate(this.getContext().getTerrainGenerator(), bPos.toChunkPos())) return null;
             return endCityGenerator.hasShip() ? new Pair<>(Color.BLACK,Icons.get(EndShipIcon.class)) : null;
         };
     }

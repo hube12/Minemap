@@ -26,7 +26,7 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.graphics.TpPanel;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 import one.util.streamex.StreamEx;
 
 import javax.swing.*;
@@ -166,11 +166,11 @@ public class LootSearchDialog extends Dialog {
         if (!(feature instanceof ILoot)) return;
         BPos centerPos = map.manager.getCenterPos();
         BiomeSource biomeSource = map.context.getBiomeSource();
-        ChunkGenerator chunkGenerator = map.context.getChunkGenerator();
+        TerrainGenerator chunkGenerator = map.context.getTerrainGenerator();
         int dimCoeff = 0;
         if (feature instanceof OWBastionRemnant || feature instanceof OWFortress || feature instanceof OWNERuinedPortal) {
             biomeSource = map.context.getBiomeSource(Dimension.NETHER);
-            chunkGenerator = map.context.getChunkGenerator(Dimension.NETHER);
+            chunkGenerator = map.context.getTerrainGenerator(Dimension.NETHER);
             dimCoeff = 3;
         }
         // FIXME make it possible to use any feature (particulary for strongholds)
@@ -178,7 +178,7 @@ public class LootSearchDialog extends Dialog {
         Item selectedItem = this.itemDropdown.getSelected();
         Loot lootGen = Chests.get(selected).create();
 
-        ChunkGenerator finalChunkGenerator = chunkGenerator;
+        TerrainGenerator finalTerrainGenerator = chunkGenerator;
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
         Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff);
@@ -186,7 +186,7 @@ public class LootSearchDialog extends Dialog {
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds
             .filter(e -> {
-                List<List<ItemStack>> lists = lootGen.getLootAt(map.context.worldSeed, e.toChunkPos(), feature, false, finalChunkGenerator, map.context.getVersion());
+                List<List<ItemStack>> lists = lootGen.getLootAt(map.context.worldSeed, e.toChunkPos(), feature, false, finalTerrainGenerator, map.context.getVersion());
                 return getSumWithPredicate(lists, i -> i.getItem().getName().equals(selectedItem.getName())) > 0;
             })
             .limit(n)

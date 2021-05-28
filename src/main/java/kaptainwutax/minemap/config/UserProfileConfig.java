@@ -91,6 +91,10 @@ public class UserProfileConfig extends Config {
         return this.DEFAULT_MAP_SETTINGS.get(dimension.getName()).copyFor(version, dimension);
     }
 
+    public Map<String, MapSettings> getDefaultMapSettings() {
+        return DEFAULT_MAP_SETTINGS;
+    }
+
     public void setThreadCount(int threadCount) {
         this.THREAD_COUNT = threadCount;
         this.flush();
@@ -177,7 +181,7 @@ public class UserProfileConfig extends Config {
         for (Dimension dimension : Dimension.values()) {
             this.DIMENSIONS.put(dimension.getName(), true);
             MapSettings settings = new MapSettings(dimension).refresh();
-            settings.hide(SlimeChunk.class, Mineshaft.class, OWBastionRemnant.class, OWFortress.class, NetherFossil.class, NEStronghold.class);
+            settings.resetConfig();
             this.DEFAULT_MAP_SETTINGS.put(dimension.getName(), settings);
         }
     }
@@ -214,8 +218,8 @@ public class UserProfileConfig extends Config {
                 this.DIMENSIONS.remove(old);
                 this.DEFAULT_MAP_SETTINGS.remove(old);
             }
-
-            // TODO hide NEStronghold by default (need versionned config ordered)
+            MapSettings settings=this.DEFAULT_MAP_SETTINGS.get(dimension.getName());
+            settings.maintainConfig(dimension,this.MC_VERSION);
         }
         this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE);
         this.PINNED_SEEDS = resizeQueue(this.PINNED_SEEDS, MAX_SIZE);

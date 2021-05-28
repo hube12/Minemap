@@ -12,7 +12,7 @@ import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.version.UnsupportedVersion;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class MapContext {
     private final IconManager iconManager;
 
     private final ThreadLocal<Map<Dimension, LayeredBiomeSource<? extends BiomeLayer>>> biomeSource;
-    private final ThreadLocal<Map<Dimension, ChunkGenerator>> chunkGenerators;
+    private final ThreadLocal<Map<Dimension, TerrainGenerator>> chunkGenerators;
 
     private int layerId;
 
@@ -46,7 +46,7 @@ public class MapContext {
                     LayeredBiomeSource<? extends BiomeLayer> biomeSource;
 
                     if (dim == Dimension.OVERWORLD) {
-                        biomeSource = new OverworldBiomeSource(this.version, this.worldSeed, settings.biomeSize, settings.riverSize);
+                        biomeSource = new OverworldBiomeSource(this.version, this.worldSeed, settings.getBiomeSize(), settings.getRiverSize());
                     } else {
                         biomeSource = (LayeredBiomeSource<? extends BiomeLayer>) BiomeSource.of(dim, this.version, worldSeed);
                     }
@@ -61,10 +61,10 @@ public class MapContext {
         });
 
         this.chunkGenerators = ThreadLocal.withInitial(() -> {
-            Map<Dimension, ChunkGenerator> map = new HashMap<>();
+            Map<Dimension, TerrainGenerator> map = new HashMap<>();
             for (Dimension dim : Dimension.values()) {
                 try {
-                    ChunkGenerator chunkGenerator = ChunkGenerator.of(dim, this.biomeSource.get().get(dim));
+                    TerrainGenerator chunkGenerator = TerrainGenerator.of(dim, this.biomeSource.get().get(dim));
                     map.put(dim, chunkGenerator);
                 } catch (UnsupportedVersion e) {
                     System.err.printf("Chunk generator for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
@@ -112,32 +112,32 @@ public class MapContext {
         return version;
     }
 
-    public ThreadLocal<Map<Dimension, ChunkGenerator>> getChunkGenerators() {
+    public ThreadLocal<Map<Dimension, TerrainGenerator>> getTerrainGenerators() {
         return chunkGenerators;
     }
 
-    public ChunkGenerator getChunkGenerator() {
-        return this.getChunkGenerator(this.dimension);
+    public TerrainGenerator getTerrainGenerator() {
+        return this.getTerrainGenerator(this.dimension);
     }
 
-    public ChunkGenerator getChunkGenerator(Dimension dimension) {
+    public TerrainGenerator getTerrainGenerator(Dimension dimension) {
         return this.chunkGenerators.get().get(dimension);
     }
 
-    public Pair<ChunkGenerator, Function<CPos, CPos>> getChunkGenerator(Feature<?, ?> feature) {
-        ChunkGenerator generator = null;
+    public Pair<TerrainGenerator, Function<CPos, CPos>> getTerrainGenerator(Feature<?, ?> feature) {
+        TerrainGenerator generator = null;
         Function<CPos, CPos> f = e -> e;
         if (feature instanceof RuinedPortal) {
             RuinedPortal ruinedPortal = (RuinedPortal) feature;
-            Dimension dimension = ruinedPortal.getDimension();
-            return new Pair<>(this.getChunkGenerator(dimension), getDimensionFunction(dimension));
+            Dimension dimension = ruinedPortal.getValidDimension();
+            return new Pair<>(this.getTerrainGenerator(dimension), getDimensionFunction(dimension));
         }
         if (feature.isValidDimension(this.getDimension())) {
-            generator = this.getChunkGenerator();
+            generator = this.getTerrainGenerator();
         } else {
             for (Dimension dimension : Dimension.values()) {
                 if (feature.isValidDimension(dimension)) {
-                    generator = this.getChunkGenerator(dimension);
+                    generator = this.getTerrainGenerator(dimension);
                     f = getDimensionFunction(dimension);
                     break;
                 }

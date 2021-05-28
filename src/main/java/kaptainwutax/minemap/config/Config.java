@@ -45,6 +45,7 @@ public abstract class Config {
             if (config==null) throw new Exception("WTF");
             return config;
         } catch (Exception e) {
+            Logger.LOGGER.warning(e.getMessage());
             this.generateConfig();
         }
 

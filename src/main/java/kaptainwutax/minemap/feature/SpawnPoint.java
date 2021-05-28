@@ -6,7 +6,7 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
-import kaptainwutax.terrainutils.ChunkGenerator;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
 
@@ -39,13 +39,13 @@ public class SpawnPoint extends Feature<Feature.Config, SpawnPoint.Data> {
     }
 
     @Override
-    public boolean canGenerate(Data data, ChunkGenerator generator) {
+    public boolean canGenerate(Data data, TerrainGenerator generator) {
         return true;
     }
 
     @Override
-    public boolean isValidDimension(Dimension dimension) {
-        return dimension == Dimension.OVERWORLD;
+    public Dimension getValidDimension() {
+        return Dimension.OVERWORLD;
     }
 
     public BPos get(BiomeSource source) {
