@@ -7,17 +7,18 @@ import kaptainwutax.mathutils.util.Mth;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.math.Vec3i;
 import kaptainwutax.mcutils.util.pos.BPos;
-import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
-import kaptainwutax.minemap.ui.dialog.StructureListDialog;
-import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.interactive.Chest;
 import kaptainwutax.minemap.ui.map.interactive.Portal;
 import kaptainwutax.minemap.ui.map.tool.*;
+import kaptainwutax.minemap.util.math.DisplayMaths;
+import kaptainwutax.minemap.util.misc.FindOnMap;
+import kaptainwutax.minemap.util.ui.graphics.Icon;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -27,14 +28,15 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.InputEvent;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class MapManager {
 
@@ -89,6 +91,8 @@ public class MapManager {
 
         }));
 
+        SwingUtilities.invokeLater(() -> this.panel.leftBar.tooltip.updateBiomeDisplay(0, 0));
+
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
@@ -137,7 +141,7 @@ public class MapManager {
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         rename.addMouseListener(Events.Mouse.onReleased(e -> {
-            RenameTabDialog renameTabDialog = new RenameTabDialog(()->{});
+            RenameTabDialog renameTabDialog = new RenameTabDialog(() -> {});
             renameTabDialog.setVisible(true);
         }));
 
@@ -145,15 +149,8 @@ public class MapManager {
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
         settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible())));
 
-        JMenuItem chest = new JMenuItem("Chest");
-        chest.setBorder(new EmptyBorder(5, 15, 5, 15));
         chestMenu = new Chest(this.panel);
-        chest.addMouseListener(Events.Mouse.onReleased(e -> this.chestMenu.setVisible(true)));
-
-        JMenuItem portal = new JMenuItem("Portal");
-        portal.setBorder(new EmptyBorder(5, 15, 5, 15));
         portalMenu = new Portal(this.panel);
-        portal.addMouseListener(Events.Mouse.onReleased(e -> this.portalMenu.run()));
 
         popup.add(pin);
         popup.add(rename);
@@ -162,79 +159,60 @@ public class MapManager {
         this.addTools(popup, tools);
         popup.addPopupMenuListener(new PopupMenuListener() {
                                        @Override
+                                       @SuppressWarnings("unchecked")
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
                                            popup.removeAll();
-                                           MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-                                           ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
-                                           int size = (int) map.manager.pixelsPerFragment;
-//                                           JPopupMenu source = (JPopupMenu) e.getSource();
-//                                           try {
-//                                               Field desiredLocationXField = JPopupMenu.class.getDeclaredField("desiredLocationX");
-//                                               Field desiredLocationYField = JPopupMenu.class.getDeclaredField("desiredLocationY");
-//                                               desiredLocationXField.setAccessible(true);
-//                                               desiredLocationYField.setAccessible(true);
-//                                               // 10 and 70 are fixed from the window on Microsoft (assumimg correct header)
-//                                               int desiredLocationX = (int) desiredLocationXField.get(source) - MineMap.INSTANCE.getX() - map.manager.panel.getX() - 10;
-//                                               int desiredLocationY = (int) desiredLocationYField.get(source) - MineMap.INSTANCE.getY() - map.manager.panel.getY() - 70;
-//                                           } catch (Exception reflectionException) {
-//                                               Logger.LOGGER.warning("Reflection failed with error " + reflectionException.getMessage());
-//                                           }
-                                           {
-                                               BPos bPos = getPos(mousePointer.x, mousePointer.y);
-                                               RPos rPos = bPos.toRegionPos(map.manager.blocksPerFragment);
-                                               Fragment fragment = map.scheduler.getFragmentAt(rPos.getX(), rPos.getZ());
-                                               fragment.getHoveredFeatures(size, size).forEach((feature, positions) -> {
-                                                   if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
-                                                       features.add(new Pair<>(feature, positions));
-                                                   }
-                                               });
-                                               if (features.isEmpty()) {
-                                                   for (int i = -1; i <= 1; i++) {
-                                                       for (int j = -1; j <= 1; j++) {
-                                                           RPos offsetRpos = new RPos(rPos.getX() + i, rPos.getZ() + j, map.manager.blocksPerFragment);
-                                                           map.scheduler.getFragmentAt(offsetRpos.getX(), offsetRpos.getZ()).getHoveredFeatures(size, size).forEach((feature, positions) -> {
-                                                               if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
-                                                                   features.add(new Pair<>(feature, positions));
-                                                               }
-                                                           });
-                                                       }
-                                                   }
-                                               }
-                                               if (features.isEmpty()) {
-                                                   map.scheduler.forEachFragment(f -> f.getHoveredFeatures(size, size).forEach((feature, positions) -> {
-                                                       if (!positions.isEmpty() && feature instanceof RegionStructure<?, ?>) {
-                                                           features.add(new Pair<>(feature, positions));
-                                                       }
-                                                   }));
-                                               }
-                                           }
-
+                                           ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = FindOnMap.findFeaturesSelected();
                                            if (!features.isEmpty()) {
-                                               popup.add(chest);
-                                               Pair<Feature<?, ?>, List<BPos>> featureListPair = features.get(0);
-                                               Feature<?, ?> feature = featureListPair.getFirst();
-                                               BPos bPos = featureListPair.getSecond().get(0);
+                                               for (Pair<Feature<?, ?>, List<BPos>> featureListPair : features) {
+                                                   Feature<?, ?> feature = featureListPair.getFirst();
+                                                   // chest are only valid for region structure for now (mineshaft are coming)
+                                                   if (feature instanceof RegionStructure<?, ?>) {
+                                                       ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),35,20,Icons.get(Chest.class));
+                                                       for (BPos pos : featureListPair.getSecond()) {
+                                                           JMenuItem chest = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
+                                                           chest.setBorder(new EmptyBorder(5, 15, 5, 15));
+                                                           chest.addMouseListener(Events.Mouse.onReleased(me -> {
+                                                               chestMenu.setPos(pos.toChunkPos());
+                                                               chestMenu.setFeature((RegionStructure<?, ?>) feature);
+                                                               chestMenu.generateContent();
+                                                               chestMenu.setVisible(true);
+                                                           }));
+                                                           popup.add(chest);
+                                                           if (feature instanceof RuinedPortal) {
+                                                               icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),35,30,null);
+                                                               JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()),icon);
+                                                               portal.setBorder(new EmptyBorder(5, 15, 5, 15));
+                                                               portal.addMouseListener(Events.Mouse.onReleased(me -> {
+                                                                   portalMenu.setPos(pos.toChunkPos());
+                                                                   portalMenu.setFeature((RuinedPortal) feature);
+                                                                   if (!portalMenu.generateContent()) {
+                                                                       System.err.println("Portal not generated for " + pos);
+                                                                       Logger.LOGGER.severe("Portal not generated for " + pos);
+                                                                   }
+                                                                   portalMenu.run();
+                                                               }));
+                                                               popup.add(portal);
+                                                           }
+                                                       }
+
+                                                   }
+
+                                               }
+                                               BPos centroid = DisplayMaths.getCentroid(features.stream().flatMap(ll -> ll.getSecond().stream()).collect(Collectors.toList()));
                                                JMenuItem copyTp = new JMenuItem("Copy TP");
+                                               copyTp.setHorizontalTextPosition(SwingConstants.CENTER);
+                                               copyTp.setHorizontalAlignment(SwingConstants.CENTER);
                                                copyTp.addMouseListener(Events.Mouse.onReleased(ecp -> {
                                                        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                                                       String tpCommand = String.format("/tp @p %d ~ %d", bPos.getX(), bPos.getZ());
+                                                       String tpCommand = String.format("/tp @p %d ~ %d", centroid.getX(), centroid.getZ());
                                                        StringSelection stringSelection = new StringSelection(tpCommand);
                                                        clipboard.setContents(stringSelection, null);
                                                    }
                                                ));
-                                               if (feature instanceof RuinedPortal) {
-                                                   popup.add(portal);
-                                                   portalMenu.setPos(bPos.toChunkPos());
-                                                   portalMenu.setFeature((RuinedPortal) feature);
-                                                   if (!portalMenu.generateContent()) {
-                                                       System.err.println("Portal not generated for " + bPos);
-                                                       Logger.LOGGER.severe("Portal not generated for " + bPos);
-                                                   }
-                                               }
                                                popup.add(copyTp);
-                                               chestMenu.setPos(bPos.toChunkPos());
-                                               chestMenu.setFeature((RegionStructure<?, ?>) feature);
-                                               chestMenu.generateContent();
+
+
                                            } else {
                                                popup.add(pin);
                                                popup.add(rename);

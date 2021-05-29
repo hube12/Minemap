@@ -4,52 +4,81 @@ package kaptainwutax.minemap;
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.structure.Stronghold;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.ui.component.TabHeader;
+import kaptainwutax.minemap.util.ui.graphics.PieChart;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import org.jdesktop.swingx.HorizontalLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
 
 public class Test extends JFrame {
-    public Test() {
-        super("Curve Editor");
-        add(buildControlPanel(), BorderLayout.CENTER);
+    Group allGroups;
+    public Test(){
+        JFrame frame = new JFrame("List of Biomes");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setPreferredSize(new Dimension(500, 500));
 
-        pack();
-        setLocationRelativeTo(null);
-        setResizable(false);
+        allGroups= new Group();
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.add(allGroups);
+
+        // display it
+        frame.pack();
+        frame.setLocationRelativeTo(null); // center
+        frame.setVisible(true);
     }
-
 
     public static void main(String[] args) {
-        MCVersion version = MCVersion.v1_16;
-        Stronghold stronghold = new Stronghold(version);
-        BiomeSource biomeSource = BiomeSource.of(OVERWORLD, version, 1437905338718953247L);
-        //System.out.println(Arrays.toString(Arrays.stream(stronghold.getAllStarts(biomeSource, new JRand(0L))).map(CPos::toBlockPos).toArray()));
-        SwingUtilities.invokeLater(() -> new Test().setVisible(true));
+        Test test=new Test();
     }
 
-    public Component buildControlPanel() {
-        return new ControlPanel();
-    }
 
-    static class ControlPanel extends JPanel {
-        public ControlPanel() {
-            super(new HorizontalLayout());
-            for (int i = 0; i < 10; i++) {
-                JSlider a = new JSlider() {
-                    @Override
-                    public void paint(Graphics g) {
-                        super.paint(g);
-                    }
-                };
-                a.setOrientation(SwingConstants.VERTICAL);
+//    static class AllGroups{
+//       public void createNewGroup(){
+//           this.add(new Group());
+//       }
+//    }
 
-                this.add(a);
-            }
+    static class Group extends JTabbedPane{
+        public Group(){
+            addTab("1", new Panel());
+            addTab("2", new Panel());
+            addTab("3", new Panel());
+        }
+
+        public void addTab(String title,Panel panel){
+            Header header = new Header(title);
+            this.setTabComponentAt(this.addTabAndGetIndex(title, panel), header);
+        }
+
+        public int addTabAndGetIndex(String title, Component component) {
+            super.addTab(title, component);
+            return this.getTabCount() - 1;
         }
     }
+
+    static class Header extends JPanel{
+        public Header(String title){
+            this.add(new JLabel(title));
+        }
+    }
+
+    static class Panel extends JPanel{
+        public Panel(){
+        this.repaint();
+        }
+        @Override
+        public void paintComponents(Graphics g) {
+            super.paintComponents(g);
+            Random random=new Random();
+            g.setColor(new Color(random.nextFloat(),random.nextFloat(),random.nextFloat()));
+            g.fillRect(100,100,100,100);
+        }
+    }
+
+
 }

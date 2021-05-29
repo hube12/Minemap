@@ -3,6 +3,7 @@ package kaptainwutax.minemap.util.math;
 
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.math.DistanceMetric;
+import kaptainwutax.mcutils.util.math.Vec3i;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
 
@@ -52,6 +53,14 @@ public class DisplayMaths {
             throw new ArithmeticException("Can not map such range");
         }
         return t -> minTargetRange + (maxTargetRange - minTargetRange) / (maxSourceRange - minSourceRange) * (t - minSourceRange);
+    }
+
+    public static BPos getCentroid(List<BPos> posList){
+        BPos centroid=BPos.ORIGIN;
+        for (BPos pos:posList){
+            centroid.add(pos);
+        }
+        return new BPos(centroid.getX()/posList.size(),centroid.getY()/posList.size(),centroid.getZ()/posList.size());
     }
 
     public static double round(double value, int places) {

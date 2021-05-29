@@ -68,13 +68,14 @@ public class MapPanel extends JPanel {
         this.restart();
     }
 
-    public void setHeader(TabHeader tabHeader){
-        this.header=tabHeader;
+    public void setHeader(TabHeader tabHeader) {
+        this.header = tabHeader;
     }
 
     public TabHeader getHeader() {
         return header;
     }
+
     public MapContext getContext() {
         return this.context;
     }

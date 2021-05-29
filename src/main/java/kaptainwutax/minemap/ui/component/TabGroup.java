@@ -6,10 +6,11 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 
+import javax.swing.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class TabGroup {
+public class TabGroup extends JTabbedPane {
 
     private final MCVersion version;
     protected Map<Dimension, MapPanel> mapPanels = new LinkedHashMap<>();
@@ -49,6 +50,10 @@ public class TabGroup {
         return this.mapPanels.values();
     }
 
+    public Map<Dimension, MapPanel> getPanels() {
+        return this.mapPanels;
+    }
+
     private void loadSeed(long worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.worldSeed = worldSeed;
         Configs.USER_PROFILE.addRecentSeed(worldSeed, this.version);
@@ -57,22 +62,6 @@ public class TabGroup {
             this.mapPanels.put(dimension, mapPanel);
         }
     }
-
-    public void add(WorldTabs tabs) {
-        String prefix = "[" + this.version + "] ";
-        AtomicBoolean first = new AtomicBoolean(true);
-
-        this.mapPanels.forEach((dimension, mapPanel) -> {
-            String s = Str.prettifyDashed(dimension.getName());
-            tabs.addMapTab(prefix + s + " " + this.worldSeed, this, mapPanel);
-
-            if (first.get()) {
-                tabs.setSelectedIndex(tabs.getTabCount() - 1);
-                first.set(false);
-            }
-        });
-    }
-
     public void invalidateAll() {
         this.mapPanels.values().forEach(MapPanel::restart);
     }

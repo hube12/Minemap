@@ -6,13 +6,14 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.LockButton;
+import kaptainwutax.minemap.util.ui.interactive.ExtendedTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
 
-public class TabHeader extends JPanel {
+public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
 
     protected JLabel tabTitle;
     protected JButton closeButton;

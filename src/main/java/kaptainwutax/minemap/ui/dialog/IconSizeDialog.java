@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.util.data.Str;
+import kaptainwutax.minemap.util.ui.graphics.Icon;
 import kaptainwutax.minemap.util.ui.interactive.MultipleSlider;
 
 import javax.swing.*;
@@ -50,7 +51,7 @@ public class IconSizeDialog extends Dialog {
         int scaledSize = 35;
         for (int i = 0; i < features.size(); i++) {
             Class<? extends Feature<?, ?>> feature = features.get(i);
-            ImageIcon icon = getIcon(feature, scaledSize, size);
+            ImageIcon icon = Icon.getIcon(feature, scaledSize, size,null);
             if (icon == null) {
                 iconPanel.add(new JLabel(Str.getInitials(feature.getName())));
                 return;
@@ -63,7 +64,7 @@ public class IconSizeDialog extends Dialog {
                 int value = Math.min(Math.max(currentSlider.getValue(), 4), (int) steps);
                 Configs.ICONS.addOverrideEntry(feature, value / steps);
                 Configs.ICONS.flush();
-                ImageIcon newIcon = getIcon(feature, scaledSize, size);
+                ImageIcon newIcon = Icon.getIcon(feature, scaledSize, size,null);
                 label.setIcon(newIcon);
             });
             iconPanel.add(label);
@@ -76,26 +77,6 @@ public class IconSizeDialog extends Dialog {
         modalSplit.add(sliderSplit);
         modalSplit.add(continueButton);
         this.getContentPane().add(modalSplit);
-    }
-
-    public ImageIcon getIcon(Class<? extends Feature<?, ?>> feature, int scaledSize, double size) {
-        BufferedImage icon = Icons.get(feature);
-        double iconSize = Configs.ICONS.getSize(feature);
-        if (icon == null) return null;
-
-        BufferedImage scaledIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-        AffineTransform at = new AffineTransform();
-        at.scale(size / icon.getWidth() * iconSize, size / icon.getHeight() * iconSize);
-        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        scaledIcon = scaleOp.filter(icon, scaledIcon);
-
-        BufferedImage translatedIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-        at = new AffineTransform();
-        double diffScaled = (scaledSize - Math.min(size * iconSize, size)) / 2;
-        at.translate(diffScaled, diffScaled);
-        scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        translatedIcon = scaleOp.filter(scaledIcon, translatedIcon);
-        return new ImageIcon(translatedIcon);
     }
 
     @Override

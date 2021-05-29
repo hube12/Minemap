@@ -1,8 +1,15 @@
 package kaptainwutax.minemap.util.ui.graphics;
 
+import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.ui.map.interactive.Chest;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class Icon {
@@ -44,5 +51,34 @@ public class Icon {
             iconSizeZ,
             null
         );
+    }
+    public static ImageIcon getIcon(Class<? extends Feature<?, ?>> feature, int scaledSize, double size, BufferedImage background) {
+        BufferedImage icon = Icons.get(feature);
+        double iconSize = Configs.ICONS.getSize(feature);
+        if (icon == null) return null;
+
+        BufferedImage scaledIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(size / icon.getWidth() * iconSize, size / icon.getHeight() * iconSize);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        scaledIcon = scaleOp.filter(icon, scaledIcon);
+
+        BufferedImage translatedIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
+        at = new AffineTransform();
+        double diffScaled = (scaledSize - Math.min(size * iconSize, size)) / 2;
+        at.translate(diffScaled, diffScaled);
+        scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        translatedIcon = scaleOp.filter(scaledIcon, translatedIcon);
+
+
+
+        if (background!=null){
+            BufferedImage finalIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
+            finalIcon.createGraphics().drawImage(background,5,5,scaledSize-10,scaledSize-10,null);
+            finalIcon.createGraphics().drawImage(translatedIcon,0,0,scaledSize,scaledSize,null);
+            translatedIcon=finalIcon;
+        }
+
+        return new ImageIcon(translatedIcon);
     }
 }
