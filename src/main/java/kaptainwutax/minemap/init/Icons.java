@@ -227,6 +227,7 @@ public class Icons {
         register(CopyButton.class, dir, isJar, "copy");
         register(JumpButton.class, dir, isJar, "jump");
         register(InfoButton.class, dir, isJar, "info");
+        register(FileButton.class, dir, isJar, "file");
         register(UnknownButton.class, dir, isJar, "unknown");
 
         register(MineMap.class, dir, isJar, "logo");

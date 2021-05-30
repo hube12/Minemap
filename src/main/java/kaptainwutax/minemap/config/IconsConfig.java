@@ -100,6 +100,8 @@ public class IconsConfig extends Config {
         addDefaultEntry(CopyButton.class, 1.0);
         addDefaultEntry(JumpButton.class, 1.0);
         addDefaultEntry(InfoButton.class, 1.0);
+        addDefaultEntry(FileButton.class, 1.0);
+        addDefaultEntry(UnknownButton.class, 1.0);
     }
 
     public void resetOverrides() {

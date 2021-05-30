@@ -6,12 +6,15 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
+import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.util.ui.interactive.ExtendedTabbedPane;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +27,8 @@ import static kaptainwutax.minemap.MineMap.isDarkTheme;
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
-    public TabGroup currentTabGroup = null;
+    public final Dropdown<TabGroup> dropdown = new Dropdown<>(j -> String.valueOf(j.getWorldSeed()));
+    public TabGroup current;
 
     @SuppressWarnings("deprecation")
     public WorldTabs() {
@@ -37,29 +41,51 @@ public class WorldTabs extends ExtendedTabbedPane {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
         });
+        this.addSideComponent(dropdown, ButtonSide.TRAILING);
+        dropdown.addActionListener(e -> {
+            if (dropdown.getSelected() != current) {
+                this.cleanSetTabGroup(dropdown.getSelected());
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                WorldTabs.super.repaint();
+            }
+        });
     }
 
     @Override
     public TabHeader getSelectedHeader() {
-        return (TabHeader)super.getSelectedHeader();
+        return (TabHeader) super.getSelectedHeader();
     }
 
-    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
+    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions,boolean shouldSwitch) {
         TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
         this.tabGroups.add(tabGroup);
-        this.removeAll();
-        this.setTabGroup(tabGroup);
-        currentTabGroup = tabGroup;
+        this.dropdown.add(tabGroup);
+        if (shouldSwitch) this.cleanSetTabGroup(tabGroup);
         return tabGroup;
     }
 
-    public void setTabGroup(TabGroup tabGroup) {
+    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
+        return this.load(version,worldSeed,threadCount,dimensions,true);
+    }
+
+    public void cleanSetTabGroup(TabGroup tabGroup) {
+        this.dropdown.setDefault(tabGroup);
+        this.current = tabGroup;
+        // remove all elements in the jtabbedpane
+        this.removeAll();
+        this.setTabGroup(tabGroup);
+    }
+
+    private void setTabGroup(TabGroup tabGroup) {
         String prefix = "[" + tabGroup.getVersion() + "] ";
         AtomicBoolean first = new AtomicBoolean(true);
 
         tabGroup.getPanels().forEach((dimension, mapPanel) -> {
             String s = Str.prettifyDashed(dimension.getName());
-            this.addMapTab(prefix + s + " " + tabGroup.getWorldSeed(), tabGroup, mapPanel);
+            this.addMapTab(prefix + s, tabGroup, mapPanel);
 
             if (first.get()) {
                 this.setSelectedIndex(this.getTabCount() - 1);
@@ -75,7 +101,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             this.tabGroups.removeIf(TabGroup::isEmpty);
         }
 
-        super.remove(component);
+        this.getJTabbedPane().remove(component);
     }
 
     public void remove(TabGroup tabGroup) {
@@ -83,7 +109,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             super.remove(mapPanel);
         }
         this.tabGroups.remove(tabGroup);
-        this.currentTabGroup = this.tabGroups.isEmpty() ? null : this.tabGroups.get(this.tabGroups.size() - 1);
+        this.dropdown.remove(tabGroup);
     }
 
     public MapPanel getSelectedMapPanel() {
@@ -92,7 +118,7 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public TabGroup getCurrentTabGroup() {
-        return currentTabGroup;
+        return current;
     }
 
     @Override
@@ -116,12 +142,24 @@ public class WorldTabs extends ExtendedTabbedPane {
         MineMap.INSTANCE.worldTabs.remove(MineMap.INSTANCE.worldTabs.getCurrentTabGroup());
     }
 
+    public static void cycle(boolean isRight){
+        MineMap.INSTANCE.worldTabs.cycleSeed(isRight);
+    }
+
+    public void cycleSeed(boolean isRight){
+        TabGroup tabGroup=isRight?this.dropdown.getCycleRight():this.dropdown.getCycleLeft();
+        if (tabGroup==null) return;
+        if (tabGroup != current) {
+            dropdown.setDefault(tabGroup);
+            this.cleanSetTabGroup(dropdown.getSelected());
+        }
+    }
+
     public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
         TabHeader tabHeader = new TabHeader(title, e -> {
             if (e.isShiftDown()) this.remove(tabGroup);
             else this.remove(mapPanel);
         });
-
 
         tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
         tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
@@ -131,7 +169,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             }
         }));
         mapPanel.setHeader(tabHeader);
-        this.setTabComponentAt(this.addTabAndGetIndex(title, mapPanel), tabHeader);
+        this.addTab(title,mapPanel,tabHeader);
     }
 
     public JPopupMenu createTabMenu(TabGroup current, MapPanel mapPanel) {

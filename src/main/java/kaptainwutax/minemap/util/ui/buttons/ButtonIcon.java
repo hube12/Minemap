@@ -13,7 +13,7 @@ public abstract class ButtonIcon extends JButton {
     public final int size;
     public final int inset;
     public final float factor;
-    public final boolean background;
+    public boolean background;
     public final boolean border;
     public Color backgroundColor;
 
@@ -52,6 +52,14 @@ public abstract class ButtonIcon extends JButton {
         return new Dimension(30, 30);
     }
 
+    public void setBackgroundColor(Color backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void shouldBackground(boolean b){
+        this.background=b;
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -64,16 +72,16 @@ public abstract class ButtonIcon extends JButton {
         Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(g));
 
         if (this.background) {
-            Color old = g.getColor();
-            g.setColor(backgroundColor);
+            Color old = g2d.getColor();
+            g2d.setColor(backgroundColor);
             int bSize = 30;
             int bRadius = size - 2;
             int bDiff = bSize / 2 - bRadius;
-            g.fillRoundRect(bDiff, bDiff, bRadius * 2 - 2, bRadius * 2 - 2, bSize, bSize);
+            g2d.fillRoundRect(bDiff, bDiff, bRadius * 2 - 2, bRadius * 2 - 2, bSize, bSize);
 
-            g.setColor(old);
+            g2d.setColor(old);
         }
-        paintImage(Icons.get(this.getClass()), g, size, factor, inset);
+        paintImage(Icons.get(this.getClass()), g2d, size, factor, inset);
     }
 
     public void changeBColor(Color color) {

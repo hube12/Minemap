@@ -6,7 +6,7 @@ import java.awt.*;
 import static kaptainwutax.minemap.util.ui.interactive.Prompt.setPrompt;
 
 public class HintTextField extends JTextField {
-    private final String hint;
+    private String hint;
 
     public HintTextField(String hint) {
         super();
@@ -18,6 +18,10 @@ public class HintTextField extends JTextField {
         super(value);
         this.hint = hint;
         setPrompt(hint, this);
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
     }
 
     @Override

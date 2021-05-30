@@ -1,6 +1,10 @@
 package kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx;
 
+import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
@@ -12,6 +16,8 @@ import org.lwjgl.system.MemoryUtil;
 
 import org.lwjgl.opengl.GL;
 
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
 import java.util.Objects;
 
 import static org.lwjgl.opengl.GL33.*;
@@ -34,6 +40,17 @@ public class Window {
         this.width = width;
         this.height = height;
         resized = false;
+    }
+
+
+    // this will emit PLATFORM_ERROR ON WAYLAND AND NOT RESPECT FOR MACOS
+    public void setIcon(BufferedImage bufferedImage){
+        GLFWImage image = IOUtils.imageToGLFWImage(bufferedImage);
+
+        GLFWImage.Buffer images = GLFWImage.malloc(1);
+        images.put(0, image);
+
+        glfwSetWindowIcon(window, images);
     }
 
     /**
@@ -61,6 +78,8 @@ public class Window {
         GLFWVidMode vidMode = glfwGetVideoMode(glfwGetPrimaryMonitor());
         assert vidMode != null;
         glfwSetWindowPos(window, (vidMode.width() - width) / 2, (vidMode.height() - height) / 2);
+
+        setIcon(Icons.get(MineMap.class));
 
         // Make current OpenGL context
         glfwMakeContextCurrent(window);

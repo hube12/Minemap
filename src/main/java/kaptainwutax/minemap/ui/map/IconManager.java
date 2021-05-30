@@ -35,7 +35,7 @@ public class IconManager {
             EndCityIcon::new,
             IglooIcon::new,
             VillageIcon::new,
-            c -> new StrongholdIcon(c, 128)
+            StrongholdIcon::new
         );
     }
 

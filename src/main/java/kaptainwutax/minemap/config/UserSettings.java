@@ -20,6 +20,8 @@ public class UserSettings {
     @Expose
     public boolean structureMode = false;
     @Expose
+    public boolean allowFlashing = false;
+    @Expose
     public MapManager.ModifierDown modifierDown = MapManager.ModifierDown.CTRL_DOWN;
 
     public DistanceMetric getFragmentMetric() {

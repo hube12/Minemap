@@ -168,7 +168,7 @@ public class MapManager {
                                                    Feature<?, ?> feature = featureListPair.getFirst();
                                                    // chest are only valid for region structure for now (mineshaft are coming)
                                                    if (feature instanceof RegionStructure<?, ?>) {
-                                                       ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),35,20,Icons.get(Chest.class));
+                                                       ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,18,Icons.get(Chest.class));
                                                        for (BPos pos : featureListPair.getSecond()) {
                                                            JMenuItem chest = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
                                                            chest.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -179,8 +179,9 @@ public class MapManager {
                                                                chestMenu.setVisible(true);
                                                            }));
                                                            popup.add(chest);
+                                                           popup.add(new JSeparator());
                                                            if (feature instanceof RuinedPortal) {
-                                                               icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),35,30,null);
+                                                               icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,22,null);
                                                                JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()),icon);
                                                                portal.setBorder(new EmptyBorder(5, 15, 5, 15));
                                                                portal.addMouseListener(Events.Mouse.onReleased(me -> {
@@ -193,6 +194,7 @@ public class MapManager {
                                                                    portalMenu.run();
                                                                }));
                                                                popup.add(portal);
+                                                               popup.add(new JSeparator());
                                                            }
                                                        }
 

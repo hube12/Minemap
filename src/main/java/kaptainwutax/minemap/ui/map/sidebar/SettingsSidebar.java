@@ -190,10 +190,10 @@ public class SettingsSidebar extends JPanel {
 
             entry.getCheckBox().addItemListener(e -> {
                 this.settings.setState(biome, entry.getCheckBox().isSelected());
+                this.settings.setDirty(true);
                 this.map.repaint();
                 SwingUtilities.invokeLater(() -> this.settings.setDirty(false));
             });
-
             this.toggles.add(entry);
         }
     }
@@ -210,8 +210,10 @@ public class SettingsSidebar extends JPanel {
                 .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
                 .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(false));
+            this.settings.setDirty(true);
             this.map.restart();
             this.map.repaint();
+            SwingUtilities.invokeLater(() -> this.settings.setDirty(false));
         }));
 
         showAll.addMouseListener(Events.Mouse.onPressed(e -> {
@@ -222,8 +224,10 @@ public class SettingsSidebar extends JPanel {
                 .map(c -> (FeatureEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
             Arrays.stream(this.toggles.getComponents()).filter(c -> c instanceof BiomeEntry)
                 .map(c -> (BiomeEntry) c).forEach(c -> c.getCheckBox().setSelected(true));
+            this.settings.setDirty(true);
             this.map.restart();
             this.map.repaint();
+            SwingUtilities.invokeLater(() -> this.settings.setDirty(false));
         }));
 
         JPanel duo = new JPanel();
@@ -245,8 +249,10 @@ public class SettingsSidebar extends JPanel {
 
         reset.addMouseListener(Events.Mouse.onPressed(e -> {
             this.settings.set(Configs.USER_PROFILE.getMapSettingsCopy(this.map.getContext().version, this.map.getContext().dimension));
+            this.settings.setDirty(true);
             this.map.repaint();
             this.toggles.repaint();
+            SwingUtilities.invokeLater(() -> this.settings.setDirty(false));
         }));
 
         JPanel duo = new JPanel();

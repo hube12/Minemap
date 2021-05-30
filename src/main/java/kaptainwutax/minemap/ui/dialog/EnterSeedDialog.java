@@ -4,30 +4,43 @@ import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.Str;
+import kaptainwutax.minemap.util.ui.buttons.FileButton;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import kaptainwutax.minemap.util.ui.graphics.HintTextField;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.stream.IntStream;
 
 public class EnterSeedDialog extends Dialog {
 
-    public JTextField seedField;
+    public HintTextField seedField;
+    public FileButton fileButton;
     public JSpinner biomeSize;
     public JSpinner riverSize;
     public Dropdown<Integer> threadDropdown;
     public Dropdown<MCVersion> versionDropdown;
     public JButton continueButton;
     public JButton cancelButton;
+    public final ArrayList<String> seeds=new ArrayList<>();
 
     public EnterSeedDialog(Runnable onExit) {
-        super("Load new Seed (<enter> to create)", new GridLayout(4, 2));
+        super("Load new Seed (<enter> to create)", new BorderLayout());
         this.addExitProcedure(onExit);
+        this.setResizable(false);
     }
 
     @Override
@@ -35,6 +48,49 @@ public class EnterSeedDialog extends Dialog {
         int cores = Runtime.getRuntime().availableProcessors();
 
         this.seedField = new HintTextField("Enter your seed here...");
+        this.fileButton = new FileButton(16, 1, 1.7F, false, Color.WHITE, false);
+        this.fileButton.setMinimumSize(new java.awt.Dimension(16, 16));
+        JSplitPane seedInput = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, this.seedField, this.fileButton);
+
+        seedInput.setEnabled(false);
+        seedInput.setResizeWeight(1);
+
+        this.fileButton.addActionListener(e -> {
+            File chosenFile = Assets.choseFile(this);
+            seeds.clear();
+            if (chosenFile != null) {
+                try {
+                    Scanner myReader = new Scanner(chosenFile);
+                    while (myReader.hasNextLine()) {
+                        String data = myReader.nextLine();
+                        seeds.add(data);
+                    }
+                    myReader.close();
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                    Logger.LOGGER.severe("File could not be opened "+e);
+                }
+            }
+            if (!seeds.isEmpty()){
+                fileButton.shouldBackground(true);
+                fileButton.setBackgroundColor(Color.GREEN);
+                fileButton.repaint();
+                this.seedField.setHint("File was successfully loaded");
+            }else{
+                fileButton.shouldBackground(true);
+                fileButton.setBackgroundColor(Color.RED);
+                fileButton.repaint();
+                this.seedField.setHint("File is invalid...");
+                Graphic.scheduleAction(3000,()->{
+                    this.seedField.setHint("Enter your seed here...");
+                    fileButton.shouldBackground(false);
+                    fileButton.repaint();
+                });
+            }
+            this.revalidate();
+            this.repaint();
+        });
+
 
         this.threadDropdown = new Dropdown<>(i -> i + (i == 1 ? " thread" : " threads"), IntStream.rangeClosed(1, cores).boxed());
         this.threadDropdown.selectIfPresent(Configs.USER_PROFILE.getThreadCount(cores));
@@ -63,12 +119,12 @@ public class EnterSeedDialog extends Dialog {
             .getOrDefault(Dimension.OVERWORLD.getName(), new MapSettings(Dimension.OVERWORLD));
 
         SpinnerModel biomeModel = new SpinnerNumberModel(settings.getBiomeSize().intValue(), 0, 32, 1);
-        this.biomeSize  = new JSpinner(biomeModel);
+        this.biomeSize = new JSpinner(biomeModel);
         JComponent biomeEditor = new JSpinner.NumberEditor(this.biomeSize, "0");
         this.biomeSize.setEditor(biomeEditor);
 
         SpinnerModel riverModel = new SpinnerNumberModel(settings.getRiverSize().intValue(), 0, 32, 1);
-        this.riverSize  = new JSpinner(riverModel);
+        this.riverSize = new JSpinner(riverModel);
         JComponent riverEditor = new JSpinner.NumberEditor(this.riverSize, "0");
         this.riverSize.setEditor(riverEditor);
 
@@ -86,42 +142,57 @@ public class EnterSeedDialog extends Dialog {
         JPanel biomeRiverPanel = new JPanel();
         biomeRiverPanel.add(riverBiomeSplit);
 
-        this.getContentPane().add(this.seedField);
-        this.getContentPane().add(checkBoxes[Dimension.OVERWORLD.ordinal()]);
-        this.getContentPane().add(versionThreadSplit);
-        this.getContentPane().add(checkBoxes[Dimension.NETHER.ordinal()]);
-        this.getContentPane().add(riverBiomeSplit);
-        this.getContentPane().add(checkBoxes[Dimension.END.ordinal()]);
-        this.getContentPane().add(this.continueButton);
-        this.getContentPane().add(this.cancelButton);
+        JPanel sideA = new JPanel(new VerticalLayout(3));
+        sideA.add(seedInput);
+        sideA.add(versionThreadSplit);
+        sideA.add(riverBiomeSplit);
+        sideA.add(this.continueButton);
+
+        JPanel sideB = new JPanel();
+        sideB.setLayout(new BoxLayout(sideB, BoxLayout.Y_AXIS));
+        sideB.add(checkBoxes[Dimension.OVERWORLD.ordinal()]);
+        sideB.add(checkBoxes[Dimension.NETHER.ordinal()]);
+        sideB.add(checkBoxes[Dimension.END.ordinal()]);
+        sideB.add(this.cancelButton);
+        this.cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sideA, sideB);
+        splitPane.setEnabled(false);
+        splitPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        this.getContentPane().add(splitPane);
     }
 
-    protected void create() {
+    private void doPreparation() {
         continueButton.setEnabled(false);
         continueButton.setText("Loading...");
-        MCVersion selectedVersion=versionDropdown.getSelected();
+        MCVersion selectedVersion = versionDropdown.getSelected();
 
         MapSettings settings = Configs.USER_PROFILE.getDefaultMapSettings()
             .getOrDefault(Dimension.OVERWORLD.getName(), new MapSettings(Dimension.OVERWORLD))
-            .copyFor(selectedVersion,Dimension.OVERWORLD);
+            .copyFor(selectedVersion, Dimension.OVERWORLD);
         settings.setRiverSize((Integer) this.riverSize.getValue());
         settings.setBiomeSize((Integer) this.biomeSize.getValue());
-        Configs.USER_PROFILE.setDefaultSettings(Dimension.OVERWORLD,settings);
-
-        // Thread t = new Thread(() -> { // not a good idea overall
-        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-            threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+        Configs.USER_PROFILE.setDefaultSettings(Dimension.OVERWORLD, settings);
         Configs.USER_PROFILE.setThreadCount(threadDropdown.getSelected());
         Configs.USER_PROFILE.setVersion(versionDropdown.getSelected());
-        dispose();
-        // },"Joe");
-        // t.start();
-//        try{
-//            t.join();
-//        }catch (Exception e){
-//            Logger.LOGGER.severe(String.format("Failed to load seed with error %s",e));
-//        }
+    }
 
+    protected void create() {
+        doPreparation();
+        if (!seeds.isEmpty()){
+            for (String seed:seeds){
+                MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
+                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(),false);
+            }
+            String text=seedField.getText();
+            if (text==null || text.equals("")){
+                dispose();
+                return;
+            }
+        }
+        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+            threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+        dispose();
     }
 
     protected void cancel() {

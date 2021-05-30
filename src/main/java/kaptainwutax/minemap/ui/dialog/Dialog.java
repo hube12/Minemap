@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ public abstract class Dialog extends JDialog {
 
     public Dialog(String title, LayoutManager layout) {
         this.setModalityType(ModalityType.APPLICATION_MODAL);
-
+        this.setIconImage(Icons.get(MineMap.class));
         this.setTitle(title);
         this.getContentPane().setLayout(layout);
         try {

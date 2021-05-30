@@ -8,6 +8,7 @@ import kaptainwutax.minemap.ui.component.TabHeader;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
+import kaptainwutax.minemap.ui.map.icon.StrongholdIcon;
 import kaptainwutax.minemap.util.data.DrawInfo;
 
 import javax.swing.*;
@@ -65,6 +66,8 @@ public class MapPanel extends JPanel {
                 }
             }
         });
+
+        this.context.calculateStarts(this);
         this.restart();
     }
 

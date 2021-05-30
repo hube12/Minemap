@@ -18,6 +18,7 @@ public class SettingsMenu extends Menu {
     private final JMenuItem shortcuts;
     private final JCheckBoxMenuItem zoom;
     private final JCheckBoxMenuItem heightmap;
+    private final JCheckBoxMenuItem flashing;
 
     public SettingsMenu() {
         this.menu = new JMenu("Settings");
@@ -43,6 +44,13 @@ public class SettingsMenu extends Menu {
         });
         this.menu.addMenuListener(Events.Menu.onSelected(e -> this.heightmap.setState(Configs.USER_PROFILE.getUserSettings().doHeightmap)));
 
+        this.flashing = new JCheckBoxMenuItem("Fast startup (Warning Flashes!)");
+        this.flashing.addChangeListener(e -> {
+            Configs.USER_PROFILE.getUserSettings().allowFlashing = this.flashing.getState();
+            Configs.USER_PROFILE.flush();
+        });
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.flashing.setState(Configs.USER_PROFILE.getUserSettings().allowFlashing)));
+
         this.shortcuts = new JMenuItem("Shortcuts");
         this.addMouseAndKeyListener(this.shortcuts, changeShortcuts(), changeShortcuts(), false);
 
@@ -50,6 +58,7 @@ public class SettingsMenu extends Menu {
         this.menu.add(this.modifierKey);
         this.menu.add(this.zoom);
         this.menu.add(this.heightmap);
+        this.menu.add(this.flashing);
         this.menu.add(this.shortcuts);
     }
 

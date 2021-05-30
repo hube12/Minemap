@@ -133,13 +133,16 @@ public class MapSettings {
     public MapSettings setState(Biome biome, boolean state) {
         this.biomeStates.replace(biome, state);
         this.biomes.put(biome.getName(), state);
-        this.setDirty(true);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public final MapSettings hide(Feature<?, ?>... features) {
-        return this.hide((Class<? extends Feature<?, ?>>[]) Arrays.stream(features).toArray());
+        for (Feature<?, ?> feature : features) {
+            this.setState(feature, false);
+        }
+
+        return this;
     }
 
     @SafeVarargs
@@ -153,7 +156,11 @@ public class MapSettings {
 
     @SuppressWarnings("unchecked")
     public final MapSettings show(Feature<?, ?>... features) {
-        return this.show((Class<? extends Feature<?, ?>>[]) Arrays.stream(features).toArray());
+        for (Feature<?, ?> feature : features) {
+            this.setState(feature, true);
+        }
+
+        return this;
     }
 
     @SafeVarargs

@@ -76,6 +76,10 @@ public class KeyShortcuts {
         CLOSE_TAB(WorldTabs::closeTab),
         @SerializedName("CLOSE_TABS")
         CLOSE_TABS(WorldTabs::closeTabs),
+        @SerializedName("CYCLE_SEED_RIGHT")
+        CYCLE_SEED_RIGHT(()->WorldTabs.cycle(true)),
+        @SerializedName("CYCLE_SEED_LEFT")
+        CYCLE_SEED_LEFT(()->WorldTabs.cycle(false)),
         ;
 
         public Runnable action;

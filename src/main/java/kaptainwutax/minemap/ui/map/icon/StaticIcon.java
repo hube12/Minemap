@@ -75,15 +75,18 @@ public abstract class StaticIcon extends IconRenderer {
                 int posX = (int) (info.x + sx + (DEFAULT_VALUE - 16) * scaleFactor / 2);
                 int posY = (int) (info.y + sy - (DEFAULT_VALUE + 16) * scaleFactor / 2);
                 Shape oldClip = g2d.getClip();
-                Color oldColor = g2d.getColor();
-                int size = (int) (16 * scaleFactor);
-                g2d.setClip(new Ellipse2D.Float(posX, posY, size, size));
-                g2d.setColor(extraIcon.getFirst());
-                g2d.fillRect(posX,posY,size,size);
-                int offset=Math.max(1,(int)(2*scaleFactor));
-                paintImage(extraIcon.getSecond(), g2d, 12, new Pair<>(scaleFactor, scaleFactor), new Pair<>(posX+offset, posY+offset), false);
-                g2d.setClip(oldClip);
-                g2d.setColor(oldColor);
+                if (oldClip.contains(posX-5,posY-5)){
+                    Color oldColor = g2d.getColor();
+                    int size = (int) (16 * scaleFactor);
+                    g2d.setClip(new Ellipse2D.Float(posX, posY, size, size));
+                    g2d.setColor(extraIcon.getFirst());
+                    g2d.fillRect(posX,posY,size,size);
+                    int offset=Math.max(1,(int)(2*scaleFactor));
+                    paintImage(extraIcon.getSecond(), g2d, 12, new Pair<>(scaleFactor, scaleFactor), new Pair<>(posX+offset, posY+offset), false);
+                    g2d.setClip(oldClip);
+                    g2d.setColor(oldColor);
+                }
+
             }
         }
     }

@@ -106,6 +106,10 @@ public class ExtendedTabbedPane extends JPanel {
         tabbedPane.setTabComponentAt(this.addTabAndGetIndex(title, panel), header);
     }
 
+    public void addTab(String title, Component panel,  TabbedPaneHeader headerCreator) {
+        tabbedPane.setTabComponentAt(this.addTabAndGetIndex(title, panel), headerCreator);
+    }
+
     @FunctionalInterface
     public interface HeaderFactory {
         TabbedPaneHeader create(String title);
@@ -116,11 +120,11 @@ public class ExtendedTabbedPane extends JPanel {
     }
 
     public int addTabAndGetIndex(String title, Component component) {
-        tabbedPane.addTab(title, component);
+        this.getJTabbedPane().addTab(title, component);
         return this.getTabCount() - 1;
     }
 
-    public void addComponent(JComponent button, ButtonSide side) {
+    public void addSideComponent(JComponent button, ButtonSide side) {
         // button.setBorderPainted(false);
         button.setFocusable(false);
         // button.setMargin(new Insets(1, 1, 1, 1));

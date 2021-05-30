@@ -87,6 +87,10 @@ Supports all Minecraft release starting from 1.0+
   - Alt + `Numpad +` : Layer +
   - Alt + `Numpad -` : Layer -
 
+#### Go through opened seeds (understood as an infinite tape)
+  - Ctrl + `Left Arrow` : Previous one
+  - Ctrl + `Right Arrow` : Next One
+
 In a dialog type `enter` to activate the continue button or `esc` to close the dialog.
 
 Hold `alt` then press H, W, U, E or B to get one of the 5 menus to open.

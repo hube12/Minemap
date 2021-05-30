@@ -6,12 +6,17 @@ import kaptainwutax.biomeutils.source.LayeredBiomeSource;
 import kaptainwutax.biomeutils.source.OverworldBiomeSource;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.structure.RuinedPortal;
+import kaptainwutax.featureutils.structure.Stronghold;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.mcutils.version.UnsupportedVersion;
+import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.feature.NEStronghold;
 import kaptainwutax.minemap.init.Configs;
+import kaptainwutax.minemap.init.Logger;
+import kaptainwutax.seedutils.rand.JRand;
 import kaptainwutax.terrainutils.TerrainGenerator;
 
 import java.util.HashMap;
@@ -29,6 +34,7 @@ public class MapContext {
 
     private final ThreadLocal<Map<Dimension, LayeredBiomeSource<? extends BiomeLayer>>> biomeSource;
     private final ThreadLocal<Map<Dimension, TerrainGenerator>> chunkGenerators;
+    private CPos[] starts=null;
 
     private int layerId;
 
@@ -77,10 +83,45 @@ public class MapContext {
         this.layerId = this.getBiomeSource().getLayerCount() - 2;
 
         this.iconManager = new IconManager(this);
+
+
     }
 
     public MapContext(MCVersion version, Dimension dimension, long worldSeed) {
         this(worldSeed, Configs.USER_PROFILE.getMapSettingsCopy(version, dimension));
+    }
+
+    public CPos[] getStarts(){
+        return this.starts;
+    }
+
+    public void calculateStarts(MapPanel mapPanel){
+        Stronghold stronghold = this.getSettings().getFeatureOfType(this.dimension == Dimension.OVERWORLD ? Stronghold.class : NEStronghold.class);
+
+        if (stronghold != null) {
+            BiomeSource biomeSource = this.getBiomeSource(Dimension.OVERWORLD);
+            if (biomeSource != null) {
+                if (this.dimension == Dimension.OVERWORLD || this.dimension == Dimension.NETHER) {
+                    synchronized (MineMap.version){
+                        Thread t=new Thread(
+                            () -> {
+                                this.starts = stronghold.getStarts(biomeSource, 128, new JRand(0L));
+                                if (Configs.USER_PROFILE.getUserSettings().allowFlashing) mapPanel.restart();
+                            }
+                        );
+                        t.start();
+                        if (!Configs.USER_PROFILE.getUserSettings().allowFlashing){
+                            try {
+                                t.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                Logger.LOGGER.severe("thread didn't work "+e);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public IconManager getIconManager() {

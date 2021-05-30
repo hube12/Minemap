@@ -9,6 +9,8 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -21,6 +23,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
@@ -478,6 +481,15 @@ public class Assets {
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    public  static File choseFile(Component parent){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(parent);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
 
     private static String getDataRestAPI(String apiUrl) {
         try {

@@ -74,7 +74,7 @@ public class Icon {
 
         if (background!=null){
             BufferedImage finalIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-            finalIcon.createGraphics().drawImage(background,5,5,scaledSize-10,scaledSize-10,null);
+            finalIcon.createGraphics().drawImage(background,0,0,scaledSize,scaledSize,null);
             finalIcon.createGraphics().drawImage(translatedIcon,0,0,scaledSize,scaledSize,null);
             translatedIcon=finalIcon;
         }

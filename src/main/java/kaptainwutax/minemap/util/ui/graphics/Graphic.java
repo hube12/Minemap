@@ -1,6 +1,9 @@
 package kaptainwutax.minemap.util.ui.graphics;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Graphic {
 
@@ -32,5 +35,12 @@ public class Graphic {
         // disable dithering for full color accuracy
         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
         return g2d;
+    }
+
+    public static void scheduleAction(long timeout, Runnable runnable) {
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+            SwingUtilities.invokeLater(runnable);
+            return null;
+        }, timeout, TimeUnit.MILLISECONDS);
     }
 }

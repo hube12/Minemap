@@ -53,7 +53,8 @@ public class Events {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            if (this.type == Type.PRESSED) this.event.accept(e);
+            if (this.type == Type.PRESSED)
+                this.event.accept(e);
         }
 
         @Override

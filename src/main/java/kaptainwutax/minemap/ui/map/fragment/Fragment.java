@@ -10,6 +10,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.IconManager;
 import kaptainwutax.minemap.ui.map.MapContext;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.icon.IconRenderer;
 import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
@@ -196,8 +197,14 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        int cheating = Math.max(1, (int) (MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.blocksPerFragment / 16 / MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.pixelsPerFragment));
-        if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
+        MapPanel panel=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        int cheating;
+        if (panel != null && panel.manager != null) {
+            cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
+            if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
+        }else{
+            cheating=1;
+        }
         lastCheating = cheating;
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
