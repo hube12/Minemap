@@ -18,6 +18,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static kaptainwutax.minemap.MineMap.DEBUG;
 
@@ -170,4 +171,16 @@ public class MapPanel extends JPanel {
         return image;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MapPanel)) return false;
+        MapPanel mapPanel = (MapPanel) o;
+        return threadCount == mapPanel.threadCount && context.equals(mapPanel.context);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(context, threadCount);
+    }
 }

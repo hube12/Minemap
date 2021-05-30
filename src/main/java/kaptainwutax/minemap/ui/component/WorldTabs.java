@@ -17,9 +17,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.MineMap.isDarkTheme;
@@ -27,7 +30,10 @@ import static kaptainwutax.minemap.MineMap.isDarkTheme;
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
-    public final Dropdown<TabGroup> dropdown = new Dropdown<>(j -> String.valueOf(j.getWorldSeed()));
+    public final Dropdown<TabGroup> dropdown = new Dropdown<TabGroup>(
+        j -> String.format("%d [%s]::%s ", j.getWorldSeed(), j.getVersion(), j.hashCode()),
+        value -> value!=null?((String) value).split("::")[0]: null
+    );
     public TabGroup current;
 
     @SuppressWarnings("deprecation")
@@ -59,8 +65,11 @@ public class WorldTabs extends ExtendedTabbedPane {
         return (TabHeader) super.getSelectedHeader();
     }
 
-    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions,boolean shouldSwitch) {
+    public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions, boolean shouldSwitch) {
         TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
+        if (this.tabGroups.contains(tabGroup)){
+            return null;
+        }
         this.tabGroups.add(tabGroup);
         this.dropdown.add(tabGroup);
         if (shouldSwitch) this.cleanSetTabGroup(tabGroup);
@@ -68,7 +77,7 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
-        return this.load(version,worldSeed,threadCount,dimensions,true);
+        return this.load(version, worldSeed, threadCount, dimensions, true);
     }
 
     public void cleanSetTabGroup(TabGroup tabGroup) {
@@ -80,13 +89,10 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     private void setTabGroup(TabGroup tabGroup) {
-        String prefix = "[" + tabGroup.getVersion() + "] ";
         AtomicBoolean first = new AtomicBoolean(true);
 
         tabGroup.getPanels().forEach((dimension, mapPanel) -> {
-            String s = Str.prettifyDashed(dimension.getName());
-            this.addMapTab(prefix + s, tabGroup, mapPanel);
-
+            this.addMapTab( Str.prettifyDashed(dimension.getName()), tabGroup, mapPanel);
             if (first.get()) {
                 this.setSelectedIndex(this.getTabCount() - 1);
                 first.set(false);
@@ -142,13 +148,13 @@ public class WorldTabs extends ExtendedTabbedPane {
         MineMap.INSTANCE.worldTabs.remove(MineMap.INSTANCE.worldTabs.getCurrentTabGroup());
     }
 
-    public static void cycle(boolean isRight){
+    public static void cycle(boolean isRight) {
         MineMap.INSTANCE.worldTabs.cycleSeed(isRight);
     }
 
-    public void cycleSeed(boolean isRight){
-        TabGroup tabGroup=isRight?this.dropdown.getCycleRight():this.dropdown.getCycleLeft();
-        if (tabGroup==null) return;
+    public void cycleSeed(boolean isRight) {
+        TabGroup tabGroup = isRight ? this.dropdown.getCycleRight() : this.dropdown.getCycleLeft();
+        if (tabGroup == null) return;
         if (tabGroup != current) {
             dropdown.setDefault(tabGroup);
             this.cleanSetTabGroup(dropdown.getSelected());
@@ -169,7 +175,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             }
         }));
         mapPanel.setHeader(tabHeader);
-        this.addTab(title,mapPanel,tabHeader);
+        this.addTab(title, mapPanel, tabHeader);
     }
 
     public JPopupMenu createTabMenu(TabGroup current, MapPanel mapPanel) {

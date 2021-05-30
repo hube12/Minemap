@@ -21,6 +21,7 @@ import kaptainwutax.terrainutils.TerrainGenerator;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class MapContext {
@@ -210,4 +211,16 @@ public class MapContext {
         return (T) this.getBiomeSource().getLayer(this.layerId);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MapContext)) return false;
+        MapContext that = (MapContext) o;
+        return worldSeed == that.worldSeed && layerId == that.layerId && version == that.version && dimension == that.dimension && settings.equals(that.settings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, dimension, worldSeed, settings, layerId);
+    }
 }

@@ -354,7 +354,9 @@ public class MineMap extends JFrame {
                 Configs.USER_PROFILE.getThreadCount(cores),
                 pinnedSeed.getValue()
                 );
-            tabGroup.getMapPanels().forEach(e->e.getHeader().setPinned(true,false));
+            if (tabGroup!=null) {
+                tabGroup.getMapPanels().forEach(e->e.getHeader().setPinned(true,false));
+            }
         }
     }
 

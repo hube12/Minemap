@@ -6,6 +6,7 @@ import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
+import kaptainwutax.minemap.ui.component.TabGroup;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.data.Assets;
 import kaptainwutax.minemap.util.data.Str;
@@ -180,9 +181,11 @@ public class EnterSeedDialog extends Dialog {
     protected void create() {
         doPreparation();
         if (!seeds.isEmpty()){
+            int index=0;
             for (String seed:seeds){
                 MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
                     threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(),false);
+                System.out.println(index++);
             }
             String text=seedField.getText();
             if (text==null || text.equals("")){
@@ -190,9 +193,24 @@ public class EnterSeedDialog extends Dialog {
                 return;
             }
         }
-        MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+        TabGroup tabGroup=MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
             threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
-        dispose();
+        if (tabGroup==null){
+            String title=this.getTitle();
+            this.setTitle("Seed/options is invalid or already exists");
+            Color bg=this.seedField.getBackground();
+            this.seedField.setBackground(Color.RED);
+            Graphic.scheduleAction(3000,()->{
+                this.setTitle(title);
+                this.seedField.setBackground(bg);
+            });
+            continueButton.setEnabled(true);
+            continueButton.setText("Continue");
+
+        }else{
+            dispose();
+        }
+
     }
 
     protected void cancel() {

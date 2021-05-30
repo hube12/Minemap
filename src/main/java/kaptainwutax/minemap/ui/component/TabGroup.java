@@ -78,4 +78,16 @@ public class TabGroup extends JTabbedPane {
         return this.mapPanels.isEmpty();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TabGroup)) return false;
+        TabGroup tabGroup = (TabGroup) o;
+        return worldSeed == tabGroup.worldSeed && version == tabGroup.version && mapPanels.equals(tabGroup.mapPanels);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, mapPanels, worldSeed);
+    }
 }

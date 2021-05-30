@@ -323,4 +323,16 @@ public class MapSettings {
         return copy.refresh();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MapSettings)) return false;
+        MapSettings that = (MapSettings) o;
+        return isDirty == that.isDirty && version == that.version && dimension == that.dimension && Objects.equals(showBiomes, that.showBiomes) && Objects.equals(showFeatures, that.showFeatures) && Objects.equals(showGrid, that.showGrid) && Objects.equals(showExtraInfos, that.showExtraInfos) && Objects.equals(showExtraIcons, that.showExtraIcons) && Objects.equals(biomeSize, that.biomeSize) && Objects.equals(riverSize, that.riverSize);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, dimension, showBiomes, showFeatures, showGrid, showExtraInfos, showExtraIcons, biomeSize, riverSize, isDirty);
+    }
 }

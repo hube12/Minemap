@@ -1,14 +1,14 @@
 package kaptainwutax.minemap.util.ui.interactive;
 
-import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Logger;
-import kaptainwutax.minemap.ui.component.TabGroup;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -19,7 +19,7 @@ public class Dropdown<E> extends JComboBox<String> {
 
     @SafeVarargs
     public Dropdown(E... elements) {
-        this(Object::toString, Arrays.asList(elements));
+        this(Object::toString, elements);
     }
 
     public Dropdown(Stream<E> elements) {
@@ -36,10 +36,19 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public Dropdown(StringMapper<E> mapper, Stream<E> elements) {
-        this(mapper, elements.collect(Collectors.toList()));
+        this(mapper, null, elements.collect(Collectors.toList()));
+    }
+
+    @SafeVarargs
+    public Dropdown(StringMapper<E> mapper, Function<Object, Object> transform, E... elements) {
+        this(mapper, transform, Arrays.asList(elements));
     }
 
     public Dropdown(StringMapper<E> mapper, Collection<E> elements) {
+        this(mapper, null, elements);
+    }
+
+    public Dropdown(StringMapper<E> mapper, Function<Object, Object> transform, Collection<E> elements) {
         super(elements.stream().map(mapper::map).toArray(String[]::new));
 //        this.setEditable(true); // DON'T DO THAT IT CAUSE A LOT OF NPE (STILL A JDK BUG)
 
@@ -47,7 +56,13 @@ public class Dropdown<E> extends JComboBox<String> {
         this.mapper = mapper;
         this.elements = new LinkedList<>(elements);
         this.setOpaque(true);
-        DefaultListCellRenderer listRenderer = new DefaultListCellRenderer();
+        DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                return super.getListCellRendererComponent(list, transform != null ? transform.apply(value) : value, index, isSelected, cellHasFocus);
+            }
+        };
+
         listRenderer.setHorizontalAlignment(SwingConstants.CENTER);
         listRenderer.setVerticalAlignment(SwingConstants.CENTER);
         this.setRenderer(listRenderer);
@@ -63,14 +78,14 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public E getCycleRight() {
-        int currentIdx=this.getSelectedIndex();
-        if (currentIdx==-1) return null;
+        int currentIdx = this.getSelectedIndex();
+        if (currentIdx == -1) return null;
         int nextIdx = (currentIdx + 1) % this.getElementsSize();
         try {
             return this.getElement(nextIdx);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Logger.LOGGER.severe("That should not happen for unknown element "+e);
+            Logger.LOGGER.severe("That should not happen for unknown element " + e);
         }
         return null;
     }
@@ -80,14 +95,14 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public E getCycleLeft() {
-        int currentIdx=this.getSelectedIndex();
-        if (currentIdx==-1) return null;
+        int currentIdx = this.getSelectedIndex();
+        if (currentIdx == -1) return null;
         int previousIdx = ((currentIdx - 1) % this.getElementsSize() + this.getElementsSize()) % this.getElementsSize();
         try {
             return this.getElement(previousIdx);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Logger.LOGGER.severe("That should not happen for unknown element "+e);
+            Logger.LOGGER.severe("That should not happen for unknown element " + e);
         }
         return null;
     }
