@@ -222,9 +222,9 @@ public class MineMap extends JFrame {
             Process ps;
             try {
                 if (!shouldUseVersion) {
-                    ps = Runtime.getRuntime().exec(new String[]{"java", "-jar", newVersion, "--no-update"});
+                    ps = Runtime.getRuntime().exec(new String[] {"java", "-jar", newVersion, "--no-update"});
                 } else {
-                    ps = Runtime.getRuntime().exec(new String[]{"./" + newVersion, "--no-update"});
+                    ps = Runtime.getRuntime().exec(new String[] {"./" + newVersion, "--no-update"});
                 }
 
                 Logger.LOGGER.info(String.format("Process exited with %s", ps.waitFor()));
@@ -320,7 +320,7 @@ public class MineMap extends JFrame {
         int cores = Runtime.getRuntime().availableProcessors();
         Object[] pinned = Configs.USER_PROFILE.getPinnedSeeds().toArray();
         int len = Math.min(MAX_SIZE, pinned.length);
-        List<Pair<Pair<MCVersion,String>, kaptainwutax.mcutils.state.Dimension>> list=new ArrayList<>();
+        List<Pair<Pair<MCVersion, String>, kaptainwutax.mcutils.state.Dimension>> list = new ArrayList<>();
         for (int i = 1; i <= len; i++) {
             String config = (String) pinned[len - i];
             String[] split = config.split("::");
@@ -336,26 +336,36 @@ public class MineMap extends JFrame {
                 }
                 kaptainwutax.mcutils.state.Dimension dimension = kaptainwutax.mcutils.state.Dimension.fromId(integer);
                 if (mcVersion != null && dimension != null) {
-                    list.add(new Pair<>(new Pair<>(mcVersion,seed),dimension));
+                    list.add(new Pair<>(new Pair<>(mcVersion, seed), dimension));
                 } else {
-                    Logger.LOGGER.severe("Pinned seed is not possible to use " + dimension + " " + mcVersion + " " + seed);
+                    Logger.LOGGER.severe("Saved seed is not possible to use " + dimension + " " + mcVersion + " " + seed);
                 }
             } else {
-                Logger.LOGGER.severe("Pinned seed is not in the proper format");
+                Logger.LOGGER.severe("Saved seed is not in the proper format");
             }
         }
-        Map<Pair<MCVersion, String>,List<kaptainwutax.mcutils.state.Dimension>> pinnedSeeds=list.stream()
-            .collect(Collectors.groupingBy(Pair::getFirst,Collectors.mapping(Pair::getSecond,Collectors.toList())));
-        for (Map.Entry<Pair<MCVersion, String>,List<kaptainwutax.mcutils.state.Dimension>> pinnedSeed:pinnedSeeds.entrySet()){
+        Map<Pair<MCVersion, String>, List<kaptainwutax.mcutils.state.Dimension>> pinnedSeeds = list.stream()
+            .collect(Collectors.groupingBy(Pair::getFirst, Collectors.mapping(Pair::getSecond, Collectors.toList())));
+        for (Map.Entry<Pair<MCVersion, String>, List<kaptainwutax.mcutils.state.Dimension>> pinnedSeed : pinnedSeeds.entrySet()) {
             pinnedSeed.getValue().sort(kaptainwutax.mcutils.state.Dimension::compareTo);
-            TabGroup tabGroup=MineMap.INSTANCE.worldTabs.load(
+            TabGroup tabGroup = MineMap.INSTANCE.worldTabs.load(
                 pinnedSeed.getKey().getFirst(),
                 pinnedSeed.getKey().getSecond(),
                 Configs.USER_PROFILE.getThreadCount(cores),
                 pinnedSeed.getValue()
-                );
-            if (tabGroup!=null) {
-                tabGroup.getMapPanels().forEach(e->e.getHeader().setPinned(true,false));
+            );
+            if (tabGroup != null) {
+                tabGroup.getMapPanels().forEach(e -> e.getHeader().setSaved(true, false));
+                tabGroup.getMapPanels().forEach(e -> Arrays.stream(e.manager.popup.getComponents()).forEach(c -> {
+                        if (c instanceof JMenuItem) {
+                            JMenuItem item = ((JMenuItem) c);
+                            if (item.getText().equals("Save tab")) {
+                                item.setText("Unsave tab");
+                            }
+                        }
+                    }
+
+                ));
             }
         }
     }

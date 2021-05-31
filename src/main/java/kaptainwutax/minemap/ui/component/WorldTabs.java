@@ -49,7 +49,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         });
         this.addSideComponent(dropdown, ButtonSide.TRAILING);
         dropdown.addActionListener(e -> {
-            if (dropdown.getSelected() != current) {
+            if (dropdown.getSelected() != current && dropdown.getSelected()!=null) {
                 this.cleanSetTabGroup(dropdown.getSelected());
             }
         });
@@ -81,10 +81,11 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public void cleanSetTabGroup(TabGroup tabGroup) {
-        this.dropdown.setDefault(tabGroup);
-        this.current = tabGroup;
         // remove all elements in the jtabbedpane
         this.removeAll();
+        if (tabGroup==null) return;
+        this.dropdown.setDefault(tabGroup);
+        this.current = tabGroup;
         this.setTabGroup(tabGroup);
     }
 
@@ -104,7 +105,8 @@ public class WorldTabs extends ExtendedTabbedPane {
     public void remove(Component component) {
         if (component instanceof MapPanel) {
             this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel) component));
-            this.tabGroups.removeIf(TabGroup::isEmpty);
+            List<TabGroup> toRemove=this.tabGroups.stream().filter(TabGroup::isEmpty).collect(Collectors.toList());
+            toRemove.forEach(this::remove);
         }
 
         this.getJTabbedPane().remove(component);
@@ -162,20 +164,26 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
-        TabHeader tabHeader = new TabHeader(title, e -> {
-            if (e.isShiftDown()) this.remove(tabGroup);
-            else this.remove(mapPanel);
-        });
+        mapPanel.updateInteractive();
+        if (mapPanel.getHeader()!=null){
+            this.addTab(title, mapPanel, mapPanel.getHeader());
+        }else{
+            TabHeader tabHeader = new TabHeader(title, e -> {
+                if (e.isShiftDown()) this.remove(tabGroup);
+                else this.remove(mapPanel);
+            });
 
-        tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
-        tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
-            if (e.getSource() instanceof TabHeader) {
-                TabHeader source = (TabHeader) e.getSource();
-                this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
-            }
-        }));
-        mapPanel.setHeader(tabHeader);
-        this.addTab(title, mapPanel, tabHeader);
+            tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
+            tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
+                if (e.getSource() instanceof TabHeader) {
+                    TabHeader source = (TabHeader) e.getSource();
+                    this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
+                }
+            }));
+            mapPanel.setHeader(tabHeader);
+            this.addTab(title, mapPanel, tabHeader);
+        }
+
     }
 
     public JPopupMenu createTabMenu(TabGroup current, MapPanel mapPanel) {
@@ -190,6 +198,8 @@ public class WorldTabs extends ExtendedTabbedPane {
                 this.remove(other);
             }
         }));
+         popup.add(removeOthers);
+
         JMenuItem copySeed = new JMenuItem("Copy seed");
         copySeed.setBorder(new EmptyBorder(5, 15, 5, 15));
 
@@ -198,7 +208,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(content, null);
         }));
 
-        popup.add(removeOthers);
+
         popup.add(copySeed);
         return popup;
     }

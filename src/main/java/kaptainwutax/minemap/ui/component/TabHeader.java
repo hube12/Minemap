@@ -18,46 +18,45 @@ public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
     protected JLabel tabTitle;
     protected JButton closeButton;
     protected JButton lockButton;
-    protected boolean isPinned;
+    protected boolean isSaved;
 
     public TabHeader(String title, Consumer<MouseEvent> onClose) {
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
         this.createTabTitle(title);
         this.createCloseButton(onClose);
-        this.isPinned=false;
+        this.isSaved =false;
         this.setOpaque(false);
     }
 
-    public boolean isPinned() {
-        return isPinned;
+    public boolean isSaved() {
+        return isSaved;
     }
 
-    public void setPinned(boolean state) {
-        this.setPinned(state,true);
+    public void setSaved(boolean state) {
+        this.setSaved(state,true);
     }
-    public void setPinned(boolean state,boolean shouldSave) {
+    public void setSaved(boolean state, boolean shouldSave) {
         MapContext context=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context;
         if (state){
             if (shouldSave){
-                Configs.USER_PROFILE.addPinnedSeed(context.getWorldSeed(),context.getVersion(),context.getDimension());
+                Configs.USER_PROFILE.addSavedSeeds(context.getWorldSeed(),context.getVersion(),context.getDimension());
             }
             this.remove(closeButton);
             this.add(lockButton);
         }else{
             if (shouldSave){
-                Configs.USER_PROFILE.removePinnedSeed(context.getWorldSeed(),context.getVersion(),context.getDimension());
+                Configs.USER_PROFILE.removeSavedSeeds(context.getWorldSeed(),context.getVersion(),context.getDimension());
             }
             this.remove(lockButton);
             this.add(closeButton);
         }
-        this.isPinned=state;
+        this.isSaved =state;
         this.repaint();
     }
 
 
-
     public void togglePinned() {
-        this.setPinned(!this.isPinned);
+        this.setSaved(!this.isSaved);
     }
 
     public String getName() {
@@ -84,7 +83,11 @@ public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
         this.closeButton = new CloseButton(12, 5, 1.5F);
         this.lockButton = new LockButton(12, 7, 1.2F,true,new Color(143, 219, 209, 117),false);
         this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
-        this.add(this.closeButton);
+        if (this.isSaved()){
+            this.add(this.lockButton);
+        }else{
+            this.add(this.closeButton);
+        }
     }
 
 }

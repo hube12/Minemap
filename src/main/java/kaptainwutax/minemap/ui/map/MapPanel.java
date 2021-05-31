@@ -37,9 +37,10 @@ public class MapPanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         this.context = new MapContext(version, dimension, worldSeed);
-        this.manager = new MapManager(this);
         this.leftBar = new MapLeftSideBar(this);
         this.rightBar = new MapRightSideBar(this);
+        // manager depends on left and right bar
+        this.manager = new MapManager(this);
 
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
         this.add(this.leftBar, BorderLayout.WEST);
@@ -70,6 +71,10 @@ public class MapPanel extends JPanel {
 
         this.context.calculateStarts(this);
         this.restart();
+    }
+
+    public void updateInteractive(){
+        this.manager.updateInteractive();
     }
 
     public void setHeader(TabHeader tabHeader) {

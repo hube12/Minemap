@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.util.ui.interactive;
 
+import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.init.Logger;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.util.stream.Stream;
 public class Dropdown<E> extends JComboBox<String> {
 
     public final StringMapper<E> mapper;
-    public final LinkedList<Object> elements;
+    public final LinkedList<Pair<E, String>> elements;
 
     @SafeVarargs
     public Dropdown(E... elements) {
@@ -54,7 +55,7 @@ public class Dropdown<E> extends JComboBox<String> {
 
 
         this.mapper = mapper;
-        this.elements = new LinkedList<>(elements);
+        this.elements = elements.stream().map(e -> new Pair<>(e, mapper.map(e))).collect(Collectors.toCollection(LinkedList::new));
         this.setOpaque(true);
         DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
             @Override
@@ -69,12 +70,28 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public void setDefault(E element) {
+        if (element == null) return;
         this.setSelectedItem(mapper.map(element));
     }
 
+    public void remove(E element) {
+        Pair<E, String> toRemove = null;
+        for (Pair<E, String> e : this.elements) {
+            if (e.getFirst() == element) {
+                toRemove = e;
+            }
+        }
+        if (toRemove != null) {
+            elements.remove(toRemove);
+            super.removeItem(toRemove.getSecond());
+        }
+    }
+
     public void add(E element) {
-        this.elements.add(element);
-        this.addItem(mapper.map(element));
+        if (element==null) return;
+        String map = mapper.map(element);
+        this.elements.add(new Pair<>(element, map));
+        this.addItem(map);
     }
 
     public E getCycleRight() {
@@ -107,9 +124,9 @@ public class Dropdown<E> extends JComboBox<String> {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     public E getElement(int index) {
-        return (E) this.elements.get(index);
+        Pair<E, String> e = this.elements.get(index);
+        return e == null ? null : e.getFirst();
     }
 
     public E getSelected() {
@@ -126,10 +143,9 @@ public class Dropdown<E> extends JComboBox<String> {
         return this.selectIfPresent(element, Object::equals);
     }
 
-    @SuppressWarnings("unchecked")
     public boolean selectIfPresent(E element, BiPredicate<E, E> equals) {
-        for (Object e : this.elements) {
-            if (equals.test((E) e, element)) {
+        for (Pair<E, String> e : this.elements) {
+            if (equals.test(e.getFirst(), element)) {
                 this.setDefault(element);
                 return true;
             }

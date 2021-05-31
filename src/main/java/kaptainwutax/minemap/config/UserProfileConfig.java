@@ -35,7 +35,7 @@ public class UserProfileConfig extends Config {
     @Expose
     protected LinkedBlockingQueue<String> RECENT_SEEDS = new LinkedBlockingQueue<>(MAX_SIZE);
     @Expose
-    protected LinkedBlockingQueue<String> PINNED_SEEDS = new LinkedBlockingQueue<>(MAX_SIZE);
+    protected LinkedBlockingQueue<String> SAVED_SEEDS = new LinkedBlockingQueue<>(MAX_SIZE);
     @Expose
     protected Map<String, Boolean> DIMENSIONS = new LinkedHashMap<>();
     @Expose
@@ -135,27 +135,27 @@ public class UserProfileConfig extends Config {
     }
 
     public Queue<String> getPinnedSeeds() {
-        return PINNED_SEEDS;
+        return SAVED_SEEDS;
     }
 
-    public void addPinnedSeed(long seed, MCVersion version, Dimension dimension) {
+    public void addSavedSeeds(long seed, MCVersion version, Dimension dimension) {
         String pair = seed + "::" + version + "::" + dimension.getId();
-        if (PINNED_SEEDS.contains(pair)) return;
-        if (!PINNED_SEEDS.offer(pair)) {
-            String head = PINNED_SEEDS.poll();
+        if (SAVED_SEEDS.contains(pair)) return;
+        if (!SAVED_SEEDS.offer(pair)) {
+            String head = SAVED_SEEDS.poll();
             if (head == null) {
-                Logger.LOGGER.severe("Queue has no capacity ? " + PINNED_SEEDS.peek());
+                Logger.LOGGER.severe("Queue has no capacity ? " + SAVED_SEEDS.peek());
             }
-            if (!PINNED_SEEDS.offer(pair)) {
-                Logger.LOGGER.severe("Queue could not insert after removal: " + PINNED_SEEDS.peek());
+            if (!SAVED_SEEDS.offer(pair)) {
+                Logger.LOGGER.severe("Queue could not insert after removal: " + SAVED_SEEDS.peek());
             }
         }
         this.flush();
     }
 
-    public void removePinnedSeed(long seed, MCVersion version, Dimension dimension) {
+    public void removeSavedSeeds(long seed, MCVersion version, Dimension dimension) {
         String pair = seed + "::" + version + "::" + dimension.getId();
-        if (!PINNED_SEEDS.remove(pair)) {
+        if (!SAVED_SEEDS.remove(pair)) {
             Logger.LOGGER.info("This seed was not in the queue " + seed);
         }
         this.flush();
@@ -190,7 +190,7 @@ public class UserProfileConfig extends Config {
     public Config readConfig() {
         UserProfileConfig config = (UserProfileConfig) super.readConfig();
         config.RECENT_SEEDS = resizeQueue(config.RECENT_SEEDS, MAX_SIZE);
-        config.PINNED_SEEDS = resizeQueue(config.PINNED_SEEDS, MAX_SIZE);
+        config.SAVED_SEEDS = resizeQueue(config.SAVED_SEEDS, MAX_SIZE);
         return config;
     }
 
@@ -222,7 +222,7 @@ public class UserProfileConfig extends Config {
             settings.maintainConfig(dimension,this.MC_VERSION);
         }
         this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE);
-        this.PINNED_SEEDS = resizeQueue(this.PINNED_SEEDS, MAX_SIZE);
+        this.SAVED_SEEDS = resizeQueue(this.SAVED_SEEDS, MAX_SIZE);
     }
 
     @SuppressWarnings("unchecked")

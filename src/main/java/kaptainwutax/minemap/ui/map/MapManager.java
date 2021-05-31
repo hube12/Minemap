@@ -45,7 +45,7 @@ public class MapManager {
     public int blocksPerFragment;
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
-    private final JPopupMenu popup;
+    public final JPopupMenu popup;
     private final Chest chestMenu;
     private final Portal portalMenu;
     public double pixelsPerFragment;
@@ -128,14 +128,17 @@ public class MapManager {
 
         this.popup = new JPopupMenu();
 
-        JMenuItem pin = new JMenuItem("Pin tab");
-        pin.setBorder(new EmptyBorder(5, 15, 5, 15));
-
-        pin.addMouseListener(Events.Mouse.onReleased(e -> {
-            boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isPinned();
-            MineMap.INSTANCE.worldTabs.getSelectedHeader().setPinned(newState);
-            pin.setText(newState ? "Unpin Tab" : "Pin Tab");
+        JMenuItem save = new JMenuItem("Save tab");
+        save.setBorder(new EmptyBorder(5, 15, 5, 15));
+        if (this.panel.getHeader()!=null && this.panel.getHeader().isSaved()){
+            save.setText("Unsave tab");
+        }
+        save.addMouseListener(Events.Mouse.onReleased(e -> {
+            boolean newState = !MineMap.INSTANCE.worldTabs.getSelectedHeader().isSaved();
+            MineMap.INSTANCE.worldTabs.getSelectedHeader().setSaved(newState);
+            save.setText(newState ? "Unsave Tab" : "Save Tab");
         }));
+        popup.add(save);
 
         JMenuItem rename = new JMenuItem("Rename");
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -144,6 +147,7 @@ public class MapManager {
             RenameTabDialog renameTabDialog = new RenameTabDialog(() -> {});
             renameTabDialog.setVisible(true);
         }));
+        popup.add(rename);
 
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
@@ -152,8 +156,6 @@ public class MapManager {
         chestMenu = new Chest(this.panel);
         portalMenu = new Portal(this.panel);
 
-        popup.add(pin);
-        popup.add(rename);
         popup.add(settings);
         List<Supplier<Tool>> tools = Arrays.asList(Ruler::new, Area::new, Circle::new, Polyline::new);
         this.addTools(popup, tools);
@@ -163,7 +165,7 @@ public class MapManager {
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
                                            popup.removeAll();
                                            ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = FindOnMap.findFeaturesSelected();
-                                           if (!features.isEmpty()) {
+                                           if (features!=null && !features.isEmpty()) {
                                                for (Pair<Feature<?, ?>, List<BPos>> featureListPair : features) {
                                                    Feature<?, ?> feature = featureListPair.getFirst();
                                                    // chest are only valid for region structure for now (mineshaft are coming)
@@ -216,7 +218,7 @@ public class MapManager {
 
 
                                            } else {
-                                               popup.add(pin);
+                                               popup.add(save);
                                                popup.add(rename);
                                                popup.add(settings);
                                                addTools(popup, tools);
@@ -232,6 +234,9 @@ public class MapManager {
                                    }
         );
         this.panel.setComponentPopupMenu(popup);
+    }
+
+    public void updateInteractive(){
     }
 
     public static Runnable zoom(boolean zoomOut, boolean isModifier) {
