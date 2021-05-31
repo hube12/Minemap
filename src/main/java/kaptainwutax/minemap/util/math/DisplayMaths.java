@@ -58,7 +58,7 @@ public class DisplayMaths {
     public static BPos getCentroid(List<BPos> posList){
         BPos centroid=BPos.ORIGIN;
         for (BPos pos:posList){
-            centroid.add(pos);
+            centroid=centroid.add(pos);
         }
         return new BPos(centroid.getX()/posList.size(),centroid.getY()/posList.size(),centroid.getZ()/posList.size());
     }

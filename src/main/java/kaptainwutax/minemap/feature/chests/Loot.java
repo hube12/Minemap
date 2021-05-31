@@ -62,6 +62,7 @@ public abstract class Loot {
     public abstract boolean isCorrectInstance(Feature<?, ?> feature);
 
     public static int getSumWithPredicate(List<List<ItemStack>> lists, Predicate<ItemStack> predicate) {
+        if (lists==null || predicate==null) return 0;
         return lists.stream().mapToInt(list -> list.stream().filter(predicate).mapToInt(ItemStack::getCount).sum()).sum();
     }
 
