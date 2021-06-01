@@ -4,7 +4,6 @@ import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.ui.map.interactive.Chest;
 
 import javax.swing.*;
 import java.awt.*;

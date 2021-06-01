@@ -13,8 +13,9 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
-import kaptainwutax.minemap.ui.map.interactive.Chest;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestFrame;
 import kaptainwutax.minemap.ui.map.interactive.Portal;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestInstance;
 import kaptainwutax.minemap.ui.map.tool.*;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.minemap.util.misc.FindOnMap;
@@ -31,7 +32,6 @@ import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -46,7 +46,8 @@ public class MapManager {
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
     public final JPopupMenu popup;
-    private final Chest chestMenu;
+    private final ChestFrame chestMenu;
+    private final ChestInstance chestInstance;
     private final Portal portalMenu;
     public double pixelsPerFragment;
     public double centerX;
@@ -152,8 +153,8 @@ public class MapManager {
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
         settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible())));
-
-        chestMenu = new Chest(this.panel);
+        chestInstance=new ChestInstance(this.panel);
+        chestMenu = new ChestFrame(chestInstance);
         portalMenu = new Portal(this.panel);
 
         popup.add(settings);
@@ -161,47 +162,13 @@ public class MapManager {
         this.addTools(popup, tools);
         popup.addPopupMenuListener(new PopupMenuListener() {
                                        @Override
-                                       @SuppressWarnings("unchecked")
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
                                            popup.removeAll();
                                            ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = FindOnMap.findFeaturesSelected();
                                            if (features!=null && !features.isEmpty()) {
+                                               System.out.println("CALLED "+features.size());
                                                for (Pair<Feature<?, ?>, List<BPos>> featureListPair : features) {
-                                                   Feature<?, ?> feature = featureListPair.getFirst();
-                                                   // chest are only valid for region structure for now (mineshaft are coming)
-                                                   if (feature instanceof RegionStructure<?, ?>) {
-                                                       ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,18,Icons.get(Chest.class));
-                                                       for (BPos pos : featureListPair.getSecond()) {
-                                                           JMenuItem chest = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
-                                                           chest.setBorder(new EmptyBorder(5, 15, 5, 15));
-                                                           chest.addMouseListener(Events.Mouse.onReleased(me -> {
-                                                               chestMenu.setPos(pos.toChunkPos());
-                                                               chestMenu.setFeature((RegionStructure<?, ?>) feature);
-                                                               chestMenu.generateContent();
-                                                               chestMenu.setVisible(true);
-                                                           }));
-                                                           popup.add(chest);
-                                                           popup.add(new JSeparator());
-                                                           if (feature instanceof RuinedPortal) {
-                                                               icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,22,null);
-                                                               JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()),icon);
-                                                               portal.setBorder(new EmptyBorder(5, 15, 5, 15));
-                                                               portal.addMouseListener(Events.Mouse.onReleased(me -> {
-                                                                   portalMenu.setPos(pos.toChunkPos());
-                                                                   portalMenu.setFeature((RuinedPortal) feature);
-                                                                   if (!portalMenu.generateContent()) {
-                                                                       System.err.println("Portal not generated for " + pos);
-                                                                       Logger.LOGGER.severe("Portal not generated for " + pos);
-                                                                   }
-                                                                   portalMenu.run();
-                                                               }));
-                                                               popup.add(portal);
-                                                               popup.add(new JSeparator());
-                                                           }
-                                                       }
-
-                                                   }
-
+                                                   processFeaturePositions(featureListPair);
                                                }
                                                BPos centroid = DisplayMaths.getCentroid(features.stream().flatMap(ll -> ll.getSecond().stream()).collect(Collectors.toList()));
                                                JMenuItem copyTp = new JMenuItem("Copy TP");
@@ -215,8 +182,6 @@ public class MapManager {
                                                    }
                                                ));
                                                popup.add(copyTp);
-
-
                                            } else {
                                                popup.add(save);
                                                popup.add(rename);
@@ -235,6 +200,55 @@ public class MapManager {
         );
         this.panel.setComponentPopupMenu(popup);
     }
+
+    @SuppressWarnings("unchecked")
+    public void processFeaturePositions(Pair<Feature<?, ?>, List<BPos>> featureListPair){
+        Feature<?, ?> feature = featureListPair.getFirst();
+        // chest are only valid for region structure for now (mineshaft are coming)
+        if (feature instanceof RegionStructure<?, ?>) {
+            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,18,Icons.get(ChestFrame.class));
+            for (BPos pos : featureListPair.getSecond()) {
+                processFeatureChest(feature,pos,icon);
+            }
+        }
+        if (feature instanceof RuinedPortal) {
+            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,22,null);
+            for (BPos pos : featureListPair.getSecond()) {
+                processFeaturePortal(feature,pos,icon);
+            }
+        }
+    }
+
+    public void processFeatureChest(Feature<?, ?> feature, BPos pos, ImageIcon icon){
+        JMenuItem chest = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
+        chest.setBorder(new EmptyBorder(5, 15, 5, 15));
+        chest.addMouseListener(Events.Mouse.onReleased(me -> {
+            chestInstance.setPos(pos.toChunkPos());
+            chestInstance.setFeature(feature);
+            chestMenu.generateContent();
+            chestMenu.setVisible(true);
+        }));
+        popup.add(chest);
+        popup.add(new JSeparator());
+
+    }
+
+    public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon){
+        JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()),icon);
+        portal.setBorder(new EmptyBorder(5, 15, 5, 15));
+        portal.addMouseListener(Events.Mouse.onReleased(me -> {
+            portalMenu.setPos(pos.toChunkPos());
+            portalMenu.setFeature((RuinedPortal) feature);
+            if (!portalMenu.generateContent()) {
+                System.err.println("Portal not generated for " + pos);
+                Logger.LOGGER.severe("Portal not generated for " + pos);
+            }
+            portalMenu.run();
+        }));
+        popup.add(portal);
+        popup.add(new JSeparator());
+    }
+
 
     public void updateInteractive(){
     }

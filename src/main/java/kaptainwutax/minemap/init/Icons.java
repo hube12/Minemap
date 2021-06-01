@@ -9,7 +9,7 @@ import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.feature.*;
-import kaptainwutax.minemap.ui.map.interactive.Chest;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestFrame;
 import kaptainwutax.minemap.ui.map.tool.Area;
 import kaptainwutax.minemap.ui.map.tool.Circle;
 import kaptainwutax.minemap.ui.map.tool.Polyline;
@@ -210,7 +210,7 @@ public class Icons {
         register(NEStronghold.class, dir, isJar, Structure.getName(Stronghold.class));
 
         // features
-        register(Chest.class, dir, isJar, "treasure_chest");
+        register(ChestFrame.class, dir, isJar, "treasure_chest");
         register(EndGateway.class, dir, isJar, "end_gateway");
         register(SlimeChunk.class, dir, isJar, "slime");
         register(SpawnPoint.class, dir, isJar, "spawn");
