@@ -43,4 +43,21 @@ public class Graphic {
             return null;
         }, timeout, TimeUnit.MILLISECONDS);
     }
+
+
+    public static void centerParent(Frame parent){
+        GraphicsConfiguration config = parent.getGraphicsConfiguration();
+        if (config != null) {
+            GraphicsDevice currentScreen = config.getDevice();
+            if (currentScreen != null) {
+                JFrame dummy = new JFrame(currentScreen.getDefaultConfiguration());
+                parent.setLocationRelativeTo(dummy);
+                dummy.dispose();
+                return;
+            }
+        }
+        parent.setLocationRelativeTo(null);
+    }
 }
+
+

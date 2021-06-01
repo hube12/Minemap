@@ -9,6 +9,7 @@ import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
 import kaptainwutax.minemap.ui.map.icon.StrongholdIcon;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestInstance;
 import kaptainwutax.minemap.util.data.DrawInfo;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
@@ -25,8 +26,8 @@ import java.util.Objects;
 import static kaptainwutax.minemap.MineMap.DEBUG;
 
 public class MapPanel extends JPanel {
-
     public final MapContext context;
+    public final ChestInstance chestInstance;
     public final MapManager manager;
     public final MapLeftSideBar leftBar;
     public final MapRightSideBar rightBar;
@@ -39,10 +40,13 @@ public class MapPanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         this.context = new MapContext(version, dimension, worldSeed);
-        this.leftBar = new MapLeftSideBar(this);
-        this.rightBar = new MapRightSideBar(this);
-        // manager depends on left and right bar
+        this.chestInstance= new ChestInstance(this);
         this.manager = new MapManager(this);
+
+        this.leftBar = new MapLeftSideBar(this);
+        // right bar depends of the manager since it holds the chestinstance
+        this.rightBar = new MapRightSideBar(this);
+
 
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
         this.add(this.leftBar, BorderLayout.WEST);

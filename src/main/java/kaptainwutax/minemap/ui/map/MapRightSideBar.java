@@ -1,7 +1,9 @@
 package kaptainwutax.minemap.ui.map;
 
+import kaptainwutax.featureutils.loot.item.ItemStack;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestInstance;
 import kaptainwutax.minemap.ui.map.interactive.chest.ChestPanel;
 import kaptainwutax.minemap.ui.map.sidebar.TooltipTools;
 import kaptainwutax.minemap.util.ui.interactive.DockableContainer;
@@ -10,12 +12,13 @@ import org.jdesktop.swingx.JXCollapsiblePane;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.List;
 
 public class MapRightSideBar extends JPanel {
 
     public final TooltipTools tooltip;
     public final DockableContainer searchBox;
-    public final ChestPanel chestContent;
+    public final ChestTopBar chestTopBar;
     public final DockableContainer chestBox;
     private final MapPanel map;
 
@@ -23,8 +26,8 @@ public class MapRightSideBar extends JPanel {
         this.map = map;
         this.tooltip = new TooltipTools(this.map);
         this.tooltip.setVisible(true);
-        Pair<ChestPanel,JPanel> chest=createChestPanel();
-        this.chestContent=chest.getFirst();
+        Pair<ChestTopBar,JPanel> chest=createChestPanel(this.map.chestInstance);
+        this.chestTopBar=chest.getFirst();
         this.chestBox = new DockableContainer(JXCollapsiblePane.Direction.LEFT, chest.getSecond());
         this.searchBox = new DockableContainer(JXCollapsiblePane.Direction.LEFT, createHelpPanel());
 
@@ -60,10 +63,31 @@ public class MapRightSideBar extends JPanel {
         return helpPanel;
     }
 
-    public static Pair<ChestPanel,JPanel> createChestPanel(){
+    public static Pair<ChestTopBar,JPanel> createChestPanel(ChestInstance instance){
         JPanel chestPanel=new JPanel();
         ChestPanel chest=new ChestPanel(new Pair<>(1.0,0.8));
+        ChestTopBar topBar=new ChestTopBar(chest,instance);
+        chestPanel.add(topBar);
         chestPanel.add(chest);
-        return new Pair<>(chest,chestPanel);
+        return new Pair<>(topBar,chestPanel);
+    }
+
+    public static class ChestTopBar extends JPanel{
+        private final ChestPanel panel;
+        private final ChestInstance instance;
+        public ChestTopBar(ChestPanel panel, ChestInstance instance){
+            instance.registerUpdateable(this::update);
+            this.panel=panel;
+            this.instance=instance;
+
+        }
+        public void updateContent(){
+
+        }
+
+        public void update(boolean hasChanged){
+            List<List<ItemStack>> listItems=instance.getListItems();
+            this.panel.update(listItems == null || listItems.size() < 1 ? null : listItems.get(this.instance.getCurrentChestIndex()));
+        }
     }
 }

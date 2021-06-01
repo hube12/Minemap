@@ -13,8 +13,8 @@ import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
-import kaptainwutax.minemap.ui.map.interactive.chest.ChestFrame;
 import kaptainwutax.minemap.ui.map.interactive.Portal;
+import kaptainwutax.minemap.ui.map.interactive.chest.ChestFrame;
 import kaptainwutax.minemap.ui.map.interactive.chest.ChestInstance;
 import kaptainwutax.minemap.ui.map.tool.*;
 import kaptainwutax.minemap.util.math.DisplayMaths;
@@ -46,8 +46,7 @@ public class MapManager {
     public final ArrayList<Tool> toolsList = new ArrayList<>();
     private final MapPanel panel;
     public final JPopupMenu popup;
-    private final ChestFrame chestMenu;
-    private final ChestInstance chestInstance;
+    private final ChestFrame chestWindows;
     private final Portal portalMenu;
     public double pixelsPerFragment;
     public double centerX;
@@ -79,10 +78,10 @@ public class MapManager {
 
         this.panel.addMouseMotionListener(Events.Mouse.onMoved(e -> {
             this.mousePointer = e.getPoint();
-            BPos pos=this.getMouseBPos();
+            BPos pos = this.getMouseBPos();
             int x = pos.getX();
             int z = pos.getZ();
-            this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(x,z));
+            this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(x, z));
 
             SwingUtilities.invokeLater(() -> {
                 this.panel.leftBar.tooltip.updateBiomeDisplay(x, z);
@@ -92,12 +91,13 @@ public class MapManager {
 
         }));
 
-        SwingUtilities.invokeLater(() -> this.panel.leftBar.tooltip.updateBiomeDisplay(0, 0));
+        // update initial so we don't have a weird black box at the top left corner
+        SwingUtilities.invokeLater(updateInit());
 
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
-                BPos pos=this.getMouseBPos();
+                BPos pos = this.getMouseBPos();
                 this.panel.scheduler.forEachFragment(fragment -> fragment.onClicked(pos.getX(), pos.getZ()));
                 if (selectedTool == null) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -131,7 +131,7 @@ public class MapManager {
 
         JMenuItem save = new JMenuItem("Save tab");
         save.setBorder(new EmptyBorder(5, 15, 5, 15));
-        if (this.panel.getHeader()!=null && this.panel.getHeader().isSaved()){
+        if (this.panel.getHeader() != null && this.panel.getHeader().isSaved()) {
             save.setText("Unsave tab");
         }
         save.addMouseListener(Events.Mouse.onReleased(e -> {
@@ -153,8 +153,8 @@ public class MapManager {
         JMenuItem settings = new JMenuItem("Settings");
         settings.setBorder(new EmptyBorder(5, 15, 5, 15));
         settings.addMouseListener(Events.Mouse.onReleased(e -> this.panel.leftBar.settings.setVisible(!panel.leftBar.settings.isVisible())));
-        chestInstance=new ChestInstance(this.panel);
-        chestMenu = new ChestFrame(chestInstance);
+
+        chestWindows = new ChestFrame(this.panel.chestInstance);
         portalMenu = new Portal(this.panel);
 
         popup.add(settings);
@@ -165,8 +165,7 @@ public class MapManager {
                                        public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
                                            popup.removeAll();
                                            ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = FindOnMap.findFeaturesSelected();
-                                           if (features!=null && !features.isEmpty()) {
-                                               System.out.println("CALLED "+features.size());
+                                           if (features != null && !features.isEmpty()) {
                                                for (Pair<Feature<?, ?>, List<BPos>> featureListPair : features) {
                                                    processFeaturePositions(featureListPair);
                                                }
@@ -202,39 +201,41 @@ public class MapManager {
     }
 
     @SuppressWarnings("unchecked")
-    public void processFeaturePositions(Pair<Feature<?, ?>, List<BPos>> featureListPair){
+    public void processFeaturePositions(Pair<Feature<?, ?>, List<BPos>> featureListPair) {
         Feature<?, ?> feature = featureListPair.getFirst();
         // chest are only valid for region structure for now (mineshaft are coming)
         if (feature instanceof RegionStructure<?, ?>) {
-            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,18,Icons.get(ChestFrame.class));
+            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(), 25, 18, Icons.get(ChestFrame.class));
             for (BPos pos : featureListPair.getSecond()) {
-                processFeatureChest(feature,pos,icon);
+                processFeatureChest(feature, pos, icon);
             }
         }
         if (feature instanceof RuinedPortal) {
-            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(),25,22,null);
+            ImageIcon icon = Icon.getIcon((Class<? extends Feature<?, ?>>) feature.getClass(), 25, 22, null);
             for (BPos pos : featureListPair.getSecond()) {
-                processFeaturePortal(feature,pos,icon);
+                processFeaturePortal(feature, pos, icon);
             }
         }
     }
 
-    public void processFeatureChest(Feature<?, ?> feature, BPos pos, ImageIcon icon){
-        JMenuItem chest = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
-        chest.setBorder(new EmptyBorder(5, 15, 5, 15));
-        chest.addMouseListener(Events.Mouse.onReleased(me -> {
-            chestInstance.setPos(pos.toChunkPos());
-            chestInstance.setFeature(feature);
-            chestMenu.generateContent();
-            chestMenu.setVisible(true);
+    public void processFeatureChest(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
+        JMenuItem chestMenu = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
+        chestMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
+        chestMenu.addMouseListener(Events.Mouse.onReleased(me -> {
+            this.panel.chestInstance.setPos(pos.toChunkPos());
+            this.panel.chestInstance.setFeature(feature);
+            this.panel.chestInstance.generate(); // this calls all the update function
+            this.panel.rightBar.chestTopBar.updateContent();
+            this.chestWindows.updateContent();
+            this.chestWindows.setVisible(true);
         }));
-        popup.add(chest);
+        popup.add(chestMenu);
         popup.add(new JSeparator());
 
     }
 
-    public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon){
-        JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()),icon);
+    public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
+        JMenuItem portal = new JMenuItem(String.format("Portal (%d,%d)", pos.getX(), pos.getZ()), icon);
         portal.setBorder(new EmptyBorder(5, 15, 5, 15));
         portal.addMouseListener(Events.Mouse.onReleased(me -> {
             portalMenu.setPos(pos.toChunkPos());
@@ -249,8 +250,19 @@ public class MapManager {
         popup.add(new JSeparator());
     }
 
+    public Runnable updateInit(){
+        return () -> SwingUtilities.invokeLater(
+            () -> {
+                if (this.panel.leftBar == null || this.panel.leftBar.tooltip == null) {
+                    SwingUtilities.invokeLater(updateInit());
+                } else {
+                    this.panel.leftBar.tooltip.updateBiomeDisplay(0, 0);
+                }
+            }
+        );
+    }
 
-    public void updateInteractive(){
+    public void updateInteractive() {
     }
 
     public Point getMousePointer() {
@@ -258,7 +270,7 @@ public class MapManager {
     }
 
     public BPos getMouseBPos() {
-        return this.getPos(mousePointer.x,mousePointer.y);
+        return this.getPos(mousePointer.x, mousePointer.y);
     }
 
     public static Runnable zoom(boolean zoomOut, boolean isModifier) {

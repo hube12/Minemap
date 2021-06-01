@@ -1,16 +1,8 @@
 package kaptainwutax.minemap.ui.map.interactive.chest;
 
 
-import kaptainwutax.featureutils.loot.item.ItemStack;
-import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mcutils.util.data.Pair;
-import kaptainwutax.mcutils.util.pos.CPos;
-import kaptainwutax.minemap.feature.chests.Chests;
-import kaptainwutax.minemap.feature.chests.Loot;
 import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.listener.Events;
-import kaptainwutax.minemap.ui.map.MapContext;
-import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -84,10 +76,10 @@ public class ChestFrame extends JFrame {
         return scrollPane;
     }
 
-    public void generateContent() {
+    public void updateContent() {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(
             this.chestInstance.getFeature().getName()), this.chestInstance.getPos().getX() * 16 + 9, this.chestInstance.getPos().getZ() * 16 + 9));
         this.topBar.setIndexContent(0);
-        this.topBar.generate(true);
+        this.topBar.updateContent();
     }
 }
