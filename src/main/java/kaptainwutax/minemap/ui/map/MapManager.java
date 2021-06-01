@@ -15,7 +15,6 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.RenameTabDialog;
 import kaptainwutax.minemap.ui.map.interactive.Portal;
 import kaptainwutax.minemap.ui.map.interactive.chest.ChestFrame;
-import kaptainwutax.minemap.ui.map.interactive.chest.ChestInstance;
 import kaptainwutax.minemap.ui.map.tool.*;
 import kaptainwutax.minemap.util.math.DisplayMaths;
 import kaptainwutax.minemap.util.misc.FindOnMap;
@@ -224,9 +223,10 @@ public class MapManager {
         chestMenu.addMouseListener(Events.Mouse.onReleased(me -> {
             this.panel.chestInstance.setPos(pos.toChunkPos());
             this.panel.chestInstance.setFeature(feature);
-            this.panel.chestInstance.generate(); // this calls all the update function
-            this.panel.rightBar.chestTopBar.updateContent();
-            this.chestWindows.updateContent();
+            this.panel.chestInstance.generate(); // this calls all the update function to generate the chests
+            // however we still have some "top" init to do
+            this.panel.rightBar.chestTopBar.updateFirst();
+            this.chestWindows.updateFirst();
             this.chestWindows.setVisible(true);
         }));
         popup.add(chestMenu);

@@ -31,8 +31,7 @@ public class TopBar extends JPanel {
         this.indexedButton = new JButton(indexedString[ this.instance.isIndexed() ? 1 : 0]);
         this.indexedButton.addActionListener(e -> {
             this.instance.toggleIndexed();
-            instance.generate();
-            updateContent();
+            instance.generate(); // this call update for us
             this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
         });
         // menu to select which chest
@@ -45,8 +44,7 @@ public class TopBar extends JPanel {
         this.showAllButton = new JButton(showString[showAll ? 1 : 0]);
         this.showAllButton.addActionListener(e -> {
             setShowAll(!showAll);
-            // FIXME why was that needed for?
-            instance.generate(); // this call update
+            this.update(false); //important to redraw the ui with the new chests
             this.showAllButton.setText(showString[showAll ? 1 : 0]);
         });
         // center chest on the current screen
@@ -73,8 +71,8 @@ public class TopBar extends JPanel {
         this.currentChest.setVisible(!this.showAll);
     }
 
-    public void updateContent(){
-        this.setNumberChest(instance.getListItems() == null ? 0 : instance.getListItems().size());
+    public void updateLabel(){
+        this.createChestMenu(instance.getListItems() == null ? 0 :instance.size());
     }
 
     /**
@@ -83,9 +81,11 @@ public class TopBar extends JPanel {
      * @param hasChanged tri state, if true then
      */
     private void update(Boolean hasChanged) {
+        this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
         List<List<ItemStack>> listItems=instance.getListItems();
         List<ChestPanel> chestContents = this.window.getChestContents();
         if (hasChanged) {
+            this.updateLabel();
             Dimension dimension = this.window.getPreferredSize();
             LayoutManager layoutManager = this.window.getContent().getLayout();
             int factor = showAll && listItems != null && listItems.size() > 1 ? 2 : 1;
@@ -127,10 +127,10 @@ public class TopBar extends JPanel {
     public void setIndexContent(int index) {
         // this will call update
         this.instance.setCurrentChestIndex(index);
-        this.currentChest.setText(index + 1 + "/" + (instance.getListItems() == null ? "?" : instance.getListItems().size()));
+        this.currentChest.setText(index + 1 + "/" + (instance.getListItems() == null ? "?" : instance.size()));
     }
 
-    public void setNumberChest(int numberChest) {
+    public void createChestMenu(int numberChest) {
         this.chestSelectionMenu.removeAll();
         for (int i = 0; i < numberChest; i++) {
             int currentIndex = i;

@@ -65,6 +65,7 @@ public class MapRightSideBar extends JPanel {
 
     public static Pair<ChestTopBar,JPanel> createChestPanel(ChestInstance instance){
         JPanel chestPanel=new JPanel();
+        chestPanel.setLayout(new BoxLayout(chestPanel,BoxLayout.Y_AXIS));
         ChestPanel chest=new ChestPanel(new Pair<>(1.0,0.8));
         ChestTopBar topBar=new ChestTopBar(chest,instance);
         chestPanel.add(topBar);
@@ -75,17 +76,61 @@ public class MapRightSideBar extends JPanel {
     public static class ChestTopBar extends JPanel{
         private final ChestPanel panel;
         private final ChestInstance instance;
+        private final JLabel currentChest;
+        private final JButton previousChest;
+        private final JButton nextChest;
+        private final JButton indexedButton;
+        private final static String[] indexedString = {"Spread", "Reassemble"};
         public ChestTopBar(ChestPanel panel, ChestInstance instance){
             instance.registerUpdateable(this::update);
+            this.setLayout(new BoxLayout(this,BoxLayout.X_AXIS));
             this.panel=panel;
             this.instance=instance;
+            this.currentChest=new JLabel("No chest");
+            this.previousChest=new JButton("<");
+            this.nextChest=new JButton(">");
+            this.previousChest.addActionListener(e->this.cycle(true));
+            this.nextChest.addActionListener(e->this.cycle(false));
+            this.indexedButton = new JButton(indexedString[ this.instance.isIndexed() ? 1 : 0]);
+            this.indexedButton.addActionListener(e -> {
+                this.instance.toggleIndexed();
+                instance.generate(); // this call update for us
+                this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
+            });
+            this.add(Box.createHorizontalGlue());
+            this.add(this.indexedButton);
+            this.add(Box.createRigidArea(new Dimension(20,0)));
+            this.add(this.previousChest);
+            this.add(Box.createRigidArea(new Dimension(5,0)));
+            this.add(this.currentChest);
+            this.add(Box.createRigidArea(new Dimension(5,0)));
+            this.add(this.nextChest);
+            this.add(Box.createRigidArea(new Dimension(20+this.indexedButton.getMaximumSize().width,0)));
+            this.add(Box.createHorizontalGlue());
 
         }
-        public void updateContent(){
 
+        public void setIndexContent(int index) {
+            // this will call update
+            this.instance.setCurrentChestIndex(index);
+            this.currentChest.setText(index + 1 + "/" + (instance.getListItems() == null ? "?" : instance.size()));
+        }
+
+        private void cycle(boolean left){
+            int current=instance.getCurrentChestIndex();
+            int size=instance.size();
+            if (size==0){
+                return;
+            }
+            this.setIndexContent((current+(left?-1:1)+size)%size);
+        }
+
+        public void updateFirst(){
+            this.setIndexContent(0);
         }
 
         public void update(boolean hasChanged){
+            this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
             List<List<ItemStack>> listItems=instance.getListItems();
             this.panel.update(listItems == null || listItems.size() < 1 ? null : listItems.get(this.instance.getCurrentChestIndex()));
         }

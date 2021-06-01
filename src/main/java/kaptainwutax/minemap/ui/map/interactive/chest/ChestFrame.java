@@ -76,10 +76,9 @@ public class ChestFrame extends JFrame {
         return scrollPane;
     }
 
-    public void updateContent() {
+    public void updateFirst() {
         this.setTitle(String.format("%s of %s at x:%d z:%d", this.getName(), prettifyDashed(
             this.chestInstance.getFeature().getName()), this.chestInstance.getPos().getX() * 16 + 9, this.chestInstance.getPos().getZ() * 16 + 9));
         this.topBar.setIndexContent(0);
-        this.topBar.updateContent();
     }
 }

@@ -2,7 +2,6 @@ package kaptainwutax.minemap.ui.map.interactive.chest;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.loot.item.ItemStack;
-import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.minemap.feature.chests.Chests;
@@ -21,11 +20,11 @@ public class ChestInstance {
     private List<List<ItemStack>> listItems;
     private boolean indexed = false;
     private int currentChestIndex;
-    private boolean hasChanged=false;
-    private List<Updatable> toUpdate=new ArrayList<>();
+    private boolean hasChanged = false;
+    private List<Updatable> toUpdate = new ArrayList<>();
 
-    public ChestInstance(MapPanel map){
-        this.map=map;
+    public ChestInstance(MapPanel map) {
+        this.map = map;
     }
 
     public MapPanel getMap() {
@@ -58,9 +57,13 @@ public class ChestInstance {
 
     public void setCurrentChestIndex(int currentChestIndex) {
         this.currentChestIndex = currentChestIndex;
-        for (Updatable updatable:toUpdate){
+        for (Updatable updatable : toUpdate) {
             updatable.update(false);
         }
+    }
+
+    public int size() {
+        return this.getListItems() == null ? 0 : this.getListItems().size();
     }
 
     public int getCurrentChestIndex() {
@@ -75,8 +78,8 @@ public class ChestInstance {
         this.indexed = indexed;
     }
 
-    public void toggleIndexed(){
-        this.indexed=!indexed;
+    public void toggleIndexed() {
+        this.indexed = !indexed;
     }
 
     public List<List<ItemStack>> getListItems() {
@@ -85,6 +88,7 @@ public class ChestInstance {
 
     public void generate() {
         Pair<Feature<?, ?>, CPos> informations = this.getInformations();
+        if (informations == null || informations.getFirst() == null || informations.getSecond() == null) return;
         Loot.LootFactory<?> lootFactory = Chests.get(informations.getFirst().getClass());
         if (lootFactory != null) {
             this.listItems = lootFactory.create().getLootAt(
@@ -96,17 +100,17 @@ public class ChestInstance {
         } else {
             this.listItems = null;
         }
-        for (Updatable updatable:toUpdate){
+        for (Updatable updatable : toUpdate) {
             updatable.update(true);
         }
     }
 
-    public void registerUpdateable(Updatable... updatables){
+    public void registerUpdateable(Updatable... updatables) {
         toUpdate.addAll(Arrays.asList(updatables));
     }
 
     @FunctionalInterface
-    public interface Updatable{
+    public interface Updatable {
         void update(boolean hasChanged);
     }
 }
