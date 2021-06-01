@@ -10,8 +10,10 @@ import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.map.fragment.FragmentScheduler;
 import kaptainwutax.minemap.ui.map.icon.StrongholdIcon;
 import kaptainwutax.minemap.util.data.DrawInfo;
+import org.jdesktop.swingx.JXCollapsiblePane;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -45,6 +47,7 @@ public class MapPanel extends JPanel {
         this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
         this.add(this.leftBar, BorderLayout.WEST);
         this.add(this.rightBar, BorderLayout.EAST);
+
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 if (e.getComponent().getSize().width <= 600) {

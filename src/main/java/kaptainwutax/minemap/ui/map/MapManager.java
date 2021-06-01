@@ -77,11 +77,11 @@ public class MapManager {
         }));
 
         this.panel.addMouseMotionListener(Events.Mouse.onMoved(e -> {
-            BPos pos = this.getPos(e.getX(), e.getY());
             this.mousePointer = e.getPoint();
+            BPos pos=this.getMouseBPos();
             int x = pos.getX();
             int z = pos.getZ();
-            this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(pos.getX(), pos.getZ()));
+            this.panel.scheduler.forEachFragment(fragment -> fragment.onHovered(x,z));
 
             SwingUtilities.invokeLater(() -> {
                 this.panel.leftBar.tooltip.updateBiomeDisplay(x, z);
@@ -96,7 +96,7 @@ public class MapManager {
         this.panel.addMouseListener(Events.Mouse.onPressed(e -> {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 this.mousePointer = e.getPoint();
-                BPos pos = this.getPos(e.getX(), e.getY());
+                BPos pos=this.getMouseBPos();
                 this.panel.scheduler.forEachFragment(fragment -> fragment.onClicked(pos.getX(), pos.getZ()));
                 if (selectedTool == null) {
                     this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -107,8 +107,8 @@ public class MapManager {
                         toolsList.add(selectedTool);
                         selectedTool.addPoint(pos);
                     }
-                    this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
                 }
+                this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
             }
         }));
 
@@ -239,6 +239,14 @@ public class MapManager {
     public void updateInteractive(){
     }
 
+    public Point getMousePointer() {
+        return mousePointer;
+    }
+
+    public BPos getMouseBPos() {
+        return this.getPos(mousePointer.x,mousePointer.y);
+    }
+
     public static Runnable zoom(boolean zoomOut, boolean isModifier) {
         return () -> {
             if (MineMap.INSTANCE == null) return;
@@ -315,6 +323,7 @@ public class MapManager {
                 rTools.accept(new Pair<>("Enable", "Disable"));
                 if (!selectedTool.isAcceptable()) {
                     removeTool(selectedTool);
+                    this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
                 }
                 if (tool.getClass().equals(selectedTool.getClass())) {
                     selectedTool = null;
@@ -322,6 +331,7 @@ public class MapManager {
                     createNewTool.accept(tool, menuItem);
                 }
             }
+
         };
 
         for (int i = 0; i < tools.size(); i++) {
@@ -340,7 +350,6 @@ public class MapManager {
         if (!toolsList.remove(tool)) {
             System.out.println("This is unexpected");
         }
-        this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
     }
 
     public Vec3i getScreenSize() {

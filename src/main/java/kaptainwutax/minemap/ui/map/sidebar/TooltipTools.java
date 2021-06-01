@@ -48,7 +48,11 @@ public class TooltipTools extends JPanel {
         for (Tool tool : tools) {
             this.add(new Entry(tool, e -> map.manager.removeTool(tool)));
         }
-        map.repaint();
+        SwingUtilities.invokeLater(()->{
+            // FIXME, somehow not even map.repaint() will correctly trigger a repaint so I had to use the instance (hour lost: 1)
+            MineMap.INSTANCE.repaint();
+        });
+
     }
 
     public static class Entry extends RoundedPanel {
