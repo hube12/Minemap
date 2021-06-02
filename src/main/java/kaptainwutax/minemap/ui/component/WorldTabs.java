@@ -121,7 +121,7 @@ public class WorldTabs extends ExtendedTabbedPane {
     public void remove(TabGroup tabGroup) {
         if (tabGroup==null) return;
         for (MapPanel mapPanel : new ArrayList<>(tabGroup.getMapPanels())) {
-            this.remove(mapPanel);
+            this.remove(tabGroup,mapPanel);
         }
         if (tabGroup.getMapPanels().isEmpty()){
             this.tabGroups.remove(tabGroup);
@@ -153,8 +153,27 @@ public class WorldTabs extends ExtendedTabbedPane {
         this.tabGroups.forEach(TabGroup::invalidateAll);
     }
 
+    public void remove(TabGroup tabGroup,MapPanel mapPanel){
+        if (tabGroup!=null && mapPanel!=null){
+            if (!mapPanel.getHeader().isSaved){
+                tabGroup.removeIfPresent(mapPanel);
+            }
+            if (tabGroup.getMapPanels().isEmpty()){
+                this.tabGroups.remove(tabGroup);
+                this.dropdown.remove(tabGroup);
+                current = this.dropdown.getSelected();
+                this.repaint();
+            }
+            this.remove(mapPanel);
+        }
+    }
+
     public static void closeTab() {
-        MineMap.INSTANCE.worldTabs.remove(MineMap.INSTANCE.worldTabs.getSelectedComponent());
+        Component component=MineMap.INSTANCE.worldTabs.getSelectedComponent();
+        TabGroup current=MineMap.INSTANCE.worldTabs.getCurrentTabGroup();
+        if (component instanceof MapPanel && current!=null){
+            MineMap.INSTANCE.worldTabs.remove(current, (MapPanel) component);
+        }
     }
 
     public static void closeTabs() {
@@ -204,10 +223,13 @@ public class WorldTabs extends ExtendedTabbedPane {
         removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
-            List<TabGroup> others = this.tabGroups.stream().filter(g -> g != current).collect(Collectors.toList());
-            for (TabGroup other : others) {
-                this.remove(other);
-            }
+            //List<TabGroup> others = this.tabGroups.stream().filter(g -> g != current).collect(Collectors.toList());
+            this.tabGroups.clear();
+            this.dropdown.removeAllItems();
+            this.dropdown.elements.clear();
+            this.dropdown.add(current);
+            this.tabGroups.add(current);
+            this.repaint();
         }));
         popup.add(removeOthers);
 

@@ -205,9 +205,13 @@ public class EnterSeedDialog extends Dialog {
         SwingUtilities.invokeLater(()->{
             if (!seeds.isEmpty()) {
                 long time=System.nanoTime();
+                int index=0;
                 for (String seed : seeds) {
                     MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
                         threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(), false);
+                    if ((index++)%100000==0){
+                        System.out.println(index+" "+(System.nanoTime()-time)/1e9);
+                    }
                 }
                 System.out.println((System.nanoTime()-time)/1e9);
                 String text = seedField.getText();
