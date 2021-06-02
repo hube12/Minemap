@@ -10,6 +10,7 @@ import kaptainwutax.minemap.init.*;
 import kaptainwutax.minemap.ui.component.TabGroup;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.MapContext;
+import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
 import kaptainwutax.minemap.ui.menubar.MenuBar;
@@ -396,6 +397,15 @@ public class MineMap extends JFrame {
             for (Window window : JFrame.getWindows()) {
                 SwingUtilities.updateComponentTreeUI(window);
             }
+            if (MineMap.INSTANCE!=null && MineMap.INSTANCE.worldTabs!=null && MineMap.INSTANCE.worldTabs.getSelectedMapPanel()!=null){
+                MapPanel mapPanel=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                if (isDarkTheme()) {
+                    mapPanel.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
+                }else{
+                    mapPanel.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
+                }
+            }
+
         }
 
         public String getName() {

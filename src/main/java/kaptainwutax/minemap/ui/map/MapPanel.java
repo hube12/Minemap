@@ -58,7 +58,7 @@ public class MapPanel extends JPanel {
 
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                if (e.getComponent().getSize().width <= 600) {
+                if (e.getComponent().getSize().width <= 800) {
                     if (leftBar.settings.isVisible()) {
                         leftBar.settings.setVisible(false);
                         leftBar.settings.isHiddenForSize = true;
@@ -105,11 +105,6 @@ public class MapPanel extends JPanel {
     }
 
     public void restart() {
-        if (isDarkTheme()) {
-            this.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
-        }else{
-            this.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
-        }
         if (this.scheduler != null) this.scheduler.terminate();
         this.scheduler = new FragmentScheduler(this, this.threadCount);
         this.repaint();
