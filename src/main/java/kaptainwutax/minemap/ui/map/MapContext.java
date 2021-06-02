@@ -99,7 +99,7 @@ public class MapContext {
     public void calculateStarts(MapPanel mapPanel){
         Stronghold stronghold = this.getSettings().getFeatureOfType(this.dimension == Dimension.OVERWORLD ? Stronghold.class : NEStronghold.class);
 
-        if (stronghold != null) {
+        if (stronghold != null && !Configs.USER_PROFILE.getUserSettings().disableStronghold) {
             BiomeSource biomeSource = this.getBiomeSource(Dimension.OVERWORLD);
             if (biomeSource != null) {
                 if (this.dimension == Dimension.OVERWORLD || this.dimension == Dimension.NETHER) {

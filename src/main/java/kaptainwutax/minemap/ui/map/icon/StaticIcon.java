@@ -37,7 +37,7 @@ public abstract class StaticIcon extends IconRenderer {
         return null;
     }
 
-    public Function<BPos, Pair<Color,BufferedImage>> getExtraIcon() {
+    public Function<BPos, Pair<Color, BufferedImage>> getExtraIcon() {
         return null;
     }
 
@@ -54,35 +54,38 @@ public abstract class StaticIcon extends IconRenderer {
             String stringInfo = getExtraInfo().apply(pos);
             if (stringInfo != null) {
                 Color old = g2d.getColor();
-//                g2d.setColor(Color.GRAY);
-//                g2d.setStroke(new BasicStroke(2));
-//                g2d.fillOval(info.x + sx + 15, info.y + sy+15, 10, 10);
+
                 char[] charArray = stringInfo.toCharArray();
-                g2d.setColor(Color.BLACK);
-                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 14F * scaleFactor));
                 int posX = info.x + sx + 5 * (charArray.length == 1 ? 1 : 0);
                 int posY = (int) (info.y + sy - 5 + DEFAULT_VALUE * scaleFactor);
+
+                // back characters (shadow effect)
+                g2d.setColor(Color.BLACK);
+                g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 14F * scaleFactor));
                 g2d.drawChars(charArray, 0, charArray.length, posX - 1, posY - 1);
+
+                // front characters (reading)
                 g2d.setColor(Color.WHITE);
                 g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 13 * scaleFactor));
                 g2d.drawChars(charArray, 0, charArray.length, posX, posY);
+
                 g2d.setColor(old);
             }
         }
         if (getExtraIcon() != null && this.getContext().getSettings().showExtraIcons) {
-            Pair<Color,BufferedImage> extraIcon = getExtraIcon().apply(pos);
+            Pair<Color, BufferedImage> extraIcon = getExtraIcon().apply(pos);
             if (extraIcon != null) {
                 int posX = (int) (info.x + sx + (DEFAULT_VALUE - 16) * scaleFactor / 2);
                 int posY = (int) (info.y + sy - (DEFAULT_VALUE + 16) * scaleFactor / 2);
                 Shape oldClip = g2d.getClip();
-                if (oldClip.contains(posX-5,posY-5)){
+                if (oldClip.contains(posX - 5, posY - 5)) {
                     Color oldColor = g2d.getColor();
                     int size = (int) (16 * scaleFactor);
                     g2d.setClip(new Ellipse2D.Float(posX, posY, size, size));
                     g2d.setColor(extraIcon.getFirst());
-                    g2d.fillRect(posX,posY,size,size);
-                    int offset=Math.max(1,(int)(2*scaleFactor));
-                    paintImage(extraIcon.getSecond(), g2d, 12, new Pair<>(scaleFactor, scaleFactor), new Pair<>(posX+offset, posY+offset), false);
+                    g2d.fillRect(posX, posY, size, size);
+                    int offset = Math.max(1, (int) (2 * scaleFactor));
+                    paintImage(extraIcon.getSecond(), g2d, 12, new Pair<>(scaleFactor, scaleFactor), new Pair<>(posX + offset, posY + offset), false);
                     g2d.setClip(oldClip);
                     g2d.setColor(oldColor);
                 }

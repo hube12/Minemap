@@ -119,8 +119,12 @@ public class MapManager {
                         toolsList.add(selectedTool);
                         selectedTool.addPoint(pos);
                     }
+                    // weird case when removed
+                    if (selectedTool.getPointsTraced()>0 && toolsList.isEmpty()){
+                        toolsList.add(selectedTool);
+                    }
                 }
-                this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
+                this.panel.rightBar.tooltip.updateToolsMetrics();
             }
         }));
 
@@ -365,7 +369,7 @@ public class MapManager {
                 rTools.accept(new Pair<>("Enable", "Disable"));
                 if (!selectedTool.isAcceptable()) {
                     removeTool(selectedTool);
-                    this.panel.rightBar.tooltip.updateToolsMetrics(toolsList);
+                    this.panel.rightBar.tooltip.updateToolsMetrics();
                 }
                 if (tool.getClass().equals(selectedTool.getClass())) {
                     selectedTool = null;

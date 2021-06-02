@@ -35,7 +35,7 @@ public class Polyline extends Tool {
             Pair<Double, List<Integer>> res = program.startApplication(bPosList);
             ListUtil.reindexInPlace(bPosList, res.getSecond().toArray(new Integer[0]));
             ListUtil.cycleInPlace(bPosList, firstPoint);
-            manager.getPanel().rightBar.tooltip.updateToolsMetrics(manager.toolsList);
+            manager.getPanel().rightBar.tooltip.updateToolsMetrics();
         });
         return true;
     }

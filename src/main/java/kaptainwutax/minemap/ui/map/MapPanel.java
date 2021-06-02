@@ -44,7 +44,6 @@ public class MapPanel extends JPanel {
         this.manager = new MapManager(this);
 
         this.leftBar = new MapLeftSideBar(this);
-        // right bar depends of the manager since it holds the chestinstance
         this.rightBar = new MapRightSideBar(this);
 
 

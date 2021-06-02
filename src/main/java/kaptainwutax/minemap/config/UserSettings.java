@@ -22,6 +22,8 @@ public class UserSettings {
     @Expose
     public boolean allowFlashing = false;
     @Expose
+    public boolean disableStronghold = false;
+    @Expose
     public MapManager.ModifierDown modifierDown = MapManager.ModifierDown.CTRL_DOWN;
 
     public DistanceMetric getFragmentMetric() {
