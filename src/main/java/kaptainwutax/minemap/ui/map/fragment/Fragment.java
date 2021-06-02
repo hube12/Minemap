@@ -128,7 +128,7 @@ public class Fragment {
     }
 
 
-    public void drawSinglePolygon(Graphics graphics, DrawInfo info, Tool tool, Area polygon) {
+    private void drawSinglePolygon(Graphics graphics, DrawInfo info, Tool tool, Area polygon) {
         Area rectangle = new Area(this.getRectangle());
 
         polygon.intersect(rectangle);

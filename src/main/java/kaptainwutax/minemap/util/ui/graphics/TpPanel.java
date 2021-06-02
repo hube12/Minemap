@@ -13,7 +13,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.MouseEvent;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
@@ -26,7 +28,7 @@ public class TpPanel {
 
         // create the inner list
         final ListPanel listPanel = new ListPanel();
-        bPosList.forEach(bPos -> listPanel.addPanel(new Entry(feature, bPos)));
+        bPosList.forEach(e->listPanel.addPanel(new Entry(feature,e,listPanel)));
         listPanel.removeLastBorder();
 
         JButton copyTPs = new JButton("Copy all TPs");
@@ -63,36 +65,14 @@ public class TpPanel {
         frame.setVisible(true);
     }
 
-    static class Entry extends RoundedPanel {
-        private final JComponent iconView;
-        private final JLabel positionText;
+    static class Entry extends RoundedFloatingEntry {
         private final CopyButton copyCoordinate;
         private final JumpButton jumpCoordinate;
 
-        public Entry(Feature<?, ?> feature, BPos pos) {
-            this.setLayout(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.insets = new Insets(3, 3, 3, 3);
+        public Entry(Feature<?, ?> feature, BPos pos,ListPanel listPanel) {
+            super(" [" + pos.getX() + ", " + pos.getZ() + "] " + Str.formatName(feature.getName()),
+                feature.getClass(), panel->e->listPanel.removePanel(panel));
 
-            this.iconView = new JComponent() {
-                @Override
-                public java.awt.Dimension getPreferredSize() {
-                    return new java.awt.Dimension(30, 30);
-                }
-
-                @Override
-                protected void paintComponent(Graphics g) {
-                    super.paintComponent(g);
-                    paintImage(Icons.get(feature.getClass()), g);
-                }
-            };
-
-            this.positionText = new JLabel(" [" + pos.getX() + ", " + pos.getZ() + "] " + Str.formatName(feature.getName()));
-            this.positionText.setFont(new Font(this.positionText.getFont().getName(), Font.PLAIN, 18));
-            this.positionText.setBackground(new Color(0, 0, 0, 0));
-            this.positionText.setFocusable(false);
-            this.positionText.setOpaque(true);
-            this.positionText.setForeground(Color.WHITE);
 
             this.copyCoordinate = new CopyButton(16, 6, 1.0F, true, Color.DARK_GRAY);
             this.copyCoordinate.addActionListener(e -> {
@@ -111,10 +91,8 @@ public class TpPanel {
                 this.jumpCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
-            this.add(this.iconView, gbc);
-            this.add(this.positionText, gbc);
-            this.add(this.jumpCoordinate, gbc);
-            this.add(this.copyCoordinate, gbc);
+            this.addAtIndex(this.jumpCoordinate, 2);
+            this.addAtIndex(this.copyCoordinate, 3);
 
             this.setBackground(new Color(0, 0, 0, 180));
         }

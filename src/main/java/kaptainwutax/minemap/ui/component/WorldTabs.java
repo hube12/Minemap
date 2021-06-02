@@ -29,6 +29,7 @@ import static kaptainwutax.minemap.MineMap.isDarkTheme;
 
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
+    public static final Color BACKGROUND_COLOR_LIGHT = new Color(191, 191, 191);
     protected final Set<TabGroup> tabGroups = new HashSet<>();
     public final Dropdown<TabGroup> dropdown = new Dropdown<TabGroup>(
         // what is better than a hashcode that can roll? a timestamp!

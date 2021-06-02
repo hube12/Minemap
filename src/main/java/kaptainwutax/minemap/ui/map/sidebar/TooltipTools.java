@@ -62,7 +62,7 @@ public class TooltipTools extends JPanel {
     public static class Entry extends RoundedFloatingEntry {
 
         public Entry(Tool tool, Consumer<MouseEvent> onClose) {
-            super( String.join("\n", tool.getMetricString()),tool.getClass(),onClose);
+            super( String.join("\n", tool.getMetricString()),tool.getClass(),e->onClose);
 
             ColorChooserButton colorChooser = new ColorChooserButton(tool.getColor());
             colorChooser.addColorChangedListener(tool::setColor);

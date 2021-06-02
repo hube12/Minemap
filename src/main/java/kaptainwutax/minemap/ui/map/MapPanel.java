@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static kaptainwutax.minemap.MineMap.DEBUG;
+import static kaptainwutax.minemap.MineMap.isDarkTheme;
 
 public class MapPanel extends JPanel {
     public final MapContext context;
@@ -46,8 +47,12 @@ public class MapPanel extends JPanel {
         this.leftBar = new MapLeftSideBar(this);
         this.rightBar = new MapRightSideBar(this);
 
+        if (isDarkTheme()) {
+            this.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
+        }else{
+            this.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
+        }
 
-        this.setBackground(WorldTabs.BACKGROUND_COLOR.darker().darker());
         this.add(this.leftBar, BorderLayout.WEST);
         this.add(this.rightBar, BorderLayout.EAST);
 
@@ -100,6 +105,11 @@ public class MapPanel extends JPanel {
     }
 
     public void restart() {
+        if (isDarkTheme()) {
+            this.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
+        }else{
+            this.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
+        }
         if (this.scheduler != null) this.scheduler.terminate();
         this.scheduler = new FragmentScheduler(this, this.threadCount);
         this.repaint();

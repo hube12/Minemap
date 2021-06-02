@@ -35,6 +35,7 @@ public class ListPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(mainList);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         // need to resize the element hidden by forcing the validate.
         scrollPane.getVerticalScrollBar().addAdjustmentListener(e -> panels.forEach(JComponent::revalidate));
         this.add(scrollPane);
@@ -111,11 +112,10 @@ public class ListPanel extends JPanel {
     }
 
     public void removePanel(int i) {
-        super.remove(i);
+        this.mainList.remove(i);
         panels.remove(i);
         internalPanels.remove(i);
         revalidate();
-        invalidate();
         repaint();
     }
 

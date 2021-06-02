@@ -6,10 +6,12 @@ import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.ui.map.tool.Tool;
 import kaptainwutax.minemap.util.data.DrawInfo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Area;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -27,6 +29,9 @@ public class FragmentScheduler {
 
         @Override
         public void drawFeatures(Graphics graphics, DrawInfo info) { }
+
+        @Override
+        public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {}
     };
     public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
     protected ThreadPool executor;
@@ -43,7 +48,7 @@ public class FragmentScheduler {
                 if (nearest == null) {
                     try {
                         Thread.sleep(1);
-                    } catch (InterruptedException e) { //tada!
+                    } catch (InterruptedException e) {
                         Logger.LOGGER.severe(e.toString());
                         e.printStackTrace();
                     }
@@ -112,15 +117,7 @@ public class FragmentScheduler {
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ) {
-        RPos regionPos = new RPos(regionX, regionZ, this.listener.getManager().blocksPerFragment);
-
-        if (!this.fragments.containsKey(regionPos) && !this.scheduledRegions.contains(regionPos)) {
-            this.fragments.put(regionPos, LOADING_FRAGMENT);
-            this.scheduledRegions.add(regionPos);
-            this.scheduledModified.set(true);
-        }
-
-        return this.fragments.get(regionPos);
+        return this.getFragmentAt(regionX,regionZ,1);
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ, int factor) {

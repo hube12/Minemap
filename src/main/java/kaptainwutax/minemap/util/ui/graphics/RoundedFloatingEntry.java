@@ -13,6 +13,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 
@@ -22,7 +23,7 @@ public class RoundedFloatingEntry extends RoundedPanel {
     private final JButton closeButton;
     private final GridBagConstraints constraints;
 
-    public RoundedFloatingEntry(String text, Class<?> classIcon, Consumer<MouseEvent> onClose) {
+    public RoundedFloatingEntry(String text, Class<?> classIcon, Function<RoundedFloatingEntry,Consumer<MouseEvent>> onClose) {
         this.setLayout(new GridBagLayout());
         this.constraints = new GridBagConstraints();
         this.constraints.insets = new Insets(3, 3, 3, 3);
@@ -84,7 +85,7 @@ public class RoundedFloatingEntry extends RoundedPanel {
             public void moveDot(int dot) {}
         });
         this.closeButton = new CloseButton(16, 0, 1.8f);
-        this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
+        this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose.apply(this)));
 
         this.add(this.iconView, constraints);
         this.add(this.positionText, constraints);
