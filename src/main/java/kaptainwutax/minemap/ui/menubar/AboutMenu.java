@@ -6,6 +6,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.dialog.IconSizeDialog;
+import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -20,6 +21,7 @@ public class AboutMenu extends Menu {
 
     private final JMenu lookMenu;
     private final JMenu styleMenu;
+    private final JCheckBoxMenuItem hideDockableContainers;
     private final JMenuItem iconSize;
     private final JMenuItem settingsFolder;
     private final JMenuItem about;
@@ -34,6 +36,18 @@ public class AboutMenu extends Menu {
         this.styleMenu = new JMenu("Biome Style");
         this.addBiomeGroup();
 
+        this.hideDockableContainers = new JCheckBoxMenuItem("Hide dock arrows");
+        this.hideDockableContainers.addChangeListener(e -> {
+            Configs.USER_PROFILE.getUserSettings().hideDockableContainer = this.hideDockableContainers.getState();
+            MapPanel mapPanel=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (mapPanel!=null){
+                mapPanel.rightBar.searchBox.setVisible(!this.hideDockableContainers.getState());
+                mapPanel.rightBar.chestBox.setVisible(!this.hideDockableContainers.getState());
+            }
+            Configs.USER_PROFILE.flush();
+        });
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.hideDockableContainers.setState(Configs.USER_PROFILE.getUserSettings().hideDockableContainer)));
+
         this.iconSize = new JMenuItem("Change Icons Size");
         this.addMouseAndKeyListener(this.iconSize, iconSize(), iconSize(), true);
 
@@ -45,6 +59,7 @@ public class AboutMenu extends Menu {
 
         this.menu.add(this.lookMenu);
         this.menu.add(this.styleMenu);
+        this.menu.add(this.hideDockableContainers);
         this.menu.add(this.iconSize);
         this.menu.add(this.settingsFolder);
         this.menu.add(this.about);

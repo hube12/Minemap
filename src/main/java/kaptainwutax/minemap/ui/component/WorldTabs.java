@@ -3,6 +3,7 @@ package kaptainwutax.minemap.ui.component;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
@@ -63,6 +64,13 @@ public class WorldTabs extends ExtendedTabbedPane {
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 WorldTabs.super.repaint();
+            }
+        });
+        this.getJTabbedPane().addChangeListener(e->{
+            MapPanel mapPanel=this.getSelectedMapPanel();
+            if (mapPanel!=null){
+                mapPanel.rightBar.searchBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
+                mapPanel.rightBar.chestBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
             }
         });
     }

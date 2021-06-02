@@ -1,5 +1,6 @@
 package kaptainwutax.minemap.util.ui.interactive;
 
+import kaptainwutax.minemap.init.Configs;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
 import javax.swing.*;

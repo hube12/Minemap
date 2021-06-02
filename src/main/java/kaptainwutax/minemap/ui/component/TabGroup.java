@@ -7,6 +7,7 @@ import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.*;
 
 public class TabGroup extends JTabbedPane {

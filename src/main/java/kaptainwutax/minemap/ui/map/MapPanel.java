@@ -4,6 +4,7 @@ import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.RPos;
 import kaptainwutax.mcutils.version.MCVersion;
+import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.ui.component.TabHeader;
 import kaptainwutax.minemap.ui.component.WorldTabs;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;

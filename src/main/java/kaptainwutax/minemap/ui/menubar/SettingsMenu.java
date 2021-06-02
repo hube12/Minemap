@@ -52,6 +52,7 @@ public class SettingsMenu extends Menu {
             Configs.USER_PROFILE.getUserSettings().allowFlashing = this.flashing.getState();
             Configs.USER_PROFILE.flush();
         });
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.flashing.setState(Configs.USER_PROFILE.getUserSettings().allowFlashing)));
 
         this.disableStrongholds = new JCheckBoxMenuItem("Disable stronghold (Even faster!)");
         this.disableStrongholds.addChangeListener(e -> {
@@ -64,8 +65,7 @@ public class SettingsMenu extends Menu {
             }
             Configs.USER_PROFILE.flush();
         });
-
-        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.flashing.setState(Configs.USER_PROFILE.getUserSettings().allowFlashing)));
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.disableStrongholds.setState(Configs.USER_PROFILE.getUserSettings().disableStronghold)));
 
         this.shortcuts = new JMenuItem("Shortcuts");
         this.addMouseAndKeyListener(this.shortcuts, changeShortcuts(), changeShortcuts(), false);

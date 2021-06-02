@@ -24,6 +24,8 @@ public class UserSettings {
     @Expose
     public boolean disableStronghold = false;
     @Expose
+    public boolean hideDockableContainer = false;
+    @Expose
     public MapManager.ModifierDown modifierDown = MapManager.ModifierDown.CTRL_DOWN;
 
     public DistanceMetric getFragmentMetric() {
