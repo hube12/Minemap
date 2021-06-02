@@ -2,12 +2,15 @@ package kaptainwutax.minemap.util.ui.interactive;
 
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.init.Logger;
+import kaptainwutax.minemap.ui.component.TabGroup;
+import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -71,7 +74,26 @@ public class Dropdown<E> extends JComboBox<String> {
 
     public void setDefault(E element) {
         if (element == null) return;
-        this.setSelectedItem(mapper.map(element));
+        this.setSelectedItem(elements.stream().filter(e->e.getFirst()==element).map(Pair::getSecond).findFirst().orElse(mapper.map(element)));
+    }
+
+    @Override
+    public void setSelectedItem(Object item) {
+        super.setSelectedItem(item);
+        // FIXME, this is so bad
+        if (item instanceof String) {
+            if (elements!=null){
+                List<E> eList=elements.stream().filter(e->e.getSecond().equals(item)).map(Pair::getFirst).collect(Collectors.toList());
+                if (eList.size()==1){
+                    E first=eList.get(0);
+                    if (first instanceof TabGroup){
+                        if (((TabGroup) first).isLazyLoaded()) {
+                            ((TabGroup) first).loadEffectively();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void remove(E element) {
@@ -88,7 +110,7 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public void add(E element) {
-        if (element==null) return;
+        if (element == null) return;
         String map = mapper.map(element);
         this.elements.add(new Pair<>(element, map));
         this.addItem(map);

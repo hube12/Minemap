@@ -185,7 +185,6 @@ public class EnterSeedDialog extends Dialog {
             for (String seed:seeds){
                 MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
                     threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(),false);
-                System.out.println(index++);
             }
             String text=seedField.getText();
             if (text==null || text.equals("")){

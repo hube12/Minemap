@@ -3,9 +3,11 @@ package kaptainwutax.minemap.ui.component;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
+import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
+import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.util.ui.interactive.ExtendedTabbedPane;
 
@@ -17,12 +19,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.MineMap.isDarkTheme;
@@ -31,9 +31,11 @@ public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
     protected final List<TabGroup> tabGroups = new ArrayList<>();
     public final Dropdown<TabGroup> dropdown = new Dropdown<TabGroup>(
-        j -> String.format("%d [%s]::%s ", j.getWorldSeed(), j.getVersion(), j.hashCode()),
-        value -> value!=null?((String) value).split("::")[0]: null
+        // what is better than a hashcode that can roll? a timestamp!
+        j -> String.format("%d [%s]::%s ", j.getWorldSeed(), j.getVersion(), System.nanoTime()),
+        value -> value != null ? ((String) value).split("::")[0] : null
     );
+    public final JButton closeAllCurrent;
     public TabGroup current;
 
     @SuppressWarnings("deprecation")
@@ -47,9 +49,12 @@ public class WorldTabs extends ExtendedTabbedPane {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
         });
+        this.closeAllCurrent = new JButton(new ImageIcon(Objects.requireNonNull(Icons.get(CloseButton.class))));
+        this.closeAllCurrent.addActionListener(e -> closeTabs());
+        this.addSideComponent(dropdown, ButtonSide.TRAILING);
         this.addSideComponent(dropdown, ButtonSide.TRAILING);
         dropdown.addActionListener(e -> {
-            if (dropdown.getSelected() != current && dropdown.getSelected()!=null) {
+            if (dropdown.getSelected() != current && dropdown.getSelected() != null) {
                 this.cleanSetTabGroup(dropdown.getSelected());
             }
         });
@@ -66,8 +71,8 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public TabGroup load(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions, boolean shouldSwitch) {
-        TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions);
-        if (this.tabGroups.contains(tabGroup)){
+        TabGroup tabGroup = new TabGroup(version, worldSeed, threadCount, dimensions, !shouldSwitch);
+        if (this.tabGroups.contains(tabGroup)) {
             return null;
         }
         this.tabGroups.add(tabGroup);
@@ -83,7 +88,7 @@ public class WorldTabs extends ExtendedTabbedPane {
     public void cleanSetTabGroup(TabGroup tabGroup) {
         // remove all elements in the jtabbedpane
         this.removeAll();
-        if (tabGroup==null) return;
+        if (tabGroup == null) return;
         this.dropdown.setDefault(tabGroup);
         this.current = tabGroup;
         this.setTabGroup(tabGroup);
@@ -93,7 +98,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         AtomicBoolean first = new AtomicBoolean(true);
 
         tabGroup.getPanels().forEach((dimension, mapPanel) -> {
-            this.addMapTab( Str.prettifyDashed(dimension.getName()), tabGroup, mapPanel);
+            this.addMapTab(Str.prettifyDashed(dimension.getName()), tabGroup, mapPanel);
             if (first.get()) {
                 this.setSelectedIndex(this.getTabCount() - 1);
                 first.set(false);
@@ -104,8 +109,9 @@ public class WorldTabs extends ExtendedTabbedPane {
     @Override
     public void remove(Component component) {
         if (component instanceof MapPanel) {
+            if (((MapPanel) component).getHeader().isSaved()) return;
             this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel) component));
-            List<TabGroup> toRemove=this.tabGroups.stream().filter(TabGroup::isEmpty).collect(Collectors.toList());
+            List<TabGroup> toRemove = this.tabGroups.stream().filter(TabGroup::isEmpty).collect(Collectors.toList());
             toRemove.forEach(this::remove);
         }
 
@@ -113,11 +119,15 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public void remove(TabGroup tabGroup) {
-        for (MapPanel mapPanel : tabGroup.getMapPanels()) {
-            super.remove(mapPanel);
+        for (MapPanel mapPanel : new ArrayList<>(tabGroup.getMapPanels())) {
+            this.remove(mapPanel);
         }
-        this.tabGroups.remove(tabGroup);
-        this.dropdown.remove(tabGroup);
+        if (tabGroup.getMapPanels().isEmpty()){
+            this.tabGroups.remove(tabGroup);
+            this.dropdown.remove(tabGroup);
+            current = this.dropdown.getSelected();
+            this.repaint();
+        }
     }
 
     public MapPanel getSelectedMapPanel() {
@@ -165,9 +175,9 @@ public class WorldTabs extends ExtendedTabbedPane {
 
     public void addMapTab(String title, TabGroup tabGroup, MapPanel mapPanel) {
         mapPanel.updateInteractive();
-        if (mapPanel.getHeader()!=null){
+        if (mapPanel.getHeader() != null) {
             this.addTab(title, mapPanel, mapPanel.getHeader());
-        }else{
+        } else {
             TabHeader tabHeader = new TabHeader(title, e -> {
                 if (e.isShiftDown()) this.remove(tabGroup);
                 else this.remove(mapPanel);
@@ -198,7 +208,7 @@ public class WorldTabs extends ExtendedTabbedPane {
                 this.remove(other);
             }
         }));
-         popup.add(removeOthers);
+        popup.add(removeOthers);
 
         JMenuItem copySeed = new JMenuItem("Copy seed");
         copySeed.setBorder(new EmptyBorder(5, 15, 5, 15));
