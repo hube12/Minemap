@@ -104,11 +104,11 @@ public class TabGroup extends JTabbedPane {
         if (this == o) return true;
         if (!(o instanceof TabGroup)) return false;
         TabGroup tabGroup = (TabGroup) o;
-        return worldSeed == tabGroup.worldSeed && version == tabGroup.version && mapPanels.equals(tabGroup.mapPanels);
+        return worldSeed == tabGroup.worldSeed && threadCount == tabGroup.threadCount && version == tabGroup.version && Objects.equals(dimensions, tabGroup.dimensions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(version, mapPanels, worldSeed);
+        return Objects.hash(version, dimensions,threadCount, worldSeed);
     }
 }

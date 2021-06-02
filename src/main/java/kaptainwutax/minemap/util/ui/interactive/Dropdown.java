@@ -7,8 +7,8 @@ import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -17,7 +17,9 @@ import java.util.stream.Stream;
 public class Dropdown<E> extends JComboBox<String> {
 
     public final StringMapper<E> mapper;
-    public final ArrayList<Pair<E, String>> elements;
+    public final HashMap<E, String> elements=new HashMap<>();
+    public final HashMap<String, E> strings=new HashMap<>();
+    public final List<String> order;
 
     @SafeVarargs
     public Dropdown(E... elements) {
@@ -54,9 +56,12 @@ public class Dropdown<E> extends JComboBox<String> {
         super(elements.stream().map(mapper::map).toArray(String[]::new));
 //        this.setEditable(true); // DON'T DO THAT IT CAUSE A LOT OF NPE (STILL A JDK BUG)
 
-
+        this.order=elements.stream().map(mapper::map).collect(Collectors.toList());
         this.mapper = mapper;
-        this.elements = elements.stream().map(e -> new Pair<>(e, mapper.map(e))).collect(Collectors.toCollection(ArrayList::new));
+        for (E element:elements){
+            this.elements.put(element,mapper.map(element));
+            this.strings.put(mapper.map(element),element);
+        }
         this.setOpaque(true);
         DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
             @Override
@@ -72,7 +77,9 @@ public class Dropdown<E> extends JComboBox<String> {
 
     public void setDefault(E element) {
         if (element == null) return;
-        this.setSelectedItem(elements.stream().filter(e->e.getFirst()==element).map(Pair::getSecond).findFirst().orElse(mapper.map(element)));
+        String e = elements.get(element);
+        if (e == null) this.setSelectedItem(mapper.map(element));
+        this.setSelectedItem(e);
     }
 
     @Override
@@ -80,37 +87,40 @@ public class Dropdown<E> extends JComboBox<String> {
         super.setSelectedItem(item);
         // FIXME, this is so bad
         if (item instanceof String) {
-            if (elements!=null){
-                List<E> eList=elements.stream().filter(e->e.getSecond().equals(item)).map(Pair::getFirst).collect(Collectors.toList());
-                if (eList.size()==1){
-                    E first=eList.get(0);
-                    if (first instanceof TabGroup){
+            if (elements != null) {
+                E first = strings.get(item);
+                if (first instanceof TabGroup) {
                         if (((TabGroup) first).isLazyLoaded()) {
                             ((TabGroup) first).loadEffectively();
                         }
-                    }
+
                 }
             }
         }
     }
 
     public void remove(E element) {
-        Pair<E, String> toRemove = null;
-        for (Pair<E, String> e : this.elements) {
-            if (e.getFirst() == element) {
-                toRemove = e;
+        String toRemove=this.elements.get(element);
+        if (toRemove!=null){
+            this.elements.remove(element);
+            this.strings.remove(toRemove);
+            if (this.order.get(this.getSelectedIndex()).equals(toRemove)){
+                this.order.remove(this.getSelectedIndex());
+            }else{
+                System.out.println("missed");
+                this.order.remove(toRemove);
+
             }
-        }
-        if (toRemove != null) {
-            elements.remove(toRemove);
-            super.removeItem(toRemove.getSecond());
+            super.removeItem(toRemove);
         }
     }
 
     public void add(E element) {
         if (element == null) return;
         String map = mapper.map(element);
-        this.elements.add(new Pair<>(element, map));
+        this.elements.put(element,map);
+        this.strings.put(map,element);
+        this.order.add(map);
         this.addItem(map);
     }
 
@@ -145,8 +155,13 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public E getElement(int index) {
-        Pair<E, String> e = this.elements.get(index);
-        return e == null ? null : e.getFirst();
+        if (index<this.order.size()){
+            String s=this.order.get(index);
+            if (s!=null){
+                return this.strings.get(s);
+            }
+        }
+        return null;
     }
 
     public E getSelected() {
@@ -164,13 +179,11 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public boolean selectIfPresent(E element, BiPredicate<E, E> equals) {
-        for (Pair<E, String> e : this.elements) {
-            if (equals.test(e.getFirst(), element)) {
-                this.setDefault(element);
-                return true;
-            }
+        String e=this.elements.get(element);
+        if (e!=null){
+            this.setDefault(element);
+            return true;
         }
-
         return false;
     }
 

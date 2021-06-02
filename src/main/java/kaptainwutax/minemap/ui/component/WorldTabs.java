@@ -109,12 +109,6 @@ public class WorldTabs extends ExtendedTabbedPane {
 
     @Override
     public void remove(Component component) {
-        if (component instanceof MapPanel) {
-            if (((MapPanel) component).getHeader().isSaved()) return;
-            this.tabGroups.forEach(tabGroup -> tabGroup.removeIfPresent((MapPanel) component));
-            List<TabGroup> toRemove = this.tabGroups.stream().filter(TabGroup::isEmpty).collect(Collectors.toList());
-            toRemove.forEach(this::remove);
-        }
         this.getJTabbedPane().remove(component);
     }
 
@@ -199,8 +193,8 @@ public class WorldTabs extends ExtendedTabbedPane {
             this.addTab(title, mapPanel, mapPanel.getHeader());
         } else {
             TabHeader tabHeader = new TabHeader(title, e -> {
-                if (e.isShiftDown()) this.remove(tabGroup);
-                else this.remove(tabGroup,mapPanel);
+                if (e.isShiftDown()) closeTabs();
+                else closeTab();
             });
 
             tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
@@ -227,8 +221,12 @@ public class WorldTabs extends ExtendedTabbedPane {
             this.tabGroups.clear();
             this.dropdown.removeAllItems();
             this.dropdown.elements.clear();
+            this.dropdown.strings.clear();
+            this.dropdown.order.clear();
             this.dropdown.add(current);
             this.tabGroups.add(current);
+            cleanSetTabGroup(current);
+
             this.repaint();
         }));
         popup.add(removeOthers);
