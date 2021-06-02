@@ -33,9 +33,9 @@ public class Texture {
 
         // Flips image vertically so that it is not seen upside down
         stbi_set_flip_vertically_on_load(true);
-        ByteBuffer buffer= IOUtils.getFromFile(path,IOUtils::readBufferFromInputStream);
-        if (buffer==null){
-            Logger.LOGGER.severe("Failed to read texture from "+path);
+        ByteBuffer buffer = IOUtils.getFromFile(path, IOUtils::readBufferFromInputStream);
+        if (buffer == null) {
+            Logger.LOGGER.severe("Failed to read texture from " + path);
             return;
         }
         // heap buffer are not accepted by load_from_memory
@@ -54,8 +54,8 @@ public class Texture {
     }
 
     // this is meant to be internally used
-    protected Texture(int textureId){
-        this.texture=textureId;
+    protected Texture(int textureId) {
+        this.texture = textureId;
     }
 
     /**
@@ -84,7 +84,7 @@ public class Texture {
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    public void destroy(){
+    public void destroy() {
         glDeleteTextures(texture);
     }
 

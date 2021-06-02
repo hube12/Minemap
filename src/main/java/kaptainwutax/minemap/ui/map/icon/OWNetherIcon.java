@@ -34,11 +34,11 @@ public class OWNetherIcon extends RegionIcon {
 
     @Override
     public Function<Integer, Integer> integerTranslation() {
-       return e->e>>3;
+        return e -> e >> 3;
     }
 
     @Override
     public Function<BPos, BPos> blockPosTranslation() {
-        return e->e.shl(3);
+        return e -> e.shl(3);
     }
 }

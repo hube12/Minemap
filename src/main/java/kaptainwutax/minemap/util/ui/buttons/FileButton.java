@@ -2,9 +2,9 @@ package kaptainwutax.minemap.util.ui.buttons;
 
 import java.awt.*;
 
-public class FileButton extends ButtonIcon{
-    public FileButton(int size, int inset, float factor, boolean background, Color backgroundColor,boolean border) {
-        super(size, inset, factor, background, backgroundColor,border);
+public class FileButton extends ButtonIcon {
+    public FileButton(int size, int inset, float factor, boolean background, Color backgroundColor, boolean border) {
+        super(size, inset, factor, background, backgroundColor, border);
     }
 
     public FileButton(int size, int inset, float factor, boolean background, Color backgroundColor) {

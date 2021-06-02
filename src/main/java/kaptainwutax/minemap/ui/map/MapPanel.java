@@ -41,7 +41,7 @@ public class MapPanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         this.context = new MapContext(version, dimension, worldSeed);
-        this.chestInstance= new ChestInstance(this);
+        this.chestInstance = new ChestInstance(this);
         this.manager = new MapManager(this);
 
         this.leftBar = new MapLeftSideBar(this);
@@ -49,7 +49,7 @@ public class MapPanel extends JPanel {
 
         if (isDarkTheme()) {
             this.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
-        }else{
+        } else {
             this.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
         }
 
@@ -67,6 +67,14 @@ public class MapPanel extends JPanel {
                         rightBar.tooltip.setVisible(false);
                         rightBar.tooltip.isHiddenForSize = true;
                     }
+                    if (rightBar.chestBox.isVisible()) {
+                        rightBar.chestBox.setVisible(false);
+                        rightBar.chestBox.isHiddenForSize = true;
+                    }
+                    if (rightBar.searchBox.isVisible()) {
+                        rightBar.searchBox.setVisible(false);
+                        rightBar.searchBox.isHiddenForSize = true;
+                    }
                 } else {
                     if (leftBar.settings.isHiddenForSize) {
                         leftBar.settings.setVisible(true);
@@ -76,6 +84,14 @@ public class MapPanel extends JPanel {
                         rightBar.tooltip.setVisible(true);
                         rightBar.tooltip.isHiddenForSize = false;
                     }
+                    if (rightBar.chestBox.isHiddenForSize) {
+                        rightBar.chestBox.setVisible(true);
+                        rightBar.chestBox.isHiddenForSize = false;
+                    }
+                    if (rightBar.searchBox.isHiddenForSize) {
+                        rightBar.searchBox.setVisible(true);
+                        rightBar.searchBox.isHiddenForSize = false;
+                    }
                 }
             }
         });
@@ -84,7 +100,7 @@ public class MapPanel extends JPanel {
         this.restart();
     }
 
-    public void updateInteractive(){
+    public void updateInteractive() {
         this.manager.updateInteractive();
     }
 

@@ -76,7 +76,7 @@ public class StructureHopperDialog extends Dialog {
             biomeSource = context.getBiomeSource(Dimension.NETHER);
             dimCoeff = 3;
         }
-        Stream<BPos> stream=StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff);
+        Stream<BPos> stream = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff);
         assert stream != null;
         List<BPos> bPosList = StreamEx.of(stream)
             .sequential()

@@ -25,11 +25,11 @@ public class IglooIcon extends RegionIcon {
     }
 
     @Override
-    public Function<BPos, Pair<Color,BufferedImage>> getExtraIcon() {
+    public Function<BPos, Pair<Color, BufferedImage>> getExtraIcon() {
         return bPos -> {
             Igloo igloo = new Igloo(this.getContext().getVersion());
             return igloo.hasBasement(this.getContext().worldSeed, bPos.toChunkPos(), new ChunkRand()) ?
-                new Pair<>(new Color(0x338ED5),Icons.get(IglooLabIcon.class)) : null;
+                new Pair<>(new Color(0x338ED5), Icons.get(IglooLabIcon.class)) : null;
         };
     }
 }

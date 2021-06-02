@@ -81,7 +81,7 @@ public class LootSearchDialog extends Dialog {
             if (Generators.get(superClazz) == null) return false;
             Feature<?, ?> f = Features.getForVersion(map.getContext().getVersion()).get(e);
             if (f == null) return false;
-            return f.getValidDimension()==map.getContext().getDimension() && f.isValidDimension(map.getContext().getDimension());
+            return f.getValidDimension() == map.getContext().getDimension() && f.isValidDimension(map.getContext().getDimension());
         }).collect(Collectors.toList());
         if (features.size() == 0) {
             Logger.LOGGER.severe("No features");
@@ -182,7 +182,7 @@ public class LootSearchDialog extends Dialog {
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
         Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff);
-        if (stream==null) return;
+        if (stream == null) return;
         List<BPos> bPosList = StreamEx.of(Objects.requireNonNull(stream))
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds

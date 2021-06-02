@@ -28,7 +28,7 @@ public class TpPanel {
 
         // create the inner list
         final ListPanel listPanel = new ListPanel();
-        bPosList.forEach(e->listPanel.addPanel(new Entry(feature,e,listPanel)));
+        bPosList.forEach(e -> listPanel.addPanel(new Entry(feature, e, listPanel)));
         listPanel.removeLastBorder();
 
         JButton copyTPs = new JButton("Copy all TPs");
@@ -69,9 +69,9 @@ public class TpPanel {
         private final CopyButton copyCoordinate;
         private final JumpButton jumpCoordinate;
 
-        public Entry(Feature<?, ?> feature, BPos pos,ListPanel listPanel) {
+        public Entry(Feature<?, ?> feature, BPos pos, ListPanel listPanel) {
             super(" [" + pos.getX() + ", " + pos.getZ() + "] " + Str.formatName(feature.getName()),
-                feature.getClass(), panel->e->listPanel.removePanel(panel));
+                feature.getClass(), panel -> e -> listPanel.removePanel(panel));
 
 
             this.copyCoordinate = new CopyButton(16, 6, 1.0F, true, Color.DARK_GRAY);

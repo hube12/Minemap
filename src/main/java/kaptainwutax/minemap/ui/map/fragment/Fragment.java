@@ -197,13 +197,13 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        MapPanel panel=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         int cheating;
         if (panel != null && panel.manager != null) {
             cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
             if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
-        }else{
-            cheating=1;
+        } else {
+            cheating = 1;
         }
         lastCheating = cheating;
         this.layerIdCache = this.context.getLayerId();

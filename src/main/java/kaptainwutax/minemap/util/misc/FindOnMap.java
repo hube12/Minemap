@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FindOnMap {
-    public static ArrayList<Pair<Feature<?, ?>, List<BPos>>> findFeaturesSelected(){
+    public static ArrayList<Pair<Feature<?, ?>, List<BPos>>> findFeaturesSelected() {
         MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = new ArrayList<>();
-        if (map==null || map.manager==null || map.manager.mousePointer==null || map.scheduler==null) return null;
+        if (map == null || map.manager == null || map.manager.mousePointer == null || map.scheduler == null) return null;
         int size = (int) map.manager.pixelsPerFragment;
         {
             BPos bPos = map.manager.getPos(map.manager.mousePointer.x, map.manager.mousePointer.y);

@@ -22,9 +22,9 @@ public class Visualizer {
     private Block light;
     private Vector3f lightPos;
     private Font font;
-    private String text=null;
-    protected static final EventManager eventManager=new EventManager();
-    private boolean isRunning=false;
+    private String text = null;
+    protected static final EventManager eventManager = new EventManager();
+    private boolean isRunning = false;
 
     private void draw(MemoryStack stack) {
         // Bind shader
@@ -77,6 +77,7 @@ public class Visualizer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
+
     private void disable2DContext() {
         glEnable(GL_TEXTURE_2D);
         glEnable(GL_LIGHTING);
@@ -93,15 +94,15 @@ public class Visualizer {
         font.draw(2, 60, sfont, "Press WASD to move around.");
         font.draw(2, 80, sfont, "Press Space/Shift to move up/down.");
         font.draw(2, 100, sfont, "Press 0-9 to circle options.");
-        if (text!=null){
+        if (text != null) {
             // font 14
-            font.draw(2, window.getHeight()-20, sfont+3, text);
+            font.draw(2, window.getHeight() - 20, sfont + 3, text);
         }
         disable2DContext();
     }
 
-    public void setText(String text){
-        this.text=text;
+    public void setText(String text) {
+        this.text = text;
     }
 
     private void init() {
@@ -150,8 +151,8 @@ public class Visualizer {
     }
 
     public void run(boolean shouldUseOldEvents) {
-        isRunning=true;
-        if (!shouldUseOldEvents){
+        isRunning = true;
+        if (!shouldUseOldEvents) {
             eventManager.destroy();
         }
         blockManager.destroy();
@@ -168,7 +169,7 @@ public class Visualizer {
             window.update();
         }
         destroy();
-        isRunning=false;
+        isRunning = false;
     }
 
     public boolean isRunning() {

@@ -31,7 +31,7 @@ import static kaptainwutax.minemap.init.Logger.LOGGER;
 public class IOUtils {
 
 
-    public static <T> T getFromFile(String path, Function<InputStream,T> function) {
+    public static <T> T getFromFile(String path, Function<InputStream, T> function) {
         String mainPath = Visualizer.PATH;
         URL url = Icons.class.getResource(mainPath);
         if (url == null) {
@@ -61,12 +61,12 @@ public class IOUtils {
         }
         java.util.List<Pair<Path, InputStream>> list = Assets.getInputStream(dir, isJar, path, "");
 
-        if (list.size()!=1){
-            LOGGER.severe("List has more than one element "+ Arrays.toString(list.toArray()));
+        if (list.size() != 1) {
+            LOGGER.severe("List has more than one element " + Arrays.toString(list.toArray()));
             return null;
         }
 
-        T res=function.apply(list.get(0).getSecond());
+        T res = function.apply(list.get(0).getSecond());
 
         if (fileSystem != null) {
             try {
@@ -78,7 +78,7 @@ public class IOUtils {
         return res;
     }
 
-    public static ByteBuffer readBufferFromInputStream(InputStream in){
+    public static ByteBuffer readBufferFromInputStream(InputStream in) {
         ByteBuffer byteBuffer;
         try {
             byteBuffer = BufferUtils.createByteBuffer(in.available());
@@ -92,7 +92,7 @@ public class IOUtils {
         return byteBuffer;
     }
 
-    public static String readStringFromInputStream(InputStream in){
+    public static String readStringFromInputStream(InputStream in) {
         StringBuilder sb = new StringBuilder();
         try (Scanner sc = new Scanner(in)) {
             while (sc.hasNextLine()) {

@@ -23,7 +23,7 @@ public class RoundedFloatingEntry extends RoundedPanel {
     private final JButton closeButton;
     private final GridBagConstraints constraints;
 
-    public RoundedFloatingEntry(String text, Class<?> classIcon, Function<RoundedFloatingEntry,Consumer<MouseEvent>> onClose) {
+    public RoundedFloatingEntry(String text, Class<?> classIcon, Function<RoundedFloatingEntry, Consumer<MouseEvent>> onClose) {
         this.setLayout(new GridBagLayout());
         this.constraints = new GridBagConstraints();
         this.constraints.insets = new Insets(3, 3, 3, 3);
@@ -40,7 +40,7 @@ public class RoundedFloatingEntry extends RoundedPanel {
                 paintImage(Icons.get(classIcon), g);
             }
         };
-        this.positionText = new JTextArea(String.join("\n",text));
+        this.positionText = new JTextArea(String.join("\n", text));
         this.positionText.setFont(new Font(this.positionText.getFont().getName(), Font.PLAIN, 18));
         this.positionText.setBackground(new Color(0, 0, 0, 0));
         this.positionText.setFocusable(false);

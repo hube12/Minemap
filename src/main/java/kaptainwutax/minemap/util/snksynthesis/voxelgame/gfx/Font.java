@@ -21,7 +21,7 @@ public class Font {
     private final int fontTex;
     private static final int BITMAP_WIDTH = 512;
     private static final int BITMAP_HEIGHT = 512;
-    private boolean integerAlign =true;
+    private boolean integerAlign = true;
 
     private final STBTTAlignedQuad q = STBTTAlignedQuad.malloc();
     private final FloatBuffer xb = memAllocFloat(1);
@@ -31,14 +31,14 @@ public class Font {
         14.0f
     };
 
-    public Font(String filepath){
+    public Font(String filepath) {
         fontTex = glGenTextures();
         charData = STBTTPackedchar.malloc(6 * 128);
 
         try (STBTTPackContext pc = STBTTPackContext.malloc()) {
-            ByteBuffer ttf = IOUtils.getFromFile(filepath,IOUtils::readBufferFromInputStream);
-            if (ttf==null){
-                Logger.LOGGER.severe("Failed to read ttf from "+filepath);
+            ByteBuffer ttf = IOUtils.getFromFile(filepath, IOUtils::readBufferFromInputStream);
+            if (ttf == null) {
+                Logger.LOGGER.severe("Failed to read ttf from " + filepath);
                 return;
             }
             ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_WIDTH * BITMAP_HEIGHT);
@@ -104,8 +104,8 @@ public class Font {
         glVertex2f(x0, y1);
     }
 
-    public boolean toggleIntegerAlign(){
-        this.integerAlign =!this.integerAlign;
+    public boolean toggleIntegerAlign() {
+        this.integerAlign = !this.integerAlign;
         return this.integerAlign;
     }
 }

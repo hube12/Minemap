@@ -24,7 +24,7 @@ public class Portal {
     private final MapPanel map;
     private CPos pos;
     private RuinedPortal feature;
-    private static final Visualizer visualizer=new Visualizer();
+    private static final Visualizer visualizer = new Visualizer();
 
     public Portal(MapPanel map) {
         this.map = map;
@@ -87,9 +87,9 @@ public class Portal {
         getVisualizer().setText(String.format("Generated at %d, %d, %d and was %s with world height at %d",
             pos.getX(), pos.getY(), pos.getZ(), ruinedPortalGenerator.isBuried() ? "buried" : "at the surface", ruinedPortalGenerator.getHeight()));
         Visualizer.getEventManager().clearEventHandler();
-        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_1, getVisualizer(),blockHashMap.getSecond(), RuinedPortalGenerator::getObsidian));
-        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_2, getVisualizer(),blockHashMap.getSecond(),  RuinedPortalGenerator::getPortal));
-        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_3, getVisualizer(),blockHashMap.getSecond(),  RuinedPortalGenerator::getMinimalPortal));
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_1, getVisualizer(), blockHashMap.getSecond(), RuinedPortalGenerator::getObsidian));
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_2, getVisualizer(), blockHashMap.getSecond(), RuinedPortalGenerator::getPortal));
+        Visualizer.getEventManager().addEventHandler(createHandler(ruinedPortalGenerator, EventManager.EventAction.KEY_3, getVisualizer(), blockHashMap.getSecond(), RuinedPortalGenerator::getMinimalPortal));
         return true;
     }
 

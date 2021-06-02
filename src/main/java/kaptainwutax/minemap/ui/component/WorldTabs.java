@@ -50,7 +50,7 @@ public class WorldTabs extends ExtendedTabbedPane {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
         });
-        this.closeAllCurrent = new JButton(Icon.getIcon(SquareCloseButton.class,28,28,null));
+        this.closeAllCurrent = new JButton(Icon.getIcon(SquareCloseButton.class, 28, 28, null));
         this.closeAllCurrent.setToolTipText("Close current seed");
         this.closeAllCurrent.addActionListener(e -> closeTabs());
         this.addSideComponent(closeAllCurrent, ButtonSide.TRAILING);
@@ -114,11 +114,11 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public void remove(TabGroup tabGroup) {
-        if (tabGroup==null) return;
+        if (tabGroup == null) return;
         for (MapPanel mapPanel : new ArrayList<>(tabGroup.getMapPanels())) {
-            this.remove(tabGroup,mapPanel);
+            this.remove(tabGroup, mapPanel);
         }
-        if (tabGroup.getMapPanels().isEmpty()){
+        if (tabGroup.getMapPanels().isEmpty()) {
             this.tabGroups.remove(tabGroup);
             this.dropdown.remove(tabGroup);
             current = this.dropdown.getSelected();
@@ -148,12 +148,12 @@ public class WorldTabs extends ExtendedTabbedPane {
         this.tabGroups.forEach(TabGroup::invalidateAll);
     }
 
-    public void remove(TabGroup tabGroup,MapPanel mapPanel){
-        if (tabGroup!=null && mapPanel!=null){
-            if (!mapPanel.getHeader().isSaved){
+    public void remove(TabGroup tabGroup, MapPanel mapPanel) {
+        if (tabGroup != null && mapPanel != null) {
+            if (!mapPanel.getHeader().isSaved) {
                 tabGroup.removeIfPresent(mapPanel);
             }
-            if (tabGroup.getMapPanels().isEmpty()){
+            if (tabGroup.getMapPanels().isEmpty()) {
                 this.tabGroups.remove(tabGroup);
                 this.dropdown.remove(tabGroup);
                 current = this.dropdown.getSelected();
@@ -164,9 +164,9 @@ public class WorldTabs extends ExtendedTabbedPane {
     }
 
     public static void closeTab() {
-        Component component=MineMap.INSTANCE.worldTabs.getSelectedComponent();
-        TabGroup current=MineMap.INSTANCE.worldTabs.getCurrentTabGroup();
-        if (component instanceof MapPanel && current!=null){
+        Component component = MineMap.INSTANCE.worldTabs.getSelectedComponent();
+        TabGroup current = MineMap.INSTANCE.worldTabs.getCurrentTabGroup();
+        if (component instanceof MapPanel && current != null) {
             MineMap.INSTANCE.worldTabs.remove(current, (MapPanel) component);
         }
     }

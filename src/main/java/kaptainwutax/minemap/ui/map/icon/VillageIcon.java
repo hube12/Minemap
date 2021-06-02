@@ -25,12 +25,12 @@ public class VillageIcon extends RegionIcon {
     }
 
     @Override
-    public Function<BPos, Pair<Color,BufferedImage>> getExtraIcon() {
+    public Function<BPos, Pair<Color, BufferedImage>> getExtraIcon() {
         return bPos -> {
             Village village = new Village(this.getContext().getVersion());
-            village.canSpawn(bPos.toChunkPos(),this.getContext().getBiomeSource());
+            village.canSpawn(bPos.toChunkPos(), this.getContext().getBiomeSource());
             return village.isZombieVillage(this.getContext().worldSeed, bPos.toChunkPos(), new ChunkRand()) ?
-                new Pair<>(new Color(0x2A5324),Icons.get(ZombieVillageIcon.class) ): null;
+                new Pair<>(new Color(0x2A5324), Icons.get(ZombieVillageIcon.class)) : null;
         };
     }
 }

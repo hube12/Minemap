@@ -14,7 +14,7 @@ public class HintTextField extends JTextField {
         setPrompt(hint, this);
     }
 
-    public HintTextField(String value,String hint) {
+    public HintTextField(String value, String hint) {
         super(value);
         this.hint = hint;
         setPrompt(hint, this);

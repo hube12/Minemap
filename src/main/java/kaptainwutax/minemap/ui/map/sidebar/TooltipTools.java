@@ -52,7 +52,7 @@ public class TooltipTools extends JPanel {
                 map.rightBar.tooltip.updateToolsMetrics();
             }));
         }
-        SwingUtilities.invokeLater(()->{
+        SwingUtilities.invokeLater(() -> {
             // FIXME, somehow not even map.repaint() will correctly trigger a repaint so I had to use the instance (hour lost: 1)
             MineMap.INSTANCE.repaint();
         });
@@ -62,7 +62,7 @@ public class TooltipTools extends JPanel {
     public static class Entry extends RoundedFloatingEntry {
 
         public Entry(Tool tool, Consumer<MouseEvent> onClose) {
-            super( String.join("\n", tool.getMetricString()),tool.getClass(),e->onClose);
+            super(String.join("\n", tool.getMetricString()), tool.getClass(), e -> onClose);
 
             ColorChooserButton colorChooser = new ColorChooserButton(tool.getColor());
             colorChooser.addColorChangedListener(tool::setColor);
@@ -74,7 +74,7 @@ public class TooltipTools extends JPanel {
             this.add(infoButton, 3);
         }
 
-        public static void buildInfoWindows(Tool tool){
+        public static void buildInfoWindows(Tool tool) {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             if (map == null) return;
             Shape shape = tool.getExactShape();

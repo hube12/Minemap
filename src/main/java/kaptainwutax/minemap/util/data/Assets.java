@@ -452,8 +452,8 @@ public class Assets {
         for (Path path : paths) {
             try {
                 InputStream inputStream = isJar ? Icons.class.getResourceAsStream(path.toString()) : new FileInputStream(path.toString());
-                if (inputStream==null){
-                    LOGGER.severe(String.format("Input stream is null, %s",path));
+                if (inputStream == null) {
+                    LOGGER.severe(String.format("Input stream is null, %s", path));
                     return list;
                 }
                 list.add(new Pair<>(path, inputStream));
@@ -471,9 +471,9 @@ public class Assets {
 
 
     public static java.util.List<Pair<String, BufferedImage>> getAsset(Path dir, boolean isJar, String name, String extension, Function<Path, String> fnObjectStorage) {
-        return getInputStream(dir,isJar,name,extension).stream().map(e-> {
+        return getInputStream(dir, isJar, name, extension).stream().map(e -> {
             try {
-                return new Pair<>(fnObjectStorage.apply(e.getFirst()),ImageIO.read(e.getSecond()));
+                return new Pair<>(fnObjectStorage.apply(e.getFirst()), ImageIO.read(e.getSecond()));
             } catch (IOException ioException) {
                 LOGGER.severe(String.format("Exception while reading the file input stream for %s at %s with error %s", name, dir.toString(), e));
             }
@@ -481,7 +481,7 @@ public class Assets {
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    public  static File choseFile(Component parent){
+    public static File choseFile(Component parent) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         int result = fileChooser.showOpenDialog(parent);

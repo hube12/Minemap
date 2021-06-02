@@ -38,7 +38,7 @@ public class StructureHelper {
             if (structure instanceof Stronghold) {
                 return StreamSupport.stream(Spliterators.spliterator(((Stronghold) structure).getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
                     .map(cPos -> {
-                        BPos dimPos = ((CPos)cPos).toBlockPos().add(9, 0, 9);
+                        BPos dimPos = ((CPos) cPos).toBlockPos().add(9, 0, 9);
                         return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
                     });
             }

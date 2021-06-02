@@ -3,17 +3,17 @@ package kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx;
 import java.nio.FloatBuffer;
 
 import org.lwjgl.system.MemoryUtil;
+
 import static org.lwjgl.opengl.GL33.*;
 
 /**
  * {@link Mesh} is for initializing and drawing meshes
- * 
+ *
  * @param vertices must be in format
- * 
+ *
  *                 <pre>
- *    {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
- *                 </pre>
- * 
+ *                    {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
+ *                                 </pre>
  */
 public class Mesh {
 
@@ -62,6 +62,7 @@ public class Mesh {
 
     /**
      * Special constructor for other types of meshes.
+     *
      * @param vertices
      * @param type     can be "LIGHT_SOURCE"
      */

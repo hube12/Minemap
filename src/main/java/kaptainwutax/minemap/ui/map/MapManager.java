@@ -105,11 +105,11 @@ public class MapManager {
                             Feature<?, ?> feature = featureListPair.getFirst();
                             if (feature instanceof RegionStructure<?, ?>) {
                                 for (BPos bPos : featureListPair.getSecond()) {
-                                    this.generateChest(feature,bPos);
+                                    this.generateChest(feature, bPos);
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
                     }
                 } else {
@@ -120,7 +120,7 @@ public class MapManager {
                         selectedTool.addPoint(pos);
                     }
                     // weird case when removed
-                    if (selectedTool.getPointsTraced()>0 && toolsList.isEmpty()){
+                    if (selectedTool.getPointsTraced() > 0 && toolsList.isEmpty()) {
                         toolsList.add(selectedTool);
                     }
                 }
@@ -233,7 +233,7 @@ public class MapManager {
         }
     }
 
-    public void generateChest(Feature<?, ?> feature, BPos pos){
+    public void generateChest(Feature<?, ?> feature, BPos pos) {
         this.panel.chestInstance.setPos(pos.toChunkPos());
         this.panel.chestInstance.setFeature(feature);
         this.panel.chestInstance.generate(); // this calls all the update function to generate the chests
@@ -251,7 +251,7 @@ public class MapManager {
         popup.add(chestMenu);
         popup.add(new JSeparator());
 
-        this.generateChest(feature,pos);
+        this.generateChest(feature, pos);
     }
 
     public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
@@ -270,7 +270,7 @@ public class MapManager {
         popup.add(new JSeparator());
     }
 
-    public Runnable updateInit(){
+    public Runnable updateInit() {
         return () -> SwingUtilities.invokeLater(
             () -> {
                 if (this.panel.leftBar == null || this.panel.leftBar.tooltip == null) {

@@ -6,7 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 
 public class DockableContainer extends JPanel {
-    public DockableContainer(JXCollapsiblePane.Direction direction,JPanel panel){
+    public boolean isHiddenForSize = false;
+
+    public DockableContainer(JXCollapsiblePane.Direction direction, JPanel panel) {
         this.setOpaque(false);
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 

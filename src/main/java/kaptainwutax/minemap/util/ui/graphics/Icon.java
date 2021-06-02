@@ -51,6 +51,7 @@ public class Icon {
             null
         );
     }
+
     public static ImageIcon getIcon(Class<?> feature, int scaledSize, double size, BufferedImage background) {
         BufferedImage icon = Icons.get(feature);
         double iconSize = Configs.ICONS.getSize(feature);
@@ -70,12 +71,11 @@ public class Icon {
         translatedIcon = scaleOp.filter(scaledIcon, translatedIcon);
 
 
-
-        if (background!=null){
+        if (background != null) {
             BufferedImage finalIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-            finalIcon.createGraphics().drawImage(background,0,0,scaledSize,scaledSize,null);
-            finalIcon.createGraphics().drawImage(translatedIcon,0,0,scaledSize,scaledSize,null);
-            translatedIcon=finalIcon;
+            finalIcon.createGraphics().drawImage(background, 0, 0, scaledSize, scaledSize, null);
+            finalIcon.createGraphics().drawImage(translatedIcon, 0, 0, scaledSize, scaledSize, null);
+            translatedIcon = finalIcon;
         }
 
         return new ImageIcon(translatedIcon);

@@ -56,8 +56,8 @@ public abstract class ButtonIcon extends JButton {
         this.backgroundColor = backgroundColor;
     }
 
-    public void shouldBackground(boolean b){
-        this.background=b;
+    public void shouldBackground(boolean b) {
+        this.background = b;
     }
 
     @Override

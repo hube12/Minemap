@@ -117,7 +117,7 @@ public class FragmentScheduler {
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ) {
-        return this.getFragmentAt(regionX,regionZ,1);
+        return this.getFragmentAt(regionX, regionZ, 1);
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ, int factor) {

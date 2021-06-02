@@ -56,7 +56,7 @@ public class ChestInstance {
     }
 
     public void setCurrentChestIndex(int currentChestIndex) {
-        if (currentChestIndex!=this.currentChestIndex){
+        if (currentChestIndex != this.currentChestIndex) {
             this.currentChestIndex = currentChestIndex;
             for (Updatable updatable : toUpdate) {
                 updatable.update(false);

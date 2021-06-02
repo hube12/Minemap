@@ -29,7 +29,7 @@ public class EventManager {
         while ((newHandler = temp.poll()) != null) {
             handlers.add(newHandler);
         }
-        if (eventAction==EventAction.NONE)return;
+        if (eventAction == EventAction.NONE) return;
         for (Consumer<EventAction> handler : handlers) {
             handler.accept(eventAction);
         }

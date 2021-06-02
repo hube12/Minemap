@@ -79,7 +79,7 @@ public class ExtendedTabbedPane extends JPanel {
     }
 
     public void setTabComponentAt(int index, Component component) {
-        this.getJTabbedPane().setTabComponentAt(index,component);
+        this.getJTabbedPane().setTabComponentAt(index, component);
     }
 
     public void removeAll() {
@@ -106,7 +106,7 @@ public class ExtendedTabbedPane extends JPanel {
         tabbedPane.setTabComponentAt(this.addTabAndGetIndex(title, panel), header);
     }
 
-    public void addTab(String title, Component panel,  TabbedPaneHeader headerCreator) {
+    public void addTab(String title, Component panel, TabbedPaneHeader headerCreator) {
         tabbedPane.setTabComponentAt(this.addTabAndGetIndex(title, panel), headerCreator);
     }
 
@@ -115,7 +115,7 @@ public class ExtendedTabbedPane extends JPanel {
         TabbedPaneHeader create(String title);
     }
 
-    public abstract static class  TabbedPaneHeader extends JPanel{
+    public abstract static class TabbedPaneHeader extends JPanel {
 
     }
 

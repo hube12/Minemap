@@ -44,7 +44,7 @@ public class Window {
 
 
     // this will emit PLATFORM_ERROR ON WAYLAND AND NOT RESPECT FOR MACOS
-    public void setIcon(BufferedImage bufferedImage){
+    public void setIcon(BufferedImage bufferedImage) {
         GLFWImage image = IOUtils.imageToGLFWImage(bufferedImage);
 
         GLFWImage.Buffer images = GLFWImage.malloc(1);
@@ -90,7 +90,7 @@ public class Window {
         glfwShowWindow(window);
 
         GL.createCapabilities();
-        callback=GLUtil.setupDebugMessageCallback(System.err);
+        callback = GLUtil.setupDebugMessageCallback(System.err);
 
         glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
             glViewport(0, 0, width, height);
@@ -113,7 +113,7 @@ public class Window {
         glfwSwapBuffers(window);
     }
 
-    public void destroy(){
+    public void destroy() {
         GL.setCapabilities(null);
 
         if (callback != null) {

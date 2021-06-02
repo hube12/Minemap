@@ -36,7 +36,7 @@ public class MapRightSideBar extends JPanel {
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.anchor = GridBagConstraints.PAGE_START;
+        gridBagConstraints.anchor = GridBagConstraints.FIRST_LINE_END;
         gridBagConstraints.fill = GridBagConstraints.NONE;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -71,9 +71,9 @@ public class MapRightSideBar extends JPanel {
         chestPanel.setLayout(new BoxLayout(chestPanel, BoxLayout.Y_AXIS));
         ChestPanel chest = new ChestPanel(new Pair<>(1.0, 0.8));
         ChestTopBar topBar = new ChestTopBar(chest, instance);
-        JPanel rounded=new JPanel();
+        JPanel rounded = new JPanel();
         rounded.add(topBar);
-        rounded.setBorder(new RoundedBorder(10,30));
+        rounded.setBorder(new RoundedBorder(10, 30));
         chestPanel.add(rounded);
         chestPanel.add(chest);
         return new Pair<>(topBar, chestPanel);

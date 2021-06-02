@@ -77,9 +77,9 @@ public class KeyShortcuts {
         @SerializedName("CLOSE_TABS")
         CLOSE_TABS(WorldTabs::closeTabs),
         @SerializedName("CYCLE_SEED_RIGHT")
-        CYCLE_SEED_RIGHT(()->WorldTabs.cycle(true)),
+        CYCLE_SEED_RIGHT(() -> WorldTabs.cycle(true)),
         @SerializedName("CYCLE_SEED_LEFT")
-        CYCLE_SEED_LEFT(()->WorldTabs.cycle(false)),
+        CYCLE_SEED_LEFT(() -> WorldTabs.cycle(false)),
         ;
 
         public Runnable action;
@@ -345,8 +345,7 @@ public class KeyShortcuts {
             NONE(5),
             ANY(6),
             ALT_SHIFT(7),
-            ALT_ONLY(8)
-            ;
+            ALT_ONLY(8);
             public final int id;
 
             Modifier(int id) { this.id = id; }

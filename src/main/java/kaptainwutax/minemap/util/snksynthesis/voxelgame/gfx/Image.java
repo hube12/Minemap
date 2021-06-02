@@ -23,10 +23,10 @@ public class Image {
     private int components;
     private boolean isHdr;
 
-    public Image(String imagePath){
-        ByteBuffer imageBuffer= IOUtils.getFromFile(imagePath,IOUtils::readBufferFromInputStream);
-        if (imageBuffer==null){
-            Logger.LOGGER.severe("Failed to read texture from "+imagePath);
+    public Image(String imagePath) {
+        ByteBuffer imageBuffer = IOUtils.getFromFile(imagePath, IOUtils::readBufferFromInputStream);
+        if (imageBuffer == null) {
+            Logger.LOGGER.severe("Failed to read texture from " + imagePath);
             return;
         }
         try (MemoryStack stack = stackPush()) {
@@ -39,7 +39,7 @@ public class Image {
                 System.err.println("OK with reason: " + stbi_failure_reason());
             }
 
-            isHdr=stbi_is_hdr_from_memory(imageBuffer);
+            isHdr = stbi_is_hdr_from_memory(imageBuffer);
 
             image = stbi_load_from_memory(imageBuffer, w, h, comp, 0);
             if (image == null) {

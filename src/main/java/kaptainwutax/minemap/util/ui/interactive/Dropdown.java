@@ -17,8 +17,8 @@ import java.util.stream.Stream;
 public class Dropdown<E> extends JComboBox<String> {
 
     public final StringMapper<E> mapper;
-    public final HashMap<E, String> elements=new HashMap<>();
-    public final HashMap<String, E> strings=new HashMap<>();
+    public final HashMap<E, String> elements = new HashMap<>();
+    public final HashMap<String, E> strings = new HashMap<>();
     public final List<String> order;
 
     @SafeVarargs
@@ -56,11 +56,11 @@ public class Dropdown<E> extends JComboBox<String> {
         super(elements.stream().map(mapper::map).toArray(String[]::new));
 //        this.setEditable(true); // DON'T DO THAT IT CAUSE A LOT OF NPE (STILL A JDK BUG)
 
-        this.order=elements.stream().map(mapper::map).collect(Collectors.toList());
+        this.order = elements.stream().map(mapper::map).collect(Collectors.toList());
         this.mapper = mapper;
-        for (E element:elements){
-            this.elements.put(element,mapper.map(element));
-            this.strings.put(mapper.map(element),element);
+        for (E element : elements) {
+            this.elements.put(element, mapper.map(element));
+            this.strings.put(mapper.map(element), element);
         }
         this.setOpaque(true);
         DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
@@ -90,9 +90,9 @@ public class Dropdown<E> extends JComboBox<String> {
             if (elements != null) {
                 E first = strings.get(item);
                 if (first instanceof TabGroup) {
-                        if (((TabGroup) first).isLazyLoaded()) {
-                            ((TabGroup) first).loadEffectively();
-                        }
+                    if (((TabGroup) first).isLazyLoaded()) {
+                        ((TabGroup) first).loadEffectively();
+                    }
 
                 }
             }
@@ -100,13 +100,13 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public void remove(E element) {
-        String toRemove=this.elements.get(element);
-        if (toRemove!=null){
+        String toRemove = this.elements.get(element);
+        if (toRemove != null) {
             this.elements.remove(element);
             this.strings.remove(toRemove);
-            if (this.order.get(this.getSelectedIndex()).equals(toRemove)){
+            if (this.order.get(this.getSelectedIndex()).equals(toRemove)) {
                 this.order.remove(this.getSelectedIndex());
-            }else{
+            } else {
                 System.out.println("missed");
                 this.order.remove(toRemove);
 
@@ -118,8 +118,8 @@ public class Dropdown<E> extends JComboBox<String> {
     public void add(E element) {
         if (element == null) return;
         String map = mapper.map(element);
-        this.elements.put(element,map);
-        this.strings.put(map,element);
+        this.elements.put(element, map);
+        this.strings.put(map, element);
         this.order.add(map);
         this.addItem(map);
     }
@@ -155,9 +155,9 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public E getElement(int index) {
-        if (index<this.order.size()){
-            String s=this.order.get(index);
-            if (s!=null){
+        if (index < this.order.size()) {
+            String s = this.order.get(index);
+            if (s != null) {
                 return this.strings.get(s);
             }
         }
@@ -179,8 +179,8 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     public boolean selectIfPresent(E element, BiPredicate<E, E> equals) {
-        String e=this.elements.get(element);
-        if (e!=null){
+        String e = this.elements.get(element);
+        if (e != null) {
             this.setDefault(element);
             return true;
         }

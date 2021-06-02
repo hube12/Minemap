@@ -23,17 +23,17 @@ public class ChestFrame extends JFrame {
     static final int CHEST_WIDTH = 700;
 
     public ChestFrame(ChestInstance chestInstance) {
-        this.chestInstance=chestInstance;
+        this.chestInstance = chestInstance;
         BorderLayout layout = new BorderLayout();
         this.setLayout(layout);
         GridLayout gridLayout = new GridLayout(-1, 2, 15, 15);
         content = new JPanel();
         content.setLayout(gridLayout);
         for (int i = 0; i < MAX_NUMBER_CHESTS; i++) {
-            chestContents.add(new ChestPanel(new Pair<>(0.7,0.7)));
+            chestContents.add(new ChestPanel(new Pair<>(0.7, 0.7)));
         }
         content.add(chestContents.get(0));
-        topBar = new TopBar(chestInstance,this);
+        topBar = new TopBar(chestInstance, this);
         this.add(topBar, BorderLayout.NORTH);
         scrollPane = new JScrollPane(content);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -45,7 +45,6 @@ public class ChestFrame extends JFrame {
         this.setVisible(false);
         this.setIconImage(Icons.get(this.getClass()));
     }
-
 
 
     @Override

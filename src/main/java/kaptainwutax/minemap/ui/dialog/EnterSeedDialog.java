@@ -168,7 +168,7 @@ public class EnterSeedDialog extends Dialog {
             fileButton.shouldBackground(true);
             fileButton.setBackgroundColor(Color.GREEN);
             fileButton.repaint();
-            this.seedField.setHint("Succesfully loaded "+(seeds.size())+" seeds!");
+            this.seedField.setHint("Succesfully loaded " + (seeds.size()) + " seeds!");
         } else {
             fileButton.shouldBackground(true);
             fileButton.setBackgroundColor(Color.RED);
@@ -202,18 +202,18 @@ public class EnterSeedDialog extends Dialog {
 
     protected void create() {
         doPreparation();
-        SwingUtilities.invokeLater(()->{
+        SwingUtilities.invokeLater(() -> {
             if (!seeds.isEmpty()) {
-                long time=System.nanoTime();
-                int index=0;
+                long time = System.nanoTime();
+                int index = 0;
                 for (String seed : seeds) {
                     MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
                         threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(), false);
-                    if ((index++)%100000==0){
-                        System.out.println(index+" "+(System.nanoTime()-time)/1e9);
+                    if ((index++) % 100000 == 0) {
+                        System.out.println(index + " " + (System.nanoTime() - time) / 1e9);
                     }
                 }
-                System.out.println((System.nanoTime()-time)/1e9);
+                System.out.println((System.nanoTime() - time) / 1e9);
                 String text = seedField.getText();
                 if (text == null || text.equals("")) {
                     dispose();

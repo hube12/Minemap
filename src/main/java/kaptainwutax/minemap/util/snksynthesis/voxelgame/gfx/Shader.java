@@ -18,8 +18,9 @@ public class Shader {
 
     /**
      * Initializes a Shader object
+     *
      * @param vertexPath path to vertex shader
-     * @param fragPath path to fragment shader
+     * @param fragPath   path to fragment shader
      */
     public Shader(String vertexPath, String fragPath) {
         this.vertexPath = vertexPath;
@@ -28,7 +29,7 @@ public class Shader {
 
     /**
      * Link shaders
-     * 
+     *
      * @throws Exception when there is failure in compiling, linking, etc. of
      *                   shaders
      */
@@ -76,9 +77,9 @@ public class Shader {
     }
 
     private int createShader(String path, int shaderType) throws Exception {
-        String code = IOUtils.getFromFile(path,IOUtils::readStringFromInputStream);
-        if (code==null){
-            Logger.LOGGER.severe("Code could not be read from "+path);
+        String code = IOUtils.getFromFile(path, IOUtils::readStringFromInputStream);
+        if (code == null) {
+            Logger.LOGGER.severe("Code could not be read from " + path);
         }
         int shaderId = glCreateShader(shaderType);
         if (shaderId == 0) {

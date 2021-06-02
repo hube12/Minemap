@@ -24,7 +24,7 @@ public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
         this.createTabTitle(title);
         this.createCloseButton(onClose);
-        this.isSaved =false;
+        this.isSaved = false;
         this.setOpaque(false);
     }
 
@@ -33,24 +33,25 @@ public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
     }
 
     public void setSaved(boolean state) {
-        this.setSaved(state,true);
+        this.setSaved(state, true);
     }
+
     public void setSaved(boolean state, boolean shouldSave) {
-        MapContext context=MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context;
-        if (state){
-            if (shouldSave){
-                Configs.USER_PROFILE.addSavedSeeds(context.getWorldSeed(),context.getVersion(),context.getDimension());
+        MapContext context = MineMap.INSTANCE.worldTabs.getSelectedMapPanel().context;
+        if (state) {
+            if (shouldSave) {
+                Configs.USER_PROFILE.addSavedSeeds(context.getWorldSeed(), context.getVersion(), context.getDimension());
             }
             this.remove(closeButton);
             this.add(lockButton);
-        }else{
-            if (shouldSave){
-                Configs.USER_PROFILE.removeSavedSeeds(context.getWorldSeed(),context.getVersion(),context.getDimension());
+        } else {
+            if (shouldSave) {
+                Configs.USER_PROFILE.removeSavedSeeds(context.getWorldSeed(), context.getVersion(), context.getDimension());
             }
             this.remove(lockButton);
             this.add(closeButton);
         }
-        this.isSaved =state;
+        this.isSaved = state;
         this.repaint();
     }
 
@@ -81,11 +82,11 @@ public class TabHeader extends ExtendedTabbedPane.TabbedPaneHeader {
 
     protected void createCloseButton(Consumer<MouseEvent> onClose) {
         this.closeButton = new CloseButton(12, 5, 1.5F);
-        this.lockButton = new LockButton(12, 7, 1.2F,true,new Color(143, 219, 209, 117),false);
+        this.lockButton = new LockButton(12, 7, 1.2F, true, new Color(143, 219, 209, 117), false);
         this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose));
-        if (this.isSaved()){
+        if (this.isSaved()) {
             this.add(this.lockButton);
-        }else{
+        } else {
             this.add(this.closeButton);
         }
     }

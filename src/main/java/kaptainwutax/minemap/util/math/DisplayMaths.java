@@ -55,12 +55,12 @@ public class DisplayMaths {
         return t -> minTargetRange + (maxTargetRange - minTargetRange) / (maxSourceRange - minSourceRange) * (t - minSourceRange);
     }
 
-    public static BPos getCentroid(List<BPos> posList){
-        BPos centroid=BPos.ORIGIN;
-        for (BPos pos:posList){
-            centroid=centroid.add(pos);
+    public static BPos getCentroid(List<BPos> posList) {
+        BPos centroid = BPos.ORIGIN;
+        for (BPos pos : posList) {
+            centroid = centroid.add(pos);
         }
-        return new BPos(centroid.getX()/posList.size(),centroid.getY()/posList.size(),centroid.getZ()/posList.size());
+        return new BPos(centroid.getX() / posList.size(), centroid.getY() / posList.size(), centroid.getZ() / posList.size());
     }
 
     public static double round(double value, int places) {

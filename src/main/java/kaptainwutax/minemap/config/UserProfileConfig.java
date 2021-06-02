@@ -218,8 +218,8 @@ public class UserProfileConfig extends Config {
                 this.DIMENSIONS.remove(old);
                 this.DEFAULT_MAP_SETTINGS.remove(old);
             }
-            MapSettings settings=this.DEFAULT_MAP_SETTINGS.get(dimension.getName());
-            settings.maintainConfig(dimension,this.MC_VERSION);
+            MapSettings settings = this.DEFAULT_MAP_SETTINGS.get(dimension.getName());
+            settings.maintainConfig(dimension, this.MC_VERSION);
         }
         this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE);
         this.SAVED_SEEDS = resizeQueue(this.SAVED_SEEDS, MAX_SIZE);

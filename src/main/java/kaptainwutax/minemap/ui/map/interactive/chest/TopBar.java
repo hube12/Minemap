@@ -25,14 +25,14 @@ public class TopBar extends JPanel {
 
     public TopBar(ChestInstance instance, ChestFrame chest) {
         instance.registerUpdateable(this::update);
-        this.window =chest;
+        this.window = chest;
         this.instance = instance;
         // spread button
-        this.indexedButton = new JButton(indexedString[ this.instance.isIndexed() ? 1 : 0]);
+        this.indexedButton = new JButton(indexedString[this.instance.isIndexed() ? 1 : 0]);
         this.indexedButton.addActionListener(e -> {
             this.instance.toggleIndexed();
             instance.generate(); // this call update for us
-            this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
+            this.indexedButton.setText(indexedString[this.instance.isIndexed() ? 1 : 0]);
         });
         // menu to select which chest
         this.chestSelectionMenu = new JMenu("Select chest");
@@ -71,8 +71,8 @@ public class TopBar extends JPanel {
         this.currentChest.setVisible(!this.showAll);
     }
 
-    public void updateLabel(){
-        this.createChestMenu(instance.getListItems() == null ? 0 :instance.size());
+    public void updateLabel() {
+        this.createChestMenu(instance.getListItems() == null ? 0 : instance.size());
     }
 
     /**
@@ -81,8 +81,8 @@ public class TopBar extends JPanel {
      * @param hasChanged tri state, if true then
      */
     private void update(Boolean hasChanged) {
-        this.indexedButton.setText(indexedString[ this.instance.isIndexed() ? 1 : 0]);
-        List<List<ItemStack>> listItems=instance.getListItems();
+        this.indexedButton.setText(indexedString[this.instance.isIndexed() ? 1 : 0]);
+        List<List<ItemStack>> listItems = instance.getListItems();
         List<ChestPanel> chestContents = this.window.getChestContents();
         if (hasChanged) {
             this.updateLabel();

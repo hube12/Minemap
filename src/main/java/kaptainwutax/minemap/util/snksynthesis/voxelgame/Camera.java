@@ -4,6 +4,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
+
 import kaptainwutax.minemap.util.snksynthesis.voxelgame.gfx.Window;
 
 public class Camera {

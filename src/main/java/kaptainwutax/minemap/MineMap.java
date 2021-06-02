@@ -397,11 +397,11 @@ public class MineMap extends JFrame {
             for (Window window : JFrame.getWindows()) {
                 SwingUtilities.updateComponentTreeUI(window);
             }
-            if (MineMap.INSTANCE!=null && MineMap.INSTANCE.worldTabs!=null && MineMap.INSTANCE.worldTabs.getSelectedMapPanel()!=null){
-                MapPanel mapPanel=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (MineMap.INSTANCE != null && MineMap.INSTANCE.worldTabs != null && MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null) {
+                MapPanel mapPanel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
                 if (isDarkTheme()) {
                     mapPanel.setBackground(WorldTabs.BACKGROUND_COLOR.darker());
-                }else{
+                } else {
                     mapPanel.setBackground(WorldTabs.BACKGROUND_COLOR_LIGHT.darker());
                 }
             }

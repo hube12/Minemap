@@ -45,7 +45,7 @@ public class Graphic {
     }
 
 
-    public static void centerParent(Frame parent){
+    public static void centerParent(Frame parent) {
         GraphicsConfiguration config = parent.getGraphicsConfiguration();
         if (config != null) {
             GraphicsDevice currentScreen = config.getDevice();

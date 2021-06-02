@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
 import static org.lwjgl.opengl.GL33.*;
+
 public class BlockManager {
 
     private final List<Block> blocks = new ArrayList<>();
-    private final AtomicBoolean scheduledDestroy=new AtomicBoolean(false);
+    private final AtomicBoolean scheduledDestroy = new AtomicBoolean(false);
     private final List<Pair<BPos, BlockType>> scheduledBlocks = new ArrayList<>();
 
     public final int WIDTH = 50;
@@ -26,8 +28,8 @@ public class BlockManager {
         }
     }
 
-    public void checkDestroy(){
-        if (this.scheduledDestroy.get()){
+    public void checkDestroy() {
+        if (this.scheduledDestroy.get()) {
             destroy();
             this.scheduledDestroy.set(false);
         }
@@ -40,7 +42,7 @@ public class BlockManager {
         blocks.clear();
     }
 
-    public void scheduleDestroy(){
+    public void scheduleDestroy() {
         this.scheduledDestroy.set(true);
     }
 

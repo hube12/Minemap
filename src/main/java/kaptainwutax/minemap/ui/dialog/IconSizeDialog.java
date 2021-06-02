@@ -51,7 +51,7 @@ public class IconSizeDialog extends Dialog {
         int scaledSize = 35;
         for (int i = 0; i < features.size(); i++) {
             Class<? extends Feature<?, ?>> feature = features.get(i);
-            ImageIcon icon = Icon.getIcon(feature, scaledSize, size,null);
+            ImageIcon icon = Icon.getIcon(feature, scaledSize, size, null);
             if (icon == null) {
                 iconPanel.add(new JLabel(Str.getInitials(feature.getName())));
                 return;
@@ -64,7 +64,7 @@ public class IconSizeDialog extends Dialog {
                 int value = Math.min(Math.max(currentSlider.getValue(), 4), (int) steps);
                 Configs.ICONS.addOverrideEntry(feature, value / steps);
                 Configs.ICONS.flush();
-                ImageIcon newIcon = Icon.getIcon(feature, scaledSize, size,null);
+                ImageIcon newIcon = Icon.getIcon(feature, scaledSize, size, null);
                 label.setIcon(newIcon);
             });
             iconPanel.add(label);

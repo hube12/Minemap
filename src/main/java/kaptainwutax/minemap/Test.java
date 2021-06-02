@@ -17,12 +17,13 @@ import static kaptainwutax.mcutils.state.Dimension.OVERWORLD;
 
 public class Test extends JFrame {
     Group allGroups;
-    public Test(){
+
+    public Test() {
         JFrame frame = new JFrame("List of Biomes");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setPreferredSize(new Dimension(500, 500));
 
-        allGroups= new Group();
+        allGroups = new Group();
 
         frame.add(allGroups);
 
@@ -33,7 +34,7 @@ public class Test extends JFrame {
     }
 
     public static void main(String[] args) {
-        Test test=new Test();
+        Test test = new Test();
     }
 
 
@@ -43,14 +44,14 @@ public class Test extends JFrame {
 //       }
 //    }
 
-    static class Group extends JTabbedPane{
-        public Group(){
+    static class Group extends JTabbedPane {
+        public Group() {
             addTab("1", new Panel());
             addTab("2", new Panel());
             addTab("3", new Panel());
         }
 
-        public void addTab(String title,Panel panel){
+        public void addTab(String title, Panel panel) {
             Header header = new Header(title);
             this.setTabComponentAt(this.addTabAndGetIndex(title, panel), header);
         }
@@ -61,22 +62,23 @@ public class Test extends JFrame {
         }
     }
 
-    static class Header extends JPanel{
-        public Header(String title){
+    static class Header extends JPanel {
+        public Header(String title) {
             this.add(new JLabel(title));
         }
     }
 
-    static class Panel extends JPanel{
-        public Panel(){
-        this.repaint();
+    static class Panel extends JPanel {
+        public Panel() {
+            this.repaint();
         }
+
         @Override
         public void paintComponents(Graphics g) {
             super.paintComponents(g);
-            Random random=new Random();
-            g.setColor(new Color(random.nextFloat(),random.nextFloat(),random.nextFloat()));
-            g.fillRect(100,100,100,100);
+            Random random = new Random();
+            g.setColor(new Color(random.nextFloat(), random.nextFloat(), random.nextFloat()));
+            g.fillRect(100, 100, 100, 100);
         }
     }
 

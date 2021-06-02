@@ -28,7 +28,7 @@ public class StrongholdIcon extends StaticIcon {
     }
 
     public CPos[] getStarts() {
-       return this.getContext().getStarts();
+        return this.getContext().getStarts();
     }
 
 

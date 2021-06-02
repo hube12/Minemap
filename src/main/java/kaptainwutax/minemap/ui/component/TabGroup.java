@@ -27,7 +27,7 @@ public class TabGroup extends JTabbedPane {
     }
 
     public TabGroup(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions) {
-        this(version,worldSeed,threadCount,dimensions,false);
+        this(version, worldSeed, threadCount, dimensions, false);
     }
 
     public TabGroup(MCVersion version, String worldSeed, int threadCount, Collection<Dimension> dimensions, boolean lazyLoaded) {
@@ -67,9 +67,9 @@ public class TabGroup extends JTabbedPane {
 
     private void loadSeed(long worldSeed, int threadCount, Collection<Dimension> dimensions) {
         this.worldSeed = worldSeed;
-        this.threadCount=threadCount;
-        this.dimensions=dimensions;
-        if (!this.isLazyLoaded()){
+        this.threadCount = threadCount;
+        this.dimensions = dimensions;
+        if (!this.isLazyLoaded()) {
             loadEffectively();
         }
     }
@@ -80,7 +80,7 @@ public class TabGroup extends JTabbedPane {
             MapPanel mapPanel = new MapPanel(this.getVersion(), dimension, this.worldSeed, threadCount);
             this.mapPanels.put(dimension, mapPanel);
         }
-        this.lazyLoaded =false;
+        this.lazyLoaded = false;
     }
 
     public void invalidateAll() {
@@ -109,6 +109,6 @@ public class TabGroup extends JTabbedPane {
 
     @Override
     public int hashCode() {
-        return Objects.hash(version, dimensions,threadCount, worldSeed);
+        return Objects.hash(version, dimensions, threadCount, worldSeed);
     }
 }
