@@ -132,7 +132,7 @@ public class EnterSeedDialog extends Dialog {
         splitPane.setEnabled(false);
         splitPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.getContentPane().add(splitPane);
-        
+
         this.setDropTarget(new DropTarget() {
             @SuppressWarnings("unchecked")
             public synchronized void drop(DropTargetDropEvent evt) {
@@ -187,8 +187,9 @@ public class EnterSeedDialog extends Dialog {
     private void doPreparation() {
         continueButton.setEnabled(false);
         continueButton.setText("Loading...");
+        this.revalidate();
+        this.repaint();
         MCVersion selectedVersion = versionDropdown.getSelected();
-
         MapSettings settings = Configs.USER_PROFILE.getDefaultMapSettings()
             .getOrDefault(Dimension.OVERWORLD.getName(), new MapSettings(Dimension.OVERWORLD))
             .copyFor(selectedVersion, Dimension.OVERWORLD);
@@ -201,34 +202,38 @@ public class EnterSeedDialog extends Dialog {
 
     protected void create() {
         doPreparation();
-        if (!seeds.isEmpty()) {
-            for (String seed : seeds) {
-                MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
-                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(), false);
+        SwingUtilities.invokeLater(()->{
+            if (!seeds.isEmpty()) {
+                long time=System.nanoTime();
+                for (String seed : seeds) {
+                    MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
+                        threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(), false);
+                }
+                System.out.println((System.nanoTime()-time)/1e9);
+                String text = seedField.getText();
+                if (text == null || text.equals("")) {
+                    dispose();
+                    return;
+                }
             }
-            String text = seedField.getText();
-            if (text == null || text.equals("")) {
-                dispose();
-                return;
-            }
-        }
-        TabGroup tabGroup = MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
-            threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
-        if (tabGroup == null) {
-            String title = this.getTitle();
-            this.setTitle("Seed/options is invalid or already exists");
-            Color bg = this.seedField.getBackground();
-            this.seedField.setBackground(Color.RED);
-            Graphic.scheduleAction(3000, () -> {
-                this.setTitle(title);
-                this.seedField.setBackground(bg);
-            });
-            continueButton.setEnabled(true);
-            continueButton.setText("Continue");
+            TabGroup tabGroup = MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+                threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
+            if (tabGroup == null) {
+                String title = this.getTitle();
+                this.setTitle("Seed/options is invalid or already exists");
+                Color bg = this.seedField.getBackground();
+                this.seedField.setBackground(Color.RED);
+                Graphic.scheduleAction(3000, () -> {
+                    this.setTitle(title);
+                    this.seedField.setBackground(bg);
+                });
+                continueButton.setEnabled(true);
+                continueButton.setText("Continue");
 
-        } else {
-            dispose();
-        }
+            } else {
+                dispose();
+            }
+        });
 
     }
 
