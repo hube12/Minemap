@@ -20,10 +20,8 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
@@ -31,7 +29,7 @@ import static kaptainwutax.minemap.MineMap.isDarkTheme;
 
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
-    protected final List<TabGroup> tabGroups = new ArrayList<>();
+    protected final Set<TabGroup> tabGroups = new HashSet<>();
     public final Dropdown<TabGroup> dropdown = new Dropdown<TabGroup>(
         // what is better than a hashcode that can roll? a timestamp!
         j -> String.format("%d [%s]::%s ", j.getWorldSeed(), j.getVersion(), System.nanoTime()),

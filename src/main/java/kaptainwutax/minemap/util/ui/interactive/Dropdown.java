@@ -7,9 +7,7 @@ import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -19,7 +17,7 @@ import java.util.stream.Stream;
 public class Dropdown<E> extends JComboBox<String> {
 
     public final StringMapper<E> mapper;
-    public final LinkedList<Pair<E, String>> elements;
+    public final ArrayList<Pair<E, String>> elements;
 
     @SafeVarargs
     public Dropdown(E... elements) {
@@ -58,7 +56,7 @@ public class Dropdown<E> extends JComboBox<String> {
 
 
         this.mapper = mapper;
-        this.elements = elements.stream().map(e -> new Pair<>(e, mapper.map(e))).collect(Collectors.toCollection(LinkedList::new));
+        this.elements = elements.stream().map(e -> new Pair<>(e, mapper.map(e))).collect(Collectors.toCollection(ArrayList::new));
         this.setOpaque(true);
         DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
             @Override
