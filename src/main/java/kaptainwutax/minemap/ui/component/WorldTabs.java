@@ -200,7 +200,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         } else {
             TabHeader tabHeader = new TabHeader(title, e -> {
                 if (e.isShiftDown()) this.remove(tabGroup);
-                else this.remove(mapPanel);
+                else this.remove(tabGroup,mapPanel);
             });
 
             tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
