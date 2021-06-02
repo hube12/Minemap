@@ -58,28 +58,22 @@ public class ChestPanel extends JPanel {
         }
 
         public void createEmptyChest() {
-            for (int row = 0; row < ROW_NUMBER; row++) {
-                List<JButton> rowButton = this.list.get(row);
-                for (int col = 0; col < COL_NUMBER; col++) {
-                    BufferedImage icon = Icons.get(UnknownButton.class);
-                    assert icon != null;
-                    int w = icon.getWidth();
-                    int h = icon.getHeight();
-                    double iconSize = 64.0;
-                    double scaleFactor = iconSize / Math.max(w, h);
-                    // scale icon
-                    BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
-                    AffineTransform at = new AffineTransform();
-                    at.scale(scaleFactor, scaleFactor);
-                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-                    scaledIcon = scaleOp.filter(icon, scaledIcon);
-                    rowButton.get(col).setIcon(new ImageIcon(scaledIcon));
-                }
-            }
+            BufferedImage icon = Icons.get(UnknownButton.class);
+            assert icon != null;
+            int w = icon.getWidth();
+            int h = icon.getHeight();
+            double iconSize = 64.0;
+            double scaleFactor = iconSize / Math.max(w, h);
+            // scale icon
+            BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
+            AffineTransform at = new AffineTransform();
+            at.scale(scaleFactor, scaleFactor);
+            AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            scaledIcon = scaleOp.filter(icon, scaledIcon);
+            this.list.get(1).get(4).setIcon(new ImageIcon(scaledIcon));
         }
 
         public void createFilledChest(Iterator<ItemStack> currentIterator) {
-            this.clean();
             for (int row = 0; row < ROW_NUMBER; row++) {
                 List<JButton> rowButton = this.list.get(row);
                 for (int col = 0; col < COL_NUMBER; col++) {

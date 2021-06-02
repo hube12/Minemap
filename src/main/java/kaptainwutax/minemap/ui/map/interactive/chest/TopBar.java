@@ -44,7 +44,7 @@ public class TopBar extends JPanel {
         this.showAllButton = new JButton(showString[showAll ? 1 : 0]);
         this.showAllButton.addActionListener(e -> {
             setShowAll(!showAll);
-            this.update(false); //important to redraw the ui with the new chests
+            this.update(true); //important to redraw the ui with the new chests
             this.showAllButton.setText(showString[showAll ? 1 : 0]);
         });
         // center chest on the current screen

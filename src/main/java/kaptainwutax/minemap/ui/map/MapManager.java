@@ -99,7 +99,19 @@ public class MapManager {
                 BPos pos = this.getMouseBPos();
                 this.panel.scheduler.forEachFragment(fragment -> fragment.onClicked(pos.getX(), pos.getZ()));
                 if (selectedTool == null) {
-                    this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                    ArrayList<Pair<Feature<?, ?>, List<BPos>>> features = FindOnMap.findFeaturesSelected();
+                    if (features != null && !features.isEmpty()) {
+                        for (Pair<Feature<?, ?>, List<BPos>> featureListPair : features) {
+                            Feature<?, ?> feature = featureListPair.getFirst();
+                            if (feature instanceof RegionStructure<?, ?>) {
+                                for (BPos bPos : featureListPair.getSecond()) {
+                                    this.generateChest(feature,bPos);
+                                }
+                            }
+                        }
+                    }else{
+                        this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+                    }
                 } else {
                     // if tool has no more points to it
                     if (!selectedTool.addPoint(pos)) {
@@ -217,21 +229,25 @@ public class MapManager {
         }
     }
 
+    public void generateChest(Feature<?, ?> feature, BPos pos){
+        this.panel.chestInstance.setPos(pos.toChunkPos());
+        this.panel.chestInstance.setFeature(feature);
+        this.panel.chestInstance.generate(); // this calls all the update function to generate the chests
+        this.panel.chestInstance.setCurrentChestIndex(0);
+        // however we still have some "top" init to do
+        this.chestWindows.updateFirst();
+    }
+
     public void processFeatureChest(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
         JMenuItem chestMenu = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
         chestMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
         chestMenu.addMouseListener(Events.Mouse.onReleased(me -> {
-            this.panel.chestInstance.setPos(pos.toChunkPos());
-            this.panel.chestInstance.setFeature(feature);
-            this.panel.chestInstance.generate(); // this calls all the update function to generate the chests
-            // however we still have some "top" init to do
-            this.panel.rightBar.chestTopBar.updateFirst();
-            this.chestWindows.updateFirst();
             this.chestWindows.setVisible(true);
         }));
         popup.add(chestMenu);
         popup.add(new JSeparator());
 
+        this.generateChest(feature,pos);
     }
 
     public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
