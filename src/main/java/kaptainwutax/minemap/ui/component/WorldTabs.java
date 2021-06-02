@@ -8,6 +8,8 @@ import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
+import kaptainwutax.minemap.util.ui.buttons.SquareCloseButton;
+import kaptainwutax.minemap.util.ui.graphics.Icon;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.util.ui.interactive.ExtendedTabbedPane;
 
@@ -49,9 +51,10 @@ public class WorldTabs extends ExtendedTabbedPane {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);
             return true;
         });
-        this.closeAllCurrent = new JButton(new ImageIcon(Objects.requireNonNull(Icons.get(CloseButton.class))));
+        this.closeAllCurrent = new JButton(Icon.getIcon(SquareCloseButton.class,28,28,null));
+        this.closeAllCurrent.setToolTipText("Close current seed");
         this.closeAllCurrent.addActionListener(e -> closeTabs());
-        this.addSideComponent(dropdown, ButtonSide.TRAILING);
+        this.addSideComponent(closeAllCurrent, ButtonSide.TRAILING);
         this.addSideComponent(dropdown, ButtonSide.TRAILING);
         dropdown.addActionListener(e -> {
             if (dropdown.getSelected() != current && dropdown.getSelected() != null) {
@@ -114,11 +117,11 @@ public class WorldTabs extends ExtendedTabbedPane {
             List<TabGroup> toRemove = this.tabGroups.stream().filter(TabGroup::isEmpty).collect(Collectors.toList());
             toRemove.forEach(this::remove);
         }
-
         this.getJTabbedPane().remove(component);
     }
 
     public void remove(TabGroup tabGroup) {
+        if (tabGroup==null) return;
         for (MapPanel mapPanel : new ArrayList<>(tabGroup.getMapPanels())) {
             this.remove(mapPanel);
         }

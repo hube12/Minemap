@@ -51,7 +51,7 @@ public class Icon {
             null
         );
     }
-    public static ImageIcon getIcon(Class<? extends Feature<?, ?>> feature, int scaledSize, double size, BufferedImage background) {
+    public static ImageIcon getIcon(Class<?> feature, int scaledSize, double size, BufferedImage background) {
         BufferedImage icon = Icons.get(feature);
         double iconSize = Configs.ICONS.getSize(feature);
         if (icon == null) return null;

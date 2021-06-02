@@ -18,12 +18,14 @@ import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class EnterSeedDialog extends Dialog {
@@ -36,7 +38,7 @@ public class EnterSeedDialog extends Dialog {
     public Dropdown<MCVersion> versionDropdown;
     public JButton continueButton;
     public JButton cancelButton;
-    public final ArrayList<String> seeds=new ArrayList<>();
+    public final ArrayList<String> seeds = new ArrayList<>();
 
     public EnterSeedDialog(Runnable onExit) {
         super("Load new Seed (<enter> to create)", new BorderLayout());
@@ -58,38 +60,7 @@ public class EnterSeedDialog extends Dialog {
 
         this.fileButton.addActionListener(e -> {
             File chosenFile = Assets.choseFile(this);
-            seeds.clear();
-            if (chosenFile != null) {
-                try {
-                    Scanner myReader = new Scanner(chosenFile);
-                    while (myReader.hasNextLine()) {
-                        String data = myReader.nextLine();
-                        seeds.add(data);
-                    }
-                    myReader.close();
-                } catch (FileNotFoundException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                    Logger.LOGGER.severe("File could not be opened "+e);
-                }
-            }
-            if (!seeds.isEmpty()){
-                fileButton.shouldBackground(true);
-                fileButton.setBackgroundColor(Color.GREEN);
-                fileButton.repaint();
-                this.seedField.setHint("File was successfully loaded");
-            }else{
-                fileButton.shouldBackground(true);
-                fileButton.setBackgroundColor(Color.RED);
-                fileButton.repaint();
-                this.seedField.setHint("File is invalid...");
-                Graphic.scheduleAction(3000,()->{
-                    this.seedField.setHint("Enter your seed here...");
-                    fileButton.shouldBackground(false);
-                    fileButton.repaint();
-                });
-            }
-            this.revalidate();
-            this.repaint();
+            loadSeedsFromFiles(Collections.singletonList(chosenFile));
         });
 
 
@@ -161,6 +132,56 @@ public class EnterSeedDialog extends Dialog {
         splitPane.setEnabled(false);
         splitPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.getContentPane().add(splitPane);
+        
+        this.setDropTarget(new DropTarget() {
+            @SuppressWarnings("unchecked")
+            public synchronized void drop(DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop(DnDConstants.ACTION_COPY);
+                    java.util.List<File> droppedFiles = (java.util.List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                    loadSeedsFromFiles(droppedFiles);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void loadSeedsFromFiles(List<File> files) {
+        seeds.clear();
+        for (File chosenFile : files) {
+            if (chosenFile != null) {
+                try {
+                    Scanner myReader = new Scanner(chosenFile);
+                    while (myReader.hasNextLine()) {
+                        String data = myReader.nextLine();
+                        seeds.add(data);
+                    }
+                    myReader.close();
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                    Logger.LOGGER.severe("File could not be opened " + fileNotFoundException);
+                }
+            }
+        }
+        if (!seeds.isEmpty()) {
+            fileButton.shouldBackground(true);
+            fileButton.setBackgroundColor(Color.GREEN);
+            fileButton.repaint();
+            this.seedField.setHint("Succesfully loaded "+(seeds.size())+" seeds!");
+        } else {
+            fileButton.shouldBackground(true);
+            fileButton.setBackgroundColor(Color.RED);
+            fileButton.repaint();
+            this.seedField.setHint("File is invalid...");
+            Graphic.scheduleAction(3000, () -> {
+                this.seedField.setHint("Enter your seed here...");
+                fileButton.shouldBackground(false);
+                fileButton.repaint();
+            });
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     private void doPreparation() {
@@ -180,33 +201,32 @@ public class EnterSeedDialog extends Dialog {
 
     protected void create() {
         doPreparation();
-        if (!seeds.isEmpty()){
-            int index=0;
-            for (String seed:seeds){
+        if (!seeds.isEmpty()) {
+            for (String seed : seeds) {
                 MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seed,
-                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(),false);
+                    threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions(), false);
             }
-            String text=seedField.getText();
-            if (text==null || text.equals("")){
+            String text = seedField.getText();
+            if (text == null || text.equals("")) {
                 dispose();
                 return;
             }
         }
-        TabGroup tabGroup=MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
+        TabGroup tabGroup = MineMap.INSTANCE.worldTabs.load(versionDropdown.getSelected(), seedField.getText(),
             threadDropdown.getSelected(), Configs.USER_PROFILE.getEnabledDimensions());
-        if (tabGroup==null){
-            String title=this.getTitle();
+        if (tabGroup == null) {
+            String title = this.getTitle();
             this.setTitle("Seed/options is invalid or already exists");
-            Color bg=this.seedField.getBackground();
+            Color bg = this.seedField.getBackground();
             this.seedField.setBackground(Color.RED);
-            Graphic.scheduleAction(3000,()->{
+            Graphic.scheduleAction(3000, () -> {
                 this.setTitle(title);
                 this.seedField.setBackground(bg);
             });
             continueButton.setEnabled(true);
             continueButton.setText("Continue");
 
-        }else{
+        } else {
             dispose();
         }
 

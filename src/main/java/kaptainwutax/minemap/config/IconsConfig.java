@@ -96,6 +96,7 @@ public class IconsConfig extends Config {
 
 
         addDefaultEntry(CloseButton.class, 1.0);
+        addDefaultEntry(SquareCloseButton.class, 1.0);
         addDefaultEntry(LockButton.class, 1.0);
         addDefaultEntry(CopyButton.class, 1.0);
         addDefaultEntry(JumpButton.class, 1.0);

@@ -123,7 +123,6 @@ public class MapRightSideBar extends JPanel {
         public void setIndexContent(int index) {
             // this will call update
             this.instance.setCurrentChestIndex(index);
-            this.currentChest.setText(index + 1 + "/" + (instance.getListItems() == null ? "?" : instance.size()));
         }
 
         private void cycle(boolean left) {
@@ -140,6 +139,7 @@ public class MapRightSideBar extends JPanel {
         }
 
         public void update(boolean hasChanged) {
+            this.currentChest.setText(instance.getCurrentChestIndex() + 1 + "/" + (instance.getListItems() == null ? "?" : instance.size()));
             this.currentFeature.setText(this.instance.getFeature() == null || this.instance.getPos() == null ? "No feature selected" :
                 String.format("%s at x:%d z:%d", prettifyDashed(this.instance.getFeature().getName()), this.instance.getPos().getX(), this.instance.getPos().getZ()));
             this.indexedButton.setText(indexedString[this.instance.isIndexed() ? 1 : 0]);
