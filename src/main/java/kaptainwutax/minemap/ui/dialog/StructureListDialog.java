@@ -20,6 +20,7 @@ import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.ui.graphics.TpPanel;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
+import kaptainwutax.terrainutils.TerrainGenerator;
 import one.util.streamex.StreamEx;
 
 import javax.swing.*;
@@ -110,7 +111,12 @@ public class StructureListDialog extends Dialog {
             biomeSource = context.getBiomeSource(Dimension.NETHER);
             dimCoeff = 3;
         }
-        Stream<BPos> stream = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff);
+        TerrainGenerator terrainGenerator = context.getTerrainGenerator();
+        if (feature instanceof OWBastionRemnant || feature instanceof OWFortress || feature instanceof OWNERuinedPortal) {
+            terrainGenerator = context.getTerrainGenerator(Dimension.NETHER);
+        }
+
+        Stream<BPos> stream=StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource,terrainGenerator, dimCoeff);
         assert stream != null;
         List<BPos> bPosList = StreamEx.of(stream)
             .sequential()

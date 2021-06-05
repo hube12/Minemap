@@ -8,6 +8,7 @@ import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.mcutils.util.pos.CPos;
 import kaptainwutax.mcutils.util.pos.RPos;
+import kaptainwutax.terrainutils.TerrainGenerator;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -18,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 public class StructureHelper {
 
-    public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, int dimCoeff) {
+    public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand,BiomeSource source, TerrainGenerator terrainGenerator, int dimCoeff) {
         if (structure instanceof RegionStructure<?, ?>) {
             RegionStructure<?, ?> regionStructure = (RegionStructure<?, ?>) structure;
             int chunkInRegion = regionStructure.getSpacing();
@@ -30,6 +31,7 @@ public class StructureHelper {
                 .map(rPos -> StructureHelper.getInRegion(regionStructure, worldseed, chunkRand, rPos))
                 .filter(Objects::nonNull) // remove for methods like bastion that use a float and is not in each region
                 .filter(cPos -> StructureHelper.canSpawn(regionStructure, cPos, source))
+                .filter(cPos -> terrainGenerator == null || StructureHelper.canGenerate(regionStructure, cPos, terrainGenerator))
                 .map(cPos -> {
                     BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
                     return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
@@ -52,6 +54,10 @@ public class StructureHelper {
 
     public static boolean canSpawn(RegionStructure<?, ?> structure, CPos cPos, BiomeSource source) {
         return structure.canSpawn(cPos.getX(), cPos.getZ(), source);
+    }
+
+    public static boolean canGenerate(RegionStructure<?, ?> structure, CPos cPos, TerrainGenerator source) {
+        return structure.canGenerate(cPos.getX(), cPos.getZ(), source);
     }
 
     static class SpiralIterator implements Iterable<RPos> {

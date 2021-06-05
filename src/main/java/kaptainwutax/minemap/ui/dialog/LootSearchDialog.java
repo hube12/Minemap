@@ -181,8 +181,8 @@ public class LootSearchDialog extends Dialog {
         TerrainGenerator finalTerrainGenerator = chunkGenerator;
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
-        Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, dimCoeff);
-        if (stream == null) return;
+        Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource,finalTerrainGenerator, dimCoeff);
+        if (stream==null) return;
         List<BPos> bPosList = StreamEx.of(Objects.requireNonNull(stream))
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds

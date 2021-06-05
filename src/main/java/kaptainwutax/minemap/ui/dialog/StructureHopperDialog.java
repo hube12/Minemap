@@ -18,6 +18,7 @@ import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
+import kaptainwutax.terrainutils.TerrainGenerator;
 import one.util.streamex.StreamEx;
 
 import javax.swing.*;
@@ -71,12 +72,15 @@ public class StructureHopperDialog extends Dialog {
         if (!(feature instanceof RegionStructure || feature instanceof Stronghold)) return;
         BPos centerPos = manager.getCenterPos();
         BiomeSource biomeSource = context.getBiomeSource();
+        TerrainGenerator terrainGenerator = context.getTerrainGenerator();
         int dimCoeff = 0;
         if (feature instanceof OWBastionRemnant || feature instanceof OWFortress) {
             biomeSource = context.getBiomeSource(Dimension.NETHER);
+            terrainGenerator = context.getTerrainGenerator(Dimension.NETHER);
             dimCoeff = 3;
         }
-        Stream<BPos> stream = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, dimCoeff);
+
+        Stream<BPos> stream=StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource,terrainGenerator, dimCoeff);
         assert stream != null;
         List<BPos> bPosList = StreamEx.of(stream)
             .sequential()

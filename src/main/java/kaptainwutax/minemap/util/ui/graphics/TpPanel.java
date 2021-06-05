@@ -22,7 +22,7 @@ import static kaptainwutax.minemap.util.ui.graphics.Icon.paintImage;
 public class TpPanel {
     public static void makeFrame(List<BPos> bPosList, Feature<?, ?> feature) {
         // create a new frame
-        JFrame frame = new JFrame(String.format("List of %d %s", bPosList.size(), feature.getName()));
+        JFrame frame = new JFrame(String.format("List of %d %s", bPosList.size(), Str.prettifyDashed(feature.getName())));
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
 
