@@ -2,9 +2,11 @@ package kaptainwutax.minemap.ui.dialog;
 
 import kaptainwutax.biomeutils.source.BiomeSource;
 import kaptainwutax.featureutils.Feature;
+import kaptainwutax.featureutils.structure.EndCity;
 import kaptainwutax.featureutils.structure.RegionStructure;
 import kaptainwutax.featureutils.structure.Stronghold;
 import kaptainwutax.featureutils.structure.Structure;
+import kaptainwutax.featureutils.structure.generator.structure.EndCityGenerator;
 import kaptainwutax.mcutils.rand.ChunkRand;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
@@ -13,11 +15,13 @@ import kaptainwutax.minemap.feature.OWBastionRemnant;
 import kaptainwutax.minemap.feature.OWFortress;
 import kaptainwutax.minemap.feature.OWNERuinedPortal;
 import kaptainwutax.minemap.feature.StructureHelper;
+import kaptainwutax.minemap.init.Features;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.MapManager;
 import kaptainwutax.minemap.ui.map.MapPanel;
 import kaptainwutax.minemap.ui.map.MapSettings;
+import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.graphics.TpPanel;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.terrainutils.TerrainGenerator;
@@ -26,6 +30,7 @@ import one.util.streamex.StreamEx;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,9 +63,21 @@ public class StructureListDialog extends Dialog {
         List<Feature<?, ?>> features = settings.getAllFeatures();
 
         List<StructureItem> structureItems = features.stream()
-            .filter(e -> e instanceof RegionStructure || e instanceof Stronghold/**/)
+            .filter(e -> e instanceof RegionStructure || e instanceof Stronghold)
             .map(e -> new StructureItem((Structure<?, ?>) e))
             .collect(Collectors.toList());
+        if (map.getContext().getDimension()==Dimension.END){
+            structureItems.add(new StructureItem((Structure<?, ?>) Features.getForVersion(map.getContext().getVersion()).get(EndCity.class), bPos -> {
+                EndCityGenerator endCityGenerator = new EndCityGenerator(map.getContext().getVersion());
+                if (!endCityGenerator.generate(map.getContext().getTerrainGenerator(), bPos.toChunkPos())) return false;
+                return endCityGenerator.hasShip();
+            }) {
+                @Override
+                public String toString() {
+                    return "End city with Elytra";
+                }
+            });
+        }
 
         this.structureItemDropdown = new Dropdown<>(structureItems);
 
@@ -103,6 +120,7 @@ public class StructureListDialog extends Dialog {
         }
 
         Structure<?, ?> feature = this.structureItemDropdown.getSelected().getFeature();
+        Function<BPos, Boolean> filter = this.structureItemDropdown.getSelected().getFilter();
         if (!(feature instanceof RegionStructure || feature instanceof Stronghold)) return;
         BPos centerPos = manager.getCenterPos();
         BiomeSource biomeSource = context.getBiomeSource();
@@ -116,10 +134,11 @@ public class StructureListDialog extends Dialog {
             terrainGenerator = context.getTerrainGenerator(Dimension.NETHER);
         }
 
-        Stream<BPos> stream=StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource,terrainGenerator, dimCoeff);
+        Stream<BPos> stream = StructureHelper.getClosest(feature, centerPos, context.worldSeed, chunkRand, biomeSource, terrainGenerator, dimCoeff);
         assert stream != null;
         List<BPos> bPosList = StreamEx.of(stream)
             .sequential()
+            .filter(e -> filter != null ? filter.apply(e) : true)
             .limit(n)
             .collect(Collectors.toList());
 
@@ -137,9 +156,19 @@ public class StructureListDialog extends Dialog {
     static class StructureItem {
 
         private final Structure<?, ?> feature;
+        private final Function<BPos, Boolean> filter;
 
         StructureItem(Structure<?, ?> feature) {
+            this(feature, null);
+        }
+
+        StructureItem(Structure<?, ?> feature, Function<BPos, Boolean> filter) {
             this.feature = feature;
+            this.filter = filter;
+        }
+
+        public Function<BPos, Boolean> getFilter() {
+            return filter;
         }
 
         public Structure<?, ?> getFeature() {
@@ -148,7 +177,7 @@ public class StructureListDialog extends Dialog {
 
         @Override
         public String toString() {
-            return feature.getName();
+            return Str.prettifyDashed(feature.getName());
         }
     }
 
