@@ -123,7 +123,7 @@ public class Icons {
         return new SwingWorker<Pair<MCVersion, String>, Void>() {
             @Override
             protected Pair<MCVersion, String> doInBackground() {
-                if (Assets.downloadManifest(Configs.USER_PROFILE.getAssetVersion())) {
+                if (Assets.downloadManifest(MCVersion.latest())) {
                     MCVersion version = Assets.getLatestVersion();
                     if (version != null) {
                         if (Assets.downloadVersionManifest(version, false)) {
