@@ -68,12 +68,12 @@ run {
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
-    implementation('com.github.KaptainWutax:MCUtils:11e3c70867968877233630797741f6cd47777e41') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:13009755237551c6148cdbda87e8d924c5bfc1ef') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:288e1b60e0f427bead80f001d19565ad1adcbd73') { transitive = false }
 
     implementation('com.github.KaptainWutax:BiomeUtils:cbb3d433c617087e5a6598ccec3cc0d04bf24e5a') { transitive = false }
     implementation('com.github.KaptainWutax:TerrainUtils:322c2405600be7e87ded65f7bc6f2c4f042a5472') { transitive = false }
-    implementation('com.github.KaptainWutax:FeatureUtils:58bde18c79d282ec3bbc955cb76dd5d4b9ad9136') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:ff97b44038b0410cef83cd813b4569ef4a5e4d03') { transitive = false }
 
     testImplementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') {transitive = false}
     implementation('com.seedfinding:latticg:1.05')
@@ -83,6 +83,7 @@ dependencies {
     implementation('org.swinglabs.swingx:swingx-core:1.6.5-1')
     implementation('org.pushing-pixels:radiance-trident:3.5.1')
     implementation('one.util:streamex:0.7.3')
+    implementation('com.vdurmont:semver4j:3.1.0')
     // JOML
     implementation "org.joml:joml:1.10.1"
     // LWJGL core

@@ -1,6 +1,7 @@
 package kaptainwutax.minemap.config;
 
 import com.google.gson.annotations.Expose;
+import com.vdurmont.semver4j.Semver;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.featureutils.structure.NetherFossil;
@@ -16,6 +17,7 @@ import kaptainwutax.minemap.ui.map.MapSettings;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class UserProfileConfig extends Config {
@@ -189,8 +191,8 @@ public class UserProfileConfig extends Config {
     @Override
     public Config readConfig() {
         UserProfileConfig config = (UserProfileConfig) super.readConfig();
-        config.RECENT_SEEDS = resizeQueue(config.RECENT_SEEDS, MAX_SIZE);
-        config.SAVED_SEEDS = resizeQueue(config.SAVED_SEEDS, MAX_SIZE);
+        config.RECENT_SEEDS = resizeQueue(config.RECENT_SEEDS, MAX_SIZE, e -> e);
+        config.SAVED_SEEDS = resizeQueue(config.SAVED_SEEDS, MAX_SIZE, e -> updateSavedSeeds(this.MINEMAP_VERSION, e));
         return config;
     }
 
@@ -200,6 +202,7 @@ public class UserProfileConfig extends Config {
         this.MC_VERSION = this.MC_VERSION == null ? MCVersion.values()[0] : this.MC_VERSION;
         this.USER_SETTINGS = this.USER_SETTINGS == null ? new UserSettings() : this.USER_SETTINGS;
         this.OLD_MINEMAP_VERSION = this.OLD_MINEMAP_VERSION == null ? this.MINEMAP_VERSION : this.OLD_MINEMAP_VERSION;
+        String previousVersion = this.MINEMAP_VERSION;
         this.MINEMAP_VERSION = MineMap.version;
         //this.ASSET_VERSION=this.ASSET_VERSION; // allowed since I use null as an invalid version
         for (Dimension dimension : Dimension.values()) {
@@ -221,17 +224,31 @@ public class UserProfileConfig extends Config {
             MapSettings settings = this.DEFAULT_MAP_SETTINGS.get(dimension.getName());
             settings.maintainConfig(dimension, this.MC_VERSION);
         }
-        this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE);
-        this.SAVED_SEEDS = resizeQueue(this.SAVED_SEEDS, MAX_SIZE);
+        this.RECENT_SEEDS = resizeQueue(this.RECENT_SEEDS, MAX_SIZE, e -> e);
+        this.SAVED_SEEDS = resizeQueue(this.SAVED_SEEDS, MAX_SIZE, e -> updateSavedSeeds(previousVersion, e));
+    }
+
+    private String updateSavedSeeds(String previousVersion, String e) {
+        if (previousVersion==null || new Semver(previousVersion).isGreaterThan("1.0.18")) return e;
+        String[] split = e.split("::");
+        if (split.length == 3) {
+            if (split[2].equals("-1")) {
+                split[2] = "1";
+            } else if (split[2].equals("1")) {
+                split[2] = "-1";
+            }
+        }
+        return String.join("::", split);
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> LinkedBlockingQueue<T> resizeQueue(LinkedBlockingQueue<T> queue, int size) {
+    private static <T> LinkedBlockingQueue<T> resizeQueue(LinkedBlockingQueue<T> queue, int size, Function<T, T> function) {
         Object[] recentSeeds = queue.toArray();
         queue.clear();
         queue = new LinkedBlockingQueue<>(MAX_SIZE);
         for (int i = 0; i < Math.min(size, recentSeeds.length); i++) {
-            if (!queue.offer((T) recentSeeds[i])) Logger.LOGGER.severe("The Queue is not sized correctly " + i + " " + MAX_SIZE + " " + queue.size() + " " + Arrays.toString(queue.toArray()));
+            if (!queue.offer(function.apply((T) recentSeeds[i])))
+                Logger.LOGGER.severe("The Queue is not sized correctly " + i + " " + MAX_SIZE + " " + queue.size() + " " + Arrays.toString(queue.toArray()));
         }
         return queue;
     }

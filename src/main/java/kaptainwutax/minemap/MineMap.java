@@ -1,6 +1,7 @@
 package kaptainwutax.minemap;
 
 import com.formdev.flatlaf.*;
+import com.vdurmont.semver4j.Semver;
 import kaptainwutax.featureutils.misc.SlimeChunk;
 import kaptainwutax.featureutils.structure.Mineshaft;
 import kaptainwutax.mcutils.util.data.Pair;
@@ -40,6 +41,7 @@ import static kaptainwutax.minemap.config.UserProfileConfig.MAX_SIZE;
 
 public class MineMap extends JFrame {
     public static final String version = "@VERSION@"; //using SemVer
+    public static final Semver semver = new Semver(version);
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
     public final static String LOG_DIR = ROOT_DIR + File.separatorChar + "logs";
     public final static String SETTINGS_DIR = ROOT_DIR + File.separatorChar + "configs";
