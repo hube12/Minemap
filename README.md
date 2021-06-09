@@ -152,7 +152,7 @@ All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.min
 
 - Weird artefacts appears on windows -> you are using Riva Tuner or MSI Afterburner which tampers with java swing. You should disable them or add an exception for all java.exe apps or Minemap-*.exe.
 
-- Minemap fails to start, maybe some config was not correctly written, go to $HOME/.minemap and delete rhe config folder.
+- Minemap fails to start, maybe some config was not correctly written, go to $HOME/.minemap or %HOMEPATH%/.minemap and delete the config folder.
 
 - Minemap fails to update, maybe you are ratelimited by Github, please try later.
 
