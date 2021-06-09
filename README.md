@@ -146,6 +146,16 @@ All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.min
   open a discussion [here](https://github.com/hube12/MineMap/discussions) or on [Discord](https://discord.gg/xa6cpSjsqZ)
   to ask for any feature that you deem reasonable enough (be aware for performance issues some might be denied).
 
+## Known issues
+
+- Linux gpu performance-> this is due to java not providing a gpu backend on some distros and using cpu rendering instead (you can try tweaking wayland, adding proprietary drivers or enabling sun opengl backend)
+
+- Weird artefacts appears on windows -> you are using Riva Tuner or MSI Afterburner which tampers with java swing. You should disable them or add an exception for all java.exe apps or Minemap-*.exe.
+
+- Minemap fails to start, maybe some config was not correctly written, go to $HOME/.minemap and delete rhe config folder.
+
+- Minemap fails to update, maybe you are ratelimited by Github, please try later.
+
 ## Development
 
 You just need to have the Java JDK installed then do:
