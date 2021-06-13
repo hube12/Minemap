@@ -5,11 +5,14 @@ import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
+import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
+import kaptainwutax.minemap.ui.menubar.FileMenu;
 import kaptainwutax.minemap.util.data.Str;
 import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.SquareCloseButton;
+import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import kaptainwutax.minemap.util.ui.graphics.Icon;
 import kaptainwutax.minemap.util.ui.interactive.Dropdown;
 import kaptainwutax.minemap.util.ui.interactive.ExtendedTabbedPane;
@@ -27,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.MineMap.isDarkTheme;
+import static org.joml.Random.newSeed;
 
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
@@ -40,7 +44,6 @@ public class WorldTabs extends ExtendedTabbedPane {
     public final JButton closeAllCurrent;
     public TabGroup current;
 
-    @SuppressWarnings("deprecation")
     public WorldTabs() {
         super(ComponentOrientation.LEFT_TO_RIGHT);
         //Copy seed to clipboard.
@@ -73,6 +76,29 @@ public class WorldTabs extends ExtendedTabbedPane {
                 mapPanel.rightBar.chestBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
             }
         });
+        this.getJTabbedPane().addMouseListener(Events.Mouse.onPressed(e->{
+            System.out.println(e);
+            if (getSelectedMapPanel()==null){
+                KeyShortcuts.ShortcutAction.NEW_SEED.action.run();
+            }
+        }));
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (getSelectedMapPanel()==null){
+            Font old=g.getFont();
+            g.setFont(new Font(old.getName(),old.getStyle(),20));
+            FontMetrics metrics = g.getFontMetrics(g.getFont());
+            String text="Click here to create a new seed";
+            Graphics2D g2d= Graphic.setGoodRendering(Graphic.withDithering(g));
+            int x=(this.getWidth()-metrics.stringWidth(text))/2;
+            int y=(this.getHeight()-metrics.getHeight())/2 + metrics.getAscent();
+            g2d.drawString(text,x,y);
+            g.setFont(old);
+        }
+
     }
 
     @Override
