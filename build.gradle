@@ -68,14 +68,14 @@ run {
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
-    implementation('com.github.KaptainWutax:MCUtils:13009755237551c6148cdbda87e8d924c5bfc1ef') { transitive = false }
-    implementation('com.github.KaptainWutax:NoiseUtils:288e1b60e0f427bead80f001d19565ad1adcbd73') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:ada314031f913553ed23f3fc466082418e95b3bb') { transitive = false }
+    implementation('com.github.KaptainWutax:NoiseUtils:4e17e706b685f717782e0bc270c31ea99816b4ec') { transitive = false }
 
-    implementation('com.github.KaptainWutax:BiomeUtils:cbb3d433c617087e5a6598ccec3cc0d04bf24e5a') { transitive = false }
-    implementation('com.github.KaptainWutax:TerrainUtils:322c2405600be7e87ded65f7bc6f2c4f042a5472') { transitive = false }
-    implementation('com.github.KaptainWutax:FeatureUtils:ff97b44038b0410cef83cd813b4569ef4a5e4d03') { transitive = false }
+    implementation('com.github.KaptainWutax:BiomeUtils:1499dca90e2c029249c4af5a842380240dcecee0') { transitive = false }
+    implementation('com.github.KaptainWutax:TerrainUtils:208176943c050d13aac11896995890eec81c6d2c') { transitive = false }
+    implementation('com.github.KaptainWutax:FeatureUtils:778372168e5a187c343f6864363e0e5c9a4c172d') { transitive = false }
 
-    testImplementation('com.github.KaptainWutax:ChunkRandomReversal:6b76fb5cf2cd438de56e6a46cea2a83985831834') {transitive = false}
+    testImplementation('com.github.KaptainWutax:ChunkRandomReversal:3fc82aab792d811fb296dcc28fe7177ac80c31f0') {transitive = false}
     implementation('com.seedfinding:latticg:1.05')
 
     implementation('com.google.code.gson:gson:2.8.6')

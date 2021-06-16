@@ -67,6 +67,11 @@ public class MineMap extends JFrame {
 
     @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) throws IOException {
+        Properties props = System.getProperties();
+        props.setProperty("sun.java2d.opengl", "True");
+//        props.setProperty("sun.java2d.trace", "count");
+//        props.setProperty("sun.java2d.pmoffscreen", "false");
+
         if (MineMap.version.startsWith("@VER") && MineMap.version.endsWith("SION@")) {
             throw new UnsupportedOperationException("The version was not replaced manually or by gradle");
         }

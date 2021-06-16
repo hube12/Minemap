@@ -77,7 +77,6 @@ public class WorldTabs extends ExtendedTabbedPane {
             }
         });
         this.getJTabbedPane().addMouseListener(Events.Mouse.onPressed(e->{
-            System.out.println(e);
             if (getSelectedMapPanel()==null){
                 KeyShortcuts.ShortcutAction.NEW_SEED.action.run();
             }

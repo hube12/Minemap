@@ -2,6 +2,8 @@ package kaptainwutax.minemap.util.ui.graphics;
 
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.mcutils.util.data.Pair;
+import kaptainwutax.mcutils.util.data.Quad;
+import kaptainwutax.mcutils.util.data.Triplet;
 import kaptainwutax.minemap.init.Configs;
 import kaptainwutax.minemap.init.Icons;
 
@@ -10,8 +12,10 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class Icon {
+    public static HashMap<Triplet<BufferedImage, Integer, Integer>, Image> storage = new HashMap<>();
 
     public static void paintImage(BufferedImage icon, Graphics g) {
         paintImage(icon, g, 20, 1.5F);
@@ -43,11 +47,14 @@ public class Icon {
         iconSizeZ *= factor.getSecond();
         int offsetX = shouldOffsetByHalf ? -(int) (iconSizeX / 2.0F) : (int) ((defaultSize * factor.getFirst() - iconSizeX) / 2.0F);
         int offsetZ = shouldOffsetByHalf ? -(int) (iconSizeZ / 2.0F) : (int) ((defaultSize * factor.getSecond() - iconSizeZ) / 2.0F);
-        g.drawImage(icon,
+        Image newimg = storage.get(new Triplet<>(icon, iconSizeX, iconSizeX));
+        if (newimg == null) {
+            newimg = icon.getScaledInstance(iconSizeX, iconSizeZ, Image.SCALE_FAST);
+            storage.put(new Triplet<>(icon, iconSizeX, iconSizeZ), newimg);
+        }
+        g.drawImage(newimg,
             insets.getFirst() + offsetX,
             insets.getSecond() + offsetZ,
-            iconSizeX,
-            iconSizeZ,
             null
         );
     }

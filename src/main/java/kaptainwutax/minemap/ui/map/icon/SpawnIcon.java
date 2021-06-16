@@ -7,6 +7,8 @@ import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.ui.map.MapContext;
 import kaptainwutax.minemap.ui.map.fragment.Fragment;
+import kaptainwutax.terrainutils.TerrainGenerator;
+import kaptainwutax.terrainutils.terrain.OverworldTerrainGenerator;
 
 import java.util.List;
 
@@ -16,8 +18,8 @@ public class SpawnIcon extends StaticIcon {
 
     public SpawnIcon(MapContext context) {
         super(context);
-        BiomeSource source = this.getContext().getBiomeSource();
-        this.pos = source instanceof OverworldBiomeSource ? ((OverworldBiomeSource) source).getSpawnPoint() : null;
+        TerrainGenerator generator = this.getContext().getTerrainGenerator();
+        this.pos = generator instanceof OverworldTerrainGenerator ? kaptainwutax.featureutils.misc.SpawnPoint.getSpawnPoint((OverworldTerrainGenerator) generator) : null;
     }
 
     public BPos getPos() {
