@@ -68,7 +68,7 @@ public class MineMap extends JFrame {
     @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) throws IOException {
         Properties props = System.getProperties();
-        props.setProperty("sun.java2d.opengl", "True");
+       // props.setProperty("sun.java2d.opengl", "True");
 //        props.setProperty("sun.java2d.trace", "count");
 //        props.setProperty("sun.java2d.pmoffscreen", "false");
 
@@ -207,7 +207,7 @@ public class MineMap extends JFrame {
                 "Update available for Minemap " + MineMap.version,
                 JOptionPane.YES_NO_OPTION
             );
-            if (dialogResult != JOptionPane.YES_OPTION) {
+            if (dialogResult != 0) {
                 return;
             }
         }

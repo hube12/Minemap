@@ -4,13 +4,10 @@ import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.MineMap;
 import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.init.Icons;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.listener.Events;
 import kaptainwutax.minemap.ui.map.MapPanel;
-import kaptainwutax.minemap.ui.menubar.FileMenu;
 import kaptainwutax.minemap.util.data.Str;
-import kaptainwutax.minemap.util.ui.buttons.CloseButton;
 import kaptainwutax.minemap.util.ui.buttons.SquareCloseButton;
 import kaptainwutax.minemap.util.ui.graphics.Graphic;
 import kaptainwutax.minemap.util.ui.graphics.Icon;
@@ -24,13 +21,13 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.util.*;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import static kaptainwutax.minemap.MineMap.isDarkTheme;
-import static org.joml.Random.newSeed;
 
 public class WorldTabs extends ExtendedTabbedPane {
     public static final Color BACKGROUND_COLOR = new Color(60, 63, 65);
@@ -69,15 +66,15 @@ public class WorldTabs extends ExtendedTabbedPane {
                 WorldTabs.super.repaint();
             }
         });
-        this.getJTabbedPane().addChangeListener(e->{
-            MapPanel mapPanel=this.getSelectedMapPanel();
-            if (mapPanel!=null){
+        this.getJTabbedPane().addChangeListener(e -> {
+            MapPanel mapPanel = this.getSelectedMapPanel();
+            if (mapPanel != null) {
                 mapPanel.rightBar.searchBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
                 mapPanel.rightBar.chestBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
             }
         });
-        this.getJTabbedPane().addMouseListener(Events.Mouse.onPressed(e->{
-            if (getSelectedMapPanel()==null){
+        this.getJTabbedPane().addMouseListener(Events.Mouse.onPressed(e -> {
+            if (getSelectedMapPanel() == null) {
                 KeyShortcuts.ShortcutAction.NEW_SEED.action.run();
             }
         }));
@@ -86,15 +83,15 @@ public class WorldTabs extends ExtendedTabbedPane {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        if (getSelectedMapPanel()==null){
-            Font old=g.getFont();
-            g.setFont(new Font(old.getName(),old.getStyle(),20));
+        if (getSelectedMapPanel() == null) {
+            Font old = g.getFont();
+            g.setFont(new Font(old.getName(), old.getStyle(), 20));
             FontMetrics metrics = g.getFontMetrics(g.getFont());
-            String text="Click here to create a new seed";
-            Graphics2D g2d= Graphic.setGoodRendering(Graphic.withDithering(g));
-            int x=(this.getWidth()-metrics.stringWidth(text))/2;
-            int y=(this.getHeight()-metrics.getHeight())/2 + metrics.getAscent();
-            g2d.drawString(text,x,y);
+            String text = "Click here to create a new seed";
+            Graphics2D g2d = Graphic.setGoodRendering(Graphic.withDithering(g));
+            int x = (this.getWidth() - metrics.stringWidth(text)) / 2;
+            int y = (this.getHeight() - metrics.getHeight()) / 2 + metrics.getAscent();
+            g2d.drawString(text, x, y);
             g.setFont(old);
         }
 
@@ -251,7 +248,10 @@ public class WorldTabs extends ExtendedTabbedPane {
         removeOthers.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         removeOthers.addMouseListener(Events.Mouse.onReleased(e -> {
-            //List<TabGroup> others = this.tabGroups.stream().filter(g -> g != current).collect(Collectors.toList());
+            int input = JOptionPane.showConfirmDialog(null, "Do you really want to CLOSE all the other opened seeds?", "Close other opened seeds", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (input != 0) {
+                return;
+            }
             this.tabGroups.clear();
             this.dropdown.removeAllItems();
             this.dropdown.elements.clear();
