@@ -3,6 +3,7 @@ package kaptainwutax.minemap.config;
 import com.google.gson.annotations.Expose;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.misc.SpawnPoint;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.minemap.feature.*;
 import kaptainwutax.minemap.init.Logger;

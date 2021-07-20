@@ -3,6 +3,7 @@ package kaptainwutax.minemap.init;
 import kaptainwutax.featureutils.Feature;
 import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.misc.SpawnPoint;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.mcutils.version.MCVersion;
 import kaptainwutax.minemap.feature.*;
@@ -46,7 +47,7 @@ public class Features {
         register(EndGateway.class, EndGateway::new);
         register(SlimeChunk.class, SlimeChunk::new);
 
-        register(SpawnPoint.class, v -> new SpawnPoint());
+        register(SpawnPoint.class, v-> new SpawnPoint());
     }
 
     public static <T extends Feature<?, ?>> void register(Class<T> clazz, FeatureFactory<T> factory) {

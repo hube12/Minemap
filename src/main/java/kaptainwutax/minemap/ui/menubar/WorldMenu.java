@@ -1,10 +1,10 @@
 package kaptainwutax.minemap.ui.menubar;
 
+import kaptainwutax.featureutils.misc.SpawnPoint;
 import kaptainwutax.mcutils.rand.seed.WorldSeed;
 import kaptainwutax.mcutils.state.Dimension;
 import kaptainwutax.mcutils.util.pos.BPos;
 import kaptainwutax.minemap.MineMap;
-import kaptainwutax.minemap.feature.SpawnPoint;
 import kaptainwutax.minemap.init.KeyShortcuts;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.listener.Events;

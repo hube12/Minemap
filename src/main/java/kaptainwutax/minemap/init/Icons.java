@@ -4,6 +4,7 @@ import kaptainwutax.featureutils.decorator.EndGateway;
 import kaptainwutax.featureutils.loot.item.Item;
 import kaptainwutax.featureutils.loot.item.Items;
 import kaptainwutax.featureutils.misc.SlimeChunk;
+import kaptainwutax.featureutils.misc.SpawnPoint;
 import kaptainwutax.featureutils.structure.*;
 import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.mcutils.version.MCVersion;
