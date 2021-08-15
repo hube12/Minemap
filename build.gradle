@@ -68,7 +68,7 @@ run {
 dependencies {
     implementation('com.github.KaptainWutax:MathUtils:5531c4a87b0f1bb85d1dab2bdd18ce375400626a') { transitive = false }
     implementation('com.github.KaptainWutax:SeedUtils:b6a383113ce5d8d09a59e91b28ff064fb97c0709') { transitive = false }
-    implementation('com.github.KaptainWutax:MCUtils:96545bc961eb5d51e18ec2b0cf6c5ce731899b0c') { transitive = false }
+    implementation('com.github.KaptainWutax:MCUtils:1bc39b7c89498c8a045c6944f18465238f9bb4cc') { transitive = false }
     implementation('com.github.KaptainWutax:NoiseUtils:49d64c336a099086c627d2391760134ebd81292f') { transitive = false }
 
     implementation('com.github.KaptainWutax:BiomeUtils:c0aa2f0e4974c2b4bc23e38f2ce503983ce4564d') { transitive = false }
