@@ -46,6 +46,10 @@ public class TabGroup extends JTabbedPane {
         }
     }
 
+    public boolean isLocked(){
+        return this.mapPanels.values().stream().anyMatch(MapPanel::isLocked);
+    }
+
     public boolean isLazyLoaded() {
         return lazyLoaded;
     }

@@ -35,8 +35,8 @@ public class WorldTabs extends ExtendedTabbedPane {
     protected final Set<TabGroup> tabGroups = new HashSet<>();
     public final Dropdown<TabGroup> dropdown = new Dropdown<TabGroup>(
         // what is better than a hashcode that can roll? a timestamp!
-        j -> String.format("%d [%s]::%s ", j.getWorldSeed(), j.getVersion(), System.nanoTime()),
-        value -> value != null ? ((String) value).split("::")[0] : null
+        j -> String.format("%d [%s]::%s", j.getWorldSeed(), j.getVersion(), System.nanoTime()),
+        (value, element) -> value != null ? ((String) value).split("::")[0] + (element != null && element.isLocked() ? " \uD83D\uDD12" : "") : null
     );
     public final JButton closeAllCurrent;
     public TabGroup current;

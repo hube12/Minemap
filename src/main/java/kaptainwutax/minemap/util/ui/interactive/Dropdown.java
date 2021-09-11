@@ -1,16 +1,16 @@
 package kaptainwutax.minemap.util.ui.interactive;
 
-import kaptainwutax.mcutils.util.data.Pair;
 import kaptainwutax.minemap.init.Logger;
 import kaptainwutax.minemap.ui.component.TabGroup;
-import kaptainwutax.minemap.util.data.Str;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,7 +44,7 @@ public class Dropdown<E> extends JComboBox<String> {
     }
 
     @SafeVarargs
-    public Dropdown(StringMapper<E> mapper, Function<Object, Object> transform, E... elements) {
+    public Dropdown(StringMapper<E> mapper, BiFunction<Object, E, Object> transform, E... elements) {
         this(mapper, transform, Arrays.asList(elements));
     }
 
@@ -52,7 +52,7 @@ public class Dropdown<E> extends JComboBox<String> {
         this(mapper, null, elements);
     }
 
-    public Dropdown(StringMapper<E> mapper, Function<Object, Object> transform, Collection<E> elements) {
+    public Dropdown(StringMapper<E> mapper, BiFunction<Object, E, Object> transform, Collection<E> elements) {
         super(elements.stream().map(mapper::map).toArray(String[]::new));
 //        this.setEditable(true); // DON'T DO THAT IT CAUSE A LOT OF NPE (STILL A JDK BUG)
 
@@ -63,10 +63,13 @@ public class Dropdown<E> extends JComboBox<String> {
             this.strings.put(mapper.map(element), element);
         }
         this.setOpaque(true);
+
         DefaultListCellRenderer listRenderer = new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                return super.getListCellRendererComponent(list, transform != null ? transform.apply(value) : value, index, isSelected, cellHasFocus);
+                return super.getListCellRendererComponent(list, transform != null ? transform.apply(value,
+                    (index >= 0 && index < Dropdown.this.order.size() && Dropdown.this.order.get(index) != null ?
+                        Dropdown.this.strings.get(Dropdown.this.order.get(index)) : null)) : value, index, isSelected, cellHasFocus);
             }
         };
 
