@@ -182,6 +182,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         if (tabGroup != null && mapPanel != null) {
             if (!mapPanel.getHeader().isSaved) {
                 tabGroup.removeIfPresent(mapPanel);
+                this.remove(mapPanel);
             }
             if (tabGroup.getMapPanels().isEmpty()) {
                 this.tabGroups.remove(tabGroup);
@@ -189,12 +190,19 @@ public class WorldTabs extends ExtendedTabbedPane {
                 current = this.dropdown.getSelected();
                 this.repaint();
             }
-            this.remove(mapPanel);
+
         }
     }
 
     public static void closeTab() {
         Component component = MineMap.INSTANCE.worldTabs.getSelectedComponent();
+        TabGroup current = MineMap.INSTANCE.worldTabs.getCurrentTabGroup();
+        if (component instanceof MapPanel && current != null) {
+            MineMap.INSTANCE.worldTabs.remove(current, (MapPanel) component);
+        }
+    }
+
+    public static void closeTab(Component component) {
         TabGroup current = MineMap.INSTANCE.worldTabs.getCurrentTabGroup();
         if (component instanceof MapPanel && current != null) {
             MineMap.INSTANCE.worldTabs.remove(current, (MapPanel) component);
@@ -225,7 +233,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         } else {
             TabHeader tabHeader = new TabHeader(title, e -> {
                 if (e.isShiftDown()) closeTabs();
-                else closeTab();
+                else closeTab(mapPanel);
             });
 
             tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
@@ -257,6 +265,8 @@ public class WorldTabs extends ExtendedTabbedPane {
             this.dropdown.elements.clear();
             this.dropdown.strings.clear();
             this.dropdown.order.clear();
+
+            MineMap.INSTANCE.loadPinnedSeeds();
             this.dropdown.add(current);
             this.tabGroups.add(current);
             cleanSetTabGroup(current);
