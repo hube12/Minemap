@@ -1,14 +1,14 @@
-import kaptainwutax.featureutils.misc.SlimeChunk;
-import kaptainwutax.featureutils.structure.Mineshaft;
-import kaptainwutax.minemap.init.Configs;
-import kaptainwutax.minemap.init.Features;
-import kaptainwutax.minemap.init.Icons;
-import kaptainwutax.minemap.util.data.DrawInfo;
-import kaptainwutax.minemap.ui.map.MapContext;
-import kaptainwutax.minemap.ui.map.MapSettings;
-import kaptainwutax.minemap.ui.map.fragment.Fragment;
-import kaptainwutax.mcutils.state.Dimension;
-import kaptainwutax.mcutils.version.MCVersion;
+import com.seedfinding.mcfeature.misc.SlimeChunk;
+import com.seedfinding.mcfeature.structure.Mineshaft;
+import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.init.Features;
+import com.seedfinding.minemap.init.Icons;
+import com.seedfinding.minemap.util.data.DrawInfo;
+import com.seedfinding.minemap.ui.map.MapContext;
+import com.seedfinding.minemap.ui.map.MapSettings;
+import com.seedfinding.minemap.ui.map.fragment.Fragment;
+import com.seedfinding.mccore.state.Dimension;
+import com.seedfinding.mccore.version.MCVersion;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
