@@ -1,11 +1,10 @@
 package com.seedfinding.minemap.ui.map;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;
 import com.seedfinding.minemap.ui.map.icon.*;
 import com.seedfinding.minemap.util.data.DrawInfo;
-import com.seedfinding.minemap.ui.map.icon.*;
 
 import java.awt.*;
 import java.util.ArrayList;

@@ -4,8 +4,8 @@ import com.seedfinding.latticg.util.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.ui.map.MapManager;
-import com.seedfinding.minemap.util.math.DisplayMaths;
 import com.seedfinding.minemap.util.data.ListUtil;
+import com.seedfinding.minemap.util.math.DisplayMaths;
 import com.seedfinding.minemap.util.tsp.Program;
 
 import javax.swing.*;

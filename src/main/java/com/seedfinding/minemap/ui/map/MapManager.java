@@ -1,23 +1,23 @@
 package com.seedfinding.minemap.ui.map;
 
-import com.seedfinding.mcfeature.Feature;
-import com.seedfinding.mcfeature.structure.RegionStructure;
-import com.seedfinding.mcfeature.structure.RuinedPortal;
-import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.ui.dialog.RenameTabDialog;
-import com.seedfinding.minemap.ui.map.tool.*;
-import com.seedfinding.minemap.util.math.DisplayMaths;
-import com.seedfinding.minemap.util.misc.FindOnMap;
-import com.seedfinding.mcmath.util.Mth;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.math.Vec3i;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcfeature.structure.RegionStructure;
+import com.seedfinding.mcfeature.structure.RuinedPortal;
+import com.seedfinding.mcmath.util.Mth;
+import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
+import com.seedfinding.minemap.ui.dialog.RenameTabDialog;
 import com.seedfinding.minemap.ui.map.interactive.Portal;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestFrame;
+import com.seedfinding.minemap.ui.map.tool.*;
+import com.seedfinding.minemap.util.math.DisplayMaths;
+import com.seedfinding.minemap.util.misc.FindOnMap;
 import com.seedfinding.minemap.util.ui.graphics.Icon;
 
 import javax.swing.*;
@@ -209,7 +209,7 @@ public class MapManager {
                                        }
 
                                        @Override
-                                       public void popupMenuCanceled(PopupMenuEvent e) { }
+                                       public void popupMenuCanceled(PopupMenuEvent e) {}
                                    }
         );
         this.panel.setComponentPopupMenu(popup);

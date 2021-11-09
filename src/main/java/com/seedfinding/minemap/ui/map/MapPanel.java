@@ -95,8 +95,8 @@ public class MapPanel extends JPanel {
         this.restart();
     }
 
-    public boolean isLocked(){
-        return this.header!=null && this.header.isSaved();
+    public boolean isLocked() {
+        return this.header != null && this.header.isSaved();
     }
 
     public void updateInteractive() {

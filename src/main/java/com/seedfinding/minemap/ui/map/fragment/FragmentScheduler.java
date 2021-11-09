@@ -3,9 +3,9 @@ package com.seedfinding.minemap.ui.map.fragment;
 import com.seedfinding.mccore.util.data.ThreadPool;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
-import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.map.tool.Tool;
 import com.seedfinding.minemap.util.data.DrawInfo;
 
@@ -24,10 +24,10 @@ public class FragmentScheduler {
     private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
     public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
         @Override
-        public void drawBiomes(Graphics graphics, DrawInfo info) { }
+        public void drawBiomes(Graphics graphics, DrawInfo info) {}
 
         @Override
-        public void drawFeatures(Graphics graphics, DrawInfo info) { }
+        public void drawFeatures(Graphics graphics, DrawInfo info) {}
 
         @Override
         public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {}

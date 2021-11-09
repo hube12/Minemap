@@ -1,13 +1,13 @@
 package com.seedfinding.minemap.feature;
 
 import com.seedfinding.mcbiome.source.BiomeSource;
-import com.seedfinding.mcfeature.structure.RegionStructure;
-import com.seedfinding.mcfeature.structure.Stronghold;
-import com.seedfinding.mcfeature.structure.Structure;
 import com.seedfinding.mccore.rand.ChunkRand;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
 import com.seedfinding.mccore.util.pos.RPos;
+import com.seedfinding.mcfeature.structure.RegionStructure;
+import com.seedfinding.mcfeature.structure.Stronghold;
+import com.seedfinding.mcfeature.structure.Structure;
 import com.seedfinding.mcterrain.TerrainGenerator;
 
 import java.util.Iterator;
@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 public class StructureHelper {
 
-    public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand,BiomeSource source, TerrainGenerator terrainGenerator, int dimCoeff) {
+    public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, TerrainGenerator terrainGenerator, int dimCoeff) {
         if (structure instanceof RegionStructure<?, ?>) {
             RegionStructure<?, ?> regionStructure = (RegionStructure<?, ?>) structure;
             int chunkInRegion = regionStructure.getSpacing();

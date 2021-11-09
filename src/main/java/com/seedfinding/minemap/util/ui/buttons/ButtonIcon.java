@@ -1,14 +1,12 @@
 package com.seedfinding.minemap.util.ui.buttons;
 
+import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.util.ui.graphics.Graphic;
 import com.seedfinding.minemap.util.ui.graphics.Icon;
 import com.seedfinding.minemap.util.ui.graphics.RoundedBorder;
-import com.seedfinding.minemap.init.Icons;
 
 import javax.swing.*;
 import java.awt.*;
-
-import static com.seedfinding.minemap.util.ui.graphics.Icon.paintImage;
 
 public abstract class ButtonIcon extends JButton {
     public final int size;

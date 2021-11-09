@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.ui.map.icon;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;
 import com.seedfinding.minemap.feature.OWNERuinedPortal;

@@ -39,8 +39,8 @@ public class AboutMenu extends Menu {
         this.hideDockableContainers = new JCheckBoxMenuItem("Hide dock arrows");
         this.hideDockableContainers.addChangeListener(e -> {
             Configs.USER_PROFILE.getUserSettings().hideDockableContainer = this.hideDockableContainers.getState();
-            MapPanel mapPanel= MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-            if (mapPanel!=null){
+            MapPanel mapPanel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (mapPanel != null) {
                 mapPanel.rightBar.searchBox.setVisible(!this.hideDockableContainers.getState());
                 mapPanel.rightBar.chestBox.setVisible(!this.hideDockableContainers.getState());
             }

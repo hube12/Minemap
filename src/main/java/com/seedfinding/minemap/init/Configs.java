@@ -2,7 +2,6 @@ package com.seedfinding.minemap.init;
 
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.config.*;
-import com.seedfinding.minemap.config.*;
 
 public class Configs {
 

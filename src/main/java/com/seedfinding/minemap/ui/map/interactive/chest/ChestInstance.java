@@ -1,9 +1,9 @@
 package com.seedfinding.minemap.ui.map.interactive.chest;
 
-import com.seedfinding.mcfeature.Feature;
-import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.feature.chests.Loot;
 import com.seedfinding.minemap.ui.map.MapContext;
@@ -20,8 +20,8 @@ public class ChestInstance {
     private List<List<ItemStack>> listItems;
     private boolean indexed = false;
     private int currentChestIndex;
-    private boolean hasChanged = false;
-    private List<Updatable> toUpdate = new ArrayList<>();
+    private final boolean hasChanged = false;
+    private final List<Updatable> toUpdate = new ArrayList<>();
 
     public ChestInstance(MapPanel map) {
         this.map = map;

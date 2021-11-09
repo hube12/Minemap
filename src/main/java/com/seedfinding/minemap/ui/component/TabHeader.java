@@ -1,12 +1,12 @@
 package com.seedfinding.minemap.ui.component;
 
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.ui.map.MapContext;
-import com.seedfinding.minemap.util.ui.interactive.ExtendedTabbedPane;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.listener.Events;
+import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.util.ui.buttons.CloseButton;
 import com.seedfinding.minemap.util.ui.buttons.LockButton;
+import com.seedfinding.minemap.util.ui.interactive.ExtendedTabbedPane;
 
 import javax.swing.*;
 import java.awt.*;

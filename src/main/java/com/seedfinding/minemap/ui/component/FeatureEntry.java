@@ -8,8 +8,6 @@ import com.seedfinding.minemap.util.ui.graphics.Icon;
 import javax.swing.*;
 import java.awt.*;
 
-import static com.seedfinding.minemap.util.ui.graphics.Icon.paintImage;
-
 public class FeatureEntry extends JPanel {
 
     private final JCheckBox checkBox;

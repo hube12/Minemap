@@ -5,10 +5,9 @@ import com.seedfinding.mcfeature.structure.BuriedTreasure;
 import com.seedfinding.mcfeature.structure.DesertPyramid;
 import com.seedfinding.mcfeature.structure.EndCity;
 import com.seedfinding.mcfeature.structure.Shipwreck;
-import com.seedfinding.minemap.feature.OWRuinedPortal;
-import com.seedfinding.minemap.feature.chests.loot.*;
 import com.seedfinding.minemap.feature.NERuinedPortal;
 import com.seedfinding.minemap.feature.OWNERuinedPortal;
+import com.seedfinding.minemap.feature.OWRuinedPortal;
 import com.seedfinding.minemap.feature.chests.loot.*;
 
 import java.util.LinkedHashMap;

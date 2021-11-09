@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.feature;
 
-import com.seedfinding.mcfeature.structure.Stronghold;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.structure.Stronghold;
 
 public class NEStronghold extends Stronghold {
 

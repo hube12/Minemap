@@ -1,6 +1,9 @@
 package com.seedfinding.minemap.ui.dialog;
 
 import com.seedfinding.mcbiome.source.BiomeSource;
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.state.Dimension;
+import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.loot.ILoot;
 import com.seedfinding.mcfeature.loot.item.Item;
@@ -9,9 +12,7 @@ import com.seedfinding.mcfeature.structure.RegionStructure;
 import com.seedfinding.mcfeature.structure.Structure;
 import com.seedfinding.mcfeature.structure.generator.Generator;
 import com.seedfinding.mcfeature.structure.generator.Generators;
-import com.seedfinding.mccore.rand.ChunkRand;
-import com.seedfinding.mccore.state.Dimension;
-import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;
@@ -27,7 +28,6 @@ import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.minemap.util.ui.graphics.TpPanel;
 import com.seedfinding.minemap.util.ui.interactive.Dropdown;
 import com.seedfinding.minemap.util.ui.interactive.Prompt;
-import com.seedfinding.mcterrain.TerrainGenerator;
 import one.util.streamex.StreamEx;
 
 import javax.swing.*;
@@ -179,8 +179,8 @@ public class LootSearchDialog extends Dialog {
         TerrainGenerator finalTerrainGenerator = chunkGenerator;
         long start = System.currentTimeMillis();
         ForkJoinPool forkJoinPool = new ForkJoinPool(Math.max(map.threadCount - 2, 1));
-        Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource,finalTerrainGenerator, dimCoeff);
-        if (stream==null) return;
+        Stream<BPos> stream = StructureHelper.getClosest((Structure<?, ?>) feature, centerPos, map.context.worldSeed, new ChunkRand(), biomeSource, finalTerrainGenerator, dimCoeff);
+        if (stream == null) return;
         List<BPos> bPosList = StreamEx.of(Objects.requireNonNull(stream))
             .parallel(forkJoinPool)
             .takeWhile(e -> System.currentTimeMillis() <= start + 20000) // only 20 seconds

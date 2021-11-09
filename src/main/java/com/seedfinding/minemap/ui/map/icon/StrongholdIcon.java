@@ -1,13 +1,12 @@
 package com.seedfinding.minemap.ui.map.icon;
 
-import com.seedfinding.mcfeature.Feature;
-import com.seedfinding.mcfeature.structure.Stronghold;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcfeature.structure.Stronghold;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;
-import com.seedfinding.mcseed.rand.JRand;
 
 import java.util.List;
 import java.util.OptionalInt;

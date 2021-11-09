@@ -14,7 +14,7 @@ public class ExtendedTabbedPane extends JPanel {
 
     public enum ButtonSide {
         LEADING,
-        TRAILING;
+        TRAILING
     }
 
     public ExtendedTabbedPane(ComponentOrientation orient) {

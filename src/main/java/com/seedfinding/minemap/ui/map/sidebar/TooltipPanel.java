@@ -1,9 +1,9 @@
 package com.seedfinding.minemap.ui.map.sidebar;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.util.pos.BPos;
-import com.seedfinding.minemap.ui.map.MapPanel;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.init.Icons;
+import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.util.data.Str;
 
 import javax.swing.*;

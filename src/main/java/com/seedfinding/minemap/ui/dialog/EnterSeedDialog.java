@@ -24,8 +24,8 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 public class EnterSeedDialog extends Dialog {

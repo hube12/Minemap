@@ -1,5 +1,9 @@
 package com.seedfinding.minemap.feature.chests;
 
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.util.data.Pair;
+import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.loot.ChestContent;
 import com.seedfinding.mcfeature.loot.ILoot;
@@ -7,13 +11,9 @@ import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.mcfeature.loot.item.Items;
 import com.seedfinding.mcfeature.structure.generator.Generator;
 import com.seedfinding.mcfeature.structure.generator.Generators;
-import com.seedfinding.mccore.rand.ChunkRand;
-import com.seedfinding.mccore.util.data.Pair;
-import com.seedfinding.mccore.util.pos.CPos;
-import com.seedfinding.mccore.version.MCVersion;
-import com.seedfinding.minemap.ui.map.MapContext;
-import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.mcterrain.TerrainGenerator;
+import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.ui.map.MapContext;
 
 import java.util.List;
 import java.util.function.Function;

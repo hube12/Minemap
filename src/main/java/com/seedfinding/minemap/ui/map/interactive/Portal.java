@@ -1,18 +1,18 @@
 package com.seedfinding.minemap.ui.map.interactive;
 
-import com.seedfinding.mcfeature.structure.RuinedPortal;
-import com.seedfinding.mcfeature.structure.generator.structure.RuinedPortalGenerator;
 import com.seedfinding.mccore.block.Block;
 import com.seedfinding.mccore.block.Blocks;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mcfeature.structure.RuinedPortal;
+import com.seedfinding.mcfeature.structure.generator.structure.RuinedPortalGenerator;
+import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.util.snksynthesis.voxelgame.EventManager;
 import com.seedfinding.minemap.util.snksynthesis.voxelgame.Visualizer;
 import com.seedfinding.minemap.util.snksynthesis.voxelgame.block.BlockType;
-import com.seedfinding.mcterrain.TerrainGenerator;
 
 import javax.swing.*;
 import java.util.HashMap;

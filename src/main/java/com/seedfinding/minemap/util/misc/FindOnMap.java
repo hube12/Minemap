@@ -1,9 +1,9 @@
 package com.seedfinding.minemap.util.misc;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;

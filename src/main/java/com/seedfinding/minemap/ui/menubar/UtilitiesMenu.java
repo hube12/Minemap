@@ -5,9 +5,9 @@ import com.seedfinding.minemap.config.KeyboardsConfig;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.listener.Events;
-import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.dialog.LootSearchDialog;
 import com.seedfinding.minemap.ui.dialog.StructureListDialog;
+import com.seedfinding.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;

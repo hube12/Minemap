@@ -1,18 +1,18 @@
 package com.seedfinding.minemap.ui.menubar;
 
-import com.seedfinding.mcfeature.misc.SpawnPoint;
 import com.seedfinding.mccore.rand.seed.WorldSeed;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.misc.SpawnPoint;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.config.KeyboardsConfig;
 import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
-import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.dialog.CoordHopperDialog;
 import com.seedfinding.minemap.ui.dialog.SaltDialog;
 import com.seedfinding.minemap.ui.dialog.StructureHopperDialog;
+import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.map.icon.IconRenderer;
 import com.seedfinding.minemap.ui.map.icon.SpawnIcon;
 

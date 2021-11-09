@@ -4,15 +4,14 @@ import com.google.gson.annotations.Expose;
 import com.seedfinding.mcbiome.biome.Biome;
 import com.seedfinding.mcbiome.biome.Biomes;
 import com.seedfinding.mcbiome.source.OverworldBiomeSource;
+import com.seedfinding.mccore.state.Dimension;
+import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.structure.Mineshaft;
 import com.seedfinding.mcfeature.structure.NetherFossil;
-import com.seedfinding.mccore.state.Dimension;
-import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.minemap.feature.*;
 import com.seedfinding.minemap.init.Features;
-import com.seedfinding.minemap.feature.*;
 
 import java.text.Collator;
 import java.util.*;

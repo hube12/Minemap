@@ -1,15 +1,16 @@
 package com.seedfinding.minemap.ui.dialog;
 
 import com.seedfinding.mcbiome.source.BiomeSource;
+import com.seedfinding.mccore.rand.ChunkRand;
+import com.seedfinding.mccore.state.Dimension;
+import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.structure.EndCity;
 import com.seedfinding.mcfeature.structure.RegionStructure;
 import com.seedfinding.mcfeature.structure.Stronghold;
 import com.seedfinding.mcfeature.structure.Structure;
 import com.seedfinding.mcfeature.structure.generator.structure.EndCityGenerator;
-import com.seedfinding.mccore.rand.ChunkRand;
-import com.seedfinding.mccore.state.Dimension;
-import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;
@@ -20,12 +21,11 @@ import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.MapManager;
 import com.seedfinding.minemap.ui.map.MapPanel;
+import com.seedfinding.minemap.ui.map.MapSettings;
 import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.minemap.util.ui.graphics.TpPanel;
 import com.seedfinding.minemap.util.ui.interactive.Dropdown;
 import com.seedfinding.minemap.util.ui.interactive.Prompt;
-import com.seedfinding.minemap.ui.map.MapSettings;
-import com.seedfinding.mcterrain.TerrainGenerator;
 import one.util.streamex.StreamEx;
 
 import javax.swing.*;
@@ -65,7 +65,7 @@ public class StructureListDialog extends Dialog {
             .filter(e -> e instanceof RegionStructure || e instanceof Stronghold)
             .map(e -> new StructureItem((Structure<?, ?>) e))
             .collect(Collectors.toList());
-        if (map.getContext().getDimension()==Dimension.END){
+        if (map.getContext().getDimension() == Dimension.END) {
             structureItems.add(new StructureItem((Structure<?, ?>) Features.getForVersion(map.getContext().getVersion()).get(EndCity.class), bPos -> {
                 EndCityGenerator endCityGenerator = new EndCityGenerator(map.getContext().getVersion());
                 if (!endCityGenerator.generate(map.getContext().getTerrainGenerator(), bPos.toChunkPos())) return false;

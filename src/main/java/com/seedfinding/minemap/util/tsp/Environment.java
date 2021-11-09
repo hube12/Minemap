@@ -206,7 +206,7 @@ public class Environment {
      *
      * @return nnSize
      */
-    public int getNNSize() { return Parameters.NNSize; }
+    public int getNNSize() {return Parameters.NNSize;}
 
     /**
      * Return the distance between to vertices

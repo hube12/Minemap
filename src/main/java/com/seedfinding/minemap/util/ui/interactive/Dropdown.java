@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.util.ui.interactive;
 
-import com.seedfinding.minemap.ui.component.TabGroup;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.ui.component.TabGroup;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.config;
 
 import com.google.gson.annotations.Expose;
-import com.seedfinding.mcfeature.structure.*;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.structure.*;
 import com.seedfinding.minemap.feature.NERuinedPortal;
 import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;

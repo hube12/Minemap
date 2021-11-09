@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.util.snksynthesis.voxelgame.gfx;
 
-import java.nio.FloatBuffer;
-
 import org.lwjgl.system.MemoryUtil;
+
+import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL33.*;
 
@@ -12,8 +12,8 @@ import static org.lwjgl.opengl.GL33.*;
  * @param vertices must be in format
  *
  *                 <pre>
- *                    {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
- *                                 </pre>
+ *                                    {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
+ *                                                 </pre>
  */
 public class Mesh {
 

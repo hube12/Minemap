@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.ui.map.fragment;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.Feature;
 
 @FunctionalInterface
 public interface FeatureFactory<T extends Feature<?, ?>> {

@@ -1,12 +1,11 @@
 package com.seedfinding.minemap.init;
 
+import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.decorator.EndGateway;
 import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.misc.SpawnPoint;
 import com.seedfinding.mcfeature.structure.*;
-import com.seedfinding.mccore.version.MCVersion;
-import com.seedfinding.minemap.feature.*;
 import com.seedfinding.minemap.feature.*;
 import com.seedfinding.minemap.ui.map.fragment.FeatureFactory;
 
@@ -48,7 +47,7 @@ public class Features {
         register(EndGateway.class, EndGateway::new);
         register(SlimeChunk.class, SlimeChunk::new);
 
-        register(SpawnPoint.class, v-> new SpawnPoint());
+        register(SpawnPoint.class, v -> new SpawnPoint());
     }
 
     public static <T extends Feature<?, ?>> void register(Class<T> clazz, FeatureFactory<T> factory) {

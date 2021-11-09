@@ -64,14 +64,14 @@ public class DemoJPane extends JPanel {
 
     public enum ButtonSide {
         LEADING,
-        TRAILING;
+        TRAILING
     }
 
-    private JTabbedPane tabs;
-    private JToolBar leadingButtons;
-    private JToolBar trailingButtons;
+    private final JTabbedPane tabs;
+    private final JToolBar leadingButtons;
+    private final JToolBar trailingButtons;
     //private JPanel dropDown;
-    private OffsetTabbedPaneUI tabUI;
+    private final OffsetTabbedPaneUI tabUI;
 
     public DemoJPane(ComponentOrientation orient) {
         SpringLayout sl = new SpringLayout();

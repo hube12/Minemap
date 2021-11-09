@@ -14,18 +14,18 @@ public class Ant {
      * Current tour, contains a sequence of edges that was travelled by the ant.
      * Start at the first node and ends at the same node, ex: [A,B,C,D,E,A].
      */
-    private int[] tour;
+    private final int[] tour;
 
     /**
      * All nodes that were visited by the ant. Are the restrictions of the TSP problem,
      * where an ant must visit all vertices only one time in a travel.
      */
-    private boolean[] visited;
+    private final boolean[] visited;
 
     /**
      * Let the information about the edges, vertices and pheromones accessible.
      */
-    private Environment environment;
+    private final Environment environment;
 
     /**
      * Create an adapted ant to the environment.

@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.util.snksynthesis.voxelgame.gfx;
 
-import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBTTAlignedQuad;
 import org.lwjgl.stb.STBTTPackContext;
@@ -12,7 +12,6 @@ import java.nio.FloatBuffer;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBTruetype.*;
-import static org.lwjgl.stb.STBTruetype.stbtt_PackEnd;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 

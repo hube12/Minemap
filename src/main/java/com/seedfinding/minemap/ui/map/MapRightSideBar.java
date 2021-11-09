@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.ui.map;
 
-import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.mccore.util.data.Pair;
+import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestInstance;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestPanel;

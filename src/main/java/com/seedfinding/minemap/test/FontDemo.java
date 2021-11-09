@@ -45,7 +45,7 @@ abstract class FontDemo {
 
     private boolean ctrlDown;
 
-    private int fontHeight;
+    private final int fontHeight;
 
     private int scale;
     private int lineOffset;

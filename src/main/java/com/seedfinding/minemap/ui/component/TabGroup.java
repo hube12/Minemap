@@ -2,8 +2,8 @@ package com.seedfinding.minemap.ui.component;
 
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.version.MCVersion;
-import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import java.util.*;
@@ -44,7 +44,7 @@ public class TabGroup extends JTabbedPane {
         }
     }
 
-    public boolean isLocked(){
+    public boolean isLocked() {
         return this.mapPanels.values().stream().anyMatch(MapPanel::isLocked);
     }
 

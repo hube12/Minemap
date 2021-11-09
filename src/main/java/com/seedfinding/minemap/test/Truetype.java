@@ -15,8 +15,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
-import static java.lang.Math.round;
 import static com.seedfinding.minemap.test.IOUtil.ioResourceToByteBuffer;
+import static java.lang.Math.round;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBTruetype.*;

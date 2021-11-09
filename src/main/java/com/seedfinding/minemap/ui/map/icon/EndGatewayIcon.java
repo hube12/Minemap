@@ -1,9 +1,9 @@
 package com.seedfinding.minemap.ui.map.icon;
 
-import com.seedfinding.mcfeature.Feature;
-import com.seedfinding.mcfeature.decorator.EndGateway;
 import com.seedfinding.mccore.rand.ChunkRand;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcfeature.decorator.EndGateway;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;
 

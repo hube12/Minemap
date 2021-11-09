@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.ui.map;
 
-import com.seedfinding.minemap.ui.map.sidebar.SettingsSidebar;
 import com.seedfinding.minemap.listener.Events;
+import com.seedfinding.minemap.ui.map.sidebar.SettingsSidebar;
 import com.seedfinding.minemap.ui.map.sidebar.TooltipSidebar;
 
 import javax.swing.*;

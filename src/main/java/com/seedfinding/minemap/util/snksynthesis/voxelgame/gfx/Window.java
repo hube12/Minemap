@@ -6,20 +6,17 @@ import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWImage;
 import org.lwjgl.glfw.GLFWVidMode;
-
-import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
-import static org.lwjgl.glfw.GLFW.*;
-
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GLUtil;
 import org.lwjgl.system.Callback;
 import org.lwjgl.system.MemoryUtil;
 
-import org.lwjgl.opengl.GL;
-
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL33.glViewport;
 
 /**
  * {@link Window} is for creating and managing a window.

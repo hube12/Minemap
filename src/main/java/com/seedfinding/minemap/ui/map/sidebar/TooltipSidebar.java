@@ -5,10 +5,10 @@ import com.seedfinding.mcbiome.biome.Biomes;
 import com.seedfinding.mcbiome.layer.BiomeLayer;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
-import com.seedfinding.minemap.ui.map.MapPanel;
-import com.seedfinding.minemap.init.Configs;
-import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.mcterrain.TerrainGenerator;
+import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.ui.map.MapPanel;
+import com.seedfinding.minemap.util.data.Str;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

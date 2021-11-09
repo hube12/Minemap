@@ -1,7 +1,7 @@
 package com.seedfinding.minemap.util.snksynthesis.voxelgame.gfx;
 
-import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 
 import static org.lwjgl.opengl.GL33.*;
 

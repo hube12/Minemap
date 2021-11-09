@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.feature;
 
-import com.seedfinding.mcfeature.structure.BastionRemnant;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.structure.BastionRemnant;
 
 public class OWBastionRemnant extends BastionRemnant {
 

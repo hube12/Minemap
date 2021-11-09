@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.feature;
 
-import com.seedfinding.mcfeature.structure.RuinedPortal;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.structure.RuinedPortal;
 
 public class OWRuinedPortal extends RuinedPortal {
 

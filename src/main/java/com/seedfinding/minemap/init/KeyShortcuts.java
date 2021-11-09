@@ -316,9 +316,9 @@ public class KeyShortcuts {
             ANY(1001);
             public final int id;
 
-            Type(int id) { this.id = id; }
+            Type(int id) {this.id = id;}
 
-            public int getValue() { return id; }
+            public int getValue() {return id;}
         }
 
 
@@ -331,9 +331,9 @@ public class KeyShortcuts {
             ANY(-1);
             public final int id;
 
-            KeyLocation(int id) { this.id = id; }
+            KeyLocation(int id) {this.id = id;}
 
-            public int getValue() { return id; }
+            public int getValue() {return id;}
         }
 
         public enum Modifier {
@@ -348,9 +348,9 @@ public class KeyShortcuts {
             ALT_ONLY(8);
             public final int id;
 
-            Modifier(int id) { this.id = id; }
+            Modifier(int id) {this.id = id;}
 
-            public int getValue() { return id; }
+            public int getValue() {return id;}
         }
     }
 }

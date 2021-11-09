@@ -1,28 +1,26 @@
 package com.seedfinding.minemap.init;
 
+import com.seedfinding.mccore.util.data.Pair;
+import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.decorator.EndGateway;
 import com.seedfinding.mcfeature.loot.item.Item;
 import com.seedfinding.mcfeature.loot.item.Items;
 import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.misc.SpawnPoint;
 import com.seedfinding.mcfeature.structure.*;
-import com.seedfinding.mccore.util.data.Pair;
-import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.feature.*;
+import com.seedfinding.minemap.ui.map.interactive.chest.ChestFrame;
+import com.seedfinding.minemap.ui.map.tool.Area;
+import com.seedfinding.minemap.ui.map.tool.Circle;
 import com.seedfinding.minemap.ui.map.tool.Polyline;
+import com.seedfinding.minemap.ui.map.tool.Ruler;
 import com.seedfinding.minemap.util.data.Assets;
 import com.seedfinding.minemap.util.ui.buttons.*;
 import com.seedfinding.minemap.util.ui.interactive.ModalPopup;
 import com.seedfinding.minemap.util.ui.special_icons.EndShipIcon;
 import com.seedfinding.minemap.util.ui.special_icons.IglooLabIcon;
 import com.seedfinding.minemap.util.ui.special_icons.ZombieVillageIcon;
-import com.seedfinding.minemap.feature.*;
-import com.seedfinding.minemap.ui.map.interactive.chest.ChestFrame;
-import com.seedfinding.minemap.ui.map.tool.Area;
-import com.seedfinding.minemap.ui.map.tool.Circle;
-import com.seedfinding.minemap.ui.map.tool.Ruler;
-import com.seedfinding.minemap.util.ui.buttons.*;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;

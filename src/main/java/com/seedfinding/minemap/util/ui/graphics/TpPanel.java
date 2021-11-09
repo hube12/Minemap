@@ -1,20 +1,18 @@
 package com.seedfinding.minemap.util.ui.graphics;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.util.pos.BPos;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.util.ui.interactive.ListPanel;
 import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.minemap.util.ui.buttons.CopyButton;
 import com.seedfinding.minemap.util.ui.buttons.JumpButton;
+import com.seedfinding.minemap.util.ui.interactive.ListPanel;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.List;
-
-import static com.seedfinding.minemap.util.ui.graphics.Icon.paintImage;
 
 public class TpPanel {
     public static void makeFrame(List<BPos> bPosList, Feature<?, ?> feature) {

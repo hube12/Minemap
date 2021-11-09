@@ -1,14 +1,14 @@
 package com.seedfinding.minemap.ui.map.icon;
 
-import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
-import com.seedfinding.minemap.ui.map.MapContext;
-import com.seedfinding.minemap.ui.map.fragment.Fragment;
-import com.seedfinding.minemap.util.ui.graphics.Graphic;
+import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.Icons;
+import com.seedfinding.minemap.ui.map.MapContext;
+import com.seedfinding.minemap.ui.map.fragment.Fragment;
 import com.seedfinding.minemap.util.data.DrawInfo;
+import com.seedfinding.minemap.util.ui.graphics.Graphic;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;

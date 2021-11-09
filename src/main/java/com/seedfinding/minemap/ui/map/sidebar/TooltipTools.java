@@ -5,11 +5,11 @@ import com.seedfinding.mcbiome.biome.Biomes;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.ui.map.MapPanel;
-import com.seedfinding.minemap.util.math.DisplayMaths;
 import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.ui.map.tool.Tool;
 import com.seedfinding.minemap.util.data.Str;
+import com.seedfinding.minemap.util.math.DisplayMaths;
 import com.seedfinding.minemap.util.ui.buttons.InfoButton;
 import com.seedfinding.minemap.util.ui.graphics.PieChart;
 import com.seedfinding.minemap.util.ui.graphics.RoundedFloatingEntry;
@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static com.seedfinding.minemap.util.ui.graphics.Icon.paintImage;
 
 public class TooltipTools extends JPanel {
 

@@ -2,8 +2,8 @@ package com.seedfinding.minemap.ui.menubar;
 
 import com.seedfinding.mccore.util.math.DistanceMetric;
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.dialog.ShortcutDialog;
 import com.seedfinding.minemap.ui.map.MapManager;

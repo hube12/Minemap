@@ -4,8 +4,8 @@
  */
 package com.seedfinding.minemap.test;
 
-import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.util.snksynthesis.voxelgame.util.IOUtils;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;

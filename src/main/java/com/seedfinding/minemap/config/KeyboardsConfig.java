@@ -1,8 +1,8 @@
 package com.seedfinding.minemap.config;
 
 import com.google.gson.annotations.Expose;
-import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.init.Configs;
+import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.init.Logger;
 
 import java.io.IOException;

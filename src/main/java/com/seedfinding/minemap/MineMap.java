@@ -1,12 +1,10 @@
 package com.seedfinding.minemap;
 
 import com.formdev.flatlaf.*;
-import com.seedfinding.minemap.init.*;
-import com.vdurmont.semver4j.Semver;
-import com.seedfinding.mcfeature.misc.SlimeChunk;
-import com.seedfinding.mcfeature.structure.Mineshaft;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.misc.SlimeChunk;
+import com.seedfinding.mcfeature.structure.Mineshaft;
 import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.init.*;
 import com.seedfinding.minemap.ui.component.TabGroup;
@@ -19,6 +17,7 @@ import com.seedfinding.minemap.ui.menubar.MenuBar;
 import com.seedfinding.minemap.util.data.Assets;
 import com.seedfinding.minemap.util.data.DrawInfo;
 import com.seedfinding.minemap.util.ui.interactive.ModalPopup;
+import com.vdurmont.semver4j.Semver;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -69,7 +68,7 @@ public class MineMap extends JFrame {
     @SuppressWarnings("ConstantConditions")
     public static void main(String[] args) throws IOException {
         Properties props = System.getProperties();
-       // props.setProperty("sun.java2d.opengl", "True");
+        // props.setProperty("sun.java2d.opengl", "True");
 //        props.setProperty("sun.java2d.trace", "count");
 //        props.setProperty("sun.java2d.pmoffscreen", "false");
 

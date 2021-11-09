@@ -1,18 +1,18 @@
 package com.seedfinding.minemap.config;
 
 import com.google.gson.annotations.Expose;
+import com.seedfinding.mccore.state.Dimension;
+import com.seedfinding.mccore.version.MCVersion;
+import com.seedfinding.mcfeature.misc.SlimeChunk;
+import com.seedfinding.mcfeature.structure.Mineshaft;
+import com.seedfinding.mcfeature.structure.NetherFossil;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.feature.NEStronghold;
 import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;
-import com.vdurmont.semver4j.Semver;
-import com.seedfinding.mcfeature.misc.SlimeChunk;
-import com.seedfinding.mcfeature.structure.Mineshaft;
-import com.seedfinding.mcfeature.structure.NetherFossil;
-import com.seedfinding.mccore.state.Dimension;
-import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.ui.map.MapSettings;
+import com.vdurmont.semver4j.Semver;
 
 import java.io.IOException;
 import java.util.*;
@@ -229,7 +229,7 @@ public class UserProfileConfig extends Config {
     }
 
     private String updateSavedSeeds(String previousVersion, String e) {
-        if (previousVersion==null || new Semver(previousVersion).isGreaterThan("1.0.18")) return e;
+        if (previousVersion == null || new Semver(previousVersion).isGreaterThan("1.0.18")) return e;
         String[] split = e.split("::");
         if (split.length == 3) {
             if (split[2].equals("-1")) {

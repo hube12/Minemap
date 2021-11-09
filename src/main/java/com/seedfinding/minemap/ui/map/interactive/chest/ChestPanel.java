@@ -1,16 +1,16 @@
 package com.seedfinding.minemap.ui.map.interactive.chest;
 
+import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mcfeature.loot.effect.Effect;
 import com.seedfinding.mcfeature.loot.item.Item;
 import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.mcfeature.loot.item.Items;
-import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.util.ui.graphics.Graphic;
 import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.minemap.util.ui.buttons.UnknownButton;
+import com.seedfinding.minemap.util.ui.graphics.Graphic;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;

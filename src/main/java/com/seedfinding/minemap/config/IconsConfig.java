@@ -6,12 +6,10 @@ import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.misc.SpawnPoint;
 import com.seedfinding.mcfeature.structure.*;
 import com.seedfinding.minemap.feature.*;
-import com.seedfinding.minemap.ui.map.tool.Polyline;
-import com.seedfinding.minemap.util.ui.buttons.*;
-import com.seedfinding.minemap.feature.*;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.ui.map.tool.Area;
 import com.seedfinding.minemap.ui.map.tool.Circle;
+import com.seedfinding.minemap.ui.map.tool.Polyline;
 import com.seedfinding.minemap.ui.map.tool.Ruler;
 import com.seedfinding.minemap.util.ui.buttons.*;
 

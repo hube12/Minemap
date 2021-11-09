@@ -1,10 +1,10 @@
 package com.seedfinding.minemap.util.snksynthesis.voxelgame.util;
 
 import com.seedfinding.mccore.util.data.Pair;
-import com.seedfinding.minemap.util.snksynthesis.voxelgame.Visualizer;
 import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.util.data.Assets;
+import com.seedfinding.minemap.util.snksynthesis.voxelgame.Visualizer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFWImage;
 

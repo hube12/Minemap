@@ -1,15 +1,15 @@
 package com.seedfinding.minemap.ui.map.icon;
 
-import com.seedfinding.mcfeature.Feature;
-import com.seedfinding.mcfeature.structure.RegionStructure;
 import com.seedfinding.mccore.rand.ChunkRand;
 import com.seedfinding.mccore.state.Dimension;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcfeature.structure.RegionStructure;
+import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;
-import com.seedfinding.mcterrain.TerrainGenerator;
 
 import java.util.List;
 import java.util.function.Function;
