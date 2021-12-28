@@ -244,11 +244,12 @@ public class MapManager {
     public void processFeatureChest(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
         JMenuItem chestMenu = new JMenuItem(String.format("Chest (%d,%d)", pos.getX(), pos.getZ()), icon);
         chestMenu.setBorder(new EmptyBorder(5, 15, 5, 15));
-        chestMenu.addMouseListener(Events.Mouse.onReleased(me -> this.chestWindows.setVisible(true)));
+        chestMenu.addMouseListener(Events.Mouse.onReleased(me -> {
+            this.generateChest(feature, pos);
+            this.chestWindows.setVisible(true);
+        }));
         popup.add(chestMenu);
         popup.add(new JSeparator());
-
-        this.generateChest(feature, pos);
     }
 
     public void processFeaturePortal(Feature<?, ?> feature, BPos pos, ImageIcon icon) {
