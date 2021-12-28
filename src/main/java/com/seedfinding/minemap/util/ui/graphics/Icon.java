@@ -62,19 +62,9 @@ public class Icon {
         double iconSize = Configs.ICONS.getSize(feature);
         if (icon == null) return null;
 
-        BufferedImage scaledIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-        AffineTransform at = new AffineTransform();
-        at.scale(size / icon.getWidth() * iconSize, size / icon.getHeight() * iconSize);
-        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        scaledIcon = scaleOp.filter(icon, scaledIcon);
-
-        BufferedImage translatedIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
-        at = new AffineTransform();
+        BufferedImage scaledIcon = scaleImage(icon, scaledSize, scaledSize, size / icon.getWidth() * iconSize, size / icon.getHeight() * iconSize);
         double diffScaled = (scaledSize - Math.min(size * iconSize, size)) / 2;
-        at.translate(diffScaled, diffScaled);
-        scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        translatedIcon = scaleOp.filter(scaledIcon, translatedIcon);
-
+        BufferedImage translatedIcon = translateImage(scaledIcon, scaledSize, scaledSize, diffScaled, diffScaled);
 
         if (background != null) {
             BufferedImage finalIcon = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_ARGB);
@@ -84,5 +74,21 @@ public class Icon {
         }
 
         return new ImageIcon(translatedIcon);
+    }
+
+    public static BufferedImage translateImage(BufferedImage input, int newWidth, int newHeight, double scaleX, double scaleZ) {
+        BufferedImage scaledIcon = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.translate(scaleX, scaleZ);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        return scaleOp.filter(input, scaledIcon);
+    }
+
+    public static BufferedImage scaleImage(BufferedImage input, int newWidth, int newHeight, double scaleX, double scaleZ) {
+        BufferedImage scaledIcon = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(scaleX, scaleZ);
+        AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        return scaleOp.filter(input, scaledIcon);
     }
 }

@@ -60,7 +60,7 @@ public class StructureHelper {
         return structure.canGenerate(cPos.getX(), cPos.getZ(), source);
     }
 
-    static class SpiralIterator implements Iterable<RPos> {
+    public static class SpiralIterator implements Iterable<RPos> {
         private final RPos lowerBound;
         private final RPos upperBound;
         private RPos currentPos;

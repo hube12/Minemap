@@ -11,6 +11,7 @@ import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.util.data.Str;
 import com.seedfinding.minemap.util.ui.buttons.UnknownButton;
 import com.seedfinding.minemap.util.ui.graphics.Graphic;
+import com.seedfinding.minemap.util.ui.graphics.Icon;
 import org.jdesktop.swingx.image.ColorTintFilter;
 
 import javax.swing.*;
@@ -121,9 +122,13 @@ public class ChestPanel extends JPanel {
                 );
 
                 // set the tool tip text as ItemName\nEnchantments\nEffects
+                String iconName=Str.prettifyDashed(item.getName());
                 StringBuilder toolTipSb = new StringBuilder("<html>");
-                toolTipSb.append("<p style=\"text-align:center;color:").append(MineMap.isDarkTheme() ? "white" : "black").append("\">")
-                    .append(Str.prettifyDashed(item.getName()))
+                toolTipSb.append("<p style=\"text-align:center;overflow: visible;color:").append(MineMap.isDarkTheme() ? "white" : "black")
+                    .append(";width:")
+                    .append(fontMetrics.stringWidth(iconName)+5)
+                    .append("\">")
+                    .append(iconName)
                     .append("</p>");
                 if (enchantmentToolTip != null) toolTipSb.append(enchantmentToolTip);
                 if (effectTooltip != null) toolTipSb.append(effectTooltip);
@@ -143,11 +148,7 @@ public class ChestPanel extends JPanel {
                     double scaleFactor = iconSize / Math.max(w, h);
                     BufferedImage background = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
                     // scale icon
-                    BufferedImage scaledIcon = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
-                    AffineTransform at = new AffineTransform();
-                    at.scale(scaleFactor, scaleFactor);
-                    AffineTransformOp scaleOp = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-                    scaledIcon = scaleOp.filter(icon, scaledIcon);
+                    BufferedImage scaledIcon= Icon.scaleImage(icon,(int) (w * scaleFactor), (int) (h * scaleFactor),scaleFactor,scaleFactor);
                     // set hints
                     Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(background.getGraphics()));
                     if (isPlate) {
@@ -165,7 +166,7 @@ public class ChestPanel extends JPanel {
                         g2d.rotate(-Math.PI / 8, background.getWidth() / 2.0, background.getHeight() / 2.0);
                     }
                     // add leather
-                    doLeatherOverlay(item, w, h, scaleFactor, background, g2d, scaleOp);
+                    doLeatherOverlay(item, background, g2d, overlay->Icon.scaleImage(overlay,(int) (w * scaleFactor), (int) (h * scaleFactor),scaleFactor,scaleFactor));
                     if (item.getName().equals(Items.FILLED_MAP.getName())) {
                         ColorTintFilter colorTintFilter = new ColorTintFilter(Color.BLUE, 0.4f);
                         colorTintFilter.filter(background, background);
@@ -192,7 +193,7 @@ public class ChestPanel extends JPanel {
         }
     }
 
-    public static void doLeatherOverlay(Item item, int w, int h, double scaleFactor, BufferedImage scaledIcon, Graphics2D g2d, AffineTransformOp scaleOp) {
+    public static void doLeatherOverlay(Item item, BufferedImage scaledIcon, Graphics2D g2d, Function<BufferedImage,BufferedImage> scaleFn) {
         if (item.getName().startsWith("leather_")) {
             BufferedImage overlay = null;
             String[] overlayName = item.getName().split("_");
@@ -211,9 +212,7 @@ public class ChestPanel extends JPanel {
                     break;
             }
             if (overlay != null) {
-                BufferedImage scaledOverlay = new BufferedImage((int) (w * scaleFactor), (int) (h * scaleFactor), BufferedImage.TYPE_INT_ARGB);
-                scaledOverlay = scaleOp.filter(overlay, scaledOverlay);
-                g2d.drawImage(scaledOverlay, 0, 0, scaledIcon.getWidth(), scaledIcon.getHeight(), null);
+                g2d.drawImage(scaleFn.apply(overlay), 0, 0, scaledIcon.getWidth(), scaledIcon.getHeight(), null);
             } else {
                 Logger.LOGGER.warning("Missing overlay for " + item.getName());
             }

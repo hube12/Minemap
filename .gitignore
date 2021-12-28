@@ -138,3 +138,5 @@ gradle-app.setting
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij+all,gradle
 
 src/main/java/kaptainwutax/minemap/test/
+
+src/test/java/Test2.java
