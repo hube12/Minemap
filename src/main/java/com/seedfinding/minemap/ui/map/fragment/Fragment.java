@@ -228,7 +228,9 @@ public class Fragment {
         MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         int cheating;
         if (panel != null && panel.manager != null) {
-            cheating = Math.max(Configs.USER_PROFILE.getUserSettings().cheatingHeight, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
+            cheating = Math.max(Configs.USER_PROFILE.getUserSettings().cheatingHeight, (int) (panel.manager.blocksPerFragment / 2 / panel.manager.pixelsPerFragment));
+            cheating = Math.max(cheating,1);
+            System.out.println(cheating);
             if (this.heightCache != null && lastCheatingHeight <= cheating) return;
         } else {
             cheating = Configs.USER_PROFILE.getUserSettings().cheatingHeight;
