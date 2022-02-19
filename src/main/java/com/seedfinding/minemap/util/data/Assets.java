@@ -444,7 +444,6 @@ public class Assets {
             paths = Assets.getFileHierarchical(dir, name, extension);
         } catch (IOException e) {
             LOGGER.severe(String.format("Exception while screening the files for '%s%s' from root %s with error %s", name, extension, dir.toString(), e));
-            System.err.println("Didn't find file " + name + ".");
             return list;
         }
         for (Path path : paths) {
@@ -460,7 +459,6 @@ public class Assets {
             }
         }
         if (list.isEmpty()) {
-            System.err.println("Didn't find file " + name + ".");
             LOGGER.severe(String.format("File not found for %s", name));
         }
 

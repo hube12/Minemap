@@ -30,7 +30,7 @@ public class IconSizeDialog extends Dialog {
         List<Class<? extends Feature<?, ?>>> features = new ArrayList<>(Features.REGISTRY.keySet());
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
         double steps = 10.0D;
-        // 10 possible size between 0.4D and 1.0D
+        // 7 possible size between 0.4D and 1.0D
         for (int i = 4; i <= steps; i++) {
             labels.put(i, new JLabel(String.valueOf(i / steps)));
         }

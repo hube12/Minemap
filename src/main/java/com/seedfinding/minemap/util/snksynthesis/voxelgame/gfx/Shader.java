@@ -57,7 +57,7 @@ public class Shader {
 
         glValidateProgram(programId);
         if (glGetProgrami(programId, GL_VALIDATE_STATUS) == 0) {
-            System.err.println("Warning: " + glGetProgramInfoLog(programId));
+            Logger.LOGGER.warning(glGetProgramInfoLog(programId));
         }
     }
 

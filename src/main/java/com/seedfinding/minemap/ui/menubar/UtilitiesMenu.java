@@ -4,6 +4,7 @@ import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.config.KeyboardsConfig;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.KeyShortcuts;
+import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.dialog.LootSearchDialog;
 import com.seedfinding.minemap.ui.dialog.StructureListDialog;
@@ -11,6 +12,7 @@ import com.seedfinding.minemap.ui.map.MapPanel;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
 
 public class UtilitiesMenu extends Menu {
     public JMenuItem structureSeedMode;
@@ -52,7 +54,7 @@ public class UtilitiesMenu extends Menu {
             MineMap.INSTANCE.worldTabs.invalidateAll();
             if (MineMap.INSTANCE.toolbarPane.structureSeedModePopup == null) {
                 MineMap.INSTANCE.toolbarPane = new MenuBar();
-                System.out.println("This should not happen");
+                Logger.LOGGER.log(Level.WARNING,"Toggling happened before definition, critical path");
                 return;
             }
             MineMap.INSTANCE.toolbarPane.structureSeedModePopup.setVisible(hasJustBeenSelected);

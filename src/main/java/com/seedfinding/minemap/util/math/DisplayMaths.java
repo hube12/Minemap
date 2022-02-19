@@ -47,6 +47,22 @@ public class DisplayMaths {
         return reduceToRange(0, 90, maxOffset, 0).apply(angleBetween);
     }
 
+    public static double smartClamp(double value, double constraint1, double constraint2) {
+        double min=Math.min(constraint1,constraint2);
+        double max=Math.max(constraint1,constraint2);
+        if(value < min) {
+            return min;
+        } else {
+            return Math.min(value, max);
+        }
+    }
+
+    public static int log2nlz( int bits ) {
+        if( bits == 0 )
+            return 0;
+        return 31 - Integer.numberOfLeadingZeros( bits );
+    }
+
     public static Function<Double, Double> reduceToRange(double minSourceRange, double maxSourceRange, double minTargetRange, double maxTargetRange) {
         if (minSourceRange == maxSourceRange) {
             throw new ArithmeticException("Can not map such range");

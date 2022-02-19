@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -110,9 +111,8 @@ public class Dropdown<E> extends JComboBox<String> {
             if (this.order.get(this.getSelectedIndex()).equals(toRemove)) {
                 this.order.remove(this.getSelectedIndex());
             } else {
-                System.out.println("missed");
+                Logger.LOGGER.log(Level.SEVERE,"Missed element in toRemove (Logic error)");
                 this.order.remove(toRemove);
-
             }
             super.removeItem(toRemove);
         }

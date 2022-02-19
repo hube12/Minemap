@@ -8,6 +8,7 @@ import com.seedfinding.minemap.ui.menubar.MenuBar;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import static com.seedfinding.minemap.ui.map.MapManager.zoom;
 import static com.seedfinding.minemap.util.data.Str.prettifyDashed;
@@ -32,7 +33,7 @@ public class KeyShortcuts {
                 if (!menuBar.isActive() || shortcutAction.name().equals("CLOSE")) {
                     shortcutAction.action.run();
                 } else {
-                    System.out.println("You can not open a new popup like that");
+                    Logger.LOGGER.log(Level.WARNING,"You can not open a new popup like that");
                 }
             }
             return false;

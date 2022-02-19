@@ -16,6 +16,7 @@ import com.seedfinding.minemap.feature.OWBastionRemnant;
 import com.seedfinding.minemap.feature.OWFortress;
 import com.seedfinding.minemap.feature.StructureHelper;
 import com.seedfinding.minemap.init.Features;
+import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.MapManager;
@@ -29,6 +30,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 import java.util.function.Function;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -109,7 +111,7 @@ public class StructureHopperDialog extends Dialog {
             BPos bPos = bPosList.get(0);
             manager.setCenterPos(bPos.getX(), bPos.getZ());
         } else {
-            System.out.println("Not found");
+            Logger.LOGGER.log(Level.WARNING,"Position not found for Structure Hop");
         }
         this.dispose();
     }

@@ -19,6 +19,7 @@ public class SettingsMenu extends Menu {
     private final JMenu modifierKey;
     private final JMenuItem shortcuts;
     private final JCheckBoxMenuItem zoom;
+    private final JCheckBoxMenuItem heightmapGrayscale;
     private final JCheckBoxMenuItem heightmap;
     private final JCheckBoxMenuItem flashing;
     private final JCheckBoxMenuItem disableStrongholds;
@@ -40,7 +41,21 @@ public class SettingsMenu extends Menu {
         });
         this.menu.addMenuListener(Events.Menu.onSelected(e -> this.zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom)));
 
-        this.heightmap = new JCheckBoxMenuItem("Show heightmap");
+        this.heightmapGrayscale = new JCheckBoxMenuItem("Show heightmap");
+        this.heightmapGrayscale.addChangeListener(e -> {
+            boolean old=Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale;
+            Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale = heightmapGrayscale.getState();
+            Configs.USER_PROFILE.flush();
+            if (old!=Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale){
+                MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                if (map!=null){
+                    map.restart();
+                }
+            }
+        });
+        this.menu.addMenuListener(Events.Menu.onSelected(e -> this.heightmapGrayscale.setState(Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale)));
+
+        this.heightmap = new JCheckBoxMenuItem("Show height");
         this.heightmap.addChangeListener(e -> {
             Configs.USER_PROFILE.getUserSettings().doHeightmap = heightmap.getState();
             Configs.USER_PROFILE.flush();
@@ -74,6 +89,7 @@ public class SettingsMenu extends Menu {
         this.menu.add(this.modifierKey);
         this.menu.add(this.zoom);
         this.menu.add(this.heightmap);
+        this.menu.add(this.heightmapGrayscale);
         this.menu.add(this.flashing);
         this.menu.add(this.disableStrongholds);
         this.menu.add(this.shortcuts);

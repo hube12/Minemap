@@ -16,6 +16,8 @@ public class UserSettings {
     @Expose
     public boolean doHeightmap = false;
     @Expose
+    public boolean doHeightmapGrayScale = false;
+    @Expose
     public String fragmentMetric = "Euclidean";
     @Expose
     public boolean structureMode = false;
@@ -25,6 +27,8 @@ public class UserSettings {
     public boolean disableStronghold = false;
     @Expose
     public boolean hideDockableContainer = false;
+    @Expose
+    public int cheatingHeight = 2;
     @Expose
     public MapManager.ModifierDown modifierDown = MapManager.ModifierDown.CTRL_DOWN;
 

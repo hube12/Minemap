@@ -5,6 +5,7 @@ import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
 import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.minemap.MineMap;
+import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.ui.component.TabHeader;
 import com.seedfinding.minemap.ui.component.WorldTabs;
 import com.seedfinding.minemap.ui.map.fragment.Fragment;
@@ -131,7 +132,6 @@ public class MapPanel extends JPanel {
         super.paintComponent(graphics);
         if (MineMap.DEBUG) System.out.println("Draw super " + " " + (System.nanoTime() - start));
         start = System.nanoTime();
-
         this.scheduler.purge();
         if (MineMap.DEBUG) System.out.println("Draw scheduler " + " " + (System.nanoTime() - start));
         start = System.nanoTime();
@@ -143,16 +143,27 @@ public class MapPanel extends JPanel {
     }
 
     public void drawMap(Graphics graphics) {
+
         long start = System.nanoTime();
         Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
         if (MineMap.DEBUG) System.out.println("Draw queue " + " " + (System.nanoTime() - start));
+
         start = System.nanoTime();
-        drawQueue.forEach((fragment, info) -> fragment.drawBiomes(graphics, info));
-        if (MineMap.DEBUG) System.out.println("Draw Biomes " + " " + (System.nanoTime() - start));
+        if (Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale) {
+            drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawHeight(graphics, info)));
+        }else{
+            drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawBiomes(graphics, info)));
+        }
+        if (MineMap.DEBUG) System.out.println("Draw Biomes/Heights " + " " + (System.nanoTime() - start));
+
+        drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawGrid(graphics, info)));
+
         start = System.nanoTime();
-        drawQueue.forEach((fragment, info) -> fragment.drawFeatures(graphics, info));
+        drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawFeatures(graphics, info)));
         if (MineMap.DEBUG) System.out.println("Draw feature " + " " + (System.nanoTime() - start));
+
         start = System.nanoTime();
+        // This can be drawn onto a loading fragment (no issue)
         drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.toolsList));
         if (MineMap.DEBUG) System.out.println("Draw tools " + " " + (System.nanoTime() - start));
     }

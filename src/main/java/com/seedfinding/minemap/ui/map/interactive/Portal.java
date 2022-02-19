@@ -104,7 +104,6 @@ public class Portal {
         for (Pair<Block, BPos> block : blocks) {
             if (blockHashMap.containsKey(block.getSecond())) {
                 Logger.LOGGER.severe("Impossible case " + informations + " " + block);
-                System.err.println("Impossible case " + informations + " " + block);
             }
             blockHashMap.put(block.getSecond(), block.getFirst());
             minX = Math.min(block.getSecond().getX(), minX);

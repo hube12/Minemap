@@ -5,6 +5,7 @@ import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
+import com.seedfinding.minemap.ui.dialog.CheatingHeightDialog;
 import com.seedfinding.minemap.ui.dialog.IconSizeDialog;
 import com.seedfinding.minemap.ui.map.MapPanel;
 
@@ -23,6 +24,7 @@ public class AboutMenu extends Menu {
     private final JMenu styleMenu;
     private final JCheckBoxMenuItem hideDockableContainers;
     private final JMenuItem iconSize;
+    private final JMenuItem cheatingHeight;
     private final JMenuItem settingsFolder;
     private final JMenuItem about;
 
@@ -51,6 +53,9 @@ public class AboutMenu extends Menu {
         this.iconSize = new JMenuItem("Change Icons Size");
         this.addMouseAndKeyListener(this.iconSize, iconSize(), iconSize(), true);
 
+        this.cheatingHeight = new JMenuItem("Optimize heightmap");
+        this.addMouseAndKeyListener(this.cheatingHeight, cheatingHeight(), cheatingHeight(), true);
+
         this.settingsFolder = new JMenuItem("Open Settings Folder");
         this.addMouseAndKeyListener(this.settingsFolder, settingsFolder(), settingsFolder(), true);
 
@@ -61,6 +66,7 @@ public class AboutMenu extends Menu {
         this.menu.add(this.styleMenu);
         this.menu.add(this.hideDockableContainers);
         this.menu.add(this.iconSize);
+        this.menu.add(this.cheatingHeight);
         this.menu.add(this.settingsFolder);
         this.menu.add(this.about);
     }
@@ -188,6 +194,14 @@ public class AboutMenu extends Menu {
         return () -> {
             this.activate.run();
             JDialog dialog = new IconSizeDialog(this.deactivate);
+            dialog.setVisible(true);
+        };
+    }
+
+    public Runnable cheatingHeight() {
+        return () -> {
+            this.activate.run();
+            JDialog dialog = new CheatingHeightDialog(this.deactivate);
             dialog.setVisible(true);
         };
     }

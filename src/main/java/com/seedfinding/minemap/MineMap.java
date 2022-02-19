@@ -114,7 +114,7 @@ public class MineMap extends JFrame {
                 return;
             }
         } else {
-            System.out.println("No seed argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            System.err.println("No seed argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
         if (Arrays.asList(args).contains("--version")) {
@@ -129,7 +129,7 @@ public class MineMap extends JFrame {
                 return;
             }
         } else {
-            System.out.println("No version argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            System.err.println("No version argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
         if (Arrays.asList(args).contains("--pos")) {
@@ -162,7 +162,7 @@ public class MineMap extends JFrame {
                 return;
             }
         } else {
-            System.out.println("No size argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
+            System.err.println("No size argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
         MapSettings settings = new MapSettings(version, OVERWORLD).refresh();

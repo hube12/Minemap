@@ -259,7 +259,6 @@ public class MapManager {
             portalMenu.setPos(pos.toChunkPos());
             portalMenu.setFeature((RuinedPortal) feature);
             if (!portalMenu.generateContent()) {
-                System.err.println("Portal not generated for " + pos);
                 Logger.LOGGER.severe("Portal not generated for " + pos);
             }
             portalMenu.run();
@@ -393,7 +392,7 @@ public class MapManager {
             selectedTool.reset();
         }
         if (!toolsList.remove(tool)) {
-            System.out.println("This is unexpected");
+            Logger.LOGGER.warning("Tool could not be removed");
         }
     }
 

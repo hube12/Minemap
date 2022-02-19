@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 public class MapContext {
 
@@ -60,7 +61,7 @@ public class MapContext {
 
                     map.put(dim, biomeSource);
                 } catch (UnsupportedVersion e) {
-                    System.out.printf("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString());
+                    Logger.LOGGER.log(Level.WARNING,String.format("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString()));
                     throw e;
                 }
             }

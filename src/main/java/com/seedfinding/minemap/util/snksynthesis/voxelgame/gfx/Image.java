@@ -36,7 +36,7 @@ public class Image {
             if (!stbi_info_from_memory(imageBuffer, w, h, comp)) {
                 throw new RuntimeException("Failed to read image information: " + stbi_failure_reason());
             } else {
-                System.err.println("OK with reason: " + stbi_failure_reason());
+                Logger.LOGGER.warning("OK with reason: " + stbi_failure_reason());
             }
 
             isHdr = stbi_is_hdr_from_memory(imageBuffer);

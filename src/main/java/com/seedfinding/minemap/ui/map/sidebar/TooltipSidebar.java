@@ -35,9 +35,9 @@ public class TooltipSidebar extends JPanel {
         return layer.getBiome(pos.getX(), 0, pos.getZ());
     }
 
-    public static int getHeight(MapPanel map, int blockX, int blockZ) {
+    public static Integer getHeight(MapPanel map, int blockX, int blockZ) {
         TerrainGenerator generator = map.getContext().getTerrainGenerator();
-        if (generator == null) return -1;
+        if (generator == null) return null;
         return generator.getHeightOnGround(blockX, blockZ);
     }
 
@@ -73,8 +73,13 @@ public class TooltipSidebar extends JPanel {
             biomeId, Integer.toHexString(biomeId).toUpperCase());
         this.biomeDisplay.setText(text);
         if (Configs.USER_PROFILE.getUserSettings().doHeightmap) {
-            int height = getHeight(this.map, blockX, blockZ);
-            String heightText = String.format("[%d, %d] height: %d", blockX, blockZ, height);
+            Integer height = getHeight(this.map, blockX, blockZ);
+            String heightText;
+            if (height==null){
+                heightText = "No height";
+            }else{
+                heightText = String.format("[%d, %d] height: %d", blockX, blockZ, height);
+            }
             this.biomeDisplay.setText("<html>" + text + "<br>" + heightText + "</html>");
         }
     }

@@ -6,6 +6,7 @@ import com.seedfinding.mcbiome.layer.BiomeLayer;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
 import com.seedfinding.mcfeature.Feature;
+import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.ui.map.IconManager;
@@ -23,6 +24,7 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class Fragment {
 
@@ -33,10 +35,13 @@ public class Fragment {
 
     private int layerIdCache;
     private int[][] biomeCache;
+    private int[][] heightCache;
     private Set<Biome> activeBiomesCache;
     private BufferedImage imageCache;
-    private int lastCheating = 1;
+    private int lastCheatingBiome = 1;
+    private int lastCheatingHeight = 1;
     private boolean hasBiomeModified = false;
+    private boolean hasHeightModified = false;
 
     private Map<Feature<?, ?>, List<BPos>> features;
     private BPos hoveredPos;
@@ -81,18 +86,42 @@ public class Fragment {
     public void drawBiomes(Graphics graphics, DrawInfo info) {
         this.refreshBiomeCache();
         if (this.context.getSettings().isDirty()) {
-            this.refreshImageCache();
+            this.refreshBiomeImageCache();
+        }
+
+        if (this.imageCache != null) {
+            graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
+        }
+    }
+
+    public void drawHeight(Graphics graphics, DrawInfo info) {
+        this.refreshHeightCache();
+        if (this.context.getSettings().isDirty()) {
+            this.refreshHeightImageCache();
         }
 
         if (this.imageCache != null && this.context.getSettings().showBiomes) {
             graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
         }
+    }
 
+    public void drawGrid(Graphics graphics, DrawInfo info) {
         if (this.context.getSettings().showGrid) {
             Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
             graphics.drawRect(info.x, info.y, info.width, info.height);
             graphics.setColor(old);
+        }
+    }
+
+    /**
+     * Specific Wrapper that check the context is not null for critical parts
+     *
+     * @param action the function to be called onto the fragment
+     */
+    public void drawNonLoading(Consumer<Fragment> action) {
+        if (this.context != null) {
+            action.accept(this);
         }
     }
 
@@ -112,7 +141,6 @@ public class Fragment {
     public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
         for (Tool tool : tools) {
             if (tool.isPartial()) {
-
                 if (tool.isMultiplePolygon()) {
                     if (tool.getPartialShapes() == null) continue;
                     List<Shape> shapes = tool.getPartialShapes();
@@ -196,16 +224,61 @@ public class Fragment {
         return map;
     }
 
+    private void refreshHeightCache() {
+        MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+        int cheating;
+        if (panel != null && panel.manager != null) {
+            cheating = Math.max(Configs.USER_PROFILE.getUserSettings().cheatingHeight, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
+            if (this.heightCache != null && lastCheatingHeight <= cheating) return;
+        } else {
+            cheating = Configs.USER_PROFILE.getUserSettings().cheatingHeight;
+        }
+        lastCheatingHeight = cheating;
+        BiomeLayer layer = this.context.getBiomeLayer();
+        int effectiveRegion = Math.max(Math.max(this.regionSize / layer.getScale(), 1) / cheating, 1);
+        TerrainGenerator terrainGenerator = this.context.getTerrainGenerator();
+
+        if (this.heightCache == null || this.heightCache.length != effectiveRegion) {
+            this.heightCache = new int[effectiveRegion][effectiveRegion];
+        }
+        for (int x = 0; x < effectiveRegion; x++) {
+            for (int z = 0; z < effectiveRegion; z++) {
+                this.heightCache[x][z] = terrainGenerator == null ? -1 : terrainGenerator.getHeightOnGround(this.blockX + x * layer.getScale() * cheating, this.blockZ + z * layer.getScale() * cheating);
+            }
+        }
+        hasHeightModified = true;
+        this.refreshHeightImageCache();
+    }
+
+    private void refreshHeightImageCache() {
+        if (this.imageCache != null && !hasHeightModified) return;
+        hasHeightModified = false;
+        int scaledSize = this.heightCache.length;
+        this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
+        TerrainGenerator generator = this.context.getTerrainGenerator();
+        int minGen = generator == null ? 0 : generator.getMinWorldHeight();
+        int maxGen = generator == null ? 0 : generator.getMaxWorldHeight();
+        Color minColor = Color.WHITE;
+        Color maxColor = Color.BLACK;
+        Color defaultColor = Color.orange;
+        for (int x = 0; x < scaledSize; x++) {
+            for (int z = 0; z < scaledSize; z++) {
+                Color color = get2DGradientColor(this.heightCache[x][z], minGen, maxGen, minColor, maxColor, defaultColor);
+                this.imageCache.setRGB(x, z, color.getRGB());
+            }
+        }
+    }
+
     private void refreshBiomeCache() {
         MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
         int cheating;
         if (panel != null && panel.manager != null) {
             cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
-            if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheating <= cheating) return;
+            if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheatingBiome <= cheating) return;
         } else {
             cheating = 1;
         }
-        lastCheating = cheating;
+        lastCheatingBiome = cheating;
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
         int effectiveRegion = Math.max(Math.max(this.regionSize / layer.getScale(), 1) / cheating, 1);
@@ -233,16 +306,15 @@ public class Fragment {
             }
         }
         hasBiomeModified = true;
-        this.refreshImageCache();
+        this.refreshBiomeImageCache();
     }
 
-    private void refreshImageCache() {
+    private void refreshBiomeImageCache() {
         if (this.imageCache != null && this.context.getSettings().getActiveBiomes().equals(this.activeBiomesCache) && !hasBiomeModified) return;
         hasBiomeModified = false;
         int scaledSize = this.biomeCache.length;
         this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
         this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
-
         for (int x = 0; x < scaledSize; x++) {
             for (int z = 0; z < scaledSize; z++) {
                 Biome biome = Biomes.REGISTRY.get(this.biomeCache[x][z]);
@@ -256,6 +328,35 @@ public class Fragment {
                 this.imageCache.setRGB(x, z, color.getRGB());
             }
         }
+    }
+
+    /**
+     * Calculates a 2D gradient color based on parameters
+     *
+     * @param value   the value obtained
+     * @param min     the min value corresponding to the @from Color
+     * @param max     the max value corresponding to the @to Color
+     * @param from    The base color corresponding to @min
+     * @param to      The base color corresponding to @to
+     * @param outside The default color if outside of the range [min;max]
+     * @return a Color within the from-to range based on the value of current within the range [min;max],
+     * if outside then the default outside is used
+     */
+    public static Color get2DGradientColor(int value, int min, int max, Color from, Color to, Color outside) {
+        // we can not work with such bad decisions
+        if (min > max) {
+            throw new IllegalArgumentException("Min should be less than max");
+        }
+        if (value < min || value > max) {
+            return outside;
+        }
+        // if max==min==value then ratio=0/1=0
+        double ratio = (double) (value - min) / (double) Math.min(max - min, 1) / 100.0D;
+        int red = (int) DisplayMaths.smartClamp(to.getRed() * ratio + from.getRed() * (1 - ratio), from.getRed(), to.getRed());
+        int green = (int) DisplayMaths.smartClamp(to.getGreen() * ratio + from.getGreen() * (1 - ratio), from.getGreen(), to.getGreen());
+        int blue = (int) DisplayMaths.smartClamp(to.getBlue() * ratio + from.getBlue() * (1 - ratio), from.getBlue(), to.getBlue());
+        int alpha = (int) DisplayMaths.smartClamp(to.getAlpha() * ratio + from.getAlpha() * (1 - ratio), from.getAlpha(), to.getAlpha());
+        return new Color(red, green, blue, alpha);
     }
 
     private Color makeInactive(Color c) {
