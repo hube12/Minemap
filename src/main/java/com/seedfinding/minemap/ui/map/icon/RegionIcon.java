@@ -46,15 +46,15 @@ public class RegionIcon extends StaticIcon {
                 CPos pos = structure.getInRegion(worldSeedWithSalt, data.regionX, data.regionZ, rand);
                 if (pos != null) {
                     BPos currentPos = blockPosTranslation().apply(pos.toBlockPos().add(9, 0, 9));
-                    if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource(getDimension()))) {
+                    if (Configs.USER_PROFILE.getUserSettings().structureMode) {
+                        positions.add(currentPos);
+                    } else if (structure.canSpawn(pos.getX(), pos.getZ(), this.getContext().getBiomeSource(getDimension()))) {
                         TerrainGenerator generator = this.getContext().getTerrainGenerator(structure).getFirst();
                         if (generator == null) {
                             positions.add(currentPos);
                         } else if (structure.canGenerate(pos.getX(), pos.getZ(), generator)) {
                             positions.add(currentPos);
                         }
-                    } else if (Configs.USER_PROFILE.getUserSettings().structureMode) {
-                        positions.add(currentPos);
                     }
                 }
 
