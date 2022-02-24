@@ -230,7 +230,6 @@ public class Fragment {
         if (panel != null && panel.manager != null) {
             cheating = Math.max(Configs.USER_PROFILE.getUserSettings().cheatingHeight, (int) (panel.manager.blocksPerFragment / 2 / panel.manager.pixelsPerFragment));
             cheating = Math.max(cheating,1);
-            System.out.println(cheating);
             if (this.heightCache != null && lastCheatingHeight <= cheating) return;
         } else {
             cheating = Configs.USER_PROFILE.getUserSettings().cheatingHeight;

@@ -48,7 +48,6 @@ public class CheatingHeightDialog extends Dialog {
         currentSlider.addChangeListener(e -> {
             int value = (int) MathHelper.clamp(currentSlider.getValue(), 0, numberCheatingSize);
             Configs.USER_PROFILE.getUserSettings().cheatingHeight = 1 << value;
-            System.out.println(Configs.USER_PROFILE.getUserSettings().cheatingHeight+" "+value);
             Configs.USER_PROFILE.flush();
         });
         labelPanel.add(label);
