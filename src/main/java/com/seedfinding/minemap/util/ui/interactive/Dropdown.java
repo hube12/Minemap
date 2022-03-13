@@ -82,8 +82,11 @@ public class Dropdown<E> extends JComboBox<String> {
     public void setDefault(E element) {
         if (element == null) return;
         String e = elements.get(element);
-        if (e == null) this.setSelectedItem(mapper.map(element));
-        this.setSelectedItem(e);
+        if (e == null) {
+            this.setSelectedItem(mapper.map(element));
+        }else{
+            this.setSelectedItem(e);
+        }
     }
 
     @Override

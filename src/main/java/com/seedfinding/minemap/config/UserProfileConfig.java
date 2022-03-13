@@ -54,6 +54,11 @@ public class UserProfileConfig extends Config {
         return Math.min(this.THREAD_COUNT, cores);
     }
 
+    public int getThreadCount() {
+        if (this.THREAD_COUNT < 1) return 1;
+        return Math.min(this.THREAD_COUNT, Runtime.getRuntime().availableProcessors());
+    }
+
     public String getMinemapVersion() {
         return MINEMAP_VERSION;
     }

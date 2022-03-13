@@ -14,10 +14,7 @@ import com.seedfinding.mcfeature.structure.generator.Generator;
 import com.seedfinding.mcfeature.structure.generator.Generators;
 import com.seedfinding.mcterrain.TerrainGenerator;
 import com.seedfinding.minemap.MineMap;
-import com.seedfinding.minemap.feature.OWBastionRemnant;
-import com.seedfinding.minemap.feature.OWFortress;
-import com.seedfinding.minemap.feature.OWNERuinedPortal;
-import com.seedfinding.minemap.feature.StructureHelper;
+import com.seedfinding.minemap.feature.*;
 import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.feature.chests.Loot;
 import com.seedfinding.minemap.init.Features;
@@ -165,13 +162,22 @@ public class LootSearchDialog extends Dialog {
         BPos centerPos = map.manager.getCenterPos();
         BiomeSource biomeSource = map.context.getBiomeSource();
         TerrainGenerator chunkGenerator = map.context.getTerrainGenerator();
+
+        // FIXME generify with getDimensionFunction and getTerrainGenerator(feature)
         int dimCoeff = 0;
         if (feature instanceof OWBastionRemnant || feature instanceof OWFortress || feature instanceof OWNERuinedPortal) {
             biomeSource = map.context.getBiomeSource(Dimension.NETHER);
             chunkGenerator = map.context.getTerrainGenerator(Dimension.NETHER);
             dimCoeff = 3;
         }
-        // FIXME make it possible to use any feature (particulary for strongholds)
+
+        if (feature instanceof NEStronghold) {
+            biomeSource = map.context.getBiomeSource(Dimension.OVERWORLD);
+            chunkGenerator = map.context.getTerrainGenerator(Dimension.OVERWORLD);
+            dimCoeff = -3;
+        }
+
+        // FIXME make it possible to use any feature (particularly for strongholds)
         if (!(feature instanceof RegionStructure)) return;
         Item selectedItem = this.itemDropdown.getSelected();
         Loot lootGen = Chests.get(selected).create();

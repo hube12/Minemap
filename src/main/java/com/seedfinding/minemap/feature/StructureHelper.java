@@ -34,14 +34,22 @@ public class StructureHelper {
                 .filter(cPos -> terrainGenerator == null || StructureHelper.canGenerate(regionStructure, cPos, terrainGenerator))
                 .map(cPos -> {
                     BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
-                    return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+                    if (dimCoeff>=0){
+                        return dimPos.shl(dimCoeff);
+                    }else{
+                        return dimPos.shr(-dimCoeff);
+                    }
                 });
         } else {
             if (structure instanceof Stronghold) {
                 return StreamSupport.stream(Spliterators.spliterator(((Stronghold) structure).getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
                     .map(cPos -> {
                         BPos dimPos = ((CPos) cPos).toBlockPos().add(9, 0, 9);
-                        return new BPos(dimPos.getX() << dimCoeff, 0, dimPos.getZ() << dimCoeff);
+                        if (dimCoeff>=0){
+                            return dimPos.shl(dimCoeff);
+                        }else{
+                            return dimPos.shr(-dimCoeff);
+                        }
                     });
             }
         }

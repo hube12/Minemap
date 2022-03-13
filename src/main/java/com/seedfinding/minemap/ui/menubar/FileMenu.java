@@ -87,7 +87,7 @@ public class FileMenu extends Menu {
             MineMap.INSTANCE.worldTabs.load(
                 version,
                 seed,
-                Configs.USER_PROFILE.getThreadCount(Runtime.getRuntime().availableProcessors()),
+                Configs.USER_PROFILE.getThreadCount(),
                 Configs.USER_PROFILE.getEnabledDimensions()
             );
         };

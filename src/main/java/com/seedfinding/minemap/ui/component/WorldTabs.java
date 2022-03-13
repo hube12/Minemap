@@ -219,8 +219,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         TabGroup tabGroup = isRight ? this.dropdown.getCycleRight() : this.dropdown.getCycleLeft();
         if (tabGroup == null) return;
         if (tabGroup != current) {
-            dropdown.setDefault(tabGroup);
-            this.cleanSetTabGroup(dropdown.getSelected());
+            this.cleanSetTabGroup(tabGroup);
         }
     }
 
