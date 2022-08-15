@@ -86,14 +86,15 @@ dependencies {
 
     implementation('com.seedfinding:latticg:1.05')
 
-    implementation('com.google.code.gson:gson:2.8.6')
-    implementation('com.formdev:flatlaf:0.38')
+    implementation('com.google.code.gson:gson:2.9.0')
+    implementation('com.formdev:flatlaf:2.4')
+    implementation("com.formdev:flatlaf-intellij-themes:2.4")
     implementation('org.swinglabs.swingx:swingx-core:1.6.5-1')
     implementation('org.pushing-pixels:radiance-trident:3.5.1')
-    implementation('one.util:streamex:0.7.3')
+    implementation('one.util:streamex:0.8.1')
     implementation('com.vdurmont:semver4j:3.1.0')
     // JOML
-    implementation "org.joml:joml:1.10.1"
+    implementation 'org.joml:joml:1.10.4'
     // LWJGL core
     implementation "org.lwjgl:lwjgl:${lwjglVersion}"
     // LWJGL natives

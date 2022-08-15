@@ -1,6 +1,7 @@
 package com.seedfinding.minemap;
 
 import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.misc.SlimeChunk;
@@ -40,6 +41,14 @@ import static com.seedfinding.minemap.config.UserProfileConfig.MAX_SIZE;
 
 
 public class MineMap extends JFrame {
+    static {
+        // https://bugs.openjdk.java.net/browse/JDK-8235363
+        if (System.getProperty("os.name").startsWith("Mac OS"))
+            System.setProperty("apple.awt.application.appearance", "system");
+
+    }
+
+
     public static final String version = "@VERSION@"; //using SemVer
     public static final Semver semver = new Semver(version);
     public final static String ROOT_DIR = System.getProperty("user.home") + File.separatorChar + ".minemap";
@@ -386,10 +395,79 @@ public class MineMap extends JFrame {
     }
 
     public enum LookType {
+
         DARK("Dark", FlatDarkLaf::new),
         LIGHT("Light", FlatLightLaf::new),
         INTELLIJ("Intellij", FlatIntelliJLaf::new),
-        DARCULA("Darcula", FlatDarculaLaf::new);
+        DARCULA("Darcula", FlatDarculaLaf::new),
+        ARC("Arc", com.formdev.flatlaf.intellijthemes.FlatArcIJTheme::new),
+        ARC_ORANGE("Arc - Orange", com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme::new),
+        ARC_DARK("Arc Dark", com.formdev.flatlaf.intellijthemes.FlatArcDarkIJTheme::new),
+        ARC_DARK_ORANGE("Arc Dark - Orange", com.formdev.flatlaf.intellijthemes.FlatArcDarkOrangeIJTheme::new),
+        CARBON("Carbon", com.formdev.flatlaf.intellijthemes.FlatCarbonIJTheme::new),
+        COBALT_2("Cobalt 2", com.formdev.flatlaf.intellijthemes.FlatCobalt2IJTheme::new),
+        CYAN_LIGHT("Cyan light", com.formdev.flatlaf.intellijthemes.FlatCyanLightIJTheme::new),
+        DARK_FLAT("Dark Flat", com.formdev.flatlaf.intellijthemes.FlatDarkFlatIJTheme::new),
+        DARK_PURPLE("Dark purple", com.formdev.flatlaf.intellijthemes.FlatDarkPurpleIJTheme::new),
+        DRACULA("Dracula", com.formdev.flatlaf.intellijthemes.FlatDraculaIJTheme::new),
+        GRADIANTO_DARK_FUCHSIA("Gradianto Dark Fuchsia", com.formdev.flatlaf.intellijthemes.FlatGradiantoDarkFuchsiaIJTheme::new),
+        GRADIANTO_DEEP_OCEAN("Gradianto Deep Ocean", com.formdev.flatlaf.intellijthemes.FlatGradiantoDeepOceanIJTheme::new),
+        GRADIANTO_MIDNIGHT_BLUE("Gradianto Midnight Blue", com.formdev.flatlaf.intellijthemes.FlatGradiantoMidnightBlueIJTheme::new),
+        GRADIANTO_NATURE_GREEN("Gradianto Nature Green", com.formdev.flatlaf.intellijthemes.FlatGradiantoNatureGreenIJTheme::new),
+        GRAY("Gray", com.formdev.flatlaf.intellijthemes.FlatGrayIJTheme::new),
+        GRUVBOX_DARK_HARD("Gruvbox Dark Hard", com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkHardIJTheme::new),
+        GRUVBOX_DARK_MEDIUM("Gruvbox Dark Medium", com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkMediumIJTheme::new),
+        GRUVBOX_DARK_SOFT("Gruvbox Dark Soft", com.formdev.flatlaf.intellijthemes.FlatGruvboxDarkSoftIJTheme::new),
+        HIBERBEE_DARK("Hiberbee Dark", com.formdev.flatlaf.intellijthemes.FlatHiberbeeDarkIJTheme::new),
+        HIGH_CONTRAST("High contrast", com.formdev.flatlaf.intellijthemes.FlatHighContrastIJTheme::new),
+        LIGHT_FLAT("Light Flat", com.formdev.flatlaf.intellijthemes.FlatLightFlatIJTheme::new),
+        MATERIAL_DESIGN_DARK("Material Design Dark", com.formdev.flatlaf.intellijthemes.FlatMaterialDesignDarkIJTheme::new),
+        MONOCAI("Monocai", com.formdev.flatlaf.intellijthemes.FlatMonocaiIJTheme::new),
+        MONOKAI_PRO("Monokai Pro", com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme::new),
+        NORD("Nord", com.formdev.flatlaf.intellijthemes.FlatNordIJTheme::new),
+        ONE_DARK("One Dark", com.formdev.flatlaf.intellijthemes.FlatOneDarkIJTheme::new),
+        SOLARIZED_DARK("Solarized Dark", com.formdev.flatlaf.intellijthemes.FlatSolarizedDarkIJTheme::new),
+        SOLARIZED_LIGHT("Solarized Light", com.formdev.flatlaf.intellijthemes.FlatSolarizedLightIJTheme::new),
+        SPACEGRAY("Spacegray", com.formdev.flatlaf.intellijthemes.FlatSpacegrayIJTheme::new),
+        VUESION("Vuesion", com.formdev.flatlaf.intellijthemes.FlatVuesionIJTheme::new),
+        XCODE_DARK("Xcode-Dark", com.formdev.flatlaf.intellijthemes.FlatXcodeDarkIJTheme::new),
+        ARC_DARK__MATERIAL_("Arc Dark (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkIJTheme::new),
+        ARC_DARK_CONTRAST__MATERIAL_("Arc Dark Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatArcDarkContrastIJTheme::new),
+        ATOM_ONE_DARK__MATERIAL_("Atom One Dark (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkIJTheme::new),
+        ATOM_ONE_DARK_CONTRAST__MATERIAL_("Atom One Dark Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneDarkContrastIJTheme::new),
+        ATOM_ONE_LIGHT__MATERIAL_("Atom One Light (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightIJTheme::new),
+        ATOM_ONE_LIGHT_CONTRAST__MATERIAL_("Atom One Light Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatAtomOneLightContrastIJTheme::new),
+        DRACULA__MATERIAL_("Dracula (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaIJTheme::new),
+        DRACULA_CONTRAST__MATERIAL_("Dracula Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatDraculaContrastIJTheme::new),
+        GITHUB__MATERIAL_("GitHub (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubIJTheme::new),
+        GITHUB_CONTRAST__MATERIAL_("GitHub Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubContrastIJTheme::new),
+        GITHUB_DARK__MATERIAL_("GitHub Dark (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkIJTheme::new),
+        GITHUB_DARK_CONTRAST__MATERIAL_("GitHub Dark Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatGitHubDarkContrastIJTheme::new),
+        LIGHT_OWL__MATERIAL_("Light Owl (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlIJTheme::new),
+        LIGHT_OWL_CONTRAST__MATERIAL_("Light Owl Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatLightOwlContrastIJTheme::new),
+        MATERIAL_DARKER__MATERIAL_("Material Darker (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme::new),
+        MATERIAL_DARKER_CONTRAST__MATERIAL_("Material Darker Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme::new),
+        MATERIAL_DEEP_OCEAN__MATERIAL_("Material Deep Ocean (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanIJTheme::new),
+        MATERIAL_DEEP_OCEAN_CONTRAST__MATERIAL_("Material Deep Ocean Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDeepOceanContrastIJTheme::new),
+        MATERIAL_LIGHTER__MATERIAL_("Material Lighter (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterIJTheme::new),
+        MATERIAL_LIGHTER_CONTRAST__MATERIAL_("Material Lighter Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialLighterContrastIJTheme::new),
+        MATERIAL_OCEANIC__MATERIAL_("Material Oceanic (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicIJTheme::new),
+        MATERIAL_OCEANIC_CONTRAST__MATERIAL_("Material Oceanic Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme::new),
+        MATERIAL_PALENIGHT__MATERIAL_("Material Palenight (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightIJTheme::new),
+        MATERIAL_PALENIGHT_CONTRAST__MATERIAL_("Material Palenight Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialPalenightContrastIJTheme::new),
+        MONOKAI_PRO__MATERIAL_("Monokai Pro (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProIJTheme::new),
+        MONOKAI_PRO_CONTRAST__MATERIAL_("Monokai Pro Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme::new),
+        MOONLIGHT__MATERIAL_("Moonlight (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightIJTheme::new),
+        MOONLIGHT_CONTRAST__MATERIAL_("Moonlight Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMoonlightContrastIJTheme::new),
+        NIGHT_OWL__MATERIAL_("Night Owl (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlIJTheme::new),
+        NIGHT_OWL_CONTRAST__MATERIAL_("Night Owl Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme::new),
+        SOLARIZED_DARK__MATERIAL_("Solarized Dark (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkIJTheme::new),
+        SOLARIZED_DARK_CONTRAST__MATERIAL_("Solarized Dark Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedDarkContrastIJTheme::new),
+        SOLARIZED_LIGHT__MATERIAL_("Solarized Light (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightIJTheme::new),
+        SOLARIZED_LIGHT_CONTRAST__MATERIAL_("Solarized Light Contrast (Material)", com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatSolarizedLightContrastIJTheme::new),
+
+
+        ;
 
         private final String name;
         private final Supplier<FlatLaf> supplier;
@@ -400,6 +478,7 @@ public class MineMap extends JFrame {
         }
 
         public void setLookAndFeel() throws UnsupportedLookAndFeelException {
+
             UIManager.setLookAndFeel(supplier.get());
             for (Window window : JFrame.getWindows()) {
                 SwingUtilities.updateComponentTreeUI(window);
@@ -423,5 +502,4 @@ public class MineMap extends JFrame {
             return supplier.get().isDark();
         }
     }
-
 }
