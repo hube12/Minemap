@@ -24,8 +24,6 @@ public class Features {
         register(Fortress.class, Fortress::new);
         register(Igloo.class, Igloo::new);
         register(JunglePyramid.class, JunglePyramid::new);
-        Mansion mansion=new Mansion(MCVersion.v1_17);
-        System.out.println(mansion.getSpacing());
         register(Mansion.class, Mansion::new);
         register(Mineshaft.class, Mineshaft::new);
         register(Monument.class, Monument::new);
