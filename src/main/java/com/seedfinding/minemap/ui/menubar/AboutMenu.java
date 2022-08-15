@@ -8,6 +8,8 @@ import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.dialog.CheatingHeightDialog;
 import com.seedfinding.minemap.ui.dialog.IconSizeDialog;
 import com.seedfinding.minemap.ui.map.MapPanel;
+import com.seedfinding.minemap.util.ui.interactive.LabelController;
+import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -18,9 +20,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
+
 public class AboutMenu extends Menu {
 
     private final JMenu lookMenu;
+    private final Box lookMenuLight;
+    private final Box lookMenuDark;
     private final JMenu styleMenu;
     private final JCheckBoxMenuItem hideDockableContainers;
     private final JMenuItem iconSize;
@@ -32,7 +39,32 @@ public class AboutMenu extends Menu {
         this.menu = new JMenu("About");
         this.menu.setMnemonic(KeyEvent.VK_B);
 
+        this.lookMenuDark= new Box(BoxLayout.Y_AXIS);
+
+        JScrollPane scrollPaneDark = new JScrollPane(this.lookMenuDark);
+        scrollPaneDark.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPaneDark.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneDark.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneDark.setPreferredSize(new Dimension(300,400));
+        scrollPaneDark.setMaximumSize(new Dimension(0, 400));
+        scrollPaneDark.setBorder(BorderFactory.createEmptyBorder());
+
+        this.lookMenuLight=new Box(BoxLayout.Y_AXIS);
+
+        JScrollPane scrollPaneLight = new JScrollPane(this.lookMenuLight);
+        scrollPaneLight.getVerticalScrollBar().setUnitIncrement(20);
+        scrollPaneLight.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPaneLight.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPaneLight.setPreferredSize(new Dimension(300,400));
+        scrollPaneLight.setMaximumSize(new Dimension(0, 400));
+        scrollPaneLight.setBorder(BorderFactory.createEmptyBorder());
+
+
         this.lookMenu = new JMenu("UI Look");
+        this.lookMenu.add(scrollPaneDark);
+        this.lookMenu.add(scrollPaneLight);
+        this.lookMenu.getPopupMenu().setLayout(new GridLayout(0,2));
+
         this.addLookGroup();
 
         this.styleMenu = new JMenu("Biome Style");
@@ -99,10 +131,11 @@ public class AboutMenu extends Menu {
     }
 
     private void addLookGroup() {
-        ButtonGroup lookButtons = new ButtonGroup();
-
         for (MineMap.LookType look : MineMap.LookType.values()) {
-            JRadioButtonMenuItem button = new JRadioButtonMenuItem(look.getName());
+
+            JLabel button = new JLabel("<html> &ensp;" + look.getName() + "</html>");
+            button.setOpaque(true);
+            button.addMouseListener(new LabelController(button));
 
             button.addMouseListener(Events.Mouse.onPressed(e -> {
                 if (!button.isEnabled()) return;
@@ -119,8 +152,14 @@ public class AboutMenu extends Menu {
                 button.setEnabled(false);
             }
 
-            lookButtons.add(button);
-            this.lookMenu.add(button);
+
+            if (look.isDark()){
+                this.lookMenuDark.add(Box.createRigidArea(new Dimension(0, 2)));
+                this.lookMenuDark.add(button);
+            }else{
+                this.lookMenuLight.add(Box.createRigidArea(new Dimension(0, 2)));
+                this.lookMenuLight.add(button);
+            }
         }
     }
 
@@ -180,7 +219,7 @@ public class AboutMenu extends Menu {
             caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
             JScrollPane scrollPane = new JScrollPane(textArea);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            scrollPane.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
             scrollPane.setPreferredSize(new Dimension(500, 400));
 
             frame.add(scrollPane);
