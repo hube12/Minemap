@@ -5,14 +5,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.guardsquare:proguard-gradle:7.1.0-beta4'
+        classpath 'com.guardsquare:proguard-gradle:7.2.2'
     }
 }
 plugins {
     id 'java'
     id "application"
-    id "com.github.johnrengelman.shadow" version "7.0.0"
-    id 'edu.sc.seis.launch4j' version '2.5.0'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id 'edu.sc.seis.launch4j' version '2.5.3'
 }
 
 
@@ -72,19 +72,19 @@ run {
 }
 
 dependencies {
-    implementation('com.seedfinding:mc_math:d73ac7cc644c67628ade0effd7136e11eb00bb76') { transitive = false }
-    implementation('com.seedfinding:mc_seed:5518e3ba3ee567fb0b51c15958967f70a6a19e02') { transitive = false }
-    implementation('com.seedfinding:mc_core:706e4f1b7aa6b42b3627f682a311d06280d80b5c') { transitive = false }
-    implementation('com.seedfinding:mc_noise:a6ab8e6c688491829f8d2adf845392da22ef8e9c') { transitive = false }
+    implementation('com.seedfinding:mc_math:1.171.0') { transitive = false }
+    implementation('com.seedfinding:mc_seed:1.171.1') { transitive = false }
+    implementation('com.seedfinding:mc_core:1.192.1') { transitive = false }
+    implementation('com.seedfinding:mc_noise:1.171.1') { transitive = false }
 
-    implementation('com.seedfinding:mc_biome:b2271807a047bb43ac60c8c20ad47e315f19b9a6') { transitive = false }
-    implementation('com.seedfinding:mc_terrain:9e937ddb838e28e79423c287fa18b1ce66f061d7') { transitive = false }
-    implementation('com.seedfinding:mc_feature:c29fd1fcd746e14c1bcdb127da3113ba273db1fd') { transitive = false }
+    implementation('com.seedfinding:mc_biome:1.171.1') { transitive = false }
+    implementation('com.seedfinding:mc_terrain:1.171.1') { transitive = false }
+    implementation('com.seedfinding:mc_feature:1.171.1') { transitive = false }
 
 
-    testImplementation('com.seedfinding:mc_reversal:2.0.0') { transitive = false }
+    testImplementation('com.seedfinding:mc_reversal:1.171.1') { transitive = false }
 
-    implementation('com.seedfinding:latticg:1.05')
+    implementation('com.seedfinding:latticg:1.06')
 
     implementation('com.google.code.gson:gson:2.9.0')
     implementation('com.formdev:flatlaf:2.4')
@@ -126,7 +126,6 @@ application {
 }
 
 shadowJar {
-    // this needs to be removed once https://github.com/johnrengelman/shadow/issues/663 is solved
     archiveFileName = "${project.name}-${project.version}.jar"
 }
 
