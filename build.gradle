@@ -11,13 +11,14 @@ buildscript {
 plugins {
     id 'java'
     id "application"
+    id 'signing'
     id "com.github.johnrengelman.shadow" version "7.1.2"
     id 'edu.sc.seis.launch4j' version '2.5.3'
+    id 'org.gradle.crypto.checksum' version '1.4.0'
 }
 
 
-
-defaultTasks("clean","release")
+defaultTasks("clean", "release")
 
 java {
     // very important ByteBuffer does not have flip in java 1.8
@@ -47,7 +48,9 @@ repositories {
     }
 }
 
+
 import org.apache.tools.ant.filters.ReplaceTokens
+import org.gradle.crypto.checksum.Checksum
 import proguard.gradle.ProGuardTask
 
 // this task replace the @VERSION@ token with the current project.version
@@ -141,19 +144,94 @@ launch4j {
     productName = "MineMap"
     fileDescription = "A lightning fast map viewer for Minecraft."
     copyConfigurable = [] // don't copy lib
-    libraryDir= "ignore_libs"
-    jreMaxVersion=JavaVersion.VERSION_HIGHER
-    jreMinVersion=JavaVersion.VERSION_1_8
+    libraryDir = "ignore_libs"
+    jreMaxVersion = JavaVersion.VERSION_HIGHER
+    jreMinVersion = JavaVersion.VERSION_1_8
     // this is a dirty fix to use JAVA_HOME
-    bundledJrePath ="%JAVA_HOME%;%PATH%"
+    bundledJrePath = "%JAVA_HOME%;%PATH%"
 }
 
-task("release"){
+signing {
+    if (signing.getSignatory() == null) {
+        System.err.println("Missing configuration driven signing key, defaulting to in memory.")
+        def signingKeyId = findProperty("signingKeyId")
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        if (signingKey == null || signingKey == null || signingPassword == null) {
+            System.err.println("Missing in memory signing key, defaulting to agent.")
+            useGpgCmd()
+        } else {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        }
+    }
+    gradle.taskGraph.whenReady { taskGraph ->
+        tasks.findAll { t ->
+            if (t.name == "signShadowJar") {
+                if (t.enabled) {
+                    t.doLast {
+                        println "Signing jar was a success, congrats !"
+                    }
+                }
+            }
+        }
+    }
+    sign shadowJar
+}
+
+// Because launch4j doesn't stay in its lane and modify my precious jar
+signShadowJar {
+    dependsOn createExe
+}
+
+task createChecksums(type: Checksum, dependsOn: [shadowJar, signShadowJar, createExe]) {
+    inputFiles.setFrom(layout.buildDirectory.dir("libs"))
+    outputDirectory.set(layout.buildDirectory.dir("libs"))
+    checksumAlgorithm.set(Checksum.Algorithm.SHA512)
+    appendFileNameToChecksum.set(true)
+}
+
+task releaseZip(type: Zip, dependsOn: createChecksums) {
+    setArchivesBaseName("Minemap")
+    destinationDirectory.set(new File("${buildDir}/release"))
+    println("Saving to: " + destinationDirectory.get())
+    from "${buildDir}/libs"
+}
+
+signing {
+    if (signing.getSignatory() == null) {
+        System.err.println("Missing configuration driven signing key, defaulting to in memory.")
+        def signingKeyId = findProperty("signingKeyId")
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        if (signingKey == null || signingKey == null || signingPassword == null) {
+            System.err.println("Missing in memory signing key, defaulting to agent.")
+            useGpgCmd()
+        } else {
+            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+        }
+    }
+    gradle.taskGraph.whenReady { taskGraph ->
+        tasks.findAll { t ->
+            if (t.name == "signReleaseZip") {
+                if (t.enabled) {
+                    t.doLast {
+                        println "Signing zip was a success, congrats !"
+                    }
+                }
+            }
+        }
+    }
+    sign releaseZip
+}
+
+task("release") {
     dependsOn(clean)
     dependsOn(shadowJar)
     dependsOn(createExe)
+    dependsOn(signShadowJar)
+    dependsOn(createChecksums)
+    dependsOn(signReleaseZip)
 }
-
 
 task proguard(type: ProGuardTask) {
 
@@ -166,7 +244,7 @@ task proguard(type: ProGuardTask) {
 
     // Specify the input jars, output jars, and library jars.
 
-    injars  "build/libs/${project.name}-${project.version}.jar"
+    injars "build/libs/${project.name}-${project.version}.jar"
     outjars 'out.jar'
 
     // Automatically handle the Java version of this build.
