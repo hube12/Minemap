@@ -28,7 +28,9 @@
 
 To download it head to the [Releases section](https://github.com/hube12/MineMap/releases/latest).
 
-To run it: either double click it on it if you have the [Java Runtime (JRE)](https://www.java.com/fr/download/) or use the command line (shift+right click in the folder then open command prompt/Powershell) and type `java -jar MineMap-X.X.X.jar`.
+To run it: either double click it on it if you have the [Java Runtime (JRE)](https://www.java.com/fr/download/) or use
+the command line (shift+right click in the folder then open command prompt/Powershell) and
+type `java -jar MineMap-X.X.X.jar`.
 
 This is a program to replace the old amidst with a non Minecraft based one (meaning you can run it without Minecraft
 installed), it is also way more efficient since it is fully multithreaded.
@@ -56,19 +58,22 @@ Supports all Minecraft release starting from 1.0+
 - Themes, Shortcuts, Biome colors and structure salts are customizable.
 - Possibility to take screenshot in app via a button or shortcut.
 - View different biomes layers
-- View extra infos such as Stronghold portal order, type of structure (Bastion, Shipwreck, Village are currently supported)
+- View extra infos such as Stronghold portal order, type of structure (Bastion, Shipwreck, Village are currently
+  supported)
 - Fully customized icons for structures and features + Mojang ones downloaded for item in chest loot.
 - 3D viewer for portals
 
 ### Shortcuts
 
 #### Main controls:
+
 - Ctrl + `N` : New seed
 - Ctrl + `S` : Screenshot
 - Ctrl + `O` : Open screenshot folder
 - Ctrl + `Q` : Close
 
 #### Optional controls :
+
 - Alt + `A` : Toggle Structure Seed Mode
 - Alt + `C` : Change Salts
 - Alt + `E` : Open Settings Folder (see [Configuration](#configuration))
@@ -80,16 +85,18 @@ Supports all Minecraft release starting from 1.0+
 - Alt + `S` : Go to Structure
 - Alt + `Q` : Close current tab
 - Alt + Shift + `Q` : Close current tab group
- 
+
 #### Zooming in and out:
-  - Ctrl + `Numpad +` : Zoom in
-  - Ctrl + `Numpad -` : Zoom out
-  - Alt + `Numpad +` : Layer +
-  - Alt + `Numpad -` : Layer -
+
+- Ctrl + `Numpad +` : Zoom in
+- Ctrl + `Numpad -` : Zoom out
+- Alt + `Numpad +` : Layer +
+- Alt + `Numpad -` : Layer -
 
 #### Go through opened seeds (understood as an infinite tape)
-  - Ctrl + `Left Arrow` : Previous one
-  - Ctrl + `Right Arrow` : Next One
+
+- Ctrl + `Left Arrow` : Previous one
+- Ctrl + `Right Arrow` : Next One
 
 In a dialog type `enter` to activate the continue button or `esc` to close the dialog.
 
@@ -98,23 +105,24 @@ Hold `alt` then press H, W, U, E or B to get one of the 5 menus to open.
 You can navigate the menus and press enter to use the button in it.
 
 #### Specific to 3D viewer
-  - `Q` : Enter mouse control
-  - `Esc` : Exit mouse control
-  - `WASD` : Move around in the world
-  - `Mouse movement` : Look around
-  - `0-9` : specific control (might not be binded to anything)
 
+- `Q` : Enter mouse control
+- `Esc` : Exit mouse control
+- `WASD` : Move around in the world
+- `Mouse movement` : Look around
+- `0-9` : specific control (might not be binded to anything)
 
 ### Configuration
 
 All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.minemap` (Mac/Linux)
 
-#### There are 4 folder here: 
-  - configs: User config file in json to save user preferences, can be edited manually but highly discouraged 
+#### There are 4 folder here:
+
+- configs: User config file in json to save user preferences, can be edited manually but highly discouraged
   (be sure to save them after editing in a safe place, also please check your json syntax like comma at the end)
-  - downloads: Assets downloaded from mojang.com with mostly the icons for the items, those are the property of Mojang AB
-  - logs: log to be send if any bug happens, this will help to pinpoint the error
-  - screenshots : screenshot made in the application
+- downloads: Assets downloaded from mojang.com with mostly the icons for the items, those are the property of Mojang AB
+- logs: log to be send if any bug happens, this will help to pinpoint the error
+- screenshots : screenshot made in the application
 
 ### Command line
 
@@ -148,11 +156,14 @@ All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.min
 
 ## Known issues
 
-- Linux gpu performance-> this is due to java not providing a gpu backend on some distros and using cpu rendering instead (you can try tweaking wayland, adding proprietary drivers or enabling sun opengl backend)
+- Linux gpu performance-> this is due to java not providing a gpu backend on some distros and using cpu rendering
+  instead (you can try tweaking wayland, adding proprietary drivers or enabling sun opengl backend)
 
-- Weird artefacts appears on windows -> you are using Riva Tuner or MSI Afterburner which tampers with java swing. You should disable them or add an exception for all java.exe apps or Minemap-*.exe.
+- Weird artefacts appears on windows -> you are using Riva Tuner or MSI Afterburner which tampers with java swing. You
+  should disable them or add an exception for all java.exe apps or Minemap-*.exe.
 
-- Minemap fails to start, maybe some config was not correctly written, go to $HOME/.minemap or %HOMEPATH%/.minemap and delete the config folder.
+- Minemap fails to start, maybe some config was not correctly written, go to $HOME/.minemap or %HOMEPATH%/.minemap and
+  delete the config folder.
 
 - Minemap fails to update, maybe you are ratelimited by Github, please try later.
 
@@ -169,6 +180,24 @@ variable accordingly)
 Run `./gradlew release` to generate the .exe and the .jar.
 
 To use vulkan with debug and validation layers please install the vulkan Lunar SDK.
+
+## Signature and due diligence
+
+Since 1.0.24 we sign both commits and release files (as such each exe and jar are provided with a sha512 and the jar
+with a signature and all of that is zipped then signed once again).
+
+Signature can be verified with `gpg --verify Minemap-<version>.zip.asc Minemap-<version>.zip`.
+
+You will need my signature which can be
+found [here](https://keyserver.pgp.com/vkd/DownloadKey.event?keyid=0x0209520C14A4DEE7)
+or [here](https://seedfinding.com/neil_pubkey.gpg.asc).
+
+Then you will need to dearmor it: `gpg -o neil_pubkey.gpg --dearmor *.asc` and then import it or use directly:
+
+`gpg --no-default-keyring --keyring neil_pubkey.gpg --verify Minemap-<version>.zip.asc Minemap-<version>.zip`
+
+You can download a dearmored version [here](https://seedfinding.com/neil_pubkey.gpg) (fair warning do not open it in a
+text editor as it is not ANSI)
 
 ## Contributors
 
