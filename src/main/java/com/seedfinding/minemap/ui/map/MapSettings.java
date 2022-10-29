@@ -30,6 +30,7 @@ public class MapSettings {
     }};
     public static final boolean DEFAULT_SHOW_BIOMES = true;
     public static final boolean DEFAULT_SHOW_FEATURES = true;
+    public static final boolean DEFAULT_SHOW_FLOWERS = false;
     public static final boolean DEFAULT_SHOW_GRID = false;
     public static final boolean DEFAULT_SHOW_EXTRA_INFOS = false;
     public static final boolean DEFAULT_SHOW_EXTRA_ICONS = true;
@@ -42,6 +43,8 @@ public class MapSettings {
     public Boolean showBiomes = true;
     @Expose
     public Boolean showFeatures = true;
+    @Expose
+    public Boolean showFlowers = false;
     @Expose
     public Boolean showGrid = false;
     @Expose
@@ -279,6 +282,7 @@ public class MapSettings {
         }
         this.showBiomes = this.showBiomes != null ? this.showBiomes : DEFAULT_SHOW_BIOMES;
         this.showFeatures = this.showFeatures != null ? this.showFeatures : DEFAULT_SHOW_FEATURES;
+        this.showFlowers = this.showFlowers != null ? this.showFlowers : DEFAULT_SHOW_FLOWERS;
         this.showGrid = this.showGrid != null ? this.showGrid : DEFAULT_SHOW_GRID;
         this.showExtraInfos = this.showExtraInfos != null ? this.showExtraInfos : DEFAULT_SHOW_EXTRA_INFOS;
         this.showExtraIcons = this.showExtraIcons != null ? this.showExtraIcons : DEFAULT_SHOW_EXTRA_ICONS;
@@ -293,6 +297,7 @@ public class MapSettings {
     public MapSettings set(MapSettings other) {
         this.showBiomes = other.showBiomes;
         this.showFeatures = other.showFeatures;
+        this.showFlowers = other.showFlowers;
         this.showGrid = other.showGrid;
         this.showExtraInfos = other.showExtraInfos;
         this.showExtraIcons = other.showExtraIcons;
@@ -313,6 +318,7 @@ public class MapSettings {
         MapSettings copy = new MapSettings(version, dimension);
         copy.showBiomes = this.showBiomes;
         copy.showFeatures = this.showFeatures;
+        copy.showFlowers = this.showFlowers;
         copy.showGrid = this.showGrid;
         copy.showExtraInfos = this.showExtraInfos;
         copy.showExtraIcons = this.showExtraIcons;
@@ -328,11 +334,11 @@ public class MapSettings {
         if (this == o) return true;
         if (!(o instanceof MapSettings)) return false;
         MapSettings that = (MapSettings) o;
-        return isDirty == that.isDirty && version == that.version && dimension == that.dimension && Objects.equals(showBiomes, that.showBiomes) && Objects.equals(showFeatures, that.showFeatures) && Objects.equals(showGrid, that.showGrid) && Objects.equals(showExtraInfos, that.showExtraInfos) && Objects.equals(showExtraIcons, that.showExtraIcons) && Objects.equals(biomeSize, that.biomeSize) && Objects.equals(riverSize, that.riverSize);
+        return isDirty == that.isDirty && version == that.version && dimension == that.dimension && Objects.equals(showBiomes, that.showBiomes) && Objects.equals(showFlowers, that.showFlowers) && Objects.equals(showFeatures, that.showFeatures) && Objects.equals(showGrid, that.showGrid) && Objects.equals(showExtraInfos, that.showExtraInfos) && Objects.equals(showExtraIcons, that.showExtraIcons) && Objects.equals(biomeSize, that.biomeSize) && Objects.equals(riverSize, that.riverSize);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(version, dimension, showBiomes, showFeatures, showGrid, showExtraInfos, showExtraIcons, biomeSize, riverSize, isDirty);
+        return Objects.hash(version, dimension, showBiomes, showFeatures, showGrid, showExtraInfos, showExtraIcons, showFeatures, biomeSize, riverSize, isDirty);
     }
 }

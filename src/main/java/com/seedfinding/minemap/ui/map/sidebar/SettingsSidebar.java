@@ -123,6 +123,14 @@ public class SettingsSidebar extends JPanel {
             }
         };
 
+        JCheckBox showFlowers = new JCheckBox("Show Flowers") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                this.setSelected(SettingsSidebar.this.settings.showFlowers);
+                super.paintComponent(g);
+            }
+        };
+
         showBiomes.addItemListener(e -> {
             this.settings.showBiomes = showBiomes.isSelected();
             this.map.repaint();
@@ -130,6 +138,11 @@ public class SettingsSidebar extends JPanel {
 
         showFeatures.addItemListener(e -> {
             this.settings.showFeatures = showFeatures.isSelected();
+            this.map.repaint();
+        });
+
+        showFlowers.addItemListener(e -> {
+            this.settings.showFlowers = showFlowers.isSelected();
             this.map.repaint();
         });
 
@@ -153,6 +166,7 @@ public class SettingsSidebar extends JPanel {
         this.toggles.add(showGrid);
         this.toggles.add(showExtraInfos);
         this.toggles.add(showExtraIcons);
+        this.toggles.add(showFlowers);
     }
 
     private void addFeatureToggles() {

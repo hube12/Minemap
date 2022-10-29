@@ -71,6 +71,9 @@ public class TooltipSidebar extends JPanel {
 
         String text = String.format("[%d, %d] %s - ID %d (0x%s)", blockX, blockZ, name,
             biomeId, Integer.toHexString(biomeId).toUpperCase());
+        if (this.map.getContext().getSettings().showFlowers){
+
+        }
         this.biomeDisplay.setText(text);
         if (Configs.USER_PROFILE.getUserSettings().doHeightmap) {
             Integer height = getHeight(this.map, blockX, blockZ);

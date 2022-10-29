@@ -59,7 +59,6 @@ public class AboutMenu extends Menu {
         scrollPaneLight.setMaximumSize(new Dimension(0, 400));
         scrollPaneLight.setBorder(BorderFactory.createEmptyBorder());
 
-
         this.lookMenu = new JMenu("UI Look");
         this.lookMenu.add(scrollPaneDark);
         this.lookMenu.add(scrollPaneLight);
@@ -102,7 +101,6 @@ public class AboutMenu extends Menu {
         this.menu.add(this.settingsFolder);
         this.menu.add(this.about);
     }
-
 
     public static String getAbout() {
         @SuppressWarnings("StringBufferReplaceableByString ")
