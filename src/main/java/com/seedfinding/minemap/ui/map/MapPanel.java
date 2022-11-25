@@ -143,7 +143,6 @@ public class MapPanel extends JPanel {
     }
 
     public void drawMap(Graphics graphics) {
-
         long start = System.nanoTime();
         Map<Fragment, DrawInfo> drawQueue = this.getDrawQueue();
         if (MineMap.DEBUG) System.out.println("Draw queue " + " " + (System.nanoTime() - start));
@@ -209,7 +208,10 @@ public class MapPanel extends JPanel {
 
     public BufferedImage getScreenshot() {
         BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        this.drawMap(image.getGraphics());
+        Graphics graphics=image.getGraphics();
+        // Because this has no idea what the clip is, see #14
+        graphics.setClip(0,0,this.getWidth(),this.getHeight());
+        this.drawMap(graphics);
         return image;
     }
 
