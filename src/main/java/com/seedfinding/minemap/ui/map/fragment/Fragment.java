@@ -271,15 +271,18 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-        int cheating;
-        if (panel != null && panel.manager != null) {
-            cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
-            if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheatingBiome <= cheating) return;
-        } else {
-            cheating = 1;
+        int cheating=1;
+        if (MineMap.INSTANCE ==null){
+            if(this.biomeCache != null && this.layerIdCache == this.context.getLayerId())return;
+        }else{
+            MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (panel != null && panel.manager != null) {
+                cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));
+                if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId() && lastCheatingBiome <= cheating) return;
+            }
+            lastCheatingBiome = cheating;
         }
-        lastCheatingBiome = cheating;
+
         this.layerIdCache = this.context.getLayerId();
         BiomeLayer layer = this.context.getBiomeLayer();
         int effectiveRegion = Math.max(Math.max(this.regionSize / layer.getScale(), 1) / cheating, 1);

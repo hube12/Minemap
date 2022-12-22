@@ -1,5 +1,6 @@
 import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.structure.Mineshaft;
+import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.init.Configs;
 import com.seedfinding.minemap.init.Features;
 import com.seedfinding.minemap.init.Icons;
@@ -20,8 +21,9 @@ public class Test {
     public static void main(String[] args) throws IOException {
         //Initializes the icons, features and biome colors.
         Features.registerFeatures();
+        Chests.registerChests();
         Configs.registerConfigs();
-        Icons.registerIcons();
+        Icons.registerIcons(); // this depends on config
 
         MapSettings settings = new MapSettings(MCVersion.v1_12, Dimension.OVERWORLD).refresh();
         MapContext context = new MapContext(1234L, settings);
