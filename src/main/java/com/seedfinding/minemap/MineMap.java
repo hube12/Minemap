@@ -1,7 +1,6 @@
 package com.seedfinding.minemap;
 
 import com.formdev.flatlaf.*;
-import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.mcfeature.misc.SlimeChunk;
@@ -174,7 +173,20 @@ public class MineMap extends JFrame {
             System.err.println("No size argument provided, command is --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>");
             return;
         }
-        MapSettings settings = new MapSettings(version, OVERWORLD).refresh();
+        com.seedfinding.mccore.state.Dimension dimension = OVERWORLD;
+        if (Arrays.asList(args).contains("--dimension")) {
+            int idx = Arrays.asList(args).indexOf("--dimension");
+            if (idx + 1 > args.length) {
+                System.err.println("Error no dimension provided");
+                return;
+            }
+                dimension = com.seedfinding.mccore.state.Dimension.fromString(args[idx + 1]);
+            if (dimension == null) {
+                System.err.println("Invalid dimension provided, should be: " + Arrays.toString(com.seedfinding.mccore.state.Dimension.values()));
+                return;
+            }
+        }
+        MapSettings settings = new MapSettings(version, dimension).refresh();
         MapContext context = new MapContext(seed, settings);
         settings.hide(SlimeChunk.class, Mineshaft.class);
         Fragment fragment = new Fragment(blockX, blockZ, size, context);
