@@ -128,7 +128,7 @@ All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.min
 
 - Take a screenshot :
   ```shell
-  java -jar Minemap-<version>.jar --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size>
+  java -jar Minemap-<version>.jar --screenshot --seed <seed> --version <version> --pos <x> <z> --size <size> (--dimension <dimension>)
   ```
 
 - Don't show any update popup even if there is a update available
