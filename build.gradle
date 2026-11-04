@@ -12,8 +12,8 @@ plugins {
     id 'java'
     id "application"
     id 'signing'
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-    id 'edu.sc.seis.launch4j' version '2.5.3'
+    id "com.gradleup.shadow" version "9.6.1"
+    id 'edu.sc.seis.launch4j' version '4.0.0'
     id 'org.gradle.crypto.checksum' version '1.4.0'
 }
 
@@ -32,19 +32,19 @@ repositories {
     mavenCentral()
     google()
     maven {
-        url "https://jitpack.io"
+        url = "https://jitpack.io"
     }
     maven {
-        url "https://maven.latticg.com/"
+        url = "https://maven.latticg.com/"
     }
     maven {
-        url "https://maven.seedfinding.com/"
+        url = "https://maven.seedfinding.com/"
     }
     maven {
-        url "https://maven-snapshots.seedfinding.com/"
+        url = "https://maven-snapshots.seedfinding.com/"
     }
     maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots"
+        url = "https://oss.sonatype.org/content/repositories/snapshots"
     }
 }
 
@@ -54,18 +54,18 @@ import org.gradle.crypto.checksum.Checksum
 import proguard.gradle.ProGuardTask
 
 // this task replace the @VERSION@ token with the current project.version
-task processSource(type: Sync) {
+tasks.register('processSource', Sync) {
     from sourceSets.main.java
     inputs.property 'version', version
     filter(ReplaceTokens, tokens: [VERSION: version])
-    into "$buildDir/src"
+    into layout.buildDirectory.dir("src")
 }
 
 compileJava {
     source = processSource.outputs
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
     options.fork = true
 }
@@ -145,8 +145,8 @@ launch4j {
     fileDescription = "A lightning fast map viewer for Minecraft."
     copyConfigurable = [] // don't copy lib
     libraryDir = "ignore_libs"
-    jreMaxVersion = JavaVersion.VERSION_HIGHER
-    jreMinVersion = JavaVersion.VERSION_1_8
+    jreMaxVersion = "1.8.0_999"
+    jreMinVersion = '1.8.0'
     // this is a dirty fix to use JAVA_HOME
     bundledJrePath = "%JAVA_HOME%;%PATH%"
 }
@@ -161,11 +161,11 @@ signing {
             System.err.println("Missing in memory signing key, defaulting to agent.")
             useGpgCmd()
         } else {
-            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+            useInMemoryPgpKeys(signingKeyId as String, signingKey as String, signingPassword as String)
         }
     }
     gradle.taskGraph.whenReady { taskGraph ->
-        tasks.findAll { t ->
+        tasks.matching  { t ->
             if (t.name == "signShadowJar") {
                 if (t.enabled) {
                     t.doLast {
@@ -183,18 +183,20 @@ signShadowJar {
     dependsOn createExe
 }
 
-task createChecksums(type: Checksum, dependsOn: [shadowJar, signShadowJar, createExe]) {
+tasks.register('createChecksums', Checksum) {
+    dependsOn(shadowJar, signShadowJar, createExe)
     inputFiles.setFrom(layout.buildDirectory.dir("libs"))
     outputDirectory.set(layout.buildDirectory.dir("libs"))
     checksumAlgorithm.set(Checksum.Algorithm.SHA512)
     appendFileNameToChecksum.set(true)
 }
 
-task releaseZip(type: Zip, dependsOn: createChecksums) {
-    setArchivesBaseName("Minemap")
-    destinationDirectory.set(new File("${buildDir}/release"))
+tasks.register('releaseZip', Zip) {
+    dependsOn createChecksums
+    archiveBaseName = "Minemap"
+    destinationDirectory.set(layout.buildDirectory.dir("release"))
     println("Saving to: " + destinationDirectory.get())
-    from "${buildDir}/libs"
+    from layout.buildDirectory.dir("libs")
 }
 
 signing {
@@ -207,11 +209,11 @@ signing {
             System.err.println("Missing in memory signing key, defaulting to agent.")
             useGpgCmd()
         } else {
-            useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+            useInMemoryPgpKeys(signingKeyId as String, signingKey as String, signingPassword as String)
         }
     }
     gradle.taskGraph.whenReady { taskGraph ->
-        tasks.findAll { t ->
+        tasks.matching { t ->
             if (t.name == "signReleaseZip") {
                 if (t.enabled) {
                     t.doLast {
@@ -224,7 +226,7 @@ signing {
     sign releaseZip
 }
 
-task("release") {
+tasks.register('release') {
     dependsOn(clean)
     dependsOn(shadowJar)
     dependsOn(createExe)
@@ -233,7 +235,7 @@ task("release") {
     dependsOn(signReleaseZip)
 }
 
-task proguard(type: ProGuardTask) {
+tasks.register('proguard', ProGuardTask) {
 
     // You should probably import a more compact ProGuard-style configuration
     // file for all static settings, but we're specifying them all here, for
