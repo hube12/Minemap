@@ -318,20 +318,40 @@ public class Fragment {
         hasBiomeModified = false;
         int scaledSize = this.biomeCache.length;
         this.activeBiomesCache = this.context.getSettings().getActiveBiomes();
-        this.imageCache = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
+        BufferedImage image = new BufferedImage(scaledSize, scaledSize, BufferedImage.TYPE_INT_RGB);
+        // Resolve each biome's color once (not once per pixel) and fill a flat pixel buffer.
+        final int lutSize = 1024;
+        int[] lut = new int[lutSize];
+        boolean[] known = new boolean[lutSize];
+        int[] pixels = new int[scaledSize * scaledSize];
         for (int x = 0; x < scaledSize; x++) {
+            int[] column = this.biomeCache[x];
             for (int z = 0; z < scaledSize; z++) {
-                Biome biome = Biomes.REGISTRY.get(this.biomeCache[x][z]);
-                if (biome == null) continue;
-                Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
-
-                if (!this.activeBiomesCache.contains(biome)) {
-                    color = makeInactive(color);
+                int id = column[z];
+                int rgb;
+                if (id >= 0 && id < lutSize && known[id]) {
+                    rgb = lut[id];
+                } else {
+                    Biome biome = Biomes.REGISTRY.get(id);
+                    if (biome == null) {
+                        rgb = 0;
+                    } else {
+                        Color color = Configs.BIOME_COLORS.get(Configs.USER_PROFILE.getUserSettings().style, biome);
+                        if (!this.activeBiomesCache.contains(biome)) {
+                            color = makeInactive(color);
+                        }
+                        rgb = color.getRGB();
+                    }
+                    if (id >= 0 && id < lutSize) {
+                        lut[id] = rgb;
+                        known[id] = true;
+                    }
                 }
-
-                this.imageCache.setRGB(x, z, color.getRGB());
+                pixels[z * scaledSize + x] = rgb;
             }
         }
+        image.setRGB(0, 0, scaledSize, scaledSize, pixels, 0, scaledSize);
+        this.imageCache = image;
     }
 
     /**

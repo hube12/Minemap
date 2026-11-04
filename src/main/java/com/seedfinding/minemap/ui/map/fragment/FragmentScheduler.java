@@ -1,6 +1,5 @@
 package com.seedfinding.minemap.ui.map.fragment;
 
-import com.seedfinding.mccore.util.data.ThreadPool;
 import com.seedfinding.mccore.util.pos.BPos;
 import com.seedfinding.mccore.util.pos.RPos;
 import com.seedfinding.minemap.init.Configs;
@@ -14,65 +13,127 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
 public class FragmentScheduler {
 
+    private static final AtomicInteger POOL_ID = new AtomicInteger();
+    /**
+     * Margin (in regions) around the viewport that is kept loaded.
+     */
+    private static final int MARGIN = 40;
+
     protected final Map<RPos, Fragment> fragments = new ConcurrentHashMap<>();
-    private final AtomicBoolean scheduledModified = new AtomicBoolean(false);
     public static Fragment LOADING_FRAGMENT = new Fragment(0, 0, 0, null) {
         @Override
-        public void drawBiomes(Graphics graphics, DrawInfo info) {}
+        public void drawBiomes(Graphics graphics, DrawInfo info) {
+        }
 
         @Override
-        public void drawFeatures(Graphics graphics, DrawInfo info) {}
+        public void drawFeatures(Graphics graphics, DrawInfo info) {
+        }
 
         @Override
-        public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {}
+        public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
+        }
     };
-    public List<RPos> scheduledRegions = Collections.synchronizedList(new ArrayList<>());
-    protected ThreadPool executor;
+
+    /**
+     * Regions waiting for a worker. Guarded by itself; workers block on it instead of polling.
+     */
+    private final Set<RPos> pending = new LinkedHashSet<>();
+    private final AtomicBoolean repaintQueued = new AtomicBoolean(false);
+    private final Thread[] workers;
+    private volatile boolean running = true;
     protected MapPanel listener;
 
     public FragmentScheduler(MapPanel listener, int threadCount) {
         this.listener = listener;
-        this.executor = new ThreadPool(threadCount + 1);
+        int count = Math.max(1, threadCount);
+        int id = POOL_ID.incrementAndGet();
+        this.workers = new Thread[count];
+        for (int i = 0; i < count; i++) {
+            Thread worker = new Thread(this::workLoop, "FragmentWorker-" + id + "-" + i);
+            worker.setDaemon(true);
+            this.workers[i] = worker;
+            worker.start();
+        }
+    }
 
-        this.executor.run(() -> {
-            while (!this.executor.getExecutor().isShutdown()) {
-                RPos nearest = this.getNearestScheduled();
-
-                if (nearest == null) {
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        Logger.LOGGER.severe(e.toString());
-                        e.printStackTrace();
-                    }
-                    continue;
-                } else if (!this.isInBounds(nearest)) {
-                    this.fragments.remove(nearest);
-                    this.scheduledRegions.remove(nearest);
-                    continue;
-                }
-
-                this.scheduledRegions.remove(nearest);
-
-                try {
-                    this.executor.run(() -> {
-                        Fragment fragment = new Fragment(nearest, this.listener.getContext());
-                        this.fragments.put(nearest, fragment);
-                        SwingUtilities.invokeLater(() -> this.listener.repaint());
-                    });
-                } catch (RejectedExecutionException ignored) {
-
-                }
-
-                this.executor.awaitFreeThread();
+    private void workLoop() {
+        while (this.running) {
+            RPos next;
+            try {
+                next = this.takeNearest();
+            } catch (InterruptedException e) {
+                return;
             }
-        });
+            if (next == null) return;
+
+            try {
+                Fragment fragment = new Fragment(next, this.listener.getContext());
+                // replace() is a no-op if the region was purged meanwhile, so nothing leaks back in.
+                if (this.fragments.replace(next, fragment) != null) {
+                    this.requestRepaint();
+                }
+            } catch (Throwable t) {
+                // Keep the worker alive; the region stays "loading" to avoid a retry storm.
+                Logger.LOGGER.severe("Fragment generation failed at " + next + ": " + t);
+                t.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Blocks until a region is pending, then returns the one closest to the view center
+     * (evaluated now, so panning is always honoured). Out-of-bounds regions are dropped.
+     * Returns null when the scheduler is terminated.
+     */
+    private RPos takeNearest() throws InterruptedException {
+        synchronized (this.pending) {
+            while (this.running) {
+                if (this.pending.isEmpty()) {
+                    this.pending.wait();
+                    continue;
+                }
+                Bounds bounds = this.bounds();
+                RPos center = this.centerRegion();
+                RPos best = null;
+                double bestDistance = Double.MAX_VALUE;
+                for (Iterator<RPos> it = this.pending.iterator(); it.hasNext(); ) {
+                    RPos region = it.next();
+                    if (!bounds.contains(region)) {
+                        it.remove();
+                        this.fragments.remove(region);
+                        continue;
+                    }
+                    double distance = this.distance(region, center);
+                    if (distance < bestDistance) {
+                        bestDistance = distance;
+                        best = region;
+                    }
+                }
+                if (best != null) {
+                    this.pending.remove(best);
+                    return best;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Coalesces repaint requests so a burst of finished fragments triggers a single repaint.
+     */
+    private void requestRepaint() {
+        if (this.repaintQueued.compareAndSet(false, true)) {
+            SwingUtilities.invokeLater(() -> {
+                this.repaintQueued.set(false);
+                this.listener.repaint();
+            });
+        }
     }
 
     public void forEachFragment(Consumer<Fragment> consumer) {
@@ -80,39 +141,65 @@ public class FragmentScheduler {
     }
 
     public void terminate() {
-        this.executor.shutdown();
+        this.running = false;
+        synchronized (this.pending) {
+            this.pending.clear();
+            this.pending.notifyAll();
+        }
+        for (Thread worker : this.workers) worker.interrupt();
     }
 
     public void purge() {
-        this.scheduledRegions.removeIf(region -> !this.isInBounds(region));
-        this.fragments.entrySet().removeIf(e -> !this.isInBounds(e.getKey()));
+        Bounds bounds = this.bounds();
+        synchronized (this.pending) {
+            this.pending.removeIf(region -> !bounds.contains(region));
+        }
+        this.fragments.keySet().removeIf(region -> !bounds.contains(region));
     }
 
-    public RPos getNearestScheduled() {
-        if (this.scheduledModified.getAndSet(false)) {
-            SwingUtilities.invokeLater(() -> this.scheduledRegions.sort(Comparator.comparingDouble(this::distanceToCenter)));
-        }
+    private RPos centerRegion() {
+        return this.listener.getManager().getCenterPos().toRegionPos(this.listener.getManager().blocksPerFragment);
+    }
 
-        if (!this.scheduledRegions.isEmpty()) {
-            return this.scheduledRegions.get(0);
-        }
-
-        return null;
+    private double distance(RPos region, RPos center) {
+        return region.distanceTo(center, Configs.USER_PROFILE.getUserSettings().getFragmentMetric());
     }
 
     public double distanceToCenter(RPos regionPos) {
-        return regionPos.distanceTo(this.listener.getManager().getCenterPos()
-                .toRegionPos(this.listener.getManager().blocksPerFragment),
-            Configs.USER_PROFILE.getUserSettings().getFragmentMetric());
+        return this.distance(regionPos, this.centerRegion());
+    }
+
+    /**
+     * Snapshot of the loaded area, computed once per batch instead of once per region.
+     */
+    private static final class Bounds {
+        final int minX, maxX, minZ, maxZ;
+
+        Bounds(int minX, int maxX, int minZ, int maxZ) {
+            this.minX = minX;
+            this.maxX = maxX;
+            this.minZ = minZ;
+            this.maxZ = maxZ;
+        }
+
+        boolean contains(RPos region) {
+            return region.getX() >= this.minX && region.getX() <= this.maxX
+                && region.getZ() >= this.minZ && region.getZ() <= this.maxZ;
+        }
+    }
+
+    private Bounds bounds() {
+        BPos min = this.listener.getManager().getPos(0, 0);
+        BPos max = this.listener.getManager().getPos(this.listener.getWidth(), this.listener.getHeight());
+        int size = this.listener.getManager().blocksPerFragment;
+        RPos regionMin = min.toRegionPos(size);
+        RPos regionMax = max.toRegionPos(size);
+        return new Bounds(regionMin.getX() - MARGIN, regionMax.getX() + MARGIN,
+            regionMin.getZ() - MARGIN, regionMax.getZ() + MARGIN);
     }
 
     public boolean isInBounds(RPos region) {
-        BPos min = this.listener.getManager().getPos(0, 0);
-        BPos max = this.listener.getManager().getPos(this.listener.getWidth(), this.listener.getHeight());
-        RPos regionMin = min.toRegionPos(this.listener.getManager().blocksPerFragment);
-        RPos regionMax = max.toRegionPos(this.listener.getManager().blocksPerFragment);
-        if (region.getX() < regionMin.getX() - 40 || region.getX() > regionMax.getX() + 40) return false;
-        return region.getZ() >= regionMin.getZ() - 40 && region.getZ() <= regionMax.getZ() + 40;
+        return this.bounds().contains(region);
     }
 
     public Fragment getFragmentAt(int regionX, int regionZ) {
@@ -122,12 +209,15 @@ public class FragmentScheduler {
     public Fragment getFragmentAt(int regionX, int regionZ, int factor) {
         RPos regionPos = new RPos(regionX, regionZ, this.listener.getManager().blocksPerFragment * factor);
 
-        if (!this.fragments.containsKey(regionPos) && !this.scheduledRegions.contains(regionPos)) {
-            this.fragments.put(regionPos, LOADING_FRAGMENT);
-            this.scheduledRegions.add(regionPos);
-            this.scheduledModified.set(true);
+        // Atomic claim: exactly one caller schedules a given region.
+        Fragment existing = this.fragments.putIfAbsent(regionPos, LOADING_FRAGMENT);
+        if (existing == null) {
+            synchronized (this.pending) {
+                this.pending.add(regionPos);
+                this.pending.notify();
+            }
+            return LOADING_FRAGMENT;
         }
-
-        return this.fragments.get(regionPos);
+        return existing;
     }
 }
