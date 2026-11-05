@@ -25,6 +25,7 @@ public class WorldMenu extends Menu {
     private final JMenuItem goToSpawn;
     private final JMenuItem loadShadowSeed;
     private final JMenuItem goToStructure;
+    private final JMenuItem findBiome;
     private final JMenuItem changeSalts;
 
     public WorldMenu() {
@@ -40,6 +41,9 @@ public class WorldMenu extends Menu {
         this.goToStructure = new JMenuItem("Go to Structure");
         this.addMouseAndKeyListener(this.goToStructure, goToStructure(), goToStructure(), false);
 
+        this.findBiome = new JMenuItem("Find Biome");
+        this.addMouseAndKeyListener(this.findBiome, findBiome(), findBiome(), false);
+
         this.loadShadowSeed = new JMenuItem("Load Shadow Seed");
         this.addMouseAndKeyListener(this.loadShadowSeed, loadShadowSeed(), loadShadowSeed(), true);
 
@@ -47,6 +51,7 @@ public class WorldMenu extends Menu {
         this.goToSpawn.setEnabled(false);
         this.loadShadowSeed.setEnabled(false);
         this.goToStructure.setEnabled(false);
+        this.findBiome.setEnabled(false);
 
         this.menu.addMenuListener(Events.Menu.onSelected(e -> {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
@@ -54,6 +59,7 @@ public class WorldMenu extends Menu {
             this.goToSpawn.setEnabled(map != null && this.getActiveSpawn() != null);
             this.loadShadowSeed.setEnabled(map != null && map.getContext().dimension == Dimension.OVERWORLD);
             this.goToStructure.setEnabled(map != null);
+            this.findBiome.setEnabled(map != null);
         }));
 
         this.changeSalts = new JMenuItem("Change Salts");
@@ -62,6 +68,7 @@ public class WorldMenu extends Menu {
         this.menu.add(goToCoords);
         this.menu.add(goToSpawn);
         this.menu.add(goToStructure);
+        this.menu.add(findBiome);
         this.menu.add(loadShadowSeed);
         this.menu.add(changeSalts);
     }
@@ -112,6 +119,15 @@ public class WorldMenu extends Menu {
         };
     }
 
+    public Runnable findBiome() {
+        return () -> {
+            MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+            if (map == null) return;
+            this.activate.run();
+            new com.seedfinding.minemap.ui.dialog.BiomeSearchDialog(map, this.deactivate).open();
+        };
+    }
+
     public Runnable changeSalts() {
         return () -> {
             SaltDialog dialog;
@@ -138,6 +154,7 @@ public class WorldMenu extends Menu {
         this.goToCoords.setText(String.format("Go to Coordinates (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_COORDS)));
         this.goToSpawn.setText(String.format("Go to Spawn (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_SPAWN)));
         this.goToStructure.setText(String.format("Go to Structure (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.GO_TO_STRUCTURE)));
+        this.findBiome.setText(String.format("Find Biome (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.FIND_BIOME)));
         this.loadShadowSeed.setText(String.format("Load Shadow Seed (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.LOAD_SHADOW_SEED)));
         this.changeSalts.setText(String.format("Change Salts (%s)", KeyboardsConfig.getKeyComboString(KeyShortcuts.ShortcutAction.CHANGE_SALTS)));
     }

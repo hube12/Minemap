@@ -59,6 +59,8 @@ public class KeyShortcuts {
         LOAD_SHADOW_SEED(menuBar.worldMenu.loadShadowSeed()),
         @SerializedName("GO_TO_STRUCTURE")
         GO_TO_STRUCTURE(menuBar.worldMenu.goToStructure()),
+        @SerializedName("FIND_BIOME")
+        FIND_BIOME(menuBar.worldMenu.findBiome()),
         @SerializedName("CHANGE_SALTS")
         CHANGE_SALTS(menuBar.worldMenu.changeSalts()),
         @SerializedName("TOGGLE_STS_MODE")

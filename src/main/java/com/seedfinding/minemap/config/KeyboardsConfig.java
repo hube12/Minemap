@@ -87,6 +87,7 @@ public class KeyboardsConfig extends Config {
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_SPAWN, KeyShortcuts.KeyRegister.registerAltKey("P"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.LOAD_SHADOW_SEED, KeyShortcuts.KeyRegister.registerAltKey("L"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.GO_TO_STRUCTURE, KeyShortcuts.KeyRegister.registerAltKey("S"));
+        this.addDefaultEntry(KeyShortcuts.ShortcutAction.FIND_BIOME, KeyShortcuts.KeyRegister.registerCtrlKey("F"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.CHANGE_SALTS, KeyShortcuts.KeyRegister.registerAltKey("C"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.TOGGLE_STS_MODE, KeyShortcuts.KeyRegister.registerAltKey("A"));
         this.addDefaultEntry(KeyShortcuts.ShortcutAction.SHORTCUTS, KeyShortcuts.KeyRegister.registerAltKey("K"));
