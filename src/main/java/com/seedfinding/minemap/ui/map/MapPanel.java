@@ -32,6 +32,21 @@ public class MapPanel extends JPanel {
     public FragmentScheduler scheduler;
     public TabHeader header;
 
+    private static final long HIGHLIGHT_MS = 10_000L;
+    private int highlightX, highlightZ;
+    private String highlightLabel;
+    private long highlightStart;
+    private javax.swing.Timer highlightTimer;
+
+    // Flood-filled region of the found biome (recomputed, debounced, when the view changes).
+    private static final int REGION_MS = 30_000;
+    private volatile BiomeRegionOverlay regionOverlay;
+    private int regionSeedX, regionSeedZ, regionBiomeId;
+    private boolean regionActive;
+    private SwingWorker<BiomeRegionOverlay, Void> regionWorker;
+    private double[] regionPendingSignature;
+    private javax.swing.Timer regionDebounce, regionExpiry;
+
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
         this.setLayout(new BorderLayout());

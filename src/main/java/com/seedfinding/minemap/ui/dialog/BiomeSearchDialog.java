@@ -240,6 +240,8 @@ public class BiomeSearchDialog extends JDialog {
                         return;
                     }
                     manager.setCenterPos(pos[0], pos[1]);
+                    map.highlight(pos[0], pos[1], display(target) + " (" + pos[0] + ", " + pos[1] + ")");
+                    map.highlightRegion(pos[0], pos[1], targetId);
                     close();
                 } catch (Exception e) {
                     Logger.LOGGER.severe("Biome search failed: " + e);
