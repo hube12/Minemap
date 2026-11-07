@@ -38,12 +38,12 @@ public class ShortcutDialog extends Dialog {
                     JLabel actionName = new JLabel(action.toString());
                     actionName.setHorizontalAlignment(JLabel.CENTER);
                     Dropdown<KeyShortcuts.KeyRegister.Type> typeDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.Type.values());
-                    typeDropdown.setDefault(keyRegister.getType());
+                    typeDropdown.setDefault(keyRegister.type());
                     Dropdown<KeyShortcuts.KeyRegister.Modifier> modifierDropDown = new Dropdown<>(KeyShortcuts.KeyRegister.Modifier.values());
-                    modifierDropDown.setDefault(keyRegister.getModifier());
+                    modifierDropDown.setDefault(keyRegister.modifier());
                     Dropdown<KeyShortcuts.KeyRegister.KeyLocation> keyLocationDropdown = new Dropdown<>(KeyShortcuts.KeyRegister.KeyLocation.values());
-                    keyLocationDropdown.setDefault(keyRegister.getKeyLocation());
-                    JTextField keyText = new JTextField(keyRegister.getKeyText());
+                    keyLocationDropdown.setDefault(keyRegister.keyLocation());
+                    JTextField keyText = new JTextField(keyRegister.keyText());
                     keyText.setHorizontalAlignment(SwingConstants.CENTER);
 
                     keyShortcuts.add(new Pair<>(new Dropdown<?>[] {typeDropdown, modifierDropDown, keyLocationDropdown}, keyText));

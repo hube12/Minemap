@@ -197,20 +197,13 @@ public class ChestPanel extends JPanel {
         if (item.getName().startsWith("leather_")) {
             BufferedImage overlay = null;
             String[] overlayName = item.getName().split("_");
-            switch (overlayName[overlayName.length - 1]) {
-                case "boots":
-                    overlay = Icons.getObject(Icons.LEATHER_BOOTS_OVERLAY);
-                    break;
-                case "leggings":
-                    overlay = Icons.getObject(Icons.LEATHER_LEGGINGS_OVERLAY);
-                    break;
-                case "chestplate":
-                    overlay = Icons.getObject(Icons.LEATHER_CHESTPLATE_OVERLAY);
-                    break;
-                case "helmet":
-                    overlay = Icons.getObject(Icons.LEATHER_HELMET_OVERLAY);
-                    break;
-            }
+            overlay = switch (overlayName[overlayName.length - 1]) {
+                case "boots" -> Icons.getObject(Icons.LEATHER_BOOTS_OVERLAY);
+                case "leggings" -> Icons.getObject(Icons.LEATHER_LEGGINGS_OVERLAY);
+                case "chestplate" -> Icons.getObject(Icons.LEATHER_CHESTPLATE_OVERLAY);
+                case "helmet" -> Icons.getObject(Icons.LEATHER_HELMET_OVERLAY);
+                default -> overlay;
+            };
             if (overlay != null) {
                 g2d.drawImage(scaleFn.apply(overlay), 0, 0, scaledIcon.getWidth(), scaledIcon.getHeight(), null);
             } else {

@@ -83,14 +83,12 @@ public class FileMenu extends Menu {
     }
 
     public Runnable openSeed(String seed, MCVersion version) {
-        return () -> {
-            MineMap.INSTANCE.worldTabs.load(
-                version,
-                seed,
-                Configs.USER_PROFILE.getThreadCount(),
-                Configs.USER_PROFILE.getEnabledDimensions()
-            );
-        };
+        return () -> MineMap.INSTANCE.worldTabs.load(
+            version,
+            seed,
+            Configs.USER_PROFILE.getThreadCount(),
+            Configs.USER_PROFILE.getEnabledDimensions()
+        );
     }
 
     public Runnable newSeed() {

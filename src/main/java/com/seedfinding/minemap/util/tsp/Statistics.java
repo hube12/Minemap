@@ -56,7 +56,7 @@ public class Statistics {
             assert bestAnt != null;
             int[] bestTourSoFar = bestAnt.getTour().clone();
             List<Integer> list = IntStream.of(bestTourSoFar).boxed().collect(Collectors.toList());
-            list.remove(list.size() - 1);
+            list.removeLast();
             return new Pair<>(min, list);
         }
 

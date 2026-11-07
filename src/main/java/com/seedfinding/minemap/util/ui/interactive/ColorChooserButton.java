@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ColorChooserButton extends JButton {
 
-    private final List<ColorChangedListener> listeners = new ArrayList<ColorChangedListener>();
+    private final List<ColorChangedListener> listeners = new ArrayList<>();
     private Color current;
 
     public ColorChooserButton(Color c) {

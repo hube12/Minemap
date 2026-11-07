@@ -5,7 +5,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.guardsquare:proguard-gradle:7.2.2'
+        classpath 'com.guardsquare:proguard-gradle:7.6.0'
     }
 }
 plugins {
@@ -21,10 +21,9 @@ plugins {
 defaultTasks("clean", "release")
 
 java {
-    // very important ByteBuffer does not have flip in java 1.8
     // this set the javac --release flag
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -145,8 +144,7 @@ launch4j {
     fileDescription = "A lightning fast map viewer for Minecraft."
     copyConfigurable = [] // don't copy lib
     libraryDir = "ignore_libs"
-    jreMaxVersion = "1.8.0_999"
-    jreMinVersion = '1.8.0'
+    jreMinVersion = '21'
     // this is a dirty fix to use JAVA_HOME
     bundledJrePath = "%JAVA_HOME%;%PATH%"
 }

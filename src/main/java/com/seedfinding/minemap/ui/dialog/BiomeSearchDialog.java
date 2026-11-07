@@ -42,7 +42,7 @@ public class BiomeSearchDialog extends JDialog {
         this.map = map;
         this.onExit = onExit;
         this.allBiomes = new ArrayList<>(map.getContext().getSettings().getAllBiomes(
-            Comparator.comparing(b -> display(b))));
+            Comparator.comparing(BiomeSearchDialog::display)));
 
         this.setUndecorated(true);
         this.setAlwaysOnTop(true);
@@ -156,11 +156,11 @@ public class BiomeSearchDialog extends JDialog {
     }
 
     private void moveSelection(int delta) {
-        int n = this.model.size();
-        if (n == 0) return;
-        int i = Math.max(0, Math.min(n - 1, this.suggestions.getSelectedIndex() + delta));
-        this.suggestions.setSelectedIndex(i);
-        this.suggestions.ensureIndexIsVisible(i);
+        int size = this.model.size();
+        if (size == 0) return;
+        int index = Math.clamp(size - 1, 0, this.suggestions.getSelectedIndex() + delta);
+        this.suggestions.setSelectedIndex(index);
+        this.suggestions.ensureIndexIsVisible(index);
     }
 
     /** Prefix matches first, then word-prefix, then substring; all case-insensitive. */
@@ -199,7 +199,7 @@ public class BiomeSearchDialog extends JDialog {
         this.cancelButton.setVisible(true);
         this.input.setEnabled(false);
 
-        this.worker = new SwingWorker<int[], Void>() {
+        this.worker = new SwingWorker<>() {
             @Override
             protected int[] doInBackground() {
                 BiomeLayer layer = context.getBiomeLayer();
@@ -209,15 +209,20 @@ public class BiomeSearchDialog extends JDialog {
                     if (isCancelled()) return null;
                     int step = Math.max(scale, r < 1500 ? 8 : 32);
                     if (r == 0) {
-                        if (layer.getBiome(Math.floorDiv(startX, scale), 0, Math.floorDiv(startZ, scale)) == targetId) return new int[]{startX, startZ};
+                        if (layer.getBiome(Math.floorDiv(startX, scale), 0, Math.floorDiv(startZ, scale)) == targetId)
+                            return new int[]{startX, startZ};
                         r = step;
                         continue;
                     }
                     for (int d = -r; d <= r; d += step) {
-                        if (hit(layer, scale, startX + d, startZ - r, targetId)) return new int[]{startX + d, startZ - r};
-                        if (hit(layer, scale, startX + d, startZ + r, targetId)) return new int[]{startX + d, startZ + r};
-                        if (hit(layer, scale, startX - r, startZ + d, targetId)) return new int[]{startX - r, startZ + d};
-                        if (hit(layer, scale, startX + r, startZ + d, targetId)) return new int[]{startX + r, startZ + d};
+                        if (hit(layer, scale, startX + d, startZ - r, targetId))
+                            return new int[]{startX + d, startZ - r};
+                        if (hit(layer, scale, startX + d, startZ + r, targetId))
+                            return new int[]{startX + d, startZ + r};
+                        if (hit(layer, scale, startX - r, startZ + d, targetId))
+                            return new int[]{startX - r, startZ + d};
+                        if (hit(layer, scale, startX + r, startZ + d, targetId))
+                            return new int[]{startX + r, startZ + d};
                     }
                     r += step;
                     int shown = r;

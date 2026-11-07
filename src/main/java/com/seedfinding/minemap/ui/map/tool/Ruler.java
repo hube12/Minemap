@@ -35,13 +35,11 @@ public class Ruler extends Tool {
     @Override
     public Polygon getPartialShape() {
         int offset = 5;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getPolygon(pos1, pos2, offset);
+            default -> null;
+        };
     }
 
     @Override
@@ -52,13 +50,11 @@ public class Ruler extends Tool {
     @Override
     public Polygon getExactShape() {
         int offset = 0;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getPolygon(pos1, pos2, offset);
+            default -> null;
+        };
     }
 
     @Override
@@ -83,15 +79,11 @@ public class Ruler extends Tool {
 
     @Override
     public boolean isPartial() {
-        switch (this.getPointsTraced()) {
-            case 0:
-                return false;
-            case 1:
-                return pos1 != null;
-            case 2:
-                return pos1 != null && pos2 != null;
-        }
-        return false;
+        return switch (this.getPointsTraced()) {
+            case 1 -> pos1 != null;
+            case 2 -> pos1 != null && pos2 != null;
+            default -> false;
+        };
     }
 
     @Override

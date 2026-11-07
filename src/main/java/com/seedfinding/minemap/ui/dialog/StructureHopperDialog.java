@@ -34,7 +34,7 @@ public class StructureHopperDialog extends StructureDialog {
             return;
         };
 
-        BPos bPos = bPosList.get(0);
+        BPos bPos = bPosList.getFirst();
         manager.setCenterPos(bPos.getX(), bPos.getZ());
 
         this.dispose();

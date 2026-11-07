@@ -119,9 +119,9 @@ public class LootSearchDialog extends Dialog {
             this.continueButton.setEnabled(true);
         });
 
-        Class<? extends Feature<?, ?>> first = Chests.getSuperRegistry().get(features.get(0));
+        Class<? extends Feature<?, ?>> first = Chests.getSuperRegistry().get(features.getFirst());
         if (first == null) {
-            Logger.LOGGER.severe("Missing super feature " + features.get(0));
+            Logger.LOGGER.severe("Missing super feature " + features.getFirst());
             SwingUtilities.invokeLater(this::dispose);
             return;
         }

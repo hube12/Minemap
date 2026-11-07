@@ -109,13 +109,9 @@ public class MultipleSlider extends JPanel {
         return sliders;
     }
 
-    static class Informations {
-        public final MultipleSlider parent;
-        private final int index;
-
+    record Informations(MultipleSlider parent, int index) {
         public Informations(int index, MultipleSlider parent) {
-            this.index = index;
-            this.parent = parent;
+            this(parent, index);
         }
 
         public int getMin() {
@@ -143,10 +139,6 @@ public class MultipleSlider extends JPanel {
 
         public Dictionary<Integer, JLabel> getLabels() {
             return this.parent.labels;
-        }
-
-        public int getIndex() {
-            return this.index;
         }
 
         public Callable<Integer> spacingLabels() {
@@ -179,7 +171,7 @@ public class MultipleSlider extends JPanel {
         if (ints.size() < 1) return max - min;
         double average = 0.0D;
         int count = 0;
-        int last = ints.remove(0);
+        int last = ints.removeFirst();
         for (int current : ints) {
             average += Math.abs(current - last);
             last = current;
@@ -227,9 +219,8 @@ public class MultipleSlider extends JPanel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MultipleSlider)) return false;
-        MultipleSlider that = (MultipleSlider) o;
-        return count == that.count && orientation == that.orientation && isInteger == that.isInteger && min == that.min && max == that.max && Objects.equals(labels, that.labels);
+        if (!(o instanceof MultipleSlider slider)) return false;
+        return count == slider.count && orientation == slider.orientation && isInteger == slider.isInteger && min == slider.min && max == slider.max && Objects.equals(labels, slider.labels);
     }
 
     @Override

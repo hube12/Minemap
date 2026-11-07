@@ -66,7 +66,7 @@ public class IOUtils {
             return null;
         }
 
-        T res = function.apply(list.get(0).getSecond());
+        T res = function.apply(list.getFirst().getSecond());
 
         if (fileSystem != null) {
             try {

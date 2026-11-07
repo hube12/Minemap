@@ -257,9 +257,7 @@ public class SettingsSidebar extends JPanel {
         JButton set = new JButton("Set as Default");
         JButton reset = new JButton("Reset to Default");
 
-        set.addMouseListener(Events.Mouse.onPressed(e -> {
-            Configs.USER_PROFILE.setDefaultSettings(this.map.getContext().dimension, this.settings);
-        }));
+        set.addMouseListener(Events.Mouse.onPressed(e -> Configs.USER_PROFILE.setDefaultSettings(this.map.getContext().dimension, this.settings)));
 
         reset.addMouseListener(Events.Mouse.onPressed(e -> {
             this.settings.set(Configs.USER_PROFILE.getMapSettingsCopy(this.map.getContext().version, this.map.getContext().dimension));

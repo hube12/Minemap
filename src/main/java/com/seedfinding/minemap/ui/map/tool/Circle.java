@@ -35,13 +35,11 @@ public class Circle extends Tool {
     @Override
     public Shape getPartialShape() {
         int offset = 5;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getCircle(pos1, pos2);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getCircle(pos1, pos2);
+            default -> null;
+        };
     }
 
     @Override
@@ -52,13 +50,11 @@ public class Circle extends Tool {
     @Override
     public Shape getExactShape() {
         int offset = 0;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getCircle(pos1, pos2);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getCircle(pos1, pos2);
+            default -> null;
+        };
     }
 
     @Override

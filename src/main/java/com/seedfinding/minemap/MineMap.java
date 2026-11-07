@@ -272,7 +272,7 @@ public class MineMap extends JFrame {
     }
 
     private static SwingWorker<String, Void> getDownloadWorker(JDialog parent, Pair<String, String> newVersion) {
-        return new SwingWorker<String, Void>() {
+        return new SwingWorker<>() {
             @Override
             protected String doInBackground() {
                 return Assets.downloadLatestMinemap(newVersion.getFirst(), newVersion.getSecond());
@@ -386,8 +386,7 @@ public class MineMap extends JFrame {
             if (tabGroup != null) {
                 tabGroup.getMapPanels().forEach(e -> e.getHeader().setSaved(true, false));
                 tabGroup.getMapPanels().forEach(e -> Arrays.stream(e.manager.popup.getComponents()).forEach(c -> {
-                        if (c instanceof JMenuItem) {
-                            JMenuItem item = ((JMenuItem) c);
+                        if (c instanceof JMenuItem item) {
                             if (item.getText().equals("Save tab")) {
                                 item.setText("Unsave tab");
                             }

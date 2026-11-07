@@ -105,8 +105,7 @@ public class TabGroup extends JTabbedPane {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof TabGroup)) return false;
-        TabGroup tabGroup = (TabGroup) o;
+        if (!(o instanceof TabGroup tabGroup)) return false;
         return worldSeed == tabGroup.worldSeed && threadCount == tabGroup.threadCount && version == tabGroup.version && Objects.equals(dimensions, tabGroup.dimensions);
     }
 

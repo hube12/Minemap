@@ -28,7 +28,7 @@
 
 To download it head to the [Releases section](https://github.com/hube12/MineMap/releases/latest).
 
-To run it: either double click it on it if you have the [Java Runtime (JRE)](https://www.java.com/fr/download/) or use
+To run it: either double click it on it if you have the [Java Runtime (JRE) 21 or newer](https://www.java.com/download/) or use
 the command line (shift+right click in the folder then open command prompt/Powershell) and
 type `java -jar MineMap-X.X.X.jar`.
 
@@ -169,7 +169,7 @@ All configuration can be found in `%HOMEPATH%/.minemap` (Windows) or `$HOME/.min
 
 ## Development
 
-You just need to have the Java JDK installed then do:
+You just need to have the Java JDK 21 (or newer) installed then do:
 `git clone https://github.com/hube12/MineMap`
 
 Go in the directory and run `./gradlew run` to run Minemap (we enable the no-update option)

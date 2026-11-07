@@ -155,6 +155,8 @@ public class MapPanel extends JPanel {
         start = System.nanoTime();
         this.drawCrossHair(graphics);
         if (MineMap.DEBUG) System.out.println("Draw crosshair " + " " + (System.nanoTime() - start));
+        this.drawRegion(graphics);
+        this.drawHighlight(graphics);
     }
 
     public void drawMap(Graphics graphics) {
@@ -180,6 +182,160 @@ public class MapPanel extends JPanel {
         // This can be drawn onto a loading fragment (no issue)
         drawQueue.forEach((fragment, info) -> fragment.drawTools(graphics, info, this.manager.toolsList));
         if (MineMap.DEBUG) System.out.println("Draw tools " + " " + (System.nanoTime() - start));
+    }
+
+    /** Marks a block position with a pulsing ring and a label; fades out after a few seconds. */
+    public void highlight(int blockX, int blockZ, String label) {
+        this.highlightX = blockX;
+        this.highlightZ = blockZ;
+        this.highlightLabel = label;
+        this.highlightStart = System.currentTimeMillis();
+        if (this.highlightTimer != null) this.highlightTimer.stop();
+        this.highlightTimer = new javax.swing.Timer(33, e -> {
+            if (System.currentTimeMillis() - this.highlightStart > HIGHLIGHT_MS) {
+                ((javax.swing.Timer) e.getSource()).stop();
+                this.highlightLabel = null;
+            }
+            this.repaint();
+        });
+        this.highlightTimer.start();
+        this.repaint();
+    }
+
+    public void clearHighlight() {
+        if (this.highlightTimer != null) this.highlightTimer.stop();
+        this.highlightLabel = null;
+        this.clearRegion();
+        this.repaint();
+    }
+
+    /**
+     * Flood-fills the given biome from a block position over everything currently on screen
+     * and shows it as a translucent area with an outline (kept for 30 s, follows pan/zoom).
+     */
+    public void highlightRegion(int seedBlockX, int seedBlockZ, int biomeId) {
+        this.regionSeedX = seedBlockX;
+        this.regionSeedZ = seedBlockZ;
+        this.regionBiomeId = biomeId;
+        this.regionActive = true;
+        this.regionOverlay = null;
+        if (this.regionExpiry != null) this.regionExpiry.stop();
+        this.regionExpiry = new javax.swing.Timer(REGION_MS, e -> this.clearRegion());
+        this.regionExpiry.setRepeats(false);
+        this.regionExpiry.start();
+        this.startRegionCompute();
+    }
+
+    public void clearRegion() {
+        this.regionActive = false;
+        this.regionOverlay = null;
+        this.regionPendingSignature = null;
+        if (this.regionWorker != null) this.regionWorker.cancel(true);
+        if (this.regionDebounce != null) this.regionDebounce.stop();
+        if (this.regionExpiry != null) this.regionExpiry.stop();
+        this.repaint();
+    }
+
+    private double[] viewSignature() {
+        return new double[]{this.manager.centerX, this.manager.centerY, this.manager.pixelsPerFragment,
+            this.manager.blocksPerFragment, this.getWidth(), this.getHeight(), this.context.getLayerId()};
+    }
+
+    private void startRegionCompute() {
+        if (!this.regionActive || this.getWidth() <= 0 || this.getHeight() <= 0) return;
+        if (this.regionWorker != null) this.regionWorker.cancel(true);
+
+        final double[] signature = this.viewSignature();
+        this.regionPendingSignature = signature;
+        BPos min = this.manager.getPos(0, 0);
+        BPos max = this.manager.getPos(this.getWidth(), this.getHeight());
+        final int minX = min.getX(), minZ = min.getZ(), maxX = max.getX(), maxZ = max.getZ();
+        final double pxPerBlock = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
+        final int seedX = this.regionSeedX, seedZ = this.regionSeedZ, biomeId = this.regionBiomeId;
+        final MapContext ctx = this.context;
+
+        this.regionWorker = new SwingWorker<BiomeRegionOverlay, Void>() {
+            @Override
+            protected BiomeRegionOverlay doInBackground() {
+                return BiomeRegionOverlay.compute(ctx.getBiomeLayer(), biomeId, seedX, seedZ,
+                    minX, minZ, maxX, maxZ, pxPerBlock, signature);
+            }
+
+            @Override
+            protected void done() {
+                if (isCancelled() || !regionActive) return;
+                try {
+                    regionOverlay = get();
+                } catch (Exception e) {
+                    regionOverlay = null;
+                }
+                regionPendingSignature = null;
+                repaint();
+            }
+        };
+        this.regionWorker.execute();
+    }
+
+    private void drawRegion(Graphics graphics) {
+        if (!this.regionActive) return;
+        // View changed since the fill was computed: refresh after the user stops moving (debounced).
+        double[] now = this.viewSignature();
+        BiomeRegionOverlay overlay = this.regionOverlay;
+        // Compare with the last view a computation was started for, so an empty result
+        // (seed off screen) does not trigger endless recomputes.
+        if (!java.util.Arrays.equals(this.regionPendingSignature, now)) {
+            if (this.regionDebounce == null) {
+                this.regionDebounce = new javax.swing.Timer(250, e -> this.startRegionCompute());
+                this.regionDebounce.setRepeats(false);
+            }
+            this.regionDebounce.restart();
+        }
+        if (overlay == null) return;
+
+        double scale = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
+        double x = overlay.originBlockX * scale + this.getWidth() / 2.0D + this.manager.centerX;
+        double z = overlay.originBlockZ * scale + this.getHeight() / 2.0D + this.manager.centerY;
+        int w = (int) Math.ceil(overlay.widthCells * overlay.cellSize * scale);
+        int h = (int) Math.ceil(overlay.heightCells * overlay.cellSize * scale);
+        Graphics2D g = (Graphics2D) graphics.create();
+        try {
+            g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            // Gentle breathing so the glow feels alive.
+            float pulse = 0.8f + 0.2f * (float) Math.sin(System.currentTimeMillis() / 250.0D);
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pulse));
+            g.drawImage(overlay.image, (int) Math.round(x), (int) Math.round(z), w, h, null);
+        } finally {
+            g.dispose();
+        }
+    }
+
+    private void drawHighlight(Graphics graphics) {
+        if (this.highlightLabel == null) return;
+        long elapsed = System.currentTimeMillis() - this.highlightStart;
+        if (elapsed > HIGHLIGHT_MS) return;
+
+        double scale = this.manager.pixelsPerFragment / this.manager.blocksPerFragment;
+        int px = (int) Math.round(this.highlightX * scale + this.getWidth() / 2.0D + this.manager.centerX);
+        int pz = (int) Math.round(this.highlightZ * scale + this.getHeight() / 2.0D + this.manager.centerY);
+
+        float fade = elapsed < HIGHLIGHT_MS - 2000L ? 1f : Math.max(0f, (HIGHLIGHT_MS - elapsed) / 2000f);
+        Graphics2D g = (Graphics2D) graphics.create();
+        try {
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+            // Label above the marker.
+            g.setFont(g.getFont().deriveFont(Font.BOLD, 14f));
+            FontMetrics fm = g.getFontMetrics();
+            String text = this.highlightLabel;
+            int tx = px - fm.stringWidth(text) / 2, ty = pz - 8;
+            g.setColor(new Color(0f, 0f, 0f, 0.7f * fade));
+            g.fillRoundRect(tx - 5, ty - fm.getAscent() - 1, fm.stringWidth(text) + 10, fm.getHeight() + 2, 8, 8);
+            g.setColor(new Color(1f, 1f, 1f, fade));
+            g.drawString(text, tx, ty);
+        } finally {
+            g.dispose();
+        }
     }
 
     public void drawCrossHair(Graphics graphics) {

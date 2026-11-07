@@ -121,7 +121,7 @@ public class Icons {
     }
 
     private static SwingWorker<Pair<MCVersion, String>, Void> getDownloadWorker(JDialog parent) {
-        return new SwingWorker<Pair<MCVersion, String>, Void>() {
+        return new SwingWorker<>() {
             @Override
             protected Pair<MCVersion, String> doInBackground() {
                 if (Assets.downloadManifest(MCVersion.latest())) {
@@ -167,7 +167,7 @@ public class Icons {
     }
 
     private static SwingWorker<Boolean, Void> getExtractWorker(Pair<MCVersion, String> result, JDialog parent) {
-        return new SwingWorker<Boolean, Void>() {
+        return new SwingWorker<>() {
             @Override
             protected Boolean doInBackground() {
                 // it's ok to use / since jarentry aren't platform dependant
@@ -246,10 +246,10 @@ public class Icons {
 
     private static void cleanDuplicates() {
         for (Map.Entry<Class<?>, List<Pair<String, BufferedImage>>> pairs : CLASS_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e -> e.getFirst())).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
         }
         for (Map.Entry<Object, List<Pair<String, BufferedImage>>> pairs : OBJECT_REGISTRY.entrySet()) {
-            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(e -> e.getFirst())).collect(Collectors.toList()));
+            pairs.setValue(pairs.getValue().stream().filter(distinctByKey(Pair::getFirst)).collect(Collectors.toList()));
         }
     }
 
@@ -309,7 +309,7 @@ public class Icons {
         if (entry == null) return null;
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
-        return entry.get(entry.size() - 1).getSecond();
+        return entry.getLast().getSecond();
     }
 
     public static String getObjectInformation(Object object) {
@@ -326,7 +326,7 @@ public class Icons {
         }
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
-        return entry.get(0).getFirst();
+        return entry.getFirst().getFirst();
     }
 
     public static BufferedImage getObject(Object object) {
@@ -343,7 +343,7 @@ public class Icons {
         }
         if (entry.isEmpty()) return null;
         // TODO make me config dependant
-        return entry.get(0).getSecond();
+        return entry.getFirst().getSecond();
     }
 
 }

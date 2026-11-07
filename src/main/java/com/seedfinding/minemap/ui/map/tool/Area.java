@@ -46,17 +46,13 @@ public class Area extends Tool {
     @Override
     public Polygon getPartialShape() {
         int offset = 5;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-            case 3:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3);
-            case 4:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getPolygon(pos1, pos2, offset);
+            case 3 -> DisplayMaths.getPolygon(pos1, pos2, pos3);
+            case 4 -> DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
+            default -> null;
+        };
     }
 
     @Override
@@ -67,17 +63,13 @@ public class Area extends Tool {
     @Override
     public Polygon getExactShape() {
         int offset = 0;
-        switch (this.getPointsTraced()) {
-            case 1:
-                return DisplayMaths.getPolygon(pos1, offset);
-            case 2:
-                return DisplayMaths.getPolygon(pos1, pos2, offset);
-            case 3:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3);
-            case 4:
-                return DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
-        }
-        return null;
+        return switch (this.getPointsTraced()) {
+            case 1 -> DisplayMaths.getPolygon(pos1, offset);
+            case 2 -> DisplayMaths.getPolygon(pos1, pos2, offset);
+            case 3 -> DisplayMaths.getPolygon(pos1, pos2, pos3);
+            case 4 -> DisplayMaths.getPolygon(pos1, pos2, pos3, pos4);
+            default -> null;
+        };
     }
 
     @Override
@@ -102,19 +94,13 @@ public class Area extends Tool {
 
     @Override
     public boolean isPartial() {
-        switch (this.getPointsTraced()) {
-            case 0:
-                return false;
-            case 1:
-                return pos1 != null;
-            case 2:
-                return pos1 != null && pos2 != null;
-            case 3:
-                return pos1 != null && pos2 != null && pos3 != null;
-            case 4:
-                return pos1 != null && pos2 != null && pos3 != null && pos4 != null;
-        }
-        return false;
+        return switch (this.getPointsTraced()) {
+            case 1 -> pos1 != null;
+            case 2 -> pos1 != null && pos2 != null;
+            case 3 -> pos1 != null && pos2 != null && pos3 != null;
+            case 4 -> pos1 != null && pos2 != null && pos3 != null && pos4 != null;
+            default -> false;
+        };
     }
 
     @Override

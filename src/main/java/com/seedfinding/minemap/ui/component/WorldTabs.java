@@ -235,8 +235,7 @@ public class WorldTabs extends ExtendedTabbedPane {
 
             tabHeader.setComponentPopupMenu(createTabMenu(tabGroup, mapPanel));
             tabHeader.addMouseListener(Events.Mouse.onReleased(e -> {
-                if (e.getSource() instanceof TabHeader) {
-                    TabHeader source = (TabHeader) e.getSource();
+                if (e.getSource() instanceof TabHeader source) {
                     this.setSelectedIndex(this.indexOfTab(source.getTabTitle().getText()));
                 }
             }));

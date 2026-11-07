@@ -20,8 +20,7 @@ import java.util.stream.StreamSupport;
 public class StructureHelper {
 
     public static Stream<BPos> getClosest(Structure<?, ?> structure, BPos currentPos, long worldseed, ChunkRand chunkRand, BiomeSource source, TerrainGenerator terrainGenerator, int dimCoeff) {
-        if (structure instanceof RegionStructure<?, ?>) {
-            RegionStructure<?, ?> regionStructure = (RegionStructure<?, ?>) structure;
+        if (structure instanceof RegionStructure<?, ?> regionStructure) {
             int chunkInRegion = regionStructure.getSpacing();
             int regionSize = chunkInRegion * 16;
             RPos centerRPos = currentPos.toRegionPos(regionSize);
@@ -195,17 +194,13 @@ public class StructureHelper {
                 }
 
                 public boolean isAlmostOutside() {
-                    switch (currentDirection) {
-                        case NORTH:
-                            return currentPos.getZ() <= lowerBound.getZ();
-                        case EAST:
-                            return currentPos.getX() >= upperBound.getX();
-                        case SOUTH:
-                            return currentPos.getZ() >= upperBound.getZ();
-                        case WEST:
-                            return currentPos.getX() <= lowerBound.getX();
-                    }
-                    return false;
+                    return switch (currentDirection) {
+                        case NORTH -> currentPos.getZ() <= lowerBound.getZ();
+                        case EAST -> currentPos.getX() >= upperBound.getX();
+                        case SOUTH -> currentPos.getZ() >= upperBound.getZ();
+                        case WEST -> currentPos.getX() <= lowerBound.getX();
+                        default -> false;
+                    };
                 }
 
                 @Override
@@ -223,31 +218,23 @@ public class StructureHelper {
             NONE;
 
             public DIRECTION next() {
-                switch (this) {
-                    case NORTH:
-                        return EAST;
-                    case EAST:
-                        return SOUTH;
-                    case SOUTH:
-                        return WEST;
-                    case WEST:
-                        return NORTH;
-                }
-                return NONE;
+                return switch (this) {
+                    case NORTH -> EAST;
+                    case EAST -> SOUTH;
+                    case SOUTH -> WEST;
+                    case WEST -> NORTH;
+                    default -> NONE;
+                };
             }
 
             public DIRECTION opposite() {
-                switch (this) {
-                    case NORTH:
-                        return SOUTH;
-                    case EAST:
-                        return WEST;
-                    case SOUTH:
-                        return NORTH;
-                    case WEST:
-                        return EAST;
-                }
-                return NONE;
+                return switch (this) {
+                    case NORTH -> SOUTH;
+                    case EAST -> WEST;
+                    case SOUTH -> NORTH;
+                    case WEST -> EAST;
+                    default -> NONE;
+                };
             }
         }
     }

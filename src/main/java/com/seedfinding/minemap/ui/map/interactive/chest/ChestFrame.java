@@ -31,7 +31,7 @@ public class ChestFrame extends JFrame {
         for (int i = 0; i < MAX_NUMBER_CHESTS; i++) {
             chestContents.add(new ChestPanel(new Pair<>(0.7, 0.7)));
         }
-        content.add(chestContents.get(0));
+        content.add(chestContents.getFirst());
         topBar = new TopBar(chestInstance, this);
         this.add(topBar, BorderLayout.NORTH);
         scrollPane = new JScrollPane(content);

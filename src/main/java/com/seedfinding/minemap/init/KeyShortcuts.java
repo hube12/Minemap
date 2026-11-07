@@ -33,7 +33,7 @@ public class KeyShortcuts {
                 if (!menuBar.isActive() || shortcutAction.name().equals("CLOSE")) {
                     shortcutAction.action.run();
                 } else {
-                    Logger.LOGGER.log(Level.WARNING,"You can not open a new popup like that");
+                    Logger.LOGGER.log(Level.WARNING, "You can not open a new popup like that");
                 }
             }
             return false;
@@ -85,7 +85,7 @@ public class KeyShortcuts {
         CYCLE_SEED_LEFT(() -> WorldTabs.cycle(false)),
         ;
 
-        public Runnable action;
+        public final Runnable action;
 
         ShortcutAction(Runnable action) {
             this.action = action;
@@ -97,12 +97,7 @@ public class KeyShortcuts {
         }
     }
 
-    public static class KeyRegister {
-        private final String keyText;
-        private final Type type;
-        private final Modifier modifier;
-        private final KeyLocation keyLocation;
-
+    public record KeyRegister(String keyText, Type type, Modifier modifier, KeyLocation keyLocation) {
         public KeyRegister(int keyCode) {
             this(KeyEvent.getKeyText(keyCode));
         }
@@ -133,13 +128,6 @@ public class KeyShortcuts {
 
         public KeyRegister(String keyText, Modifier modifier, KeyLocation keyLocation) {
             this(keyText, Type.ANY, modifier, keyLocation);
-        }
-
-        public KeyRegister(String keyText, Type type, Modifier modifier, KeyLocation keyLocation) {
-            this.keyText = keyText;
-            this.type = type;
-            this.modifier = modifier;
-            this.keyLocation = keyLocation;
         }
 
         public static KeyRegister initFromString(String json) {
@@ -239,22 +227,6 @@ public class KeyShortcuts {
             return stringBuilder.toString();
         }
 
-        public KeyLocation getKeyLocation() {
-            return keyLocation;
-        }
-
-        public Modifier getModifier() {
-            return modifier;
-        }
-
-        public String getKeyText() {
-            return keyText;
-        }
-
-        public Type getType() {
-            return type;
-        }
-
         public boolean check(KeyEvent keyEvent) {
             boolean isTextOk = this.keyText.equals(KeyEvent.getKeyText(keyEvent.getKeyCode()));
             boolean isTypeOk = true;
@@ -319,9 +291,13 @@ public class KeyShortcuts {
             ANY(1001);
             public final int id;
 
-            Type(int id) {this.id = id;}
+            Type(int id) {
+                this.id = id;
+            }
 
-            public int getValue() {return id;}
+            public int getValue() {
+                return id;
+            }
         }
 
 
@@ -334,9 +310,13 @@ public class KeyShortcuts {
             ANY(-1);
             public final int id;
 
-            KeyLocation(int id) {this.id = id;}
+            KeyLocation(int id) {
+                this.id = id;
+            }
 
-            public int getValue() {return id;}
+            public int getValue() {
+                return id;
+            }
         }
 
         public enum Modifier {
@@ -351,9 +331,13 @@ public class KeyShortcuts {
             ALT_ONLY(8);
             public final int id;
 
-            Modifier(int id) {this.id = id;}
+            Modifier(int id) {
+                this.id = id;
+            }
 
-            public int getValue() {return id;}
+            public int getValue() {
+                return id;
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ public class IconSizeDialog extends Dialog {
             label.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.lightGray, Color.WHITE));
             JSlider currentSlider = this.sliders[i];
             currentSlider.addChangeListener(e -> {
-                int value = Math.min(Math.max(currentSlider.getValue(), 4), (int) steps);
+                int value = Math.clamp(currentSlider.getValue(), 4, (int) steps);
                 Configs.ICONS.addOverrideEntry(feature, value / steps);
                 Configs.ICONS.flush();
                 ImageIcon newIcon = Icon.getIcon(feature, scaledSize, size, null);

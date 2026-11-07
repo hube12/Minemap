@@ -170,8 +170,7 @@ public class MapContext {
     public Pair<TerrainGenerator, Function<CPos, CPos>> getTerrainGenerator(Feature<?, ?> feature) {
         TerrainGenerator generator = null;
         Function<CPos, CPos> f = e -> e;
-        if (feature instanceof RuinedPortal) {
-            RuinedPortal ruinedPortal = (RuinedPortal) feature;
+        if (feature instanceof RuinedPortal ruinedPortal) {
             Dimension dimension = ruinedPortal.getValidDimension();
             return new Pair<>(this.getTerrainGenerator(dimension), getDimensionFunction(dimension));
         }
@@ -215,9 +214,8 @@ public class MapContext {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MapContext)) return false;
-        MapContext that = (MapContext) o;
-        return worldSeed == that.worldSeed && layerId == that.layerId && version == that.version && dimension == that.dimension && settings.equals(that.settings);
+        if (!(o instanceof MapContext mapContext)) return false;
+        return worldSeed == mapContext.worldSeed && layerId == mapContext.layerId && version == mapContext.version && dimension == mapContext.dimension && settings.equals(mapContext.settings);
     }
 
     @Override

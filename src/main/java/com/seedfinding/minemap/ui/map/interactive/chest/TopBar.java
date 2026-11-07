@@ -88,8 +88,7 @@ public class TopBar extends JPanel {
             Dimension dimension = this.window.getPreferredSize();
             LayoutManager layoutManager = this.window.getContent().getLayout();
             int factor = showAll && listItems != null && listItems.size() > 1 ? 2 : 1;
-            if (layoutManager instanceof GridLayout) {
-                GridLayout gridLayout = (GridLayout) layoutManager;
+            if (layoutManager instanceof GridLayout gridLayout) {
                 gridLayout.setColumns(factor);
             }
             this.window.setSize(new Dimension(dimension.width * factor, dimension.height * (showAll && listItems != null ? (listItems.size() / 2 + listItems.size() % 2) : 1)));
@@ -111,7 +110,7 @@ public class TopBar extends JPanel {
                 this.window.getChestContents().get(i).update(listItems == null || listItems.size() < 1 ? null : listItems.get(i));
             }
         } else {
-            this.window.getChestContents().get(0).update(listItems == null || listItems.size() < 1 ? null : listItems.get(this.instance.getCurrentChestIndex()));
+            this.window.getChestContents().getFirst().update(listItems == null || listItems.size() < 1 ? null : listItems.get(this.instance.getCurrentChestIndex()));
         }
 
         this.window.getContent().revalidate();

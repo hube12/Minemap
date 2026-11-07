@@ -33,15 +33,12 @@ public class UserSettings {
     public MapManager.ModifierDown modifierDown = MapManager.ModifierDown.CTRL_DOWN;
 
     public DistanceMetric getFragmentMetric() {
-        switch (this.fragmentMetric) {
-            case "Euclidean":
-                return DistanceMetric.EUCLIDEAN_SQ;
-            case "Manhattan":
-                return DistanceMetric.MANHATTAN;
-            case "Chebyshev":
-                return DistanceMetric.CHEBYSHEV;
-        }
-        return null;
+        return switch (this.fragmentMetric) {
+            case "Euclidean" -> DistanceMetric.EUCLIDEAN_SQ;
+            case "Manhattan" -> DistanceMetric.MANHATTAN;
+            case "Chebyshev" -> DistanceMetric.CHEBYSHEV;
+            default -> null;
+        };
     }
 
 }

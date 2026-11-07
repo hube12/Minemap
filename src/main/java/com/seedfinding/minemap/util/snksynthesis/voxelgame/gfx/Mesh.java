@@ -9,11 +9,6 @@ import static org.lwjgl.opengl.GL33.*;
 /**
  * {@link Mesh} is for initializing and drawing meshes
  *
- * @param vertices must be in format
- *
- *                 <pre>
- *                                    {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
- *                                                 </pre>
  */
 public class Mesh {
 
@@ -22,6 +17,7 @@ public class Mesh {
 
     /**
      * Normal constructor
+     * @param vertices must be in format {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
      */
     public Mesh(float[] vertices) {
         // Allocate memory

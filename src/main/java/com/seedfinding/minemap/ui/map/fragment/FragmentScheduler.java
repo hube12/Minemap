@@ -10,7 +10,6 @@ import com.seedfinding.minemap.util.data.DrawInfo;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -171,17 +170,12 @@ public class FragmentScheduler {
 
     /**
      * Snapshot of the loaded area, computed once per batch instead of once per region.
+     * @param minX
+     * @param maxX
+     * @param minZ
+     * @param maxZ
      */
-    private static final class Bounds {
-        final int minX, maxX, minZ, maxZ;
-
-        Bounds(int minX, int maxX, int minZ, int maxZ) {
-            this.minX = minX;
-            this.maxX = maxX;
-            this.minZ = minZ;
-            this.maxZ = maxZ;
-        }
-
+    private record Bounds(int minX, int maxX, int minZ, int maxZ) {
         boolean contains(RPos region) {
             return region.getX() >= this.minX && region.getX() <= this.maxX
                 && region.getZ() >= this.minZ && region.getZ() <= this.maxZ;

@@ -100,7 +100,7 @@ public class ListPanel extends JPanel {
 
     public void removeLastBorder() {
         if (internalPanels.size() == 0) return;
-        JPanel last = internalPanels.get(internalPanels.size() - 1);
+        JPanel last = internalPanels.getLast();
         if (last == null) return;
         last.setBorder(BorderFactory.createEmptyBorder());
         this.revalidate();

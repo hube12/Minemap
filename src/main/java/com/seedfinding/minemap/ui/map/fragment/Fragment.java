@@ -90,7 +90,7 @@ public class Fragment {
         }
 
         if (this.imageCache != null) {
-            graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
+            graphics.drawImage(this.imageCache, info.x(), info.y(), info.width(), info.height(), null);
         }
     }
 
@@ -101,7 +101,7 @@ public class Fragment {
         }
 
         if (this.imageCache != null && this.context.getSettings().showBiomes) {
-            graphics.drawImage(this.imageCache, info.x, info.y, info.width, info.height, null);
+            graphics.drawImage(this.imageCache, info.x(), info.y(), info.width(), info.height(), null);
         }
     }
 
@@ -109,7 +109,7 @@ public class Fragment {
         if (this.context.getSettings().showGrid) {
             Color old = graphics.getColor();
             graphics.setColor(Color.BLACK);
-            graphics.drawRect(info.x, info.y, info.width, info.height);
+            graphics.drawRect(info.x(), info.y(), info.width(), info.height());
             graphics.setColor(old);
         }
     }
@@ -128,7 +128,7 @@ public class Fragment {
     public void drawFeatures(Graphics graphics, DrawInfo info) {
         if (!this.context.getSettings().showFeatures) return;
 
-        Map<Feature<?, ?>, List<BPos>> hovered = this.getHoveredFeatures(info.width, info.height);
+        Map<Feature<?, ?>, List<BPos>> hovered = this.getHoveredFeatures(info.width(), info.height());
         for (Map.Entry<Feature<?, ?>, List<BPos>> entry : this.features.entrySet()) {
             if (!this.context.getSettings().isActive(entry.getKey()) || entry.getValue() == null) continue;
 
@@ -167,9 +167,9 @@ public class Fragment {
 
             // get the correct polygon in the fragment
             AffineTransform translateToZero = AffineTransform.getTranslateInstance(-blockX, -blockZ);
-            AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width) / ((double) regionSize), ((double) info.height) / ((double) regionSize));
+            AffineTransform scaleToDisplayFragment = AffineTransform.getScaleInstance(((double) info.width()) / ((double) regionSize), ((double) info.height()) / ((double) regionSize));
             scaleToDisplayFragment.concatenate(translateToZero);
-            AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x, info.y);
+            AffineTransform translateBackToDisplay = AffineTransform.getTranslateInstance(info.x(), info.y());
             translateBackToDisplay.concatenate(scaleToDisplayFragment);
             polygon = polygon.createTransformedArea(translateBackToDisplay);
 
@@ -182,7 +182,7 @@ public class Fragment {
                 g2d.setColor(color);
                 g2d.fill(polygon);
             } else {
-                int strokeSize = (int) (((double) regionSize) / info.height);
+                int strokeSize = (int) (((double) regionSize) / info.height());
                 g2d.setStroke(new BasicStroke(DisplayMaths.clamp(strokeSize, 1, 7), BasicStroke.CAP_BUTT, BasicStroke.JOIN_ROUND));
                 g2d.draw(polygon);
             }

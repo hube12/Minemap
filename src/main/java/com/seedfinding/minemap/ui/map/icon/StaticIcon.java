@@ -44,11 +44,11 @@ public abstract class StaticIcon extends IconRenderer {
     @Override
     public void render(Graphics graphics, DrawInfo info, Feature<?, ?> feature, Fragment fragment, BPos pos, boolean hovered) {
         float scaleFactor = (float) (getZoomScaleFactor() * Configs.ICONS.getSize(feature.getClass()) * (hovered ? this.getHoverScaleFactor() : 1));
-        int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width);
-        int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height);
+        int sx = (int) ((double) (pos.getX() - fragment.getX()) / fragment.getSize() * info.width());
+        int sy = (int) ((double) (pos.getZ() - fragment.getZ()) / fragment.getSize() * info.height());
         Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(graphics));
         BufferedImage icon = Icons.get(feature.getClass());
-        paintImage(icon, g2d, DEFAULT_VALUE, new Pair<>(scaleFactor, scaleFactor), new Pair<>(info.x + sx, info.y + sy), true);
+        paintImage(icon, g2d, DEFAULT_VALUE, new Pair<>(scaleFactor, scaleFactor), new Pair<>(info.x() + sx, info.y() + sy), true);
 
         if (getExtraInfo() != null && this.getContext().getSettings().showExtraInfos) {
             String stringInfo = getExtraInfo().apply(pos);
@@ -56,8 +56,8 @@ public abstract class StaticIcon extends IconRenderer {
                 Color old = g2d.getColor();
 
                 char[] charArray = stringInfo.toCharArray();
-                int posX = info.x + sx + 5 * (charArray.length == 1 ? 1 : 0);
-                int posY = (int) (info.y + sy - 5 + DEFAULT_VALUE * scaleFactor);
+                int posX = info.x() + sx + 5 * (charArray.length == 1 ? 1 : 0);
+                int posY = (int) (info.y() + sy - 5 + DEFAULT_VALUE * scaleFactor);
 
                 // back characters (shadow effect)
                 g2d.setColor(Color.BLACK);
@@ -75,8 +75,8 @@ public abstract class StaticIcon extends IconRenderer {
         if (getExtraIcon() != null && this.getContext().getSettings().showExtraIcons) {
             Pair<Color, BufferedImage> extraIcon = getExtraIcon().apply(pos);
             if (extraIcon != null) {
-                int posX = (int) (info.x + sx + (DEFAULT_VALUE - 16) * scaleFactor / 2);
-                int posY = (int) (info.y + sy - (DEFAULT_VALUE + 16) * scaleFactor / 2);
+                int posX = (int) (info.x() + sx + (DEFAULT_VALUE - 16) * scaleFactor / 2);
+                int posY = (int) (info.y() + sy - (DEFAULT_VALUE + 16) * scaleFactor / 2);
                 Shape oldClip = g2d.getClip();
                 if (oldClip != null && oldClip.contains(posX - 5, posY - 5)) {
                     Color oldColor = g2d.getColor();

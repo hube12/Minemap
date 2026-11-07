@@ -18,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MapSettings {
-    public static final Set<Class<? extends Feature<?, ?>>> DEFAULT_HIDE = new HashSet<Class<? extends Feature<?, ?>>>() {{
+    public static final Set<Class<? extends Feature<?, ?>>> DEFAULT_HIDE = new HashSet<>() {{
         add(SlimeChunk.class);
         add(Mineshaft.class);
         add(OWBastionRemnant.class);
@@ -332,8 +332,7 @@ public class MapSettings {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MapSettings)) return false;
-        MapSettings that = (MapSettings) o;
+        if (!(o instanceof MapSettings that)) return false;
         return isDirty == that.isDirty && version == that.version && dimension == that.dimension && Objects.equals(showBiomes, that.showBiomes) && Objects.equals(showFlowers, that.showFlowers) && Objects.equals(showFeatures, that.showFeatures) && Objects.equals(showGrid, that.showGrid) && Objects.equals(showExtraInfos, that.showExtraInfos) && Objects.equals(showExtraIcons, that.showExtraIcons) && Objects.equals(biomeSize, that.biomeSize) && Objects.equals(riverSize, that.riverSize);
     }
 
