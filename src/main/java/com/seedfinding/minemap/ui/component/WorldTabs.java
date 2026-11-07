@@ -43,7 +43,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         super(ComponentOrientation.LEFT_TO_RIGHT);
         //Copy seed to clipboard.
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if (e.getKeyCode() != KeyEvent.VK_C || (e.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()) == 0) return false;
+            if (e.getKeyCode() != KeyEvent.VK_C || (e.getModifiersEx() & Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()) == 0) return false;
             MapPanel map = this.getSelectedMapPanel();
             if (map == null) return false;
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(String.valueOf(map.getContext().worldSeed)), null);

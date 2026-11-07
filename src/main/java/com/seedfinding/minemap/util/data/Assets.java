@@ -13,8 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
@@ -260,8 +259,8 @@ public class Assets {
         Logger.LOGGER.info(String.format("Downloading %s for file %s", url, out.getName()));
         ReadableByteChannel rbc;
         try {
-            rbc = Channels.newChannel(new URL(url).openStream());
-        } catch (IOException e) {
+            rbc = Channels.newChannel(new URI(url).toURL().openStream());
+        } catch (IOException | URISyntaxException e) {
             Logger.LOGGER.severe(String.format("Could not open channel to url %s, error: %s", url, e));
             return false;
         }
@@ -489,7 +488,7 @@ public class Assets {
 
     private static String getDataRestAPI(String apiUrl) {
         try {
-            URL url = new URL(apiUrl);
+            URL url = new URI(apiUrl).toURL();
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();

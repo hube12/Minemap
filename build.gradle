@@ -53,20 +53,27 @@ import org.gradle.crypto.checksum.Checksum
 import proguard.gradle.ProGuardTask
 
 // this task replace the @VERSION@ token with the current project.version
+// Only MineMap.java contains the token, so only that file is copied/filtered into build/.
+// Every other file is compiled from src/ so javac warnings link to the real source files.
 tasks.register('processSource', Sync) {
-    from sourceSets.main.java
+    from(sourceSets.main.java) { include 'com/seedfinding/minemap/MineMap.java' }
     inputs.property 'version', version
     filter(ReplaceTokens, tokens: [VERSION: version])
     into layout.buildDirectory.dir("src")
 }
 
 compileJava {
-    source = processSource.outputs
+    source = sourceSets.main.java.matching { exclude 'com/seedfinding/minemap/MineMap.java' } + files(processSource).asFileTree
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += ['-Xlint:deprecation', '-Xlint:unchecked']
     options.fork = true
+}
+
+// TODO(neil): remove when jUnit test are added
+test {
+    failOnNoDiscoveredTests = false
 }
 
 run {
@@ -129,7 +136,14 @@ application {
 
 shadowJar {
     archiveFileName = "${project.name}-${project.version}.jar"
+    exclude 'META-INF/*.kotlin_module' // more shadow weird stuff
 }
+
+// shadowJar does weird things that gradle 9 doesn't like
+tasks.named('startScripts') { dependsOn shadowJar }
+tasks.named('distZip') { dependsOn shadowJar }
+tasks.named('distTar') { dependsOn shadowJar }
+tasks.named('startShadowScripts') { dependsOn jar }
 
 launch4j {
     outfile = "${project.name}-${project.version}.exe"
