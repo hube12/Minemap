@@ -40,8 +40,8 @@ public class StructureHelper {
                     }
                 });
         } else {
-            if (structure instanceof Stronghold) {
-                return StreamSupport.stream(Spliterators.spliterator(((Stronghold) structure).getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
+            if (structure instanceof Stronghold stronghold) {
+                return StreamSupport.stream(Spliterators.spliterator(stronghold.getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
                     .map(cPos -> {
                         BPos dimPos = ((CPos) cPos).toBlockPos().add(9, 0, 9);
                         if (dimCoeff>=0){
@@ -161,35 +161,19 @@ public class StructureHelper {
 
                 public void update() {
                     switch (currentDirection) {
-                        case NORTH:
-                            currentPos = new RPos(currentPos.getX(), currentPos.getZ() - 1, currentPos.getRegionSize());
-                            break;
-                        case EAST:
-                            currentPos = new RPos(currentPos.getX() + 1, currentPos.getZ(), currentPos.getRegionSize());
-                            break;
-                        case SOUTH:
-                            currentPos = new RPos(currentPos.getX(), currentPos.getZ() + 1, currentPos.getRegionSize());
-                            break;
-                        case WEST:
-                            currentPos = new RPos(currentPos.getX() - 1, currentPos.getZ(), currentPos.getRegionSize());
-                            break;
+                        case NORTH -> currentPos = new RPos(currentPos.getX(), currentPos.getZ() - 1, currentPos.getRegionSize());
+                        case EAST -> currentPos = new RPos(currentPos.getX() + 1, currentPos.getZ(), currentPos.getRegionSize());
+                        case SOUTH -> currentPos = new RPos(currentPos.getX(), currentPos.getZ() + 1, currentPos.getRegionSize());
+                        case WEST -> currentPos = new RPos(currentPos.getX() - 1, currentPos.getZ(), currentPos.getRegionSize());
                     }
                 }
 
                 public void backtrack() {
                     switch (currentDirection) {
-                        case NORTH:
-                            currentPos = new RPos(currentPos.getX(), currentPos.getZ() + 1, currentPos.getRegionSize());
-                            break;
-                        case EAST:
-                            currentPos = new RPos(currentPos.getX() - 1, currentPos.getZ(), currentPos.getRegionSize());
-                            break;
-                        case SOUTH:
-                            currentPos = new RPos(currentPos.getX(), currentPos.getZ() - 1, currentPos.getRegionSize());
-                            break;
-                        case WEST:
-                            currentPos = new RPos(currentPos.getX() + 1, currentPos.getZ(), currentPos.getRegionSize());
-                            break;
+                        case NORTH -> currentPos = new RPos(currentPos.getX(), currentPos.getZ() + 1, currentPos.getRegionSize());
+                        case EAST -> currentPos = new RPos(currentPos.getX() - 1, currentPos.getZ(), currentPos.getRegionSize());
+                        case SOUTH -> currentPos = new RPos(currentPos.getX(), currentPos.getZ() - 1, currentPos.getRegionSize());
+                        case WEST -> currentPos = new RPos(currentPos.getX() + 1, currentPos.getZ(), currentPos.getRegionSize());
                     }
                 }
 

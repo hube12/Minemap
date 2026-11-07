@@ -315,8 +315,8 @@ public class Icons {
     public static String getObjectInformation(Object object) {
         List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
         if (entry == null) {
-            if (object instanceof Item) {
-                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, ((Item) object).getName(), ".png");
+            if (object instanceof Item item) {
+                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, item.getName(), ".png");
                 List<Pair<String, BufferedImage>> entry2 = OBJECT_REGISTRY.get(object);
                 if (entry2 == null) return null;
                 entry = entry2;
@@ -332,8 +332,8 @@ public class Icons {
     public static BufferedImage getObject(Object object) {
         List<Pair<String, BufferedImage>> entry = OBJECT_REGISTRY.get(object);
         if (entry == null) {
-            if (object instanceof Item) {
-                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, ((Item) object).getName(), ".png");
+            if (object instanceof Item item) {
+                registerObject(object, new File(Assets.DOWNLOAD_DIR_ASSETS).toPath(), false, item.getName(), ".png");
                 List<Pair<String, BufferedImage>> entry2 = OBJECT_REGISTRY.get(object);
                 if (entry2 == null) return null;
                 entry = entry2;

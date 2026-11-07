@@ -18,7 +18,6 @@ import com.seedfinding.minemap.ui.map.MapContext;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public abstract class Loot {
 
@@ -47,14 +46,14 @@ public abstract class Loot {
     public List<List<ItemStack>> getLootAt(long worldSeed, CPos cPos, Feature<?, ?> feature, boolean indexed, ChunkRand rand, TerrainGenerator generator, MCVersion version) {
         Generator.GeneratorFactory<?> factory = this.getGeneratorFactory(feature);
         if (factory == null) return null;
-        if (!(feature instanceof ILoot)) return null;
+        if (!(feature instanceof ILoot lootFeature)) return null;
         if (!isCorrectInstance(feature)) return null;
         if (generator == null) return null;
         Generator structureGen = factory.create(version);
         if (!structureGen.generate(generator, cPos, rand)) return null;
-        List<ChestContent> loots = ((ILoot) feature).getLoot(worldSeed, structureGen, rand, indexed);
+        List<ChestContent> loots = lootFeature.getLoot(worldSeed, structureGen, rand, indexed);
         if (loots == null) return null;
-        return loots.stream().map(ChestContent::getItems).collect(Collectors.toList());
+        return loots.stream().map(ChestContent::getItems).toList();
     }
 
     public abstract boolean isCorrectInstance(Feature<?, ?> feature);

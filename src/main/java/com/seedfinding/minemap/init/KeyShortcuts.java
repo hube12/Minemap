@@ -192,34 +192,18 @@ public class KeyShortcuts {
             if (key == null) return "None";
             StringBuilder stringBuilder = new StringBuilder();
             switch (key.keyLocation) {
-                case KEY_LOCATION_LEFT:
-                    stringBuilder.append("Left_");
-                    break;
-                case KEY_LOCATION_RIGHT:
-                    stringBuilder.append("Right_");
-                    break;
-                case KEY_LOCATION_NUMPAD:
-                    stringBuilder.append("Num_");
-                    break;
+                case KEY_LOCATION_LEFT -> stringBuilder.append("Left_");
+                case KEY_LOCATION_RIGHT -> stringBuilder.append("Right_");
+                case KEY_LOCATION_NUMPAD -> stringBuilder.append("Num_");
             }
             switch (key.modifier) {
-                case CTRL:
-                    stringBuilder.append("Ctrl");
-                    break;
-                case META:
-                    stringBuilder.append("Meta");
-                    break;
-                case SHIFT:
-                    stringBuilder.append("Shift");
-                    break;
-                case ALT:
-                    stringBuilder.append("Alt");
-                    break;
-                case ALT_GR:
-                    stringBuilder.append("AltGr");
-                    break;
-                default:
-                    break;
+                case CTRL -> stringBuilder.append("Ctrl");
+                case META -> stringBuilder.append("Meta");
+                case SHIFT -> stringBuilder.append("Shift");
+                case ALT -> stringBuilder.append("Alt");
+                case ALT_GR -> stringBuilder.append("AltGr");
+                default -> {
+                }
             }
             if (!key.keyText.isEmpty()) {
                 stringBuilder.append("+").append(key.keyText);
