@@ -167,7 +167,7 @@ public class MapPanel extends JPanel {
         start = System.nanoTime();
         if (Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale) {
             drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawHeight(graphics, info)));
-        }else{
+        } else {
             drawQueue.forEach((fragment, info) -> fragment.drawNonLoading(f -> f.drawBiomes(graphics, info)));
         }
         if (MineMap.DEBUG) System.out.println("Draw Biomes/Heights " + " " + (System.nanoTime() - start));
@@ -237,7 +237,7 @@ public class MapPanel extends JPanel {
     }
 
     private double[] viewSignature() {
-        return new double[]{this.manager.centerX, this.manager.centerY, this.manager.pixelsPerFragment,
+        return new double[] {this.manager.centerX, this.manager.centerY, this.manager.pixelsPerFragment,
             this.manager.blocksPerFragment, this.getWidth(), this.getHeight(), this.context.getLayerId()};
     }
 
@@ -379,9 +379,9 @@ public class MapPanel extends JPanel {
 
     public BufferedImage getScreenshot() {
         BufferedImage image = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_RGB);
-        Graphics graphics=image.getGraphics();
+        Graphics graphics = image.getGraphics();
         // Because this has no idea what the clip is, see #14
-        graphics.setClip(0,0,this.getWidth(),this.getHeight());
+        graphics.setClip(0, 0, this.getWidth(), this.getHeight());
         this.drawMap(graphics);
         return image;
     }

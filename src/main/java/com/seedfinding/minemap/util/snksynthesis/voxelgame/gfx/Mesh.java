@@ -17,6 +17,7 @@ public class Mesh {
 
     /**
      * Normal constructor
+     *
      * @param vertices must be in format {posX, posY, posZ, texCoordX, texCoordY, normalX, normalY, normalZ, ...}
      */
     public Mesh(float[] vertices) {

@@ -14,8 +14,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 /**
  * Ctrl+F style popup: type a biome name (with auto-complete), press Enter and the map
@@ -86,9 +86,17 @@ public class BiomeSearchDialog extends JDialog {
         Prompt.setPrompt("Search biome...  (Enter: jump, Esc: close)", this.input);
         this.input.setToolTipText("Search biome (Enter: jump to nearest, Up/Down: select, Esc: close)");
         this.input.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) { refreshSuggestions(); }
-            public void removeUpdate(DocumentEvent e) { refreshSuggestions(); }
-            public void changedUpdate(DocumentEvent e) { refreshSuggestions(); }
+            public void insertUpdate(DocumentEvent e) {
+                refreshSuggestions();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                refreshSuggestions();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                refreshSuggestions();
+            }
         });
 
         this.suggestions.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -127,7 +135,10 @@ public class BiomeSearchDialog extends JDialog {
         am.put("go", action(this::startSearch));
         JRootPane rp = this.getRootPane();
         rp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "close");
-        rp.getActionMap().put("close", action(() -> { if (searching) cancelSearch(); else close(); }));
+        rp.getActionMap().put("close", action(() -> {
+            if (searching) cancelSearch();
+            else close();
+        }));
 
         root.add(this.input, BorderLayout.NORTH);
         this.suggestions.setVisibleRowCount(VISIBLE_ROWS);
@@ -151,7 +162,9 @@ public class BiomeSearchDialog extends JDialog {
     private static Action action(Runnable r) {
         return new AbstractAction() {
             @Override
-            public void actionPerformed(ActionEvent e) { r.run(); }
+            public void actionPerformed(ActionEvent e) {
+                r.run();
+            }
         };
     }
 
@@ -210,19 +223,19 @@ public class BiomeSearchDialog extends JDialog {
                     int step = Math.max(scale, r < 1500 ? 8 : 32);
                     if (r == 0) {
                         if (layer.getBiome(Math.floorDiv(startX, scale), 0, Math.floorDiv(startZ, scale)) == targetId)
-                            return new int[]{startX, startZ};
+                            return new int[] {startX, startZ};
                         r = step;
                         continue;
                     }
                     for (int d = -r; d <= r; d += step) {
                         if (hit(layer, scale, startX + d, startZ - r, targetId))
-                            return new int[]{startX + d, startZ - r};
+                            return new int[] {startX + d, startZ - r};
                         if (hit(layer, scale, startX + d, startZ + r, targetId))
-                            return new int[]{startX + d, startZ + r};
+                            return new int[] {startX + d, startZ + r};
                         if (hit(layer, scale, startX - r, startZ + d, targetId))
-                            return new int[]{startX - r, startZ + d};
+                            return new int[] {startX - r, startZ + d};
                         if (hit(layer, scale, startX + r, startZ + d, targetId))
-                            return new int[]{startX + r, startZ + d};
+                            return new int[] {startX + r, startZ + d};
                     }
                     r += step;
                     int shown = r;

@@ -58,25 +58,37 @@ public class RoundedFloatingEntry extends RoundedPanel {
 
             public void removeChangeListener(ChangeListener l) {}
 
-            public boolean isVisible() {return false;}
+            public boolean isVisible() {
+                return false;
+            }
 
             public void setVisible(boolean v) {}
 
-            public boolean isSelectionVisible() {return false;}
+            public boolean isSelectionVisible() {
+                return false;
+            }
 
             public void setSelectionVisible(boolean v) {}
 
             public void setMagicCaretPosition(Point p) {}
 
-            public Point getMagicCaretPosition() {return new Point(0, 0);}
+            public Point getMagicCaretPosition() {
+                return new Point(0, 0);
+            }
 
             public void setBlinkRate(int rate) {}
 
-            public int getBlinkRate() {return 10000;}
+            public int getBlinkRate() {
+                return 10000;
+            }
 
-            public int getDot() {return 0;}
+            public int getDot() {
+                return 0;
+            }
 
-            public int getMark() {return 0;}
+            public int getMark() {
+                return 0;
+            }
 
             public void setDot(int dot) {}
 

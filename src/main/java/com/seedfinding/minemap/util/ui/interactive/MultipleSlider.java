@@ -2,8 +2,8 @@ package com.seedfinding.minemap.util.ui.interactive;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.function.Function;
 

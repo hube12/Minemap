@@ -160,7 +160,8 @@ public class MapManager {
         rename.setBorder(new EmptyBorder(5, 15, 5, 15));
 
         rename.addMouseListener(Events.Mouse.onReleased(e -> {
-            RenameTabDialog renameTabDialog = new RenameTabDialog(() -> {});
+            RenameTabDialog renameTabDialog = new RenameTabDialog(() -> {
+            });
             renameTabDialog.setVisible(true);
         }));
         popup.add(rename);
@@ -209,7 +210,8 @@ public class MapManager {
                                        }
 
                                        @Override
-                                       public void popupMenuCanceled(PopupMenuEvent e) {}
+                                       public void popupMenuCanceled(PopupMenuEvent e) {
+                                       }
                                    }
         );
         this.panel.setComponentPopupMenu(popup);

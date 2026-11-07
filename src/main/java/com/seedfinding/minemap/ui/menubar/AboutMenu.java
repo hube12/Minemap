@@ -9,7 +9,6 @@ import com.seedfinding.minemap.ui.dialog.CheatingHeightDialog;
 import com.seedfinding.minemap.ui.dialog.IconSizeDialog;
 import com.seedfinding.minemap.ui.map.MapPanel;
 import com.seedfinding.minemap.util.ui.interactive.LabelController;
-import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
@@ -39,30 +38,30 @@ public class AboutMenu extends Menu {
         this.menu = new JMenu("About");
         this.menu.setMnemonic(KeyEvent.VK_B);
 
-        this.lookMenuDark= new Box(BoxLayout.Y_AXIS);
+        this.lookMenuDark = new Box(BoxLayout.Y_AXIS);
 
         JScrollPane scrollPaneDark = new JScrollPane(this.lookMenuDark);
         scrollPaneDark.getVerticalScrollBar().setUnitIncrement(20);
         scrollPaneDark.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneDark.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneDark.setPreferredSize(new Dimension(300,400));
+        scrollPaneDark.setPreferredSize(new Dimension(300, 400));
         scrollPaneDark.setMaximumSize(new Dimension(0, 400));
         scrollPaneDark.setBorder(BorderFactory.createEmptyBorder());
 
-        this.lookMenuLight=new Box(BoxLayout.Y_AXIS);
+        this.lookMenuLight = new Box(BoxLayout.Y_AXIS);
 
         JScrollPane scrollPaneLight = new JScrollPane(this.lookMenuLight);
         scrollPaneLight.getVerticalScrollBar().setUnitIncrement(20);
         scrollPaneLight.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
         scrollPaneLight.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPaneLight.setPreferredSize(new Dimension(300,400));
+        scrollPaneLight.setPreferredSize(new Dimension(300, 400));
         scrollPaneLight.setMaximumSize(new Dimension(0, 400));
         scrollPaneLight.setBorder(BorderFactory.createEmptyBorder());
 
         this.lookMenu = new JMenu("UI Look");
         this.lookMenu.add(scrollPaneDark);
         this.lookMenu.add(scrollPaneLight);
-        this.lookMenu.getPopupMenu().setLayout(new GridLayout(0,2));
+        this.lookMenu.getPopupMenu().setLayout(new GridLayout(0, 2));
 
         this.addLookGroup();
 
@@ -151,10 +150,10 @@ public class AboutMenu extends Menu {
             }
 
 
-            if (look.isDark()){
+            if (look.isDark()) {
                 this.lookMenuDark.add(Box.createRigidArea(new Dimension(0, 2)));
                 this.lookMenuDark.add(button);
-            }else{
+            } else {
                 this.lookMenuLight.add(Box.createRigidArea(new Dimension(0, 2)));
                 this.lookMenuLight.add(button);
             }

@@ -1,8 +1,77 @@
 root = true
+
 [*]
+charset = utf-8
 end_of_line = lf
+indent_size = 4
+indent_style = space
 insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 200
+tab_width = 4
+ij_continuation_indent_size = 4
+ij_formatter_tags_enabled = true
+
+# Markdown relies on trailing double-space for hard line breaks.
+[*.md]
+trim_trailing_whitespace = false
 
 [*.java]
-indent_style = space
-indent_size = 4
+# Wrap annotations only if line is too long.
+ij_java_class_annotation_wrap = normal
+ij_java_method_annotation_wrap = normal
+ij_java_field_annotation_wrap = normal
+# Do not wrap annotations on variables and parameters.
+ij_java_variable_annotation_wrap = off
+ij_java_parameter_annotation_wrap = off
+# Do not wrap parameters inside annotations.
+ij_java_annotation_parameter_wrap = off
+# Space before statement parentheses: `if (`, `for (`, `catch (`...
+ij_java_space_before_catch_parentheses = true
+ij_java_space_before_for_parentheses = true
+ij_java_space_before_if_parentheses = true
+ij_java_space_before_method_call_parentheses = false
+ij_java_space_before_method_parentheses = false
+ij_java_space_before_switch_parentheses = true
+ij_java_space_before_synchronized_parentheses = true
+ij_java_space_before_while_parentheses = true
+ij_java_space_before_try_parentheses = true
+ij_java_space_before_for_left_brace = true
+ij_java_space_before_for_semicolon = false
+ij_java_space_before_if_left_brace = true
+# No spaces within parentheses.
+ij_java_spaces_within_cast_parentheses = false
+ij_java_spaces_within_catch_parentheses = false
+ij_java_spaces_within_for_parentheses = false
+ij_java_spaces_within_if_parentheses = false
+ij_java_spaces_within_method_call_parentheses = false
+ij_java_spaces_within_method_parentheses = false
+ij_java_spaces_within_parentheses = false
+ij_java_spaces_within_switch_parentheses = false
+ij_java_spaces_within_synchronized_parentheses = false
+ij_java_spaces_within_try_parentheses = false
+ij_java_spaces_within_while_parentheses = false
+ij_java_space_within_empty_method_call_parentheses = false
+ij_java_space_within_empty_method_parentheses = false
+ij_java_spaces_within_annotation_parentheses = false
+ij_java_space_after_for_semicolon = true
+# Space before array initializer brace: `new String[] {...}`.
+ij_java_space_before_array_initializer_left_brace = true
+# Space after cast: `(Type) value`.
+ij_java_space_after_type_cast = true
+# Do not wrap single-line javadoc comments.
+ij_java_doc_do_not_wrap_if_one_line = true
+# Star imports are widely used in this repo (javax.swing.*, ...init.*), keep IntelliJ's default thresholds.
+ij_java_class_count_to_use_import_on_demand = 5
+ij_java_names_count_to_use_import_on_demand = 3
+# Keep empty/simple methods on one line: `public void install(JTextComponent c) {}`.
+ij_java_keep_simple_methods_in_one_line = true
+ij_java_keep_simple_classes_in_one_line = true
+ij_java_keep_simple_lambdas_in_one_line = true
+# Enable JavaDoc formatting, don't put <p> tag on empty lines.
+ij_java_doc_enable_formatting = true
+ij_java_doc_add_p_tag_on_empty_lines = false
+
+# Windows batch files are safest with CRLF.
+[*.{bat,cmd}]
+end_of_line = crlf

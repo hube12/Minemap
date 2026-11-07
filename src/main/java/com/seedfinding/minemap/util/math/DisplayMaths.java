@@ -48,19 +48,19 @@ public class DisplayMaths {
     }
 
     public static double smartClamp(double value, double constraint1, double constraint2) {
-        double min=Math.min(constraint1,constraint2);
-        double max=Math.max(constraint1,constraint2);
-        if(value < min) {
+        double min = Math.min(constraint1, constraint2);
+        double max = Math.max(constraint1, constraint2);
+        if (value < min) {
             return min;
         } else {
             return Math.min(value, max);
         }
     }
 
-    public static int log2nlz( int bits ) {
-        if( bits == 0 )
+    public static int log2nlz(int bits) {
+        if (bits == 0)
             return 0;
-        return 31 - Integer.numberOfLeadingZeros( bits );
+        return 31 - Integer.numberOfLeadingZeros(bits);
     }
 
     public static Function<Double, Double> reduceToRange(double minSourceRange, double maxSourceRange, double minTargetRange, double maxTargetRange) {
@@ -131,13 +131,13 @@ public class DisplayMaths {
                 pos2.getX(),
                 pos3.getX(),
                 pos4.getX(),
-                },
+            },
             new int[] {
                 pos1.getZ(),
                 pos2.getZ(),
                 pos3.getZ(),
                 pos4.getZ(),
-                },
+            },
             4
         );
     }
@@ -149,12 +149,12 @@ public class DisplayMaths {
                 pos2.getX(),
                 pos3.getX(),
 
-                },
+            },
             new int[] {
                 pos1.getZ(),
                 pos2.getZ(),
                 pos3.getZ(),
-                },
+            },
             3
         );
     }
@@ -170,13 +170,13 @@ public class DisplayMaths {
                 pos2.getX() - offsetX,
                 pos2.getX() + offsetX,
 
-                },
+            },
             new int[] {
                 pos1.getZ() + offsetY,
                 pos1.getZ() - offsetY,
                 pos2.getZ() - offsetY,
                 pos2.getZ() + offsetY,
-                },
+            },
             4
         );
     }
@@ -189,13 +189,13 @@ public class DisplayMaths {
                 pos1.getX() + maxOffset,
                 pos1.getX() - maxOffset,
 
-                },
+            },
             new int[] {
                 pos1.getZ() - maxOffset,
                 pos1.getZ() - maxOffset,
                 pos1.getZ() + maxOffset,
                 pos1.getZ() + maxOffset,
-                },
+            },
             4
         );
     }

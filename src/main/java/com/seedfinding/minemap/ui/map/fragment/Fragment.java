@@ -22,8 +22,8 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Fragment {
@@ -229,7 +229,7 @@ public class Fragment {
         int cheating;
         if (panel != null && panel.manager != null) {
             cheating = Math.max(Configs.USER_PROFILE.getUserSettings().cheatingHeight, (int) (panel.manager.blocksPerFragment / 2 / panel.manager.pixelsPerFragment));
-            cheating = Math.max(cheating,1);
+            cheating = Math.max(cheating, 1);
             if (this.heightCache != null && lastCheatingHeight <= cheating) return;
         } else {
             cheating = Configs.USER_PROFILE.getUserSettings().cheatingHeight;
@@ -271,10 +271,10 @@ public class Fragment {
     }
 
     private void refreshBiomeCache() {
-        int cheating=1;
-        if (MineMap.INSTANCE ==null){
-            if(this.biomeCache != null && this.layerIdCache == this.context.getLayerId())return;
-        }else{
+        int cheating = 1;
+        if (MineMap.INSTANCE == null) {
+            if (this.biomeCache != null && this.layerIdCache == this.context.getLayerId()) return;
+        } else {
             MapPanel panel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             if (panel != null && panel.manager != null) {
                 cheating = Math.max(1, (int) (panel.manager.blocksPerFragment / 16 / panel.manager.pixelsPerFragment));

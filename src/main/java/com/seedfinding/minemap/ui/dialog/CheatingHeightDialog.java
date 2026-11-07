@@ -28,7 +28,7 @@ public class CheatingHeightDialog extends Dialog {
         Hashtable<Integer, JLabel> labels = new Hashtable<>();
         // numberCheatingSize cheating size between 1 and 2^numberCheatingSize
         for (int i = 0; i <= numberCheatingSize; i += 1) {
-            labels.put(i, new JLabel(String.valueOf(1<<i)));
+            labels.put(i, new JLabel(String.valueOf(1 << i)));
         }
         int[] values = new int[numberLabels];
         // Configure the other sliders here !
@@ -65,7 +65,7 @@ public class CheatingHeightDialog extends Dialog {
     @Override
     protected void create() {
         this.dispose();
-        if (MineMap.INSTANCE!=null && MineMap.INSTANCE.worldTabs!=null && MineMap.INSTANCE.worldTabs.getSelectedMapPanel()!=null){
+        if (MineMap.INSTANCE != null && MineMap.INSTANCE.worldTabs != null && MineMap.INSTANCE.worldTabs.getSelectedMapPanel() != null) {
             MineMap.INSTANCE.worldTabs.getSelectedMapPanel().restart();
         }
     }

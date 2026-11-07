@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -180,7 +180,7 @@ public class MineMap extends JFrame {
                 System.err.println("Error no dimension provided");
                 return;
             }
-                dimension = com.seedfinding.mccore.state.Dimension.fromString(args[idx + 1]);
+            dimension = com.seedfinding.mccore.state.Dimension.fromString(args[idx + 1]);
             if (dimension == null) {
                 System.err.println("Invalid dimension provided, should be: " + Arrays.toString(com.seedfinding.mccore.state.Dimension.values()));
                 return;

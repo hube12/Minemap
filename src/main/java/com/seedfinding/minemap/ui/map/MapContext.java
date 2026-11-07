@@ -61,7 +61,7 @@ public class MapContext {
 
                     map.put(dim, biomeSource);
                 } catch (UnsupportedVersion e) {
-                    Logger.LOGGER.log(Level.WARNING,String.format("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString()));
+                    Logger.LOGGER.log(Level.WARNING, String.format("Biome source for the %s for version %s could not be initialized%n", dim.getName(), this.version.toString()));
                     throw e;
                 }
             }

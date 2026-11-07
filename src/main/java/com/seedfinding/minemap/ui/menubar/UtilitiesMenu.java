@@ -54,7 +54,7 @@ public class UtilitiesMenu extends Menu {
             MineMap.INSTANCE.worldTabs.invalidateAll();
             if (MineMap.INSTANCE.toolbarPane.structureSeedModePopup == null) {
                 MineMap.INSTANCE.toolbarPane = new MenuBar();
-                Logger.LOGGER.log(Level.WARNING,"Toggling happened before definition, critical path");
+                Logger.LOGGER.log(Level.WARNING, "Toggling happened before definition, critical path");
                 return;
             }
             MineMap.INSTANCE.toolbarPane.structureSeedModePopup.setVisible(hasJustBeenSelected);

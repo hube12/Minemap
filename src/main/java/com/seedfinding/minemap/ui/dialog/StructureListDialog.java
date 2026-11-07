@@ -59,7 +59,8 @@ public class StructureListDialog extends StructureDialog {
             JOptionPane.showMessageDialog(this, "We could not find any feature that match your requirement, report this if you think it is a bug.");
             Logger.LOGGER.info("Could not find a valid feature");
             return;
-        };
+        }
+        ;
 
         // destroy the current container
         this.dispose();

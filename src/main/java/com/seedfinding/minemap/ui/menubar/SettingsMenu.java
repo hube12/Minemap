@@ -43,12 +43,12 @@ public class SettingsMenu extends Menu {
 
         this.heightmapGrayscale = new JCheckBoxMenuItem("Show heightmap");
         this.heightmapGrayscale.addChangeListener(e -> {
-            boolean old=Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale;
+            boolean old = Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale;
             Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale = heightmapGrayscale.getState();
             Configs.USER_PROFILE.flush();
-            if (old!=Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale){
-                MapPanel map=MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
-                if (map!=null){
+            if (old != Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale) {
+                MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
+                if (map != null) {
                     map.restart();
                 }
             }

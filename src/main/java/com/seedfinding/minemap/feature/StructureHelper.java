@@ -33,9 +33,9 @@ public class StructureHelper {
                 .filter(cPos -> terrainGenerator == null || StructureHelper.canGenerate(regionStructure, cPos, terrainGenerator))
                 .map(cPos -> {
                     BPos dimPos = cPos.toBlockPos().add(9, 0, 9);
-                    if (dimCoeff>=0){
+                    if (dimCoeff >= 0) {
                         return dimPos.shl(dimCoeff);
-                    }else{
+                    } else {
                         return dimPos.shr(-dimCoeff);
                     }
                 });
@@ -44,9 +44,9 @@ public class StructureHelper {
                 return StreamSupport.stream(Spliterators.spliterator(stronghold.getAllStarts(source, chunkRand), Spliterator.ORDERED), false)
                     .map(cPos -> {
                         BPos dimPos = ((CPos) cPos).toBlockPos().add(9, 0, 9);
-                        if (dimCoeff>=0){
+                        if (dimCoeff >= 0) {
                             return dimPos.shl(dimCoeff);
-                        }else{
+                        } else {
                             return dimPos.shr(-dimCoeff);
                         }
                     });

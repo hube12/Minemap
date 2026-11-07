@@ -84,7 +84,7 @@ public class Dropdown<E> extends JComboBox<String> {
         String e = elements.get(element);
         if (e == null) {
             this.setSelectedItem(mapper.map(element));
-        }else{
+        } else {
             this.setSelectedItem(e);
         }
     }
@@ -114,7 +114,7 @@ public class Dropdown<E> extends JComboBox<String> {
             if (this.order.get(this.getSelectedIndex()).equals(toRemove)) {
                 this.order.remove(this.getSelectedIndex());
             } else {
-                Logger.LOGGER.log(Level.SEVERE,"Missed element in toRemove (Logic error)");
+                Logger.LOGGER.log(Level.SEVERE, "Missed element in toRemove (Logic error)");
                 this.order.remove(toRemove);
             }
             super.removeItem(toRemove);

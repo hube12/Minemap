@@ -170,6 +170,7 @@ public class FragmentScheduler {
 
     /**
      * Snapshot of the loaded area, computed once per batch instead of once per region.
+     *
      * @param minX
      * @param maxX
      * @param minZ

@@ -112,7 +112,7 @@ public abstract class StructureDialog extends Dialog {
 
         Stream<BPos> stream = StructureHelper.getClosest(feature, centerPos, worldSeedWithSalt, chunkRand, biomeSource, terrainGenerator, dimCoeff);
         if (stream == null) return null;
-        int threads=Math.min(Configs.USER_PROFILE.getThreadCount(),limit);
+        int threads = Math.min(Configs.USER_PROFILE.getThreadCount(), limit);
         return StreamEx.of(stream).parallel(new ForkJoinPool(threads)).filter(e -> filter != null ? filter.apply(e) : true).limit(limit).collect(Collectors.toList());
     }
 
