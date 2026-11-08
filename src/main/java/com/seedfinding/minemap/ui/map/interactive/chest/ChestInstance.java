@@ -2,10 +2,12 @@ package com.seedfinding.minemap.ui.map.interactive.chest;
 
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mccore.util.pos.CPos;
+import com.seedfinding.mccore.version.UnsupportedVersion;
 import com.seedfinding.mcfeature.Feature;
 import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.feature.chests.Loot;
+import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.ui.map.MapContext;
 import com.seedfinding.minemap.ui.map.MapPanel;
 
@@ -93,12 +95,18 @@ public class ChestInstance {
         if (informations == null || informations.getFirst() == null || informations.getSecond() == null) return;
         Loot.LootFactory<?> lootFactory = Chests.get(informations.getFirst().getClass());
         if (lootFactory != null) {
-            this.listItems = lootFactory.create().getLootAt(
-                informations.getSecond(),
-                informations.getFirst(),
-                this.indexed,
-                this.getContext()
-            );
+            try {
+                this.listItems = lootFactory.create().getLootAt(
+                    informations.getSecond(),
+                    informations.getFirst(),
+                    this.indexed,
+                    this.getContext()
+                );
+            } catch (UnsupportedVersion e) {
+                Logger.LOGGER.warning(e.getMessage());
+                this.listItems = null;
+            }
+
         } else {
             this.listItems = null;
         }
