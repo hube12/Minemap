@@ -5,14 +5,11 @@ import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestInstance;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestPanel;
 import com.seedfinding.minemap.ui.map.sidebar.TooltipTools;
-import com.seedfinding.minemap.util.data.HelpIndex;
 import com.seedfinding.minemap.util.ui.graphics.RoundedBorder;
-import com.seedfinding.minemap.util.ui.interactive.HelpRenderer;
 import com.seedfinding.minemap.util.ui.interactive.DockableContainer;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.List;
 
@@ -21,7 +18,6 @@ import static com.seedfinding.minemap.util.data.Str.prettifyDashed;
 public class MapRightSideBar extends JPanel {
 
     public final TooltipTools tooltip;
-    public final DockableContainer searchBox;
     public final ChestTopBar chestTopBar;
     public final DockableContainer chestBox;
     private final MapPanel map;
@@ -32,8 +28,7 @@ public class MapRightSideBar extends JPanel {
         this.tooltip.setVisible(true);
         Pair<ChestTopBar, JPanel> chest = createChestPanel(this.map.chestInstance);
         this.chestTopBar = chest.getFirst();
-        this.chestBox = new DockableContainer(JXCollapsiblePane.Direction.LEFT, chest.getSecond());
-        this.searchBox = new DockableContainer(JXCollapsiblePane.Direction.LEFT, createHelpPanel());
+        this.chestBox = new DockableContainer(JXCollapsiblePane.Direction.LEFT, chest.getSecond(), false);
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -48,46 +43,9 @@ public class MapRightSideBar extends JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         this.add(chestBox, gridBagConstraints);
-        this.add(searchBox, gridBagConstraints);
 
         this.setBackground(new Color(0, 0, 0, 0));
         this.setOpaque(false);
-    }
-
-    public static JPanel createHelpPanel() {
-        JPanel helpPanel = new JPanel();
-        helpPanel.setLayout(new BoxLayout(helpPanel, BoxLayout.Y_AXIS));
-
-        JPanel searchRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
-        JTextField searchEntry = new JTextField(10);
-        searchEntry.setToolTipText("Ask a question or type keywords (best matches first). /regex/ greps. Empty lists everything");
-        JButton searchButton = new JButton("Search");
-        searchRow.add(searchEntry);
-        searchRow.add(searchButton);
-
-        JTextPane results = new JTextPane();
-        results.setEditable(false);
-        HelpRenderer.showNotice(results, "Help", "Ask a question (e.g. how do I take a screenshot?) or type keywords and press Enter.");
-        JScrollPane scroll = new JScrollPane(results);
-        scroll.setPreferredSize(new Dimension(380, 150));
-        scroll.setAlignmentX(Component.LEFT_ALIGNMENT);
-        searchRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        Runnable search = () -> {
-            List<String> found = HelpIndex.search(searchEntry.getText());
-            if (found.isEmpty()) {
-                HelpRenderer.showNotice(results, "No match", "nothing found for \"" + searchEntry.getText() + "\", try other words like zoom, biome or screenshot.");
-            } else {
-                HelpRenderer.showMessages(results, found);
-            }
-        };
-        searchButton.addActionListener(e -> search.run());
-        searchEntry.addActionListener(e -> search.run());
-
-        helpPanel.add(searchRow);
-        helpPanel.add(scroll);
-        helpPanel.setBorder(new TitledBorder("Help"));
-        return helpPanel;
     }
 
     public static Pair<ChestTopBar, JPanel> createChestPanel(ChestInstance instance) {

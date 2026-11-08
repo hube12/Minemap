@@ -67,7 +67,7 @@ public class WorldTabs extends ExtendedTabbedPane {
         this.getJTabbedPane().addChangeListener(e -> {
             MapPanel mapPanel = this.getSelectedMapPanel();
             if (mapPanel != null) {
-                mapPanel.rightBar.searchBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
+                mapPanel.leftBar.searchBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
                 mapPanel.rightBar.chestBox.setVisible(!Configs.USER_PROFILE.getUserSettings().hideDockableContainer);
             }
         });

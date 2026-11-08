@@ -32,9 +32,9 @@ public class HelpIndex {
         "Tools: pick line, polygon, circle or ruler in the right toolbar, then left click on the map to draw",
         "Biome search: Ctrl+F, type a biome name, Enter jumps to the nearest one, Up/Down selects, Esc closes",
         "Tabs: each seed lives in its own tab, right click a tab to rename or save it",
-        "Dock arrows: the < and > buttons on the right edge slide the side panels in and out, the upper one is the loot chest, the lower one is this help (hide them with {About > Hide dock arrows})",
+        "Dock arrows: the arrow buttons in the rounded squares slide the side panels in and out, the one on the right edge is the loot chest and the one in the bottom left corner is this help (hide them with {About > Hide dock arrows})",
         // loot chest panel
-        "Loot arrow: click a structure icon that has loot, then open the upper < arrow on the right edge to see its chest",
+        "Loot arrow: click a structure icon that has loot, then click the arrow button on the right edge of the map to open the chest",
         "Chest panel: the < and > buttons next to the chest count (like 1/3) cycle through the chests of the selected structure",
         "Chest panel: the title shows the structure name and its x and z position",
         "Chest panel: the Spread button shows the items in their real chest slots, Reassemble packs them back together",

@@ -85,9 +85,9 @@ public class MapPanel extends JPanel {
                         rightBar.chestBox.setVisible(false);
                         rightBar.chestBox.isHiddenForSize = true;
                     }
-                    if (rightBar.searchBox.isVisible()) {
-                        rightBar.searchBox.setVisible(false);
-                        rightBar.searchBox.isHiddenForSize = true;
+                    if (leftBar.searchBox.isVisible()) {
+                        leftBar.searchBox.setVisible(false);
+                        leftBar.searchBox.isHiddenForSize = true;
                     }
                 } else {
                     if (leftBar.settings.isHiddenForSize) {
@@ -102,9 +102,9 @@ public class MapPanel extends JPanel {
                         rightBar.chestBox.setVisible(true);
                         rightBar.chestBox.isHiddenForSize = false;
                     }
-                    if (rightBar.searchBox.isHiddenForSize) {
-                        rightBar.searchBox.setVisible(true);
-                        rightBar.searchBox.isHiddenForSize = false;
+                    if (leftBar.searchBox.isHiddenForSize) {
+                        leftBar.searchBox.setVisible(true);
+                        leftBar.searchBox.isHiddenForSize = false;
                     }
                 }
             }

@@ -76,7 +76,7 @@ public class AboutMenu extends Menu {
             Configs.USER_PROFILE.getUserSettings().hideDockableContainer = this.hideDockableContainers.getState();
             MapPanel mapPanel = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             if (mapPanel != null) {
-                mapPanel.rightBar.searchBox.setVisible(!this.hideDockableContainers.getState());
+                mapPanel.leftBar.searchBox.setVisible(!this.hideDockableContainers.getState());
                 mapPanel.rightBar.chestBox.setVisible(!this.hideDockableContainers.getState());
             }
             Configs.USER_PROFILE.flush();
