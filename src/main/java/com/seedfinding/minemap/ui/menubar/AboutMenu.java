@@ -18,6 +18,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED;
@@ -28,6 +30,7 @@ public class AboutMenu extends Menu {
     private final Box lookMenuLight;
     private final Box lookMenuDark;
     private final JMenu styleMenu;
+    private final List<JLabel> lookButtons = new ArrayList<>();
     private final JCheckBoxMenuItem hideDockableContainers;
     private final JMenuItem iconSize;
     private final JMenuItem cheatingHeight;
@@ -132,11 +135,11 @@ public class AboutMenu extends Menu {
 
             JLabel button = new JLabel("<html> &ensp;" + look.getName() + "</html>");
             button.setOpaque(true);
-            button.addMouseListener(new LabelController(button));
+            this.lookButtons.add(button);
 
             button.addMouseListener(Events.Mouse.onPressed(e -> {
                 if (!button.isEnabled()) return;
-                for (Component c : this.lookMenu.getMenuComponents()) {
+                for (JLabel c : this.lookButtons) {
                     c.setEnabled(true);
                 }
                 button.setEnabled(false);
@@ -148,7 +151,7 @@ public class AboutMenu extends Menu {
             if (Configs.USER_PROFILE.getUserSettings().look.equals(look)) {
                 button.setEnabled(false);
             }
-
+            button.addMouseListener(new LabelController(button));
 
             if (look.isDark()) {
                 this.lookMenuDark.add(Box.createRigidArea(new Dimension(0, 2)));
