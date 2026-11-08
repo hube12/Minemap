@@ -2,7 +2,6 @@ package com.seedfinding.minemap.ui.map.interactive.chest;
 
 import com.seedfinding.mcfeature.loot.item.ItemStack;
 import com.seedfinding.minemap.listener.Events;
-import com.seedfinding.minemap.util.ui.graphics.Graphic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,11 +12,13 @@ public class TopBar extends JPanel {
     private final ChestFrame window;
     private final JButton indexedButton;
     private final JButton showAllButton;
-    private final JButton centerButton;
-    private final JToggleButton pinButton;
     private final JMenu chestSelectionMenu;
     private final JMenuBar menuBar;
     private final JLabel currentChest;
+    private final JButton prevPageButton = new JButton("<");
+    private final JButton nextPageButton = new JButton(">");
+    private final JLabel pageLabel = new JLabel("");
+    private int page = 0;
     private boolean showAll = false;
     private final static String[] indexedString = {"Spread", "Reassemble"};
     private final static String[] showString = {"Show All", "Show One"};
@@ -47,11 +48,11 @@ public class TopBar extends JPanel {
             this.showAllButton.setText(showString[showAll ? 1 : 0]);
         });
         // center chest on the current screen
-        this.centerButton = new JButton("Center Chest");
-        this.centerButton.addActionListener(e -> Graphic.centerParent(this.window));
+        JButton centerButton = new JButton("Center Chest");
+        centerButton.addActionListener(e -> this.window.centerOnMap());
         // pin the chest window on top
-        this.pinButton = new JToggleButton("Always on top");
-        this.pinButton.addActionListener(e -> {
+        JToggleButton pinButton = new JToggleButton("Always on top");
+        pinButton.addActionListener(e -> {
             this.window.setAlwaysOnTop(!this.window.isAlwaysOnTop());
             this.window.revalidate();
             this.window.repaint();
@@ -60,8 +61,26 @@ public class TopBar extends JPanel {
         this.add(this.menuBar);
         this.add(this.currentChest);
         this.add(this.showAllButton);
-        this.add(this.centerButton);
-        this.add(this.pinButton);
+        this.prevPageButton.addActionListener(e -> changePage(-1));
+        this.nextPageButton.addActionListener(e -> changePage(1));
+        this.add(this.prevPageButton);
+        this.add(this.pageLabel);
+        this.add(this.nextPageButton);
+        this.add(centerButton);
+        this.add(pinButton);
+    }
+
+    private int pageCount() {
+        int n = instance.size();
+        return Math.max(1, (n + ChestFrame.PAGE_SIZE - 1) / ChestFrame.PAGE_SIZE);
+    }
+
+    private void changePage(int delta) {
+        int newPage = Math.clamp(page + delta, 0, pageCount() - 1);
+        if (newPage != page) {
+            page = newPage;
+            this.update(true);
+        }
     }
 
     private void setShowAll(boolean showAll) {
@@ -82,44 +101,53 @@ public class TopBar extends JPanel {
     private void update(Boolean hasChanged) {
         this.indexedButton.setText(indexedString[this.instance.isIndexed() ? 1 : 0]);
         List<List<ItemStack>> listItems = instance.getListItems();
+        int total = listItems == null ? 0 : listItems.size();
+        if (hasChanged && (!showAll || page >= pageCount())) page = 0;
+        int start = showAll ? page * ChestFrame.PAGE_SIZE : 0;
+        int shown = showAll ? Math.clamp(total - start, 1, ChestFrame.PAGE_SIZE) : 1;
+        this.window.setEmptyMessage(total == 0);
+        // the grid shape depends on the whole set, not on the current page, so a last page with
+        // a single chest keeps the same 2x2 layout (unused cells are hidden placeholders)
+        int slots = showAll ? Math.clamp(total, 1, ChestFrame.PAGE_SIZE) : 1;
+        this.window.ensureCapacity(slots);
         List<ChestPanel> chestContents = this.window.getChestContents();
         if (hasChanged) {
             this.updateLabel();
-            Dimension dimension = this.window.getPreferredSize();
             LayoutManager layoutManager = this.window.getContent().getLayout();
-            int factor = showAll && listItems != null && listItems.size() > 1 ? 2 : 1;
             if (layoutManager instanceof GridLayout gridLayout) {
-                gridLayout.setColumns(factor);
+                gridLayout.setColumns(slots > 1 ? 2 : 1);
             }
-            this.window.setSize(new Dimension(dimension.width * factor, dimension.height * (showAll && listItems != null ? (listItems.size() / 2 + listItems.size() % 2) : 1)));
-
+            this.window.resizeFor(slots > 1 ? 2 : 1, (slots + 1) / 2);
             for (int i = 1; i < chestContents.size(); i++) {
-                if (!showAll) {
-                    this.window.getContent().remove(chestContents.get(i)); // this will not fail if the component was not there
+                if (i < slots) {
+                    this.window.getContent().add(chestContents.get(i)); // keeps the order
+                    chestContents.get(i).setVisible(i < shown);
                 } else {
-                    if (listItems != null && i < listItems.size()) {
-                        this.window.getContent().add(chestContents.get(i));
-                    } else {
-                        this.window.getContent().remove(chestContents.get(i));
-                    }
+                    this.window.getContent().remove(chestContents.get(i));
                 }
             }
         }
         if (showAll) {
-            for (int i = 0; i < (listItems == null ? 1 : listItems.size()); i++) {
-                this.window.getChestContents().get(i).update(listItems == null || listItems.size() < 1 ? null : listItems.get(i));
+            for (int i = 0; i < shown; i++) {
+                chestContents.get(i).update(total == 0 ? null : listItems.get(start + i));
             }
         } else {
-            this.window.getChestContents().getFirst().update(listItems == null || listItems.size() < 1 ? null : listItems.get(this.instance.getCurrentChestIndex()));
+            chestContents.getFirst().update(total == 0 ? null : listItems.get(this.instance.getCurrentChestIndex()));
         }
+        boolean paged = showAll && total > ChestFrame.PAGE_SIZE;
+        this.prevPageButton.setVisible(paged);
+        this.nextPageButton.setVisible(paged);
+        this.pageLabel.setVisible(paged);
+        this.prevPageButton.setEnabled(page > 0);
+        this.nextPageButton.setEnabled(page < pageCount() - 1);
+        this.pageLabel.setText(String.format("Chests %d-%d of %d", start + 1, start + shown, total));
 
         this.window.getContent().revalidate();
         this.window.getContent().repaint();
         this.window.getScrollPane().revalidate();
-        this.window.getScrollPane().revalidate();
-        this.showAllButton.setVisible(listItems != null && listItems.size() != 1);
-        this.menuBar.setVisible(listItems != null && listItems.size() != 1);
-        this.currentChest.setVisible(listItems != null && listItems.size() != 1 && !this.showAll);
+        this.showAllButton.setVisible(total > 1);
+        this.menuBar.setVisible(total > 1);
+        this.currentChest.setVisible(total > 1 && !this.showAll);
     }
 
     public void setIndexContent(int index) {
