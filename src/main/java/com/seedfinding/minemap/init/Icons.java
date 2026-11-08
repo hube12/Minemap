@@ -17,6 +17,7 @@ import com.seedfinding.minemap.ui.map.tool.Polyline;
 import com.seedfinding.minemap.ui.map.tool.Ruler;
 import com.seedfinding.minemap.util.data.Assets;
 import com.seedfinding.minemap.util.ui.buttons.*;
+import com.seedfinding.minemap.util.ui.graphics.VectorIcon;
 import com.seedfinding.minemap.util.ui.interactive.ModalPopup;
 import com.seedfinding.minemap.util.ui.special_icons.EndShipIcon;
 import com.seedfinding.minemap.util.ui.special_icons.IglooLabIcon;
@@ -49,6 +50,7 @@ public class Icons {
     public static final Item LEATHER_HELMET_OVERLAY = new Item("leather_helmet_overlay");
     private static final Map<Class<?>, List<Pair<String, BufferedImage>>> CLASS_REGISTRY = new HashMap<>();
     private static final Map<Object, List<Pair<String, BufferedImage>>> OBJECT_REGISTRY = new HashMap<>();
+    private static final Map<Class<?>, List<Pair<String, VectorIcon>>> VECTOR_REGISTRY = new HashMap<>();
 
     public static void registerIcons() {
         String mainPath = "/icon";
@@ -79,6 +81,7 @@ public class Icons {
             dir = new File(uri).toPath();
         }
         registerJARIcons(dir, isJar);
+        registerVectorIcons(dir, isJar);
         registerOwnAssets(dir, isJar);
         if (fileSystem != null) {
             try {
@@ -217,19 +220,7 @@ public class Icons {
         register(SpawnPoint.class, dir, isJar, "spawn");
         register(NetherFossil.class, dir, isJar, Structure.getName(NetherFossil.class));
 
-        register(Ruler.class, dir, isJar, "ruler");
-        register(Area.class, dir, isJar, "area");
-        register(Circle.class, dir, isJar, "circle");
-        register(Polyline.class, dir, isJar, "ruler");
-
-
-        register(CloseButton.class, dir, isJar, "close");
-        register(SquareCloseButton.class, dir, isJar, "red_close");
-        register(LockButton.class, dir, isJar, "lock");
-        register(CopyButton.class, dir, isJar, "copy");
-        register(JumpButton.class, dir, isJar, "jump");
-        register(InfoButton.class, dir, isJar, "info");
-        register(FileButton.class, dir, isJar, "file");
+        // tool and button icons are vectors, see registerVectorIcons()
         register(UnknownButton.class, dir, isJar, "unknown");
 
         register(MineMap.class, dir, isJar, "logo");
@@ -237,6 +228,34 @@ public class Icons {
         register(EndShipIcon.class, dir, isJar, "end_ship");
         register(IglooLabIcon.class, dir, isJar, "igloo_basement");
         register(ZombieVillageIcon.class, dir, isJar, "abandoned_village");
+    }
+
+    /** UI icons drawn from SVG (sharp at any size). Feature and structure icons are still pixel art PNGs. */
+    private static void registerVectorIcons(Path dir, boolean isJar) {
+        registerVector(Ruler.class, dir, isJar, "ruler");
+        registerVector(Polyline.class, dir, isJar, "ruler");
+        registerVector(Area.class, dir, isJar, "area");
+        registerVector(Circle.class, dir, isJar, "circle");
+
+        registerVector(CloseButton.class, dir, isJar, "close");
+        registerVector(SquareCloseButton.class, dir, isJar, "red_close");
+        registerVector(LockButton.class, dir, isJar, "lock");
+        registerVector(CopyButton.class, dir, isJar, "copy");
+        registerVector(JumpButton.class, dir, isJar, "jump");
+        registerVector(InfoButton.class, dir, isJar, "info");
+        registerVector(FileButton.class, dir, isJar, "file");
+    }
+
+    private static <T> void registerVector(Class<T> clazz, Path dir, boolean isJar, String name) {
+        VECTOR_REGISTRY.computeIfAbsent(clazz, c -> new ArrayList<>())
+            .addAll(Assets.getVectorAsset(dir, isJar, name, path -> path.toAbsolutePath().toString().split("icon")[1]));
+    }
+
+    /** @return the vector icon for this class, or null if it has none (use {@link #get(Class)} then) */
+    public static <T> VectorIcon getVector(Class<T> clazz) {
+        List<Pair<String, VectorIcon>> entry = VECTOR_REGISTRY.get(clazz);
+        if (entry == null || entry.isEmpty()) return null;
+        return entry.getLast().getSecond();
     }
 
     public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {

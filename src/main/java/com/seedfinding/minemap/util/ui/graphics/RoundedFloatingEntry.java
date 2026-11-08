@@ -16,6 +16,10 @@ import java.util.function.Function;
 import static com.seedfinding.minemap.util.ui.graphics.Icon.paintImage;
 
 public class RoundedFloatingEntry extends RoundedPanel {
+    /** Icon box of the action buttons (jump, copy, close): size 16 * factor 1.5 = 24 px, centred on the round button.
+     * The inset only matters for icons still drawn from PNG: the button circle is centred at 14, so 24 px starts at 2. */
+    public static final int ACTION_ICON_INSET = 2;
+    public static final float ACTION_ICON_FACTOR = 1.5F;
     private final JComponent iconView;
     private final JTextArea positionText;
     private final JButton closeButton;
@@ -33,9 +37,16 @@ public class RoundedFloatingEntry extends RoundedPanel {
             }
 
             @Override
+            public Dimension getMinimumSize() {
+                return this.getPreferredSize(); // a narrow row shrinks the text, never the icon
+            }
+
+            @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                paintImage(Icons.get(classIcon), g);
+                VectorIcon vector = Icons.getVector(classIcon);
+                if (vector != null) vector.paint(g, 0, 0, 30, 30); // paintImage's default: 20 * 1.5
+                else paintImage(Icons.get(classIcon), g);
             }
         };
         this.positionText = new JTextArea(String.join("\n", text));
@@ -94,7 +105,7 @@ public class RoundedFloatingEntry extends RoundedPanel {
 
             public void moveDot(int dot) {}
         });
-        this.closeButton = new CloseButton(16, 0, 1.8f);
+        this.closeButton = new CloseButton(16, ACTION_ICON_INSET, ACTION_ICON_FACTOR);
         this.closeButton.addMouseListener(Events.Mouse.onPressed(onClose.apply(this)));
 
         this.add(this.iconView, constraints);
@@ -105,6 +116,30 @@ public class RoundedFloatingEntry extends RoundedPanel {
         this.setBackground(new Color(0, 0, 0, 200));
         this.setOpaque(false);
         this.setFocusable(false);
+    }
+
+    /**
+     * Makes the entry fill its row: the text sits centred in the space between the icon and the buttons, and the
+     * buttons added after it stay pinned to the right edge, so they line up from one row to the next.
+     * The text may shrink (and be clipped) when the row gets narrow, the buttons never do.
+     */
+    public void stretchText() {
+        JPanel textHolder = new JPanel(new GridBagLayout()) {
+            @Override
+            public Dimension getMinimumSize() {
+                return new Dimension(0, super.getMinimumSize().height);
+            }
+        };
+        textHolder.setOpaque(false);
+        // paint the box at the real size of the row (the legacy frozen size is cut when the window gets smaller)
+        this.fitComponentSize = true;
+        this.remove(this.positionText);
+        textHolder.add(this.positionText); // default constraints: centred, natural size
+        GridBagConstraints holderConstraints = (GridBagConstraints) this.constraints.clone();
+        holderConstraints.weightx = 1.0D;
+        holderConstraints.fill = GridBagConstraints.BOTH;
+        this.add(textHolder, holderConstraints, 1);
+        this.revalidate();
     }
 
     public JComponent getIconView() {

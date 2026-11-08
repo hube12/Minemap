@@ -11,6 +11,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public class ListPanel extends JPanel {
+    /** Space between a row's box and the left/right edge of the list. */
+    public static final int ROW_MARGIN = 8;
     private final JPanel mainList;
     private final List<JPanel> panels;
     private final List<JPanel> internalPanels = new ArrayList<>();
@@ -29,7 +31,9 @@ public class ListPanel extends JPanel {
         this.setLayout(new BorderLayout());
 
         // create the main panel
-        mainList = new JPanel(new GridBagLayout());
+        // Follows the width of the viewport (it only scrolls vertically): without this the rows keep their natural
+        // width when the window gets narrow, and their buttons run out of the visible area.
+        mainList = new ViewportWidthPanel();
 
         // create a scrollpane around it
         JScrollPane scrollPane = new JScrollPane(mainList);
@@ -41,6 +45,73 @@ public class ListPanel extends JPanel {
         this.add(scrollPane);
 
         panels.forEach(panel -> this.addPanel(panel, insets));
+    }
+
+    /**
+     * Lays out its single child at its preferred size, centred horizontally, but never wider than the container.
+     * (GridBagLayout collapses a child to its minimum size as soon as the container is narrower than its preferred size.)
+     */
+    private static class CenteredRowLayout implements LayoutManager {
+        @Override
+        public void addLayoutComponent(String name, Component comp) {}
+
+        @Override
+        public void removeLayoutComponent(Component comp) {}
+
+        @Override
+        public Dimension preferredLayoutSize(Container parent) {
+            Insets in = parent.getInsets();
+            Dimension d = parent.getComponentCount() == 0 ? new Dimension() : parent.getComponent(0).getPreferredSize();
+            return new Dimension(d.width + in.left + in.right, d.height + in.top + in.bottom);
+        }
+
+        @Override
+        public Dimension minimumLayoutSize(Container parent) {
+            Insets in = parent.getInsets();
+            Dimension d = parent.getComponentCount() == 0 ? new Dimension() : parent.getComponent(0).getMinimumSize();
+            return new Dimension(d.width + in.left + in.right, d.height + in.top + in.bottom);
+        }
+
+        @Override
+        public void layoutContainer(Container parent) {
+            if (parent.getComponentCount() == 0) return;
+            Insets in = parent.getInsets();
+            Component child = parent.getComponent(0);
+            int available = parent.getWidth() - in.left - in.right;
+            int width = Math.max(child.getMinimumSize().width, Math.min(child.getPreferredSize().width, available));
+            child.setBounds(in.left + (available - width) / 2, in.top, width, child.getPreferredSize().height);
+        }
+    }
+
+    private static class ViewportWidthPanel extends JPanel implements Scrollable {
+        ViewportWidthPanel() {
+            super(new GridBagLayout());
+        }
+
+        @Override
+        public Dimension getPreferredScrollableViewportSize() {
+            return this.getPreferredSize();
+        }
+
+        @Override
+        public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return 16;
+        }
+
+        @Override
+        public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+            return orientation == SwingConstants.VERTICAL ? visibleRect.height : visibleRect.width;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            return true;
+        }
+
+        @Override
+        public boolean getScrollableTracksViewportHeight() {
+            return false;
+        }
     }
 
     public static List<Component> findAllMatchingChildren(Container container, Predicate<Component> predicate, int step) {
@@ -81,8 +152,11 @@ public class ListPanel extends JPanel {
     }
 
     public void addPanel(JPanel p, Insets insets) {
-        JPanel panel = new JPanel();
-        panel.setBorder(new MatteBorder(0, 0, 1, 0, Color.GRAY));
+        // the entry keeps its preferred size, centred in the row, and only shrinks when the row is narrower
+        JPanel panel = new JPanel(new CenteredRowLayout());
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            new MatteBorder(0, 0, 1, 0, Color.GRAY),
+            BorderFactory.createEmptyBorder(0, ROW_MARGIN, 0, ROW_MARGIN)));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.weightx = 1;
@@ -102,7 +176,8 @@ public class ListPanel extends JPanel {
         if (internalPanels.size() == 0) return;
         JPanel last = internalPanels.getLast();
         if (last == null) return;
-        last.setBorder(BorderFactory.createEmptyBorder());
+        // no separator line under the last row, but keep the side margin so every row has the same width
+        last.setBorder(BorderFactory.createEmptyBorder(0, ROW_MARGIN, 0, ROW_MARGIN));
         this.revalidate();
         this.repaint();
     }
@@ -117,6 +192,15 @@ public class ListPanel extends JPanel {
         internalPanels.remove(i);
         revalidate();
         repaint();
+    }
+
+    /**
+     * The narrowest the list can be while every row still shows all its buttons (rows only shrink their text).
+     * Use it to give the window a minimum width.
+     */
+    public int getMinimumRowsWidth() {
+        int widest = this.internalPanels.stream().mapToInt(p -> p.getMinimumSize().width).max().orElse(0);
+        return widest + UIManager.getInt("ScrollBar.width");
     }
 
     public List<JPanel> getPanels() {

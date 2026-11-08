@@ -4,6 +4,7 @@ import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.util.ui.graphics.Graphic;
 import com.seedfinding.minemap.util.ui.graphics.Icon;
 import com.seedfinding.minemap.util.ui.graphics.RoundedBorder;
+import com.seedfinding.minemap.util.ui.graphics.VectorIcon;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,6 +52,17 @@ public abstract class ButtonIcon extends JButton {
         return new Dimension(30, 30);
     }
 
+    // a layout must never squeeze the button below its drawing size (that crops the round background)
+    @Override
+    public Dimension getMinimumSize() {
+        return this.getPreferredSize();
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+        return this.getPreferredSize();
+    }
+
     public void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor;
     }
@@ -80,7 +92,16 @@ public abstract class ButtonIcon extends JButton {
 
             g2d.setColor(old);
         }
-        Icon.paintImage(Icons.get(this.getClass()), g2d, size, factor, inset);
+        VectorIcon vector = Icons.getVector(this.getClass());
+        if (vector != null) {
+            // Centre the size * factor box on the round background/border, which is centred at
+            // (width / 2 - 1, height / 2 - 1) (see RoundedBorder and the background above): 14 in a 30 px button.
+            // The raster path below used `inset` as a manual offset for that; a vector needs no such hack.
+            double box = size * factor;
+            vector.paint(g2d, this.getWidth() / 2.0 - 1 - box / 2, this.getHeight() / 2.0 - 1 - box / 2, box, box);
+        } else {
+            Icon.paintImage(Icons.get(this.getClass()), g2d, size, factor, inset);
+        }
     }
 
     public void changeBColor(Color color) {

@@ -96,6 +96,8 @@ dependencies {
     implementation('com.seedfinding:latticg:1.06')
 
     implementation('com.google.code.gson:gson:2.9.0')
+    // SVG rendering for the vector UI icons (src/main/resources/icon/vector)
+    implementation('com.github.weisj:jsvg:1.7.1')
     implementation('com.formdev:flatlaf:2.4')
     implementation("com.formdev:flatlaf-intellij-themes:2.4")
     implementation('org.swinglabs.swingx:swingx-core:1.6.5-1')

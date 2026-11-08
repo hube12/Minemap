@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#17B3F2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- measuring axes: left axis with an up arrow, bottom axis with a right arrow -->
+  <path d="M4 3.6V17.5a3 3 0 0 0 3 3h14.2" stroke-width="2.1"/>
+  <path d="M1.8 5.8 4 3.6l2.2 2.2M18.9 18.3l2.3 2.2-2.3 2.2" stroke-width="2.1"/>
+  <!-- the measured area: frame closing the top and right -->
+  <path d="M9 4H17.5A3.5 3.5 0 0 1 21 7.5V14.5" stroke-width="1.7"/>
+  <!-- m² : scaled down and centred inside the frame so it keeps a margin to the arrows and the frame -->
+  <g transform="translate(12.6 12.2) scale(0.72) translate(-13.5 -12.3)">
+    <path d="M7.8 16.5V10.9M7.8 12.5a2 2 0 0 1 4 0V16.5M11.8 12.5a2 2 0 0 1 4 0V16.5" stroke-width="2.5"/>
+    <path d="M17.9 9.2a1.3 1.3 0 0 1 2.6 0c0 1-2.6 1.4-2.6 2.6h2.7" stroke-width="1.0"/>
+  </g>
+</svg>

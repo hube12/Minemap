@@ -46,16 +46,33 @@ public class RoundedPanel extends JPanel {
         setOpaque(false);
     }
 
+    /**
+     * Legacy behaviour (false): the first paint freezes the box at 1.1 x the width and height + 15 of that moment,
+     * sets that as the preferred size, and always paints that frozen size, even if the panel is later smaller
+     * (the box is then cut) or has a pinned size.
+     * True: the box is always painted at the real size of the component, and the preferred size is left alone.
+     * The caller reserves the room of the shadow ({@link #shadowGap}) with a border.
+     */
+    protected boolean fitComponentSize = false;
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (width == -1) {
-            width = (int) (getWidth() * 1.1);
+        int width, height;
+        if (this.fitComponentSize) {
+            width = getWidth();
+            height = getHeight();
+        } else {
+            if (this.width == -1) {
+                this.width = (int) (getWidth() * 1.1);
+            }
+            if (this.height == -1) {
+                this.height = getHeight() + 15;
+            }
+            this.setPreferredSize(new Dimension(this.width, this.height));
+            width = this.width;
+            height = this.height;
         }
-        if (height == -1) {
-            height = getHeight() + 15;
-        }
-        this.setPreferredSize(new Dimension(width, height));
         int shadowGap = this.shadowGap;
         Color shadowColorA = new Color(shadowColor.getRed(), shadowColor.getGreen(), shadowColor.getBlue(), shadowAlpha);
         Graphics2D graphics = (Graphics2D) g;

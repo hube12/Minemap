@@ -42,9 +42,33 @@ public class TpPanel {
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
 
+        ListPanel content = buildContent(bPosList, feature, mapToggle, frame);
+        frame.add(content);
+
+        // display it
+        frame.pack();
+        // never narrower than what the rows need to keep their buttons inside the box
+        java.awt.Insets insets = frame.getInsets();
+        frame.setMinimumSize(new java.awt.Dimension(content.getMinimumRowsWidth() + insets.left + insets.right + 8, 200));
+        frame.setLocationRelativeTo(MineMap.INSTANCE); // center
+        frame.setVisible(true);
+    }
+
+    /** The whole content of the list window (rows + buttons). Separate from the frame so it can be laid out and tested alone. */
+    static ListPanel buildContent(List<BPos> bPosList, Feature<?, ?> feature, MapToggle mapToggle, Window window) {
         // create the inner list
         final ListPanel listPanel = new ListPanel();
-        bPosList.forEach(e -> listPanel.addPanel(new Entry(feature, e, listPanel)));
+        List<Entry> entries = bPosList.stream().map(e -> new Entry(feature, e, listPanel)).toList();
+        // Every row gets the width of the widest one: same black box everywhere, so the buttons line up column-wise.
+        int boxWidth = entries.stream().mapToInt(e -> e.getPreferredSize().width).max().orElse(0);
+        entries.forEach(e -> {
+            int height = e.getPreferredSize().height;
+            // the box height is fixed: only its width follows the window (between its minimum and the common width)
+            e.setPreferredSize(new java.awt.Dimension(boxWidth, height));
+            e.setMaximumSize(new java.awt.Dimension(boxWidth, height));
+            e.setMinimumSize(new java.awt.Dimension(e.getMinimumSize().width, height));
+            listPanel.addPanel(e);
+        });
         listPanel.removeLastBorder();
 
         JButton copyTPs = new JButton("Copy all TPs");
@@ -83,7 +107,7 @@ public class TpPanel {
                 mapToggle.toggle();
                 refresh.run();
             });
-            frame.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+            if (window != null) window.addWindowFocusListener(new java.awt.event.WindowAdapter() {
                 @Override
                 public void windowGainedFocus(java.awt.event.WindowEvent e) {
                     refresh.run();
@@ -95,15 +119,16 @@ public class TpPanel {
             listPanel.add(south, BorderLayout.SOUTH);
         }
 
-        frame.add(listPanel);
-
-        // display it
-        frame.pack();
-        frame.setLocationRelativeTo(MineMap.INSTANCE); // center
-        frame.setVisible(true);
+        return listPanel;
     }
 
     static class Entry extends RoundedFloatingEntry {
+        /** Space above and below the content inside the black box. */
+        private static final int VERTICAL_PADDING = 3;
+        // Jump, copy and close share one icon box so they line up: 16 * 1.5 = 24 px, centred in the 30 px button.
+        private static final int ACTION_ICON_INSET = RoundedFloatingEntry.ACTION_ICON_INSET;
+        private static final float ACTION_ICON_FACTOR = RoundedFloatingEntry.ACTION_ICON_FACTOR;
+
         private final CopyButton copyCoordinate;
         private final JumpButton jumpCoordinate;
 
@@ -112,7 +137,7 @@ public class TpPanel {
                 feature.getClass(), panel -> e -> listPanel.removePanel(panel));
 
 
-            this.copyCoordinate = new CopyButton(16, 6, 1.0F, true, Color.DARK_GRAY);
+            this.copyCoordinate = new CopyButton(16, ACTION_ICON_INSET, ACTION_ICON_FACTOR, true, Color.DARK_GRAY);
             this.copyCoordinate.addActionListener(e -> {
                 String myString = String.format("/tp @p %d ~ %d", pos.getX(), pos.getZ());
                 StringSelection stringSelection = new StringSelection(myString);
@@ -122,13 +147,16 @@ public class TpPanel {
                 this.copyCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
-            this.jumpCoordinate = new JumpButton(16, 6, 1.0F, true, Color.DARK_GRAY);
+            this.jumpCoordinate = new JumpButton(16, ACTION_ICON_INSET, ACTION_ICON_FACTOR, true, Color.DARK_GRAY);
             this.jumpCoordinate.addActionListener(e -> {
                 MineMap.INSTANCE.worldTabs.getSelectedMapPanel().manager.setCenterPos(pos.getX(), pos.getZ());
                 ListPanel.toggleParentChildren(2, this, component -> component.jumpCoordinate.changeBColor(Color.DARK_GRAY));
                 this.jumpCoordinate.changeBColor(new Color(50, 255, 84));
             });
 
+            this.stretchText(); // keeps jump, copy and close at the same X in every row, and paints the box at its real size
+            // padding so the rounded corners do not bite the icon and buttons, plus the room the box leaves for its shadow
+            this.setBorder(BorderFactory.createEmptyBorder(VERTICAL_PADDING, 6, VERTICAL_PADDING + this.shadowGap, 10 + this.shadowGap));
             this.addAtIndex(this.jumpCoordinate, 2);
             this.addAtIndex(this.copyCoordinate, 3);
 

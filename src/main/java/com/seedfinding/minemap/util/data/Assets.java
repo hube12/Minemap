@@ -7,6 +7,7 @@ import com.seedfinding.mccore.version.MCVersion;
 import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.init.Icons;
 import com.seedfinding.minemap.init.Logger;
+import com.seedfinding.minemap.util.ui.graphics.VectorIcon;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -476,6 +477,18 @@ public class Assets {
                 LOGGER.severe(String.format("Exception while reading the file input stream for %s at %s with error %s", name, dir.toString(), e));
             }
             return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    /** Same lookup as {@link #getAsset} but for SVG files, which stay vectors instead of being rasterised. */
+    public static java.util.List<Pair<String, VectorIcon>> getVectorAsset(Path dir, boolean isJar, String name, Function<Path, String> fnObjectStorage) {
+        return getInputStream(dir, isJar, name, ".svg").stream().map(e -> {
+            VectorIcon icon = VectorIcon.load(e.getSecond());
+            if (icon == null) {
+                LOGGER.severe(String.format("Could not parse the svg %s at %s", name, dir.toString()));
+                return null;
+            }
+            return new Pair<>(fnObjectStorage.apply(e.getFirst()), icon);
         }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
