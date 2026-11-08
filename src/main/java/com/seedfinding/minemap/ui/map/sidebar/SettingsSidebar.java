@@ -107,7 +107,7 @@ public class SettingsSidebar extends JPanel {
             }
         };
 
-        JCheckBox showExtraInfos = new JCheckBox("Show Extra infos") {
+        JCheckBox showExtraInfos = new JCheckBox("Show Structure Infos") {
             @Override
             protected void paintComponent(Graphics g) {
                 this.setSelected(SettingsSidebar.this.settings.showExtraInfos);
@@ -115,7 +115,7 @@ public class SettingsSidebar extends JPanel {
             }
         };
 
-        JCheckBox showExtraIcons = new JCheckBox("Show Extra icons") {
+        JCheckBox showExtraIcons = new JCheckBox("Show Structure Extra Icons") {
             @Override
             protected void paintComponent(Graphics g) {
                 this.setSelected(SettingsSidebar.this.settings.showExtraIcons);
@@ -165,8 +165,9 @@ public class SettingsSidebar extends JPanel {
         this.toggles.add(showFeatures);
         this.toggles.add(showGrid);
         this.toggles.add(showExtraInfos);
-        this.toggles.add(showExtraIcons);
-        this.toggles.add(showFlowers);
+        this.toggles.add(showExtraIcons);;
+        // TODO: implement flower with StaticNoise
+        //this.toggles.add(showFlowers);
     }
 
     private void addFeatureToggles() {

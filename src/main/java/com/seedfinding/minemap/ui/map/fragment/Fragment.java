@@ -54,7 +54,7 @@ public class Fragment {
         this.context = context;
 
         if (this.context != null) {
-            this.refreshBiomeCache();
+            if (this.shouldShowBiomes()) this.refreshBiomeCache(); // skip the costly biome generation when hidden
             this.generateFeatures();
         }
     }
@@ -83,7 +83,13 @@ public class Fragment {
         return this.context;
     }
 
+    private boolean shouldShowBiomes() {
+        return !Boolean.FALSE.equals(this.context.getSettings().showBiomes);
+    }
+
     public void drawBiomes(Graphics graphics, DrawInfo info) {
+        // "Show Biomes" off: draw nothing and skip the generation (performance), without touching per-biome settings
+        if (!this.shouldShowBiomes()) return;
         this.refreshBiomeCache();
         if (this.context.getSettings().isDirty()) {
             this.refreshBiomeImageCache();
@@ -95,12 +101,13 @@ public class Fragment {
     }
 
     public void drawHeight(Graphics graphics, DrawInfo info) {
+        if (!this.shouldShowBiomes()) return;
         this.refreshHeightCache();
         if (this.context.getSettings().isDirty()) {
             this.refreshHeightImageCache();
         }
 
-        if (this.imageCache != null && this.context.getSettings().showBiomes) {
+        if (this.imageCache != null) {
             graphics.drawImage(this.imageCache, info.x(), info.y(), info.width(), info.height(), null);
         }
     }

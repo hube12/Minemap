@@ -7,6 +7,7 @@ import com.seedfinding.mcfeature.misc.SlimeChunk;
 import com.seedfinding.mcfeature.structure.Mineshaft;
 import com.seedfinding.minemap.feature.chests.Chests;
 import com.seedfinding.minemap.init.*;
+import com.seedfinding.minemap.ui.component.RibbonBar;
 import com.seedfinding.minemap.ui.component.TabGroup;
 import com.seedfinding.minemap.ui.component.WorldTabs;
 import com.seedfinding.minemap.ui.map.MapContext;
@@ -338,7 +339,10 @@ public class MineMap extends JFrame {
         this.add(this.toolbarPane, BorderLayout.NORTH);
 
         this.worldTabs = new WorldTabs();
-        this.add(this.worldTabs);
+        JPanel center = new JPanel(new BorderLayout());
+        center.add(new RibbonBar(this.worldTabs), BorderLayout.NORTH);
+        center.add(this.worldTabs, BorderLayout.CENTER);
+        this.add(center, BorderLayout.CENTER);
     }
 
     public void doDelayedInitTasks() {

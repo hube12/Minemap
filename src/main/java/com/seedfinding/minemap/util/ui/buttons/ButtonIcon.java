@@ -16,6 +16,7 @@ public abstract class ButtonIcon extends JButton {
     public boolean background;
     public final boolean border;
     public Color backgroundColor;
+    private int boxSize = 30; // side of the square the round background/border is drawn in
 
     public ButtonIcon(int size, int inset, float factor, boolean background, Color backgroundColor) {
         this(size, inset, factor, background, backgroundColor, true);
@@ -49,7 +50,7 @@ public abstract class ButtonIcon extends JButton {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(30, 30);
+        return new Dimension(boxSize, boxSize);
     }
 
     // a layout must never squeeze the button below its drawing size (that crops the round background)
@@ -61,6 +62,15 @@ public abstract class ButtonIcon extends JButton {
     @Override
     public Dimension getMaximumSize() {
         return this.getPreferredSize();
+    }
+
+    /**
+     * Change the side of the square the button is drawn in (30 by default), e.g. for a more compact button.
+     */
+    public void setBoxSize(int boxSize) {
+        this.boxSize = boxSize;
+        this.revalidate();
+        this.repaint();
     }
 
     public void setBackgroundColor(Color backgroundColor) {
@@ -77,7 +87,7 @@ public abstract class ButtonIcon extends JButton {
 
         this.setOpaque(false);
         this.setContentAreaFilled(false);
-        if (border) this.setBorder(new RoundedBorder(size - 2, 30));
+        if (border) this.setBorder(new RoundedBorder(size - 2, boxSize));
         this.setForeground(Color.DARK_GRAY);
 
         Graphics2D g2d = Graphic.setGoodRendering(Graphic.withoutDithering(g));
@@ -85,7 +95,7 @@ public abstract class ButtonIcon extends JButton {
         if (this.background) {
             Color old = g2d.getColor();
             g2d.setColor(backgroundColor);
-            int bSize = 30;
+            int bSize = boxSize;
             int bRadius = size - 2;
             int bDiff = bSize / 2 - bRadius;
             g2d.fillRoundRect(bDiff, bDiff, bRadius * 2 - 2, bRadius * 2 - 2, bSize, bSize);

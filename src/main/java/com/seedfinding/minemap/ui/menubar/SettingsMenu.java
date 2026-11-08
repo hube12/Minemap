@@ -41,7 +41,7 @@ public class SettingsMenu extends Menu {
         });
         this.menu.addMenuListener(Events.Menu.onSelected(e -> this.zoom.setState(Configs.USER_PROFILE.getUserSettings().restrictMaximumZoom)));
 
-        this.heightmapGrayscale = new JCheckBoxMenuItem("Show heightmap");
+        this.heightmapGrayscale = new JCheckBoxMenuItem("Show heightmap instead of biomes");
         this.heightmapGrayscale.addChangeListener(e -> {
             boolean old = Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale;
             Configs.USER_PROFILE.getUserSettings().doHeightmapGrayScale = heightmapGrayscale.getState();

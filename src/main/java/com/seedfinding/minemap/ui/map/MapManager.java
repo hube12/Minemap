@@ -353,32 +353,7 @@ public class MapManager {
         };
         rTools.accept(new Pair<>("Enable", "Disable"));
 
-        BiConsumer<Tool, JMenuItem> createNewTool = (newTool, menuItem) -> {
-            toolsList.add(newTool);
-            selectedTool = newTool;
-            this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
-            menuItem.setText("Disable " + newTool.getName());
-        };
-
-        BiConsumer<Supplier<Tool>, JMenuItem> toggleTool = (newTool, menuItem) -> {
-            Tool tool = newTool.get(); // to avoid creating an instance at one point
-            if (selectedTool == null) {
-                createNewTool.accept(tool, menuItem);
-            } else {
-                this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-                rTools.accept(new Pair<>("Enable", "Disable"));
-                if (!selectedTool.isAcceptable()) {
-                    removeTool(selectedTool);
-                    this.panel.rightBar.tooltip.updateToolsMetrics();
-                }
-                if (tool.getClass().equals(selectedTool.getClass())) {
-                    selectedTool = null;
-                } else {
-                    createNewTool.accept(tool, menuItem);
-                }
-            }
-
-        };
+        BiConsumer<Supplier<Tool>, JMenuItem> toggleTool = (newTool, menuItem) -> this.toggleTool(newTool); // menu texts are rebuilt each time the popup opens
 
         for (int i = 0; i < tools.size(); i++) {
             JMenuItem toolMenu = toolMenus.get(i);
@@ -386,6 +361,31 @@ public class MapManager {
             toolMenu.addMouseListener(Events.Mouse.onReleased(e -> toggleTool.accept(tool, toolMenu)));
             popup.add(toolMenu);
         }
+    }
+
+    /**
+     * Enable the tool (or disable it if it is already the selected one). Shared by the popup menu and the ribbon.
+     */
+    public void toggleTool(Supplier<Tool> newTool) {
+        Tool tool = newTool.get(); // to avoid creating an instance at one point
+        if (selectedTool != null) {
+            this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+            if (!selectedTool.isAcceptable()) {
+                removeTool(selectedTool);
+                this.panel.rightBar.tooltip.updateToolsMetrics();
+            }
+            if (tool.getClass().equals(selectedTool.getClass())) {
+                selectedTool = null;
+                return;
+            }
+        }
+        toolsList.add(tool);
+        selectedTool = tool;
+        this.panel.setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+    }
+
+    public boolean isToolSelected(Class<? extends Tool> toolClass) {
+        return selectedTool != null && selectedTool.getClass().equals(toolClass);
     }
 
     public void removeTool(Tool tool) {
