@@ -2,11 +2,12 @@ package com.seedfinding.minemap.ui.map;
 
 import com.seedfinding.mccore.util.data.Pair;
 import com.seedfinding.mcfeature.loot.item.ItemStack;
-import com.seedfinding.minemap.MineMap;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestInstance;
 import com.seedfinding.minemap.ui.map.interactive.chest.ChestPanel;
 import com.seedfinding.minemap.ui.map.sidebar.TooltipTools;
+import com.seedfinding.minemap.util.data.HelpIndex;
 import com.seedfinding.minemap.util.ui.graphics.RoundedBorder;
+import com.seedfinding.minemap.util.ui.interactive.HelpRenderer;
 import com.seedfinding.minemap.util.ui.interactive.DockableContainer;
 import org.jdesktop.swingx.JXCollapsiblePane;
 
@@ -54,14 +55,37 @@ public class MapRightSideBar extends JPanel {
     }
 
     public static JPanel createHelpPanel() {
-        JPanel helpPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
+        JPanel helpPanel = new JPanel();
+        helpPanel.setLayout(new BoxLayout(helpPanel, BoxLayout.Y_AXIS));
+
+        JPanel searchRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
         JTextField searchEntry = new JTextField(10);
+        searchEntry.setToolTipText("Ask a question or type keywords (best matches first). /regex/ greps. Empty lists everything");
         JButton searchButton = new JButton("Search");
-        searchButton.addActionListener(e ->
-            JOptionPane.showMessageDialog(MineMap.INSTANCE,
-                "This has yet to be finished, we did receive your request for free cookies... ahem : " + searchEntry.getText()));
-        helpPanel.add(searchEntry);
-        helpPanel.add(searchButton);
+        searchRow.add(searchEntry);
+        searchRow.add(searchButton);
+
+        JTextPane results = new JTextPane();
+        results.setEditable(false);
+        HelpRenderer.showNotice(results, "Help", "Ask a question (e.g. how do I take a screenshot?) or type keywords and press Enter.");
+        JScrollPane scroll = new JScrollPane(results);
+        scroll.setPreferredSize(new Dimension(380, 150));
+        scroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+        searchRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        Runnable search = () -> {
+            List<String> found = HelpIndex.search(searchEntry.getText());
+            if (found.isEmpty()) {
+                HelpRenderer.showNotice(results, "No match", "nothing found for \"" + searchEntry.getText() + "\", try other words like zoom, biome or screenshot.");
+            } else {
+                HelpRenderer.showMessages(results, found);
+            }
+        };
+        searchButton.addActionListener(e -> search.run());
+        searchEntry.addActionListener(e -> search.run());
+
+        helpPanel.add(searchRow);
+        helpPanel.add(scroll);
         helpPanel.setBorder(new TitledBorder("Help"));
         return helpPanel;
     }

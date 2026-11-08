@@ -1,0 +1,5 @@
+# Words ignored when searching the help (whitespace or newline separated, # starts a comment).
+a an the i me my we you your it its is are was be do does did can could should would will
+how what where when why which who all every
+to of in on at for with from and or this that there get want need please help use using make way possible so if about into by
+map

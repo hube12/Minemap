@@ -1,0 +1,28 @@
+# Words that mean the same thing when searching the help: one group per line, comma separated.
+# Any word of a group matches any other word of the same group (a word can be in several groups).
+zoom, magnify, enlarge, bigger, smaller, scale, closer, farther, wheel, scroll
+move, pan, drag, navigate, slide, scroll, shift
+screenshot, picture, photo, capture, image, snapshot, png
+find, search, locate, lookup, where, nearest, closest, jump, go
+coords, coordinates, coordinate, position, teleport, tp, xz, location
+close, quit, exit, leave, shut
+seed, world
+draw, paint, measure, ruler, distance, line, polygon, circle, tool
+loot, chest, item, treasure, reward
+structure, village, temple, stronghold, fortress, monument, feature, icon
+biome, terrain, environment, layer
+shortcut, hotkey, keybind, binding, key, keyboard, keys
+hide, show, toggle, dock, panel, sidebar, arrow, arrows
+rename, name, title, label
+tab, tabs, switch, cycle
+salt, salts
+spawn, start, origin
+theme, dark, light, look, color, colour, style
+settings, setting, options, option, preferences, config, configuration
+menu, menus, bar
+folder, directory
+attack, crack, cracking, exploit, break, recover
+lcg, generator, random, linear, congruential
+chunkseed, population, chunk
+slime, slimechunk
+terminology, glossary, definition, definitions, meaning, mean, explain, term
