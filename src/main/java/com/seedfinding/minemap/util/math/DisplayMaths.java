@@ -124,6 +124,17 @@ public class DisplayMaths {
         return polygons;
     }
 
+    /** The center line through the points, in block coordinates. Stroke it at draw time; do not build an outline. */
+    public static java.awt.geom.Path2D.Double getPolylinePath(List<BPos> bPosList) {
+        java.awt.geom.Path2D.Double path = new java.awt.geom.Path2D.Double();
+        if (bPosList.isEmpty()) return path;
+        path.moveTo(bPosList.getFirst().getX(), bPosList.getFirst().getZ());
+        for (int i = 1; i < bPosList.size(); i++) {
+            path.lineTo(bPosList.get(i).getX(), bPosList.get(i).getZ());
+        }
+        return path;
+    }
+
     public static Polygon getPolygon(BPos pos1, BPos pos2, BPos pos3, BPos pos4) {
         return new Polygon(
             new int[] {

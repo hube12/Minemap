@@ -12,6 +12,7 @@ public class Route extends Tool {
     private final List<BPos> stops;
     private final String label;
     private Color color = DisplayMaths.getRandomColor();
+    private Shape strokePath;
     private final List<Runnable> removalListeners = new java.util.concurrent.CopyOnWriteArrayList<>();
 
     public Route(List<BPos> stops, String label) {
@@ -45,8 +46,19 @@ public class Route extends Tool {
 
     @Override
     public List<Shape> getPartialShapes() {
-        // the map only draws the partial shapes of a tool (same thickness as the Polyline tool)
-        return this.stops.size() > 1 ? DisplayMaths.getPolylinePolygon(this.stops, 5) : null;
+        return null; // drawn through getStrokePath()
+    }
+
+    @Override
+    public Shape getStrokePath() {
+        if (this.stops.size() < 2) return null;
+        if (this.strokePath == null) this.strokePath = DisplayMaths.getPolylinePath(this.stops);
+        return this.strokePath;
+    }
+
+    @Override
+    public double getStrokeWidthBlocks() {
+        return Polyline.LINE_WIDTH_BLOCKS;
     }
 
     @Override

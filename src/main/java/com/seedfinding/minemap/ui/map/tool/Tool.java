@@ -45,4 +45,17 @@ public abstract class Tool {
     public abstract String getName();
 
     public abstract boolean isMultiplePolygon();
+
+    /**
+     * A centre line (block coordinates) that the map strokes directly with round joins and caps, instead of
+     * building polygons. Much cheaper for long lines. Return null to use the partial shapes.
+     */
+    public Shape getStrokePath() {
+        return null;
+    }
+
+    /** Line width in blocks for {@link #getStrokePath()}; the map widens it so it stays visible when zoomed out. */
+    public double getStrokeWidthBlocks() {
+        return 0.0D;
+    }
 }

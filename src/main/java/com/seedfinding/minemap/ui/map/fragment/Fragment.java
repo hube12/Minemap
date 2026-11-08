@@ -141,6 +141,11 @@ public class Fragment {
     public void drawTools(Graphics graphics, DrawInfo info, ArrayList<Tool> tools) {
         for (Tool tool : tools) {
             if (tool.isPartial()) {
+                Shape line = tool.getStrokePath();
+                if (line != null) {
+                    drawStrokePath(graphics, info, tool, line);
+                    continue;
+                }
                 if (tool.isMultiplePolygon()) {
                     if (tool.getPartialShapes() == null) continue;
                     List<Shape> shapes = tool.getPartialShapes();
@@ -155,6 +160,30 @@ public class Fragment {
         }
     }
 
+
+    /**
+     * Strokes a line directly: the graphics clip keeps it inside this fragment, so there is no per-fragment
+     * polygon building or area intersection, which is what made very long lines slow.
+     */
+    private void drawStrokePath(Graphics graphics, DrawInfo info, Tool tool, Shape path) {
+        double scale = ((double) info.width()) / ((double) regionSize); // pixels per block
+        Graphics2D g2d = (Graphics2D) graphics.create();
+        try {
+            Graphic.setGoodRendering(Graphic.withoutDithering(g2d));
+            g2d.clipRect(info.x(), info.y(), info.width(), info.height());
+            // block coordinates -> this fragment's place on screen
+            g2d.translate(info.x(), info.y());
+            g2d.scale(scale, ((double) info.height()) / ((double) regionSize));
+            g2d.translate(-blockX, -blockZ);
+            // the stroke is in block units too: keep at least ~3 px visible when zoomed out
+            float width = (float) Math.max(tool.getStrokeWidthBlocks(), 3.0D / Math.max(scale, 1e-9));
+            g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            g2d.setColor(tool.getColor());
+            g2d.draw(path);
+        } finally {
+            g2d.dispose();
+        }
+    }
 
     private void drawSinglePolygon(Graphics graphics, DrawInfo info, Tool tool, Area polygon) {
         Area rectangle = new Area(this.getRectangle());

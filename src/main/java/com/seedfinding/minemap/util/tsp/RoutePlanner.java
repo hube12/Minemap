@@ -30,11 +30,8 @@ public final class RoutePlanner {
         nodes.addAll(stops);
 
         if (nodes.size() >= MIN_NODES_FOR_SOLVER) {
-            // the solver keeps its parameters and distance matrix in static fields
-            synchronized (RoutePlanner.class) {
-                Pair<Double, List<Integer>> tour = new Program().startApplication(nodes);
-                if (tour != null) ListUtil.reindexInPlace(nodes, tour.getSecond().toArray(new Integer[0]));
-            }
+            Pair<Double, List<Integer>> tour = new Program().startApplication(nodes);
+            if (tour != null) ListUtil.reindexInPlace(nodes, tour.getSecond().toArray(new Integer[0]));
             ListUtil.cycleInPlace(nodes, start);
             if (!returnToStart && nodes.size() > 2) {
                 // The tour is a loop: walk it in the direction that drops the longer of the two edges at the start.
