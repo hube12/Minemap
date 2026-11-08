@@ -395,6 +395,8 @@ public class MapManager {
         }
         if (!toolsList.remove(tool)) {
             Logger.LOGGER.warning("Tool could not be removed");
+        } else if (tool instanceof Route route) {
+            route.notifyRemoved();
         }
     }
 

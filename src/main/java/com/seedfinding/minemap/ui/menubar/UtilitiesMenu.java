@@ -7,6 +7,7 @@ import com.seedfinding.minemap.init.KeyShortcuts;
 import com.seedfinding.minemap.init.Logger;
 import com.seedfinding.minemap.listener.Events;
 import com.seedfinding.minemap.ui.dialog.LootSearchDialog;
+import com.seedfinding.minemap.ui.dialog.RoutePlannerDialog;
 import com.seedfinding.minemap.ui.dialog.StructureListDialog;
 import com.seedfinding.minemap.ui.map.MapPanel;
 
@@ -18,6 +19,7 @@ public class UtilitiesMenu extends Menu {
     public JMenuItem structureSeedMode;
     public JMenuItem listStructure;
     public JMenuItem lootSearch;
+    public JMenuItem routePlanner;
 
     public UtilitiesMenu() {
         this.menu = new JMenu("Utilities");
@@ -29,6 +31,9 @@ public class UtilitiesMenu extends Menu {
         this.lootSearch = new JMenuItem("Find Chest Loot");
         this.addMouseAndKeyListener(this.lootSearch, getLoot(), getLoot(), false);
 
+        this.routePlanner = new JMenuItem("Plan Route");
+        this.addMouseAndKeyListener(this.routePlanner, getRoute(), getRoute(), false);
+
         this.structureSeedMode = new JCheckBoxMenuItem("Structure Seed Mode");
         this.addMouseAndKeyListener(this.structureSeedMode, toggleStructureMode(false), toggleStructureMode(true), true);
         this.structureSeedMode.setSelected(Configs.USER_PROFILE.getUserSettings().structureMode);
@@ -37,10 +42,12 @@ public class UtilitiesMenu extends Menu {
             MapPanel map = MineMap.INSTANCE.worldTabs.getSelectedMapPanel();
             listStructure.setEnabled(map != null);
             lootSearch.setEnabled(map != null);
+            routePlanner.setEnabled(map != null);
         }));
 
         this.menu.add(listStructure);
         this.menu.add(lootSearch);
+        this.menu.add(routePlanner);
         this.menu.add(structureSeedMode);
     }
 
@@ -66,6 +73,15 @@ public class UtilitiesMenu extends Menu {
             if (!this.listStructure.isEnabled()) return;
             this.activate.run();
             JDialog dialog = new StructureListDialog(this.deactivate);
+            dialog.setVisible(true);
+        };
+    }
+
+    public Runnable getRoute() {
+        return () -> {
+            if (!this.routePlanner.isEnabled()) return;
+            this.activate.run();
+            JDialog dialog = new RoutePlannerDialog(this.deactivate);
             dialog.setVisible(true);
         };
     }

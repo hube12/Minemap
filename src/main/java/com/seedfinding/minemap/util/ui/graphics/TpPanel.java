@@ -16,8 +16,29 @@ import java.util.List;
 
 public class TpPanel {
     public static void makeFrame(List<BPos> bPosList, Feature<?, ?> feature) {
+        makeFrame(bPosList, feature, String.format("List of %d %s", bPosList.size(), Str.prettifyDashed(feature.getName())));
+    }
+
+    public static void makeFrame(List<BPos> bPosList, Feature<?, ?> feature, String title) {
+        makeFrame(bPosList, feature, title, null);
+    }
+
+    /** Something the list window can show on the map and hide again (e.g. a route through the listed points). */
+    public interface MapToggle {
+        boolean isShown();
+
+        void toggle();
+
+        /** Registers a callback for when the shown state changes from outside the window (e.g. sidebar close button). */
+        void onRemoved(Runnable listener);
+    }
+
+    /**
+     * @param mapToggle if not null, adds a button that shows or hides the list on the map
+     */
+    public static void makeFrame(List<BPos> bPosList, Feature<?, ?> feature, String title, MapToggle mapToggle) {
         // create a new frame
-        JFrame frame = new JFrame(String.format("List of %d %s", bPosList.size(), Str.prettifyDashed(feature.getName())));
+        JFrame frame = new JFrame(title);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setPreferredSize(new java.awt.Dimension(500, 80 + Math.min(350, 70 * bPosList.size())));
 
@@ -50,7 +71,29 @@ public class TpPanel {
 
         JSplitPane copyPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, copyTPs, copyLocations);
         copyPane.setResizeWeight(1.0);
-        listPanel.add(copyPane, BorderLayout.SOUTH);
+        if (mapToggle == null) {
+            listPanel.add(copyPane, BorderLayout.SOUTH);
+        } else {
+            JButton drawRoute = new JButton();
+            // the route can also be removed from the map elsewhere (sidebar), so always read the real state
+            Runnable refresh = () -> drawRoute.setText(mapToggle.isShown() ? "Hide route from map" : "Draw route on map");
+            refresh.run();
+            mapToggle.onRemoved(() -> SwingUtilities.invokeLater(refresh));
+            drawRoute.addActionListener(event -> {
+                mapToggle.toggle();
+                refresh.run();
+            });
+            frame.addWindowFocusListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowGainedFocus(java.awt.event.WindowEvent e) {
+                    refresh.run();
+                }
+            });
+            JPanel south = new JPanel(new GridLayout(0, 1));
+            south.add(drawRoute);
+            south.add(copyPane);
+            listPanel.add(south, BorderLayout.SOUTH);
+        }
 
         frame.add(listPanel);
 
