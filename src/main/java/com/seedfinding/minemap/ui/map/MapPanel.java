@@ -32,20 +32,23 @@ public class MapPanel extends JPanel {
     public FragmentScheduler scheduler;
     public TabHeader header;
 
-    private static final long HIGHLIGHT_MS = 10_000L;
+    private static final long HIGHLIGHT_MS = 2_000L;
     private int highlightX, highlightZ;
     private String highlightLabel;
     private long highlightStart;
     private javax.swing.Timer highlightTimer;
 
     // Flood-filled region of the found biome (recomputed, debounced, when the view changes).
-    private static final int REGION_MS = 30_000;
+    private static final long REGION_MS = 2_000L;      // total lifetime of the glow
+    private static final long REGION_FADE_MS = 1_000L;  // fade-out at the end of that lifetime
+    private static final int REGION_DEBOUNCE_MS = 40;   // keep small: a stale overlay is stretched while zooming
+    private long regionStart;
     private volatile BiomeRegionOverlay regionOverlay;
     private int regionSeedX, regionSeedZ, regionBiomeId;
     private boolean regionActive;
     private SwingWorker<BiomeRegionOverlay, Void> regionWorker;
     private double[] regionPendingSignature;
-    private javax.swing.Timer regionDebounce, regionExpiry;
+    private javax.swing.Timer regionDebounce, regionAnim;
 
     public MapPanel(MCVersion version, Dimension dimension, long worldSeed, int threadCount) {
         this.threadCount = threadCount;
@@ -211,7 +214,7 @@ public class MapPanel extends JPanel {
 
     /**
      * Flood-fills the given biome from a block position over everything currently on screen
-     * and shows it as a translucent area with an outline (kept for 30 s, follows pan/zoom).
+     * and shows it as a translucent area with an outline (lasts a few seconds, then fades out; follows pan/zoom).
      */
     public void highlightRegion(int seedBlockX, int seedBlockZ, int biomeId) {
         this.regionSeedX = seedBlockX;
@@ -219,10 +222,14 @@ public class MapPanel extends JPanel {
         this.regionBiomeId = biomeId;
         this.regionActive = true;
         this.regionOverlay = null;
-        if (this.regionExpiry != null) this.regionExpiry.stop();
-        this.regionExpiry = new javax.swing.Timer(REGION_MS, e -> this.clearRegion());
-        this.regionExpiry.setRepeats(false);
-        this.regionExpiry.start();
+        this.regionStart = System.currentTimeMillis();
+        if (this.regionAnim != null) this.regionAnim.stop();
+        // Drives the pulse and the fade, and removes the glow once its lifetime is over.
+        this.regionAnim = new javax.swing.Timer(33, e -> {
+            if (System.currentTimeMillis() - this.regionStart >= REGION_MS) this.clearRegion();
+            else this.repaint();
+        });
+        this.regionAnim.start();
         this.startRegionCompute();
     }
 
@@ -232,7 +239,7 @@ public class MapPanel extends JPanel {
         this.regionPendingSignature = null;
         if (this.regionWorker != null) this.regionWorker.cancel(true);
         if (this.regionDebounce != null) this.regionDebounce.stop();
-        if (this.regionExpiry != null) this.regionExpiry.stop();
+        if (this.regionAnim != null) this.regionAnim.stop();
         this.repaint();
     }
 
@@ -265,11 +272,15 @@ public class MapPanel extends JPanel {
             protected void done() {
                 if (isCancelled() || !regionActive) return;
                 try {
-                    regionOverlay = get();
+                    // A null result means the start point is off screen (e.g. after zooming in elsewhere):
+                    // keep the previous overlay, it is anchored in block coordinates and still lines up.
+                    BiomeRegionOverlay computed = get();
+                    if (computed != null) regionOverlay = computed;
                 } catch (Exception e) {
-                    regionOverlay = null;
+                    // cancelled or failed: keep what is shown, the glow expires on its own
                 }
-                regionPendingSignature = null;
+                // Keep regionPendingSignature: it records the view this result was computed for, so
+                // drawRegion() only recomputes when the view really changes (not after every repaint).
                 repaint();
             }
         };
@@ -285,7 +296,7 @@ public class MapPanel extends JPanel {
         // (seed off screen) does not trigger endless recomputes.
         if (!java.util.Arrays.equals(this.regionPendingSignature, now)) {
             if (this.regionDebounce == null) {
-                this.regionDebounce = new javax.swing.Timer(250, e -> this.startRegionCompute());
+                this.regionDebounce = new javax.swing.Timer(REGION_DEBOUNCE_MS, e -> this.startRegionCompute());
                 this.regionDebounce.setRepeats(false);
             }
             this.regionDebounce.restart();
@@ -300,8 +311,9 @@ public class MapPanel extends JPanel {
         Graphics2D g = (Graphics2D) graphics.create();
         try {
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            // Gentle breathing so the glow feels alive.
-            float pulse = 0.8f + 0.2f * (float) Math.sin(System.currentTimeMillis() / 250.0D);
+            long elapsed = System.currentTimeMillis() - this.regionStart;
+            float fade = elapsed < REGION_MS - REGION_FADE_MS ? 1f : Math.max(0f, (REGION_MS - elapsed) / (float) REGION_FADE_MS);
+            float pulse = (0.85f + 0.15f * (float) Math.sin(elapsed / 200.0D)) * fade;
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, pulse));
             g.drawImage(overlay.image, (int) Math.round(x), (int) Math.round(z), w, h, null);
         } finally {
